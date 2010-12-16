@@ -37,6 +37,9 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
+
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -93,7 +96,7 @@ public class PersistentVector
   /*
    * header line vector
    */
-  private Vector headerLinesVector;
+  private Vector<String[]> headerLinesVector;
 
   /*
    * tmp directory for object file
@@ -193,88 +196,59 @@ public class PersistentVector
      tmpDir = directory;
    }
     
-   
   /*
-   * read a text file and store each line as an object in an ObjectFile
-   */
-  public void init(String filename) {
-    String temp;
-    int nlines;
-    File f = new File(filename);    
-    try{
-      BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), Charset.forName("UTF-8")));
-      nlines = 0;
-      long pos = 0;
-      headerLinesVector = new Vector();
-      try {
-      while (((temp = in.readLine())!=null)) {
-        if (temp.length()>0) {   // do not count blank lines
-          nlines++;
-          if (nlines>firstRow) {
-            String[] tempA = getColumnValues(temp);
-            if (nlines>inMemoryNum) {
-              pos = obj.writeObject(tempA);  // object added to file
-              Long lpos = new Long(pos);
-              objectList.addElement(lpos); // position added to objectList
-            }
-            else {
-              objectList.addElement(tempA);  
-            }
-          }
-          else {    // header info
-            headerLinesVector.addElement(temp);
-          }
-        }
-      }
-      in.close();
-
-      }
-      catch (Exception e) {};
-    }
-    catch (Exception w) {};
-  }
-    
-  /*
-   * read a text file and store each line as an object in an ObjectFile
-   * each line in the file (assumed to be a text file) is turned into
-   * an array of strings
-   * 
-   * start with a file object
-   */
-  public void init(File f) {
-    String temp;
-    int nlines;
-    try{
-      BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), Charset.forName("UTF-8")));
-      nlines = 0;
-      long pos = 0;
-      headerLinesVector = new Vector();
-      try {
-        while (((temp = in.readLine())!=null)) {
-          if (temp.length()>0) {   // do not count blank lines
-            nlines++;
-            if (nlines>firstRow) {
-              String[] tempA = getColumnValues(temp);
-              if (nlines>inMemoryNum) {
-                pos = obj.writeObject(tempA);  // object added to file
-                Long lpos = new Long(pos);
-                objectList.addElement(lpos); // position added to objectList
-              }
-              else {
-                objectList.addElement(tempA);  
-              }
-            }
-            else {    // header info
-              headerLinesVector.addElement(temp);
-            } 
-          } 
-        }
-        in.close();
-      }
-      catch (Exception e) {};
-    }
-    catch (Exception w) {};
-  }
+	 * read a text file and store each line as an object in an ObjectFile each
+	 * line in the file (assumed to be a text file) is turned into an array of
+	 * strings
+	 * 
+	 * start with a file object
+	 */
+	public void init(File f) {
+		int nlines;
+		try {
+			String sDelim = getDelimiterString();
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					new FileInputStream(f), Charset.forName("UTF-8")));
+			CSVReader csvReader = new CSVReader(in, sDelim.charAt(0));
+			List<String[]> records = csvReader.readAll();
+			nlines = 0;
+			long pos = 0;
+			headerLinesVector = new Vector();
+			try {
+				for (String[] record : records) {
+					if (!isEmpty(record)) { // do not count blank lines, BRL: not sure about this one
+						nlines++;
+						if (nlines > firstRow) {
+							if (nlines > inMemoryNum) {
+								pos = obj.writeObject(record); // object added to file
+								Long lpos = new Long(pos);
+								objectList.addElement(lpos); // position added to objectList
+							} else {
+								objectList.addElement(record);
+							}
+						} else { // header info
+							headerLinesVector.addElement(record);
+						}
+					}
+				}
+				csvReader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		} catch (Exception w) {
+			w.printStackTrace();
+		}
+	}
+	
+	private boolean isEmpty(String[] record) {
+		for (String item: record) {
+			if (item != null && item.length() > 0) {
+				return false;
+			}
+		}
+		return true;
+	}
 
   public void init (File f, int fRow) {
     this.firstRow = fRow;
@@ -314,28 +288,26 @@ public class PersistentVector
     File f = new File(filename);
     try{
       BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
+      CSVWriter csvWriter = new CSVWriter(out, getDelimiterString().charAt(0));
+      
       // write header lines if they exist
-      if (headerLinesVector!=null) {
-        for (int jj=0;jj<headerLinesVector.size();jj++) {
-          String hline = (String)headerLinesVector.elementAt(jj);
-          out.write(hline, 0, hline.length());
-          out.newLine(); 
+      if (headerLinesVector != null) {
+        for (int jj=0; jj < headerLinesVector.size(); jj++) {
+          String[] hline = headerLinesVector.elementAt(jj);
+          csvWriter.writeNext(hline);
          }
        }
-       for (int i=0; i<this.size();i++) {
-         String[] s = (String[])this.elementAt(i);
-         String sss = s[0];
-         for (int ii=1;ii<s.length;ii++) {
-           //sss = sss + "\t" + s[ii];
-           sss = sss + getDelimiterString() + s[ii];
-         } 
-         out.write(sss, 0, sss.length());
-         out.newLine();
+       for (int i=0; i < this.size(); i++) {
+         String[] line = (String[]) this.elementAt(i);
+         if (!isEmpty(line)) {
+        	 csvWriter.writeNext(line);
+         }
        }
-      out.flush(); 
-      out.close();
+       csvWriter.close();
     }
-    catch (Exception e) {}
+    catch (Exception e) {
+    	e.printStackTrace();
+    }
   }   
     
   public Object elementAt(int iii) {
@@ -513,7 +485,7 @@ public class PersistentVector
 	{
 	  PersistentVector pv = new PersistentVector();
 	  System.out.println("New Persistent Vector created.");
-	  pv.init("C:/VisualCafe/Projects/PersistentVector/test.txt");
+	  pv.init(new File("C:/VisualCafe/Projects/PersistentVector/test.txt"));
 	  System.out.println("Object File has been filled!");
 	  String s = (String)pv.elementAt(0);
 	  System.out.println(s);

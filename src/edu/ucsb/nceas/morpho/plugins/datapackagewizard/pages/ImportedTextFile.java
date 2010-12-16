@@ -45,6 +45,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import au.com.bytecode.opencsv.CSVReader;
+
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.UneditableTableModel;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -631,56 +633,63 @@ public class ImportedTextFile
 	   * @param ignoreConsequtiveDelimiters
 	   * @param sDelim
 	   */
-	  public void parseDelimited(boolean ignoreConsequtiveDelimiters, String sDelim) {
+	  public void parseDelimited(boolean ignoreConsequtiveDelimiters,
+			String sDelim) {
 
-		    if (lines != null) {
-		      int start = dataStartingLineNumber; // startingLine is 1-based not 0-based
-		      int numcols = 0; // init
-		      /*if (hasReturnedFromScreen2 && isScreen1Unchanged() && colTitles != null) {
-		        //don't redefine column headings etc - keep user's previous values,
-		        // since nothing has changed. In this case colTitles is already set:
-		        numcols = colTitles.size();
-		      } else {*/
-		        if (columnLabelsInStartingLine) {
-		          colTitles = getColumnValues(lines[dataStartingLineNumber - 1],  ignoreConsequtiveDelimiters, sDelim);
-		        } else {
-		          colTitles = getColumnValues(lines[dataStartingLineNumber - 1], ignoreConsequtiveDelimiters, sDelim); // use just to get # of cols
-		          int temp = colTitles.size();
-		          colTitles = new Vector();
-		          for (int l = 0; l < temp; l++) {
-		            colTitles.addElement("Column " + (l + 1));
-		          }
-		          start--; // include first line
-		        }
-		        vectorOfData = new Vector();
-		        Vector vec1;
-		        numcols = colTitles.size();
-		        for (int i = start; i < nlines; i++) {
-		          vec1 = getColumnValues(lines[i], ignoreConsequtiveDelimiters, sDelim);
-		          boolean missing = false;
-		          int currSize = vec1.size();
-		          while (currSize < numcols) {
-		            vec1.addElement("");
-		            currSize++;
-		            missing = true;
-		          }
-		          vectorOfData.addElement(vec1);
-		        }
+		// parse csv for real
+		List<String[]> records = null;
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					new FileInputStream(dataFile), Charset.forName("UTF-8")));
+			CSVReader csvReader = new CSVReader(in, sDelim.charAt(0));
+			records = csvReader.readAll();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		        buildTable();
-		      //}
-		      //if(!hasReturnedFromScreen2) {
+		if (records != null) {
+			String[] tempLine = null;
+			int start = dataStartingLineNumber; // startingLine is 1-based not 0-based
+			int numcols = 0;
+			// column titles
+			tempLine = records.get(dataStartingLineNumber - 1);
+			colTitles = new Vector(Arrays.asList(tempLine));
+			// generate fake ones
+			if (!columnLabelsInStartingLine) {
+				int temp = colTitles.size();
+				colTitles = new Vector();
+				for (int l = 0; l < temp; l++) {
+					colTitles.addElement("Column " + (l + 1));
+				}
+				start--; // include first line
+			}
+			vectorOfData = new Vector();
+			Vector vec1;
+			numcols = colTitles.size();
+			
+			for (int i = start; i < nlines; i++) {
+				tempLine = records.get(i);
+				vec1 = new Vector(Arrays.asList(tempLine));;
+				boolean missing = false;
+				int currSize = vec1.size();
+				while (currSize < numcols) {
+					vec1.addElement("");
+					currSize++;
+					missing = true;
+				}
+				vectorOfData.addElement(vec1);
+			}
 
-		        columnAttributes = new Vector();
-		        needToSetPageData = new boolean[numcols];
-		        Arrays.fill(needToSetPageData, true);
+			buildTable();
 
-		      //}
-		    }
-		    //DataScrollPanel.getViewport().removeAll();
-		    //DataScrollPanel.getViewport().add(table);
-		    //hasReturnedFromScreen2 = false;
-		  }
+			columnAttributes = new Vector();
+			needToSetPageData = new boolean[numcols];
+			Arrays.fill(needToSetPageData, true);
+
+		}
+
+	}
 	  
 	      
 	  /*

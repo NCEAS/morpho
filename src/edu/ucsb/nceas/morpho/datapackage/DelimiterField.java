@@ -90,47 +90,5 @@ public class DelimiterField extends JTextField
       selectAll();
     }
     
-    /**
-     * Method to create default model for text field
-     */
-    protected Document createDefaultModel() 
-    {
-        return new NoDelimiterDocument();
-    }
-    
-    
-    protected class NoDelimiterDocument extends PlainDocument 
-    {
-        public void insertString(int offs,
-                                 String str,
-                                 AttributeSet a)
-                throws BadLocationException 
-       {
-           
-            String error ="Your data file uses this character as a delimiter.\n"
-                          + "It cannot be used inside data field!";
-            char[] source = str.toCharArray();
-            char[] result = new char[source.length];
-            int j = 0;
-            for (int i = 0; i < result.length; i++) 
-            {
-               if ( source[i] != delimiter.charAt(0))
-               {
-                    result[j++] = source[i];
-                }//if
-                else
-                {
-                   JOptionPane pane = 
-                            new JOptionPane(error, JOptionPane.ERROR_MESSAGE);
-                   JDialog dialog = pane.createDialog(parent, "Alert!");
-                   dialog.setResizable(false);
-                   dialog.setVisible(true);
-                   dialog.setModal(true);
-                   
-                }//else
-               
-            }//for
-            super.insertString(offs, new String(result, 0, j), a);
-        }//insetString
-    }//NoDelimiterDocument
+
 }
