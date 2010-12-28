@@ -19,7 +19,7 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.9.0"/>
+      <property name="release" value="1.10.0"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
@@ -30,15 +30,19 @@
       <property name="eml-module" value="eml" />
 	   <property name="eml-svn-base-url" value="https://code.ecoinformatics.org/code/eml"/>
       <!-- the following two properties will be used to get newest eml doc-->
-      <property name="eml-doc-tag" value="RELEASE_EML_2_1_0" />
-      <property name="eml.doc.dir" value="${morpho.basedir}/docs/eml-2.1.0" />
+      <property name="eml-doc-tag" value="RELEASE_EML_2_1_1_RC_2" />
+      <property name="eml.doc.dir" value="${morpho.basedir}/docs/eml-2.1.1" />
 	  <property name="eml-doc-svn-url" value="${eml-svn-base-url}/tags/${eml-doc-tag}"/>
       <!-- the following property will be used to get eml210 schemas -->
       <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0" />
 	  <property name="eml-210-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-210-schema-tag}"/>
-      <!-- eml-style-tag only be used to get eml201to210.xsl and eml2tonbii.xsl files -->
-      <!--<property name="eml-style-tag" value="RELEASE_EML_UTILS_0_9_1" />-->
-	  <property name="eml-style-tag" value="tags/MORPHO_1_8_1" />
+   	
+    <!-- the following property will be used to get eml210 schemas -->
+    <property name="eml-211-schema-tag" value="RELEASE_EML_2_1_1_RC_2" />
+	<property name="eml-211-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-211-schema-tag}"/>
+   	
+   	<!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
+	  <property name="eml-style-tag" value="tags/RELEASE_EML_2_1_1_RC_2" />
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
@@ -177,10 +181,17 @@
           <not><available file="${schemadir}/eml-2.1.0/eml.xsd" type="file"/></not>
         </or>
       </condition>
-	   
+      <condition property="eml211schema.needed">
+          <or>
+            <not><available file="${schemadir}/eml-2.1.1/eml.xsd" type="file"/></not>
+          </or>
+        </condition>
+   	
       <condition property="transformstylesheet.needed">
         <or>
           <not><available file="${xsldir}/eml201to210.xsl" type="file"/></not>
+          <not><available file="${xsldir}/eml201to211.xsl" type="file"/></not>
+          <not><available file="${xsldir}/eml210to211.xsl" type="file"/></not>
 		  <not><available file="${xsldir}/eml2tonbii.xsl" type="file"/></not>
         </or>
       </condition>
@@ -302,11 +313,7 @@
 	
    <target name="getetransformstylesheet" depends="prepare" if="transformstylesheet.needed">
      <!-- checkout eml/eml201to210.xsl and eml2tonbii.xsl file -->
-     <echo>Check out eml201to210.xsl and NBII style sheet from SVN</echo>
-     <!--<cvs cvsRoot="${cvsroot}"
-          package="${eml-module}/style/eml201to210.xsl"
-          tag="${eml-210-style-tag}"
-          dest="${build.xsl}/eml_${eml-210-style-tag}" />-->
+     <echo>Check out eml conversion xsl files and NBII style sheet from SVN</echo>
 	 <mkdir dir="${build.xsl}/eml_${eml-style-tag}" />
 	 <svn>
             <export srcUrl="${eml-style-svn-url}/style"
@@ -318,17 +325,14 @@
                 destPath="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii" />
         </svn>
 	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to210.xsl" todir="${xsldir}" />
+	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to211.xsl" todir="${xsldir}" />
+	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml210to211.xsl" todir="${xsldir}" />
 	<copy file="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii/eml2tonbii.xsl" todir="${xsldir}" />
    </target>
 
-	
    <target name="geteml210" depends="prepare" if="eml210schema.needed">
      <!-- checkout eml moduel -->
      <echo>Check out EML 2.1.0 schema from SVN</echo>
-     <!--<cvs cvsRoot="${cvsroot}"
-          package="${eml-module}"
-          tag="${eml-210-schema-tag}"
-          dest="${build.schema}/eml_${eml-210-schema-tag}" />-->
 	   <mkdir dir="${build.schema}"/>
 	   <svn>
             <export srcUrl="${eml-210-schema-svn-url}"
@@ -341,6 +345,22 @@
        </fileset>
      </copy> 
    </target>
+	
+	<target name="geteml211" depends="prepare" if="eml211schema.needed">
+	     <!-- checkout eml moduel -->
+	     <echo>Check out EML 2.1.1 schema from SVN</echo>
+		   <mkdir dir="${build.schema}"/>
+		   <svn>
+	            <export srcUrl="${eml-211-schema-svn-url}"
+	                destPath="${build.schema}/eml_${eml-211-schema-tag}" />
+	        </svn>
+	     <mkdir dir="${schemadir}/eml-2.1.1" />
+	     <copy todir="${schemadir}/eml-2.1.1" filtering="yes">
+	       <fileset dir="${build.schema}/eml_${eml-211-schema-tag}">
+	         <include name="*.xsd"/>
+	       </fileset>
+	     </copy> 
+	   </target>
 
 
    <target name="utilities" depends="prepare" if="utilities.required">
@@ -449,7 +469,7 @@
    <!--
    <target name="compile" depends="clean,itis,prepare">
    -->
-   <target name="compile" depends="prepare, utilities, geteml210, getetransformstylesheet">
+   <target name="compile" depends="prepare, utilities, geteml210, geteml211, getetransformstylesheet">
 
       <jar jarfile="${morpho.basedir}/lib/httpclient.jar">
         <fileset dir="${morpho.basedir}/lib" includes="HTTPClient/**/*.class"/>
@@ -639,9 +659,14 @@
 		Those files are checked out from another cvs.-->
    <target name="fullclean" depends="clean">
        <delete dir="${schemadir}/eml-2.1.0" />
+    	<delete dir="${schemadir}/eml-2.1.1" />
+
        <delete file="${utilities}" />
     	<delete file="${httpclient}" />
 		<delete file="${xsldir}/eml201to210.xsl" />
+		<delete file="${xsldir}/eml201to211.xsl" />
+		<delete file="${xsldir}/eml210to211.xsl" />
+		<delete file="${xsldir}/eml2tonbii.xsl" />
    </target>
 
    <target name="docs" depends="init">

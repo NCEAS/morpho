@@ -1209,12 +1209,12 @@ public class WizardContainerFrame
     if(accessData == null || accessData.isEmpty())
     {
        // for no access subtree
-       rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML210_DOCUMENT_TEXT_WITHOUTACCESS);
+       rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML211_DOCUMENT_TEXT_WITHOUTACCESS);
     }
     else
     {
     	//for having access subtree
-    	rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML210_DOCUMENT_TEXT_WITHACCESS);
+    	rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML211_DOCUMENT_TEXT_WITHACCESS);
     }
 
     //now populate it...

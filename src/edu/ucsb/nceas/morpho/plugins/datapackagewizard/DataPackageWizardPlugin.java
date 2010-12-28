@@ -117,7 +117,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    }
 
     AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
-      getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML210_DOCUMENT_TEXT));
+      getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML211_DOCUMENT_TEXT));
     if(tempDataPackage == null) return;
     AccessionNumber accessionNumber = new AccessionNumber(Morpho.thisStaticInstance);
     String tempID = accessionNumber.getNextTempID();
@@ -394,7 +394,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
           DocFrame df = new DocFrame();
           df.setVisible(true);
           df.initDoc(null, domnode, null, null,
-              WizardSettings.EML210_SCHEMA_NAMESPACE);
+              WizardSettings.EML211_SCHEMA_NAMESPACE);
 
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtil.getDOMTreeAsString(newDOM));

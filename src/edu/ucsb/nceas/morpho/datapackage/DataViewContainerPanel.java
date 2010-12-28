@@ -475,6 +475,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       }
       catch (Exception m) {
         Log.debug(5, "Unable to display MetaData:\n"+m.getMessage());
+        m.printStackTrace();
         // can't display requested ID, so just display empty viewer:
         try{
           mdcomponent = md.getDisplayComponent(adp, null);

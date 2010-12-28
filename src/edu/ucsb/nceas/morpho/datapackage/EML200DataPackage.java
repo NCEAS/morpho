@@ -82,9 +82,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 public  class EML200DataPackage extends AbstractDataPackage
 {
 
-  public static final String LATEST_EML_VER = "eml-2.1.0";
-  public static final String EML200NAMESPACE = "eml://ecoinformatics.org/eml-2.0.0";
-  public static final String EML201NAMESPACE =  "eml://ecoinformatics.org/eml-2.0.1";
+  public static final String LATEST_EML_VER = "eml-2.1.1";
   
   private static final String packageWizardXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
   "/"+IncompleteDocSettings.PACKAGEWIZARD;
@@ -1826,31 +1824,51 @@ public  class EML200DataPackage extends AbstractDataPackage
    */
   public String transformToLastestEML() throws EMLVersionTransformationException
   {
-	  String result = transformToEML210();
+	  // TODO: transform in multiple steps 2.0.x -> 2.1.0 -> 2.1.0?
+	  String original = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+	  String result = original;
+	  if (getEMLVersion().contains("2.0")) {
+		  result = transformEML201ToEML211(original);
+	  }
+	  if (getEMLVersion().contains("2.1.0")) {
+		  result = transformEML210ToEML211(original);
+	  }
 	  return result;
   }
   
-  /*
-   * Transform to eml 210 version. Null will be return if it couldn't be transformed.
-   */
-  private String transformToEML210() throws EMLVersionTransformationException
-  {
-	  String result = null;
-	  try
-	  {
-		  result= doTransform("./xsl/eml201to210.xsl", XMLUtil.getDOMTreeAsString(
-                            getMetadataNode().getOwnerDocument())) ;
-	  }
-	  catch(EMLVersionTransformationException e)
-	  {
-		  throw e;
-	  }
-	  catch(Exception e)
-	  {
-		  Log.debug(5, "Couldn't transform the eml document to the latest version "+e.getMessage());
-	  }
-	  return result;
-  }
+  	/**
+	 * Transform to eml 211 version. Null will be return if it couldn't be
+	 * transformed.
+	 */
+	private String transformEML201ToEML211(String orig)
+			throws EMLVersionTransformationException {
+		String result = null;
+		try {
+			result = doTransform("./xsl/eml201to211.xsl", orig);
+		} catch (EMLVersionTransformationException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.debug(5,
+					"Couldn't transform the eml document to the latest version "
+							+ e.getMessage());
+		}
+		return result;
+	}
+
+	private String transformEML210ToEML211(String orig)
+			throws EMLVersionTransformationException {
+		String result = null;
+		try {
+			result = doTransform("./xsl/eml210to211.xsl", orig);
+		} catch (EMLVersionTransformationException e) {
+			throw e;
+		} catch (Exception e) {
+			Log.debug(5,
+					"Couldn't transform the eml document to the latest version "
+							+ e.getMessage());
+		}
+		return result;
+	}
   
   /*
    * Transform an eml document to another version of eml2 document by specifying the

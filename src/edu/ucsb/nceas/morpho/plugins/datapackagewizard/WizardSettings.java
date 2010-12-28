@@ -260,81 +260,24 @@ public class WizardSettings {
 
   public static final int MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT = 25;
 
-  protected static final String EML200_SCHEMA_NAMESPACE =
+  public static final String EML200_SCHEMA_NAMESPACE =
       "eml://ecoinformatics.org/eml-2.0.0";
 
-  /*public static final String EML201_SCHEMA_NAMESPACE =
-      "eml://ecoinformatics.org/eml-2.0.1";*/
+  public static final String EML201_SCHEMA_NAMESPACE =
+      "eml://ecoinformatics.org/eml-2.0.1";
   
   public static final String EML210_SCHEMA_NAMESPACE =
       "eml://ecoinformatics.org/eml-2.1.0";
-
-  protected static final String NEW_EML200_DOCUMENT_TEXT =
-  "<eml:eml "
-  +"   packageId=\"\" system=\"knb\" "
-  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\" "
-  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-//  +"   xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.0\" "
-  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
-  +"   <dataset> "
-  +"   <title> </title> "
-  +"   <creator> </creator>"
-  +"   </dataset> "
-  +"</eml:eml>";
-
-  protected static final String TEMP_REFS_EML200_DOCUMENT_TEXT =
-  "<eml:eml "
-  +"   packageId=\"\" system=\"knb\" "
-  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\" "
-  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
-  +"   <dataset> "
-  +"   <title> </title> "
-  +"   <creator> </creator>"
-  +"   <coverage><taxonomicCoverage><taxonomicSystem><classificationSystem>"
-  +"                             <classificationSystemCitation><title> </title>"
-  +"            </classificationSystemCitation> </classificationSystem>"
-  +"            </taxonomicSystem> </taxonomicCoverage></coverage>"
-  +"   <project><title> </title></project>"
-  +"   </dataset> "
-  +"</eml:eml>";
-
-  /*protected static final String NEW_EML201_DOCUMENT_TEXT =
-  "<eml:eml "
-  +"   packageId=\"\" system=\"knb\" "
-  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.1\" "
-  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-//  +"   xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.1\" "
-  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.1 eml.xsd\"> "
-  +"   <dataset> "
-  +"   <title> </title> "
-  +"   <creator> </creator>"
-  +"   </dataset> "
-  +"</eml:eml>";
-
-  public static final String TEMP_REFS_EML201_DOCUMENT_TEXT =
-  "<eml:eml "
-  +"   packageId=\"\" system=\"knb\" "
-  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.1\" "
-  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.1 eml.xsd\"> "
-  +"   <dataset> "
-  +"   <title> </title> "
-  +"   <creator> </creator>"
-  +"   <coverage><taxonomicCoverage><taxonomicSystem><classificationSystem>"
-  +"                             <classificationSystemCitation><title> </title>"
-  +"            </classificationSystemCitation> </classificationSystem>"
-  +"            </taxonomicSystem> </taxonomicCoverage></coverage>"
-  +"   <project><title> </title></project>"
-  +"   </dataset> "
-  +"</eml:eml>";*/
   
-  protected static final String NEW_EML210_DOCUMENT_TEXT_WITHOUTACCESS =
+  public static final String EML211_SCHEMA_NAMESPACE =
+      "eml://ecoinformatics.org/eml-2.1.1";
+
+  protected static final String NEW_EML211_DOCUMENT_TEXT_WITHOUTACCESS =
 	  "<eml:eml "
 	  +"   packageId=\"\" system=\"knb\" "
-	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "
+	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.1\" "
 	  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.0 eml.xsd\"> "
+	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.1 eml.xsd\"> "
 	  //+"   <access> "
   	  //+"   </access>"
 	  +"   <dataset> "
@@ -343,12 +286,12 @@ public class WizardSettings {
 	  +"   </dataset> "
 	  +"</eml:eml>";
   
-  protected static final String NEW_EML210_DOCUMENT_TEXT_WITHACCESS =
+  protected static final String NEW_EML211_DOCUMENT_TEXT_WITHACCESS =
 	  "<eml:eml "
 	  +"   packageId=\"\" system=\"knb\" "
-	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "
+	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.1\" "
 	  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.0 eml.xsd\"> "
+	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.1 eml.xsd\"> "
 	  +"   <access> "
   	  +"   </access>"
 	  +"   <dataset> "
@@ -357,12 +300,12 @@ public class WizardSettings {
 	  +"   </dataset> "
 	  +"</eml:eml>";
 
-	  public static final String TEMP_REFS_EML210_DOCUMENT_TEXT =
+	  public static final String TEMP_REFS_EML211_DOCUMENT_TEXT =
 	  "<eml:eml "
 	  +"   packageId=\"\" system=\"knb\" "
-	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "
+	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.1\" "
 	  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.0 eml.xsd\"> "
+	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.1 eml.xsd\"> "
 	  +"   <access> "
   	  +"   </access>"
 	  +"   <dataset> "
