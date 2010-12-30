@@ -30,6 +30,9 @@ import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
@@ -209,8 +212,20 @@ implements Command, DataPackageWizardListener {
       Log.debug(5, "Unable to get title & abstract details from input!");
       return;
     }
-    titleMap.put("/title[1]", map.get("/title[1]"));
-    map.remove("/title[1]");
+    // transfer title elements to own map
+    Iterator<String> mapIter = map.keySet().iterator();
+    List<String> toRemove = new ArrayList<String>();
+    while (mapIter.hasNext()) {
+    	String key = mapIter.next();
+    	if (key.startsWith("/title[1]")) {
+    		titleMap.put(key, map.get(key));
+    		toRemove.add(key);
+    	}
+    }
+    for (String key: toRemove) {
+    	map.remove(key);
+    }
+    
     if(!map.isEmpty()) {
        String abstractKey = "/abstract/para[1]";
        String abstractValue = (String) map.get(abstractKey);

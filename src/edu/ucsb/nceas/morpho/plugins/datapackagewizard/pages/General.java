@@ -43,6 +43,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.morpho.util.i18n.TranslationWidget;
 import edu.ucsb.nceas.utilities.Log;
 import java.util.List;
 import java.util.Iterator;
@@ -61,12 +62,14 @@ public class General extends AbstractUIPage{
 
   private       String xPathRoot  = "/eml:eml/dataset/";
   private final String TITLE_REL_XPATH = "/title";
+  private final String TITLE_TRANSLATION_REL_XPATH = TITLE_REL_XPATH + "/value";
   private final String ABSTRACT_REL_XPATH = "/abstract/para[1]";
   private final String[] genericPathNameList = {"title", "abstract"};
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private JTextField  titleField;
+  private TranslationWidget titleTranslationWidget;
   private JTextArea   absField;
   private JLabel      titleLabel;
 
@@ -111,7 +114,10 @@ public class General extends AbstractUIPage{
 
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
-
+    
+    titleTranslationWidget = new TranslationWidget();
+    titlePanel.add(titleTranslationWidget.getButton());
+    
     titlePanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(titlePanel);
 
@@ -210,6 +216,8 @@ public class General extends AbstractUIPage{
     returnMap.clear();
 
     returnMap.put("/eml:eml/dataset/title[1]", titleField.getText().trim());
+    // translations
+    returnMap.putAll(titleTranslationWidget.getPageData("/eml:eml/dataset/title[1]"));
 
 //    if ( !(absField.getText().trim().equals("")) ) {
 
@@ -235,6 +243,9 @@ public class General extends AbstractUIPage{
     returnMap.clear();
 
     returnMap.put(rootXPath + "/title[1]", titleField.getText().trim());
+    
+    // translations
+    returnMap.putAll(titleTranslationWidget.getPageData(rootXPath + "/title[1]"));
 
     // Removing this logic fixes bug 2223
 //    if ( !(absField.getText().trim().equals("")) ) {
@@ -318,6 +329,8 @@ public class General extends AbstractUIPage{
     String nextXPath = null;
     Object nextValObj = null;
     String nextVal = null;
+    
+    OrderedMap titleTranslations = new OrderedMap();
 
     while (keyIt.hasNext()) {
 
@@ -333,7 +346,12 @@ public class General extends AbstractUIPage{
       Log.debug(45, "General:  nextXPath = " + nextXPath
           + "\n nextVal   = " + nextVal);
 
-      if (nextXPath.startsWith(TITLE_REL_XPATH)) {
+      // process translations
+      if (nextXPath.startsWith(TITLE_TRANSLATION_REL_XPATH)) {
+    	  titleTranslations.put(nextXPathObj, nextValObj);
+    	  toDeleteList.add(nextXPathObj);
+      }
+      else if (nextXPath.startsWith(TITLE_REL_XPATH)) {
         titleField.setText(nextVal);
         toDeleteList.add(nextXPathObj);
       }
@@ -343,18 +361,19 @@ public class General extends AbstractUIPage{
       }
     }
 
+    // set the title translations
+    boolean canHandleTitleTranlations = titleTranslationWidget.setPageData(titleTranslations, TITLE_REL_XPATH);
+    if (!canHandleTitleTranlations) {
+        Log.debug(20, "cannot handle title translations: " + titleTranslations);
+      }
+    //if anything left in map, then it included stuff we can't handle...
     Iterator dlIt = toDeleteList.iterator();
     while (dlIt.hasNext()) {
       map.remove(dlIt.next());
-
-      //if anything left in map, then it included stuff we can't handle...
     }
     boolean returnVal = map.isEmpty();
-
     if (!returnVal) {
-
-      Log.debug(20, "Project.setPageData returning FALSE! Map still contains:"
-          + map);
+      Log.debug(20, "General.setPageData returning FALSE! Map still contains:" + map);
     }
     return returnVal;
   }
