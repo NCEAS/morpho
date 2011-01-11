@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -61,7 +62,9 @@ public class TranslationWidget extends AbstractUIPage {
 	}
 	
 	private void init() {
-		
+
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
 		translations = 
 			WidgetFactory.makeList(
 				columnNames, 
@@ -69,12 +72,14 @@ public class TranslationWidget extends AbstractUIPage {
 				5, true, false, false, true, true, true);
 		
 		JPanel tPanel = WidgetFactory.makePanel();
-		
-		tPanel.add(WidgetFactory.makeLabel("Translations", false));
+		tPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("Translations"), false));
 		tPanel.add(translations);
+				
+//		JPanel helpPanel = WidgetFactory.makePanel();
+//		helpPanel.add(WidgetFactory.makeLabel("Language format: xx-XX (i.e 'en-US')", false, null));
+//		this.add(helpPanel);
 		
-		this.setLayout(new BorderLayout());
-		this.add(tPanel, BorderLayout.CENTER);
+		this.add(tPanel);
 
 
 	}
