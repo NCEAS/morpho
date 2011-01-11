@@ -215,9 +215,9 @@ public class HttpMessage
 	  } else {
 		  Log.debug(15, "Name: " + name + " => " + data);
 	  }
-    ((DataOutputStream)out).writeBytes(URLEncoder.encode(name));
+    ((DataOutputStream)out).writeBytes(URLEncoder.encode(name, "UTF-8"));
     ((DataOutputStream)out).writeBytes("=");
-    ((DataOutputStream)out).writeBytes(URLEncoder.encode(data));
+    ((DataOutputStream)out).writeBytes(URLEncoder.encode(data, "UTF-8"));
     out.flush();
   }
 
