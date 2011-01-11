@@ -1,5 +1,6 @@
 package edu.ucsb.nceas.morpho.util.i18n;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.Language;
@@ -48,7 +50,7 @@ public class TranslationWidget extends AbstractUIPage {
 							instance,
 							UIController.getInstance().getCurrentActiveWindow(),
 							UISettings.POPUPDIALOG_WIDTH,
-                            UISettings.POPUPDIALOG_HEIGHT);
+                            UISettings.POPUPDIALOG_HEIGHT/2);
 			}
 		});
 		return launcher;
@@ -64,10 +66,16 @@ public class TranslationWidget extends AbstractUIPage {
 			WidgetFactory.makeList(
 				columnNames, 
 				new Object[] {new JTextField(), new JTextField()}, 
-				3, true, false, false, true, true, true);
+				5, true, false, false, true, true, true);
 		
-		this.add(WidgetFactory.makeLabel("Translations", false));
-		this.add(translations);
+		JPanel tPanel = WidgetFactory.makePanel();
+		
+		tPanel.add(WidgetFactory.makeLabel("Translations", false));
+		tPanel.add(translations);
+		
+		this.setLayout(new BorderLayout());
+		this.add(tPanel, BorderLayout.CENTER);
+
 
 	}
 	
