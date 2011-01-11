@@ -489,8 +489,8 @@ public class Morpho
             Log.debug(20, "Sending data to: " + metacatURL);
             URL url = new URL(metacatURL);
             HttpMessage msg = new HttpMessage(url);
-            returnStream = msg.sendPostMessage(prop);
-            sessionCookie = msg.getCookie();
+            returnStream = msg.sendPostData(prop);
+            sessionCookie = HttpMessage.getCookie();
            connectionBusy = false;
            return returnStream;
         } catch (Exception e) {
@@ -498,8 +498,8 @@ public class Morpho
                 Log.debug(20, "Sending data (again) to : " + metacatURL);
                 URL url = new URL(metacatURL);
                 HttpMessage msg = new HttpMessage(url);
-                returnStream = msg.sendPostMessage(prop);
-                sessionCookie = msg.getCookie();
+                returnStream = msg.sendPostData(prop);
+                sessionCookie = HttpMessage.getCookie();
                 connectionBusy = false;
                 return returnStream;
             } catch (Exception e2) {
@@ -508,8 +508,8 @@ public class Morpho
                         metacatURL);
                     URL url = new URL(metacatURL);
                     HttpMessage msg = new HttpMessage(url);
-                    returnStream = msg.sendPostMessage(prop);
-                    sessionCookie = msg.getCookie();
+                    returnStream = msg.sendPostData(prop);
+                    sessionCookie = HttpMessage.getCookie();
                     connectionBusy = false;
                     return returnStream;
                 } catch (Exception e3) {
