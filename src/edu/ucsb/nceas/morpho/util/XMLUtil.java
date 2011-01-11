@@ -101,7 +101,7 @@ public class XMLUtil
                       // otherwise skip
                     }
                     else {
-                    	boolean escape = true;
+                    	boolean escape = false;
                     	if (!escape) {
 	                    	// do not do escape for true UTF-8 encoding
 	                    	str.append(ch);
