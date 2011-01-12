@@ -221,25 +221,24 @@ implements Command, DataPackageWizardListener {
     		titleMap.put(key, map.get(key));
     		toRemove.add(key);
     	}
+    	// abstract
+    	if (key.startsWith("/abstract")) {
+    		abstractMap.put(key, map.get(key));
+    		toRemove.add(key);
+    	}
     }
     for (String key: toRemove) {
     	map.remove(key);
     }
     
-    if(!map.isEmpty()) {
-       String abstractKey = "/abstract/para[1]";
-       String abstractValue = (String) map.get(abstractKey);
 
-       if (abstractValue == null || abstractValue.equals("")){
-           // make sure the abstract is not present in the map
-           abstractMap.remove(abstractKey);
+       if (abstractMap.isEmpty()){
+           // make sure the abstract is not present
            adp.deleteSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, 0);
 
        } else {
-           abstractMap.put(abstractKey, map.get(abstractKey));
            insertAbstract = true;
        }
-    }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
     Document doc = impl.createDocument("", "title", null);
@@ -292,8 +291,7 @@ implements Command, DataPackageWizardListener {
       adp.deleteSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, 0);
 
       // add to the datapackage
-      check = adp.insertSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, abstractRoot,
-          0);
+      check = adp.insertSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, abstractRoot, 0);
 
       if (check != null) {
         Log.debug(45, "added new abstract details to package...");

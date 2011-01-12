@@ -64,6 +64,8 @@ public class General extends AbstractUIPage{
   private final String TITLE_REL_XPATH = "/title";
   private final String TITLE_TRANSLATION_REL_XPATH = TITLE_REL_XPATH + "/value";
   private final String ABSTRACT_REL_XPATH = "/abstract/para[1]";
+  private final String ABSTRACT_TRANSLATION_REL_XPATH = ABSTRACT_REL_XPATH + "/value";
+
   private final String[] genericPathNameList = {"title", "abstract"};
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -71,6 +73,7 @@ public class General extends AbstractUIPage{
   private JTextField  titleField;
   private TranslationWidget titleTranslationWidget;
   private JTextArea   absField;
+  private TranslationWidget abstractTranslationWidget;
   private JLabel      titleLabel;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -148,6 +151,9 @@ public class General extends AbstractUIPage{
     absField = WidgetFactory.makeTextArea("", 15, true);
     JScrollPane jscrl = new JScrollPane(absField);
     abstractPanel.add(jscrl);
+    
+    abstractTranslationWidget = new TranslationWidget();
+    abstractPanel.add(abstractTranslationWidget.getButton());
 
     abstractPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(abstractPanel);
@@ -215,15 +221,17 @@ public class General extends AbstractUIPage{
 
     returnMap.clear();
 
+    // title
     returnMap.put("/eml:eml/dataset/title[1]", titleField.getText().trim());
-    // translations
     returnMap.putAll(titleTranslationWidget.getPageData("/eml:eml/dataset/title[1]"));
 
-//    if ( !(absField.getText().trim().equals("")) ) {
+    // abstract
+    String abstractValue = absField.getText().trim();
+    if (abstractValue != null && abstractValue.length() > 0) {
+    	returnMap.put("/eml:eml/dataset/abstract/para[1]", abstractValue);
+    }
+    returnMap.putAll(abstractTranslationWidget.getPageData("/eml:eml/dataset/abstract/para[1]"));
 
-        returnMap.put("/eml:eml/dataset/abstract/para[1]",
-                      absField.getText().trim());
-//    }
     return returnMap;
   }
 
@@ -242,17 +250,17 @@ public class General extends AbstractUIPage{
 
     returnMap.clear();
 
-    returnMap.put(rootXPath + "/title[1]", titleField.getText().trim());
-    
-    // translations
+    // title
+    returnMap.put(rootXPath + "/title[1]", titleField.getText().trim());    
     returnMap.putAll(titleTranslationWidget.getPageData(rootXPath + "/title[1]"));
-
-    // Removing this logic fixes bug 2223
-//    if ( !(absField.getText().trim().equals("")) ) {
-
-      returnMap.put(rootXPath + "/abstract/para[1]",
-          absField.getText().trim());
-//    }
+    
+    // abstract
+    String abstractValue = absField.getText().trim();
+    if (abstractValue != null && abstractValue.length() > 0) {
+    	returnMap.put(rootXPath + "/abstract/para[1]", absField.getText().trim());
+    }
+    returnMap.putAll(abstractTranslationWidget.getPageData(rootXPath + "/abstract/para[1]"));
+    
     return returnMap;
 
   }
@@ -331,6 +339,7 @@ public class General extends AbstractUIPage{
     String nextVal = null;
     
     OrderedMap titleTranslations = new OrderedMap();
+    OrderedMap abstractTranslations = new OrderedMap();
 
     while (keyIt.hasNext()) {
 
@@ -355,6 +364,10 @@ public class General extends AbstractUIPage{
         titleField.setText(nextVal);
         toDeleteList.add(nextXPathObj);
       }
+      else if (nextXPath.startsWith(ABSTRACT_TRANSLATION_REL_XPATH)) {
+    	  abstractTranslations.put(nextXPathObj, nextValObj);
+    	  toDeleteList.add(nextXPathObj);
+      }
       else if (nextXPath.startsWith(ABSTRACT_REL_XPATH)) {
         absField.setText(nextVal);
         toDeleteList.add(nextXPathObj);
@@ -365,16 +378,23 @@ public class General extends AbstractUIPage{
     boolean canHandleTitleTranlations = titleTranslationWidget.setPageData(titleTranslations, TITLE_REL_XPATH);
     if (!canHandleTitleTranlations) {
         Log.debug(20, "cannot handle title translations: " + titleTranslations);
-      }
+	}
+    // set the abstract translations
+    boolean canHandleAbstractTranlations = abstractTranslationWidget.setPageData(abstractTranslations, ABSTRACT_REL_XPATH);
+    if (!canHandleAbstractTranlations) {
+        Log.debug(20, "cannot handle abstract translations: " + abstractTranslations);
+	}
     //if anything left in map, then it included stuff we can't handle...
     Iterator dlIt = toDeleteList.iterator();
     while (dlIt.hasNext()) {
       map.remove(dlIt.next());
     }
-    boolean returnVal = map.isEmpty();
-    if (!returnVal) {
+    boolean canHandleAll = map.isEmpty();
+    // check that all data can be handled
+    canHandleAll = canHandleAll && canHandleTitleTranlations && canHandleAbstractTranlations;
+    if (!canHandleAll) {
       Log.debug(20, "General.setPageData returning FALSE! Map still contains:" + map);
     }
-    return returnVal;
+    return canHandleAll;
   }
 }
