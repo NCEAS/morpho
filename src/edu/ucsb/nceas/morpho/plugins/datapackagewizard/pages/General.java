@@ -109,7 +109,7 @@ public class General extends AbstractUIPage{
       , 3);
     vbox.add(titleDesc);
 
-    JPanel titlePanel = WidgetFactory.makePanel(1);
+    JPanel titlePanel = WidgetFactory.makePanel();
 
     titleLabel = WidgetFactory.makeLabel(/*" Title:"*/ Language.getInstance().getMessage("Title")+":",
     									true);
