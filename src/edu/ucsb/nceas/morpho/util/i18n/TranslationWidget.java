@@ -18,6 +18,7 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -35,6 +36,9 @@ public class TranslationWidget extends AbstractUIPage {
 	private String pageNumber;
 	private String subtitle;
 	private String title = Language.getInstance().getMessage("Translations");
+
+	// saves the initial data before editing
+	private OrderedMap originalData;
 
 	public JButton getButton() {
 		
@@ -88,7 +92,11 @@ public class TranslationWidget extends AbstractUIPage {
 		List<String> rowList = new ArrayList<String>();
 		rowList.add(value);
 		rowList.add(lang);
-		translations.addRow(rowList);
+		try {
+			translations.addRow(rowList);
+		} catch (Exception e) {
+			Log.debug(30, "Ignoring table model exception when adding a row: " + e.getMessage());
+		}
 	}
 	
 	public String getValueAt(int i) {
@@ -152,7 +160,8 @@ public class TranslationWidget extends AbstractUIPage {
 
 	@Override
 	public boolean onAdvanceAction() {
-		// TODO Auto-generated method stub
+		// get the current state of the translations
+		this.originalData = this.getPageData();
 		return true;
 	}
 
@@ -165,11 +174,28 @@ public class TranslationWidget extends AbstractUIPage {
 	@Override
 	public void onRewindAction() {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	@Override
+	public void cancelAction() {
+		// return the page to the original state
+		try {
+			this.setPageData(originalData, rootXPath);
+		} catch (Exception e) {
+			Log.debug(5, e.getMessage());
+			e.printStackTrace();
+		}	
 	}
 
 	@Override
 	public boolean setPageData(OrderedMap data, String rootXPath) {
+		// save the original data
+		this.originalData = new OrderedMap();
+		this.originalData.putAll(data);
+		
+		// clear the list
+		this.translations.removeAllRows();
+		
 		this.rootXPath = rootXPath;
 		List<String> toDeleteList = new ArrayList<String>();
 		Iterator<String> keys = data.keySet().iterator();

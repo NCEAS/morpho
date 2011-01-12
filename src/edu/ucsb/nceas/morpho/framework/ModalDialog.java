@@ -217,6 +217,9 @@ public class ModalDialog extends JDialog {
   private void cancelAction() {
 
     USER_RESPONSE = CANCEL_OPTION;
+    if (wizardPage != null) {
+    	wizardPage.cancelAction();
+    }
     this.setVisible(false);
     if (this.parent != null) {
       this.parent.toFront();

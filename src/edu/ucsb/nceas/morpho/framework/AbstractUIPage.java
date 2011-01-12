@@ -126,6 +126,14 @@ public abstract class AbstractUIPage extends JPanel {
 
 
   /**
+   * Pages should override this method when action should be taken
+   * when a modal dialog is canceled
+   */
+  public void cancelAction() {
+	  
+  }
+  
+  /**
    *  gets the Map object that contains all the key/value paired
    *  settings for this particular UI page
    *
