@@ -108,9 +108,16 @@ package documentation.
 
 Type the title and abstract directly into the fields, or create them
 elsewhere and paste them into the appropriate spots. Use the keyboard
-shortcuts ``control+C'' for copy and ``control+V'' for paste. We
-strongly recommend that documents use only ASCII characters. Special
-characters can create problems when cut and pasted into Morpho.
+shortcuts ``control+C'' for copy and ``control+V'' for paste. 
+Character encoding differences can create problems when cutting and pasting 
+special characters from other applications into Morpho. Morpho uses UTF-8 
+character encoding.
+
+EML 2.1.1 can accommodate translations for critical metadata. Translations can
+be added and edited using the translation editor window 
+(\autoref{fig:wizard-dp-title-translations}) accessed by clicking the Translations button. 
+The language for the translation should be specified using a valid ISO language 
+code and optional ISO country code separated by a dash (i.e. 'en-US').
 
 \begin{figure}
   \centering
@@ -118,6 +125,13 @@ characters can create problems when cut and pasted into Morpho.
   \caption{Step 2 of the Data Package Wizard. Add a title (required) and
     abstract.}
   \label{fig:wizard-dp-title}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/wizard-dp-title-translations.jpg}
+  \caption{Data Package Wizard Translations. Add title translations.}
+  \label{fig:wizard-dp-title-translations}
 \end{figure}
 
 \subsubsection{Keywords} \label{sec:wizard-dp-keywords}
