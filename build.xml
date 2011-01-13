@@ -42,7 +42,7 @@
 	<property name="eml-211-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-211-schema-tag}"/>
    	
    	<!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
-	  <property name="eml-style-tag" value="tags/RELEASE_EML_2_1_1_RC_2" />
+	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_0_0_RC4" />
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
@@ -62,6 +62,7 @@
       <property name="jwsdir"
                 value="/var/www/org.ecoinformatics.knb/software/dist/morpho" />
       <property name="testdir" value="${morpho.basedir}/tests" />
+		<property name="styledir" value="${libdir}/style" />
 
       <property name="build.dir" value="${morpho.basedir}/build"/>
       <property name="build.src" value="${build.dir}/src"/>
@@ -193,6 +194,9 @@
           <not><available file="${xsldir}/eml201to211.xsl" type="file"/></not>
           <not><available file="${xsldir}/eml210to211.xsl" type="file"/></not>
 		  <not><available file="${xsldir}/eml2tonbii.xsl" type="file"/></not>
+  		<!-- make sure the eml2 stylesheets are in place from EML project -->  
+        <not><available file="${styledir}/eml2/eml.xsl" type="file"/></not>
+        	
         </or>
       </condition>
    	
@@ -311,24 +315,35 @@
     </xslt>
    </target>
 	
-   <target name="getetransformstylesheet" depends="prepare" if="transformstylesheet.needed">
+   <target name="getstylesheets" depends="prepare" if="transformstylesheet.needed">
      <!-- checkout eml/eml201to210.xsl and eml2tonbii.xsl file -->
      <echo>Check out eml conversion xsl files and NBII style sheet from SVN</echo>
 	 <mkdir dir="${build.xsl}/eml_${eml-style-tag}" />
 	 <svn>
             <export srcUrl="${eml-style-svn-url}/style"
-                destPath="${build.xsl}/eml_${eml-style-tag}/style" />
+                destPath="${build.xsl}/eml_${eml-style-tag}/style" force="true" />
         </svn>
 	   <mkdir dir="${build.xsl}/eml_${eml-style-tag}/lib" />
 	   <svn>
             <export srcUrl="${eml-style-svn-url}/lib/eml2tonbii"
-                destPath="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii" />
+                destPath="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii" force="true" />
         </svn>
 	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to210.xsl" todir="${xsldir}" />
 	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to211.xsl" todir="${xsldir}" />
 	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml210to211.xsl" todir="${xsldir}" />
 	<copy file="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii/eml2tonbii.xsl" todir="${xsldir}" />
+   	
+	<antcall target="copyemlstylesheet" />
+
    </target>
+	
+	<target name="copyemlstylesheet">
+		<!-- copy eml xslt files, except the settings file -->
+		<echo>Copy eml xsl files from SVN checkout to the lib dir</echo>
+		<copy todir="${styledir}/eml2">
+			<fileset dir="${build.xsl}/eml_${eml-style-tag}/style/eml" excludes="eml-settings.xsl"/>
+		</copy>
+	</target>	
 
    <target name="geteml210" depends="prepare" if="eml210schema.needed">
      <!-- checkout eml moduel -->
@@ -469,7 +484,7 @@
    <!--
    <target name="compile" depends="clean,itis,prepare">
    -->
-   <target name="compile" depends="prepare, utilities, geteml210, geteml211, getetransformstylesheet">
+   <target name="compile" depends="prepare, utilities, geteml210, geteml211, getstylesheets">
 
       <jar jarfile="${morpho.basedir}/lib/httpclient.jar">
         <fileset dir="${morpho.basedir}/lib" includes="HTTPClient/**/*.class"/>
@@ -525,7 +540,7 @@
            excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz,axis/**,launch4j/**">
       		<metainf file="${build.lib}/mime.types"/>
       	</jar>
-	   <copyfile src="${build.dir}/${name}-config.jar" dest="${libdir}/${name}-config.jar"/>
+	   <copy file="${build.dir}/${name}-config.jar" tofile="${libdir}/${name}-config.jar"/>
    </target>
 
 	<!-- copy necessary resources to build lib -->
@@ -653,7 +668,7 @@
        <delete dir="${build.dir}" />
        <delete dir="${morpho.dir}" />
        <delete dir="${dist.dir}"/>
-		<delete file="${libdir}/${name}-config.jar" />
+   		<delete file="${libdir}/${name}-config.jar" />
    </target>
 	
    <!--Except clean, it also delete utilies.jar, eml-210 schema and eml201to210.xsl file.
@@ -661,13 +676,13 @@
    <target name="fullclean" depends="clean">
        <delete dir="${schemadir}/eml-2.1.0" />
     	<delete dir="${schemadir}/eml-2.1.1" />
-
        <delete file="${utilities}" />
     	<delete file="${httpclient}" />
 		<delete file="${xsldir}/eml201to210.xsl" />
 		<delete file="${xsldir}/eml201to211.xsl" />
 		<delete file="${xsldir}/eml210to211.xsl" />
 		<delete file="${xsldir}/eml2tonbii.xsl" />
+   		<delete dir="${styledir}/eml2" excludes="eml-settings.xsl" />
    </target>
 
    <target name="docs" depends="init">
