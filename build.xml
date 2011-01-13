@@ -653,6 +653,7 @@
        <delete dir="${build.dir}" />
        <delete dir="${morpho.dir}" />
        <delete dir="${dist.dir}"/>
+		<delete file="${libdir}/${name}-config.jar" />
    </target>
 	
    <!--Except clean, it also delete utilies.jar, eml-210 schema and eml201to210.xsl file.
