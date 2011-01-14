@@ -24,7 +24,7 @@
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
-      <property name="utilities-tag" value="tags/MORPHO_1_8_1" />
+      <property name="utilities-tag" value="tags/UTILITIES_1_1_0_RC1" />
 	  <property name="svn-utilitiesUrl"
             value="https://code.ecoinformatics.org/code/utilities/${utilities-tag}" />
       <property name="eml-module" value="eml" />
