@@ -42,7 +42,7 @@
 	<property name="eml-211-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-211-schema-tag}"/>
    	
    	<!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
-	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_0_0_RC5" />
+	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_0_0_RC7" />
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
@@ -799,7 +799,7 @@
 -->          
   <target name="macjarbundler" depends="install">
       <taskdef name="jarbundler" 
-         classpath="${morpho.basedir}/lib/jarbundler-1.9.jar"
+         classpath="${morpho.basedir}/lib/jarbundler-2.2.0.jar"
          classname="net.sourceforge.jarbundler.JarBundler" 
          onerror="ignore" />
   	<echo message="Using morpho args: ${morpho.args}"></echo>
