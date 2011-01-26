@@ -785,7 +785,7 @@ a img {
  td {
     color:                      #003366;
     font-style:                 normal;
-    font-size:                  95%;
+    /*font-size:                  95%;*/
     font-weight:                normal;
     text-decoration:            none;    
     border:                     0px;
