@@ -39,6 +39,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.morpho.util.i18n.TranslationWidget;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -114,14 +115,20 @@ public class PartyPage extends AbstractUIPage {
   private JTextField salutationField;
 
   private JTextField firstNameField;
+  
+  private TranslationWidget firstNameTranslation;
 
   private JLabel lastNameLabel;
 
   private JTextField lastNameField;
+  
+  private TranslationWidget lastNameTranslation;
 
   private JLabel organizationLabel;
 
   private JTextField organizationField;
+  
+  private TranslationWidget organizationTranslation;
 
   private JLabel positionNameLabel;
 
@@ -386,6 +393,8 @@ public class PartyPage extends AbstractUIPage {
     firstNamePanel.setBorder(new javax.swing.border.EmptyBorder(0,
         12 * WizardSettings.PADDING,
         0, 8 * WizardSettings.PADDING));
+    firstNameTranslation = new TranslationWidget();
+    firstNamePanel.add(firstNameTranslation.getButton());
     middlePanel.add(firstNamePanel);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -438,6 +447,8 @@ public class PartyPage extends AbstractUIPage {
     lastNamePanel.add(lastNameField);
     lastNamePanel.setBorder(new javax.swing.border.EmptyBorder(0, 0,
         0, 8 * WizardSettings.PADDING));
+    lastNameTranslation = new TranslationWidget();
+    lastNamePanel.add(lastNameTranslation.getButton());
     reqInfoPanel.add(lastNamePanel);
     reqInfoPanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -450,6 +461,8 @@ public class PartyPage extends AbstractUIPage {
     organizationPanel.add(organizationField);
     organizationPanel.setBorder(new javax.swing.border.EmptyBorder(0, 0,
         0, 8 * WizardSettings.PADDING));
+    organizationTranslation = new TranslationWidget();
+    organizationPanel.add(organizationTranslation.getButton());
     reqInfoPanel.add(organizationPanel);
     reqInfoPanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -739,8 +752,11 @@ public class PartyPage extends AbstractUIPage {
 
     salutationField.setEditable(editable);
     firstNameField.setEditable(editable);
+    firstNameTranslation.getButton().setEnabled(editable);
     lastNameField.setEditable(editable);
+    lastNameTranslation.getButton().setEnabled(editable);
     organizationField.setEditable(editable);
+    organizationTranslation.getButton().setEnabled(editable);
     positionNameField.setEditable(editable);
     address1Field.setEditable(editable);
     address2Field.setEditable(editable);
@@ -1239,17 +1255,20 @@ public class PartyPage extends AbstractUIPage {
       if (notNullAndNotEmpty(nextText)) {
         returnMap.put(rootXPath + "/individualName/givenName[1]", nextText);
       }
-
+      returnMap.putAll(firstNameTranslation.getPageData(rootXPath + "/individualName/givenName[1]"));
+      
       nextText = lastNameField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
         returnMap.put(rootXPath + "/individualName/surName[1]", nextText);
       }
+      returnMap.putAll(lastNameTranslation.getPageData(rootXPath + "/individualName/surName[1]"));
 
       nextText = organizationField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
         returnMap.put(rootXPath + "/organizationName[1]", nextText);
       }
-
+      returnMap.putAll(organizationTranslation.getPageData(rootXPath + "/organizationName[1]"));
+      
       nextText = positionNameField.getText().trim();
       if (notNullAndNotEmpty(nextText)) {
         returnMap.put(rootXPath + "/positionName[1]", nextText);
@@ -1406,29 +1425,82 @@ public class PartyPage extends AbstractUIPage {
       referenceIdString = this.getRefID();
     }
 
-    String nextVal = (String)map.get(xpathRootNoPredicates
-                                     + "/individualName/salutation[1]");
+    // for translations
+    OrderedMap lastNameTranslations = new OrderedMap();
+    OrderedMap firstNameTranslations = new OrderedMap();
+    OrderedMap organizationNameTranslations = new OrderedMap();
+    Iterator<String> translationIter = null;
+    List<String> translationKeysToRemove = new ArrayList<String>();
+    
+    String xpath = "/individualName/salutation[1]"; 
+    String nextVal = (String)map.get(xpathRootNoPredicates + xpath);
     if (nextVal != null) {
       salutationField.setText(nextVal);
-      map.remove(xpathRootNoPredicates + "/individualName/salutation[1]");
+      map.remove(xpathRootNoPredicates + xpath);
     }
-    nextVal = (String)map.get(xpathRootNoPredicates
-                              + "/individualName/givenName[1]");
+    // givenName
+    xpath = "/individualName/givenName[1]";
+    nextVal = (String)map.get(xpathRootNoPredicates + xpath);
     if (nextVal != null) {
       firstNameField.setText(nextVal);
-      map.remove(xpathRootNoPredicates + "/individualName/givenName[1]");
+      map.remove(xpathRootNoPredicates + xpath);
     }
-    nextVal = (String)map.get(xpathRootNoPredicates
-                              + "/individualName/surName[1]");
+    // no predicate
+    xpath = "/individualName/givenName";
+    translationIter =  map.keySet().iterator();
+    while (translationIter.hasNext()) {
+    	String key = translationIter.next();
+    	if (key.contains(xpathRootNoPredicates + xpath + "/value[")) {
+	    	nextVal = (String) map.get(key);
+	    	if (nextVal != null) {
+	    		firstNameTranslations.put(key, nextVal);
+	    		translationKeysToRemove.add(key);
+	    	}
+    	}
+    }
+    
+    // surName
+	xpath = "/individualName/surName[1]";
+    nextVal = (String)map.get(xpathRootNoPredicates + xpath);
     if (nextVal != null) {
       lastNameField.setText(nextVal);
-      map.remove(xpathRootNoPredicates + "/individualName/surName[1]");
+      map.remove(xpathRootNoPredicates + xpath);
     }
-    nextVal = (String)map.get(xpathRootNoPredicates + "/organizationName[1]");
+    // no predicate
+	xpath = "/individualName/surName";
+	translationIter =  map.keySet().iterator();
+    while (translationIter.hasNext()) {
+    	String key = translationIter.next();
+    	if (key.contains(xpathRootNoPredicates + xpath + "/value[")) {
+	    	nextVal = (String) map.get(key);
+	    	if (nextVal != null) {
+	    		lastNameTranslations.put(key, nextVal);
+	    		translationKeysToRemove.add(key);
+	    	}
+    	}
+    }
+    
+	// organizationName
+	xpath = "/organizationName[1]";
+    nextVal = (String)map.get(xpathRootNoPredicates + xpath);
     if (nextVal != null) {
       organizationField.setText(nextVal);
-      map.remove(xpathRootNoPredicates + "/organizationName[1]");
+      map.remove(xpathRootNoPredicates + xpath);
     }
+    // no predicate
+	xpath = "/organizationName";
+	translationIter =  map.keySet().iterator();
+    while (translationIter.hasNext()) {
+    	String key = translationIter.next();
+    	if (key.contains(xpathRootNoPredicates + xpath + "/value[")) {
+	    	nextVal = (String) map.get(key);
+	    	if (nextVal != null) {
+	    		organizationNameTranslations.put(key, nextVal);
+	    		translationKeysToRemove.add(key);
+	    	}
+    	}
+    }
+    
     nextVal = (String)map.get(xpathRootNoPredicates + "/positionName[1]");
     if (nextVal != null) {
       positionNameField.setText(nextVal);
@@ -1520,15 +1592,25 @@ public class PartyPage extends AbstractUIPage {
 	}
 	map.removeAll(keysToRemove);
   
+	// translations
+	for (String key: translationKeysToRemove) {
+		map.remove(key);
+	}
+	boolean canHandleFirstNameTranslation = firstNameTranslation.setPageData(firstNameTranslations, xpathRootNoPredicates);
+	boolean canHandleLastNameTranslation = lastNameTranslation.setPageData(lastNameTranslations, xpathRootNoPredicates);
+	boolean canHandleOrganizationNameTranslation = organizationTranslation.setPageData(organizationNameTranslations, xpathRootNoPredicates);
+
     //if anything left in map, then it included stuff we can't handle...
     boolean canHandleAllData = map.isEmpty();
-
-    if (!canHandleAllData) {
-
-      Log.debug(20,
-                "PartyPage.setPageData returning FALSE! Map still contains:"
-                + map);
-    }
+    canHandleAllData = 
+    	canHandleAllData 
+    	&& canHandleFirstNameTranslation 
+    	&& canHandleLastNameTranslation 
+    	&& canHandleOrganizationNameTranslation;
+    
+	if (!canHandleAllData) {
+		Log.debug(20, "PartyPage.setPageData returning FALSE! Map still contains: " + map);
+	}
 
     if (isReference()) {
 
@@ -1536,7 +1618,6 @@ public class PartyPage extends AbstractUIPage {
       this.setEditable(false);
 
     } else {
-
       this.setEditable(true);
     }
 

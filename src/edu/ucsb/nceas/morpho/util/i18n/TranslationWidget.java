@@ -1,6 +1,5 @@
 package edu.ucsb.nceas.morpho.util.i18n;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,6 +25,8 @@ public class TranslationWidget extends AbstractUIPage {
 	
 	private CustomList translations;
 	
+	private JButton launcher;
+	
 	private String[] columnNames = {
 			Language.getInstance().getMessage("Value"),
 			Language.getInstance().getMessage("Language")};
@@ -43,21 +44,22 @@ public class TranslationWidget extends AbstractUIPage {
 	public JButton getButton() {
 		
 		final TranslationWidget instance = this;
-		
-		JButton launcher = 
-			new JButton(
-				new AbstractAction(
-						Language.getInstance().getMessage("Translations")) {
-			public void actionPerformed(ActionEvent e) {
-				//show the widget in a dialog
-				ModalDialog md = 
-					new ModalDialog(
-							instance,
-							UIController.getInstance().getCurrentActiveWindow(),
-							UISettings.POPUPDIALOG_WIDTH,
-                            UISettings.POPUPDIALOG_HEIGHT/2);
-			}
-		});
+		if (launcher == null) {
+			launcher = 
+				new JButton(
+					new AbstractAction(
+							Language.getInstance().getMessage("Translations")) {
+				public void actionPerformed(ActionEvent e) {
+					//show the widget in a dialog
+					ModalDialog md = 
+						new ModalDialog(
+								instance,
+								UIController.getInstance().getCurrentActiveWindow(),
+								UISettings.POPUPDIALOG_WIDTH,
+	                            UISettings.POPUPDIALOG_HEIGHT/2);
+				}
+			});
+		}
 		return launcher;
 	}
 	
