@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -216,7 +217,7 @@ public class DeleteCommand implements Command
   
   private void showWarningPanel(String message)
   {
-    JOptionPane.showMessageDialog(deleteDialog, message, "Warning!",
+    JOptionPane.showMessageDialog(deleteDialog, message, Language.getInstance().getMessage("Warning"),
         JOptionPane.WARNING_MESSAGE);
   }
 

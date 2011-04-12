@@ -40,6 +40,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -185,7 +186,7 @@ public class TreeEditorCorrectionController
 		          try 
 		          {
 		        	 
-		        	 JOptionPane.showMessageDialog(oldFrame, CONFORMATION, "Warning!",
+		        	 JOptionPane.showMessageDialog(oldFrame, CONFORMATION, Language.getInstance().getMessage("Warning"),
 		                      JOptionPane.WARNING_MESSAGE);
 		            ServiceController services = ServiceController.getInstance();
 		            ServiceProvider provider =

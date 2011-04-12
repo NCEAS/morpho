@@ -3122,13 +3122,13 @@ public class DocFrame extends javax.swing.JFrame
        if(returnErrorMessage)
        {
 	      Log.debug(20,"Validation problem: "+valresult);
-	      String msg = "The saved document is not valid for some reason.\n"+
-	                   "You can save it locally and fix the problem later,\n"+
-	                   "but you will be unable to submit it to the network storage system.\n"+
-	                   "\nDo you want to Continue Exiting the Editor?";
+	      String msg = 
+	    	  Language.getInstance().getMessage("ValidationProblem.msg1") + "\n" +
+	    	  Language.getInstance().getMessage("ValidationProblem.msg2") + "\n\n" +
+	    	  Language.getInstance().getMessage("ValidationProblem.msg3") + "\n";
 	      int opt1 = JOptionPane.showConfirmDialog(currentDocFrameInstance,
 	         msg,
-	         "Validation Problem!",
+	         Language.getInstance().getMessage("ValidationProblem"),
 	         JOptionPane.YES_NO_OPTION);
 	      if (opt1== JOptionPane.YES_OPTION) {
 	        if (controller!=null) {

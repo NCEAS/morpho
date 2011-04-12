@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
@@ -152,7 +153,7 @@ public class ConvertDataCommand implements Command, DataPackageWizardListener
 					WizardSettings.WIZARD_HEIGHT);
 			dpWiz.setCurrentPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID);
 			dpWiz.setShowPageCountdown(false);
-			dpWiz.setTitle("Convert other entity to data");
+			dpWiz.setTitle(Language.getInstance().getMessage("ConvertOtherEntityToData"));
 			dpWiz.setVisible(true);
 
 		}

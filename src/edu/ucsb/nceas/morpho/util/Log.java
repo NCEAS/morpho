@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.util;
 
 import javax.swing.JOptionPane;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 
@@ -117,7 +118,7 @@ public class Log
           JOptionPane.showMessageDialog(frame, message, "Error!",
                                         JOptionPane.ERROR_MESSAGE);
         } else if (severity < 10) {
-          JOptionPane.showMessageDialog(frame, message, "Warning!",
+          JOptionPane.showMessageDialog(frame, message, Language.getInstance().getMessage("Warning"),
                                         JOptionPane.WARNING_MESSAGE);
         }
 

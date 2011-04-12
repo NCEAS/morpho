@@ -25,6 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -180,7 +181,7 @@ public class LocalToNetworkCommand implements Command
             	  // create a local copy for the new document.
             	  //dataPackage.download(metacatDocid);
             	  JOptionPane.showMessageDialog(morphoFrame, ""+selectDocId+ " exists in metacat and morpho assigns new docid "+
-            			  metacatDocid+ " for it.", "Information",
+            			  metacatDocid+ " for it.", Language.getInstance().getMessage("Information"),
                           JOptionPane.INFORMATION_MESSAGE);
               }
               

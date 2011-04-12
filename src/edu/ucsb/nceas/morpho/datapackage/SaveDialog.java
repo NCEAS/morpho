@@ -289,13 +289,6 @@ public class SaveDialog extends JDialog {
 			try {
 				if (upgradeEml.isSelected()) {
 					// change the XML
-					// ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.
-					// LATEST_EML_VER);
-					/*
-					 * String newString = doTransform("./xsl/eml201to210.xsl",
-					 * XMLUtil.getDOMTreeAsString(
-					 * adp.getMetadataNode().getOwnerDocument())) ;
-					 */
 					String newString = ((EML200DataPackage) adp)
 							.transformToLastestEML();
 					if (newString != null) {
@@ -317,8 +310,8 @@ public class SaveDialog extends JDialog {
 						JOptionPane
 								.showMessageDialog(
 										morphoFrame,
-										"Morpho couldn't transform it to the newest version of EML.",
-										"Information",
+										Language.getInstance().getMessage("SaveDialog.couldNotUpgrade"),
+										Language.getInstance().getMessage("Information"),
 										JOptionPane.INFORMATION_MESSAGE);
 					}
 

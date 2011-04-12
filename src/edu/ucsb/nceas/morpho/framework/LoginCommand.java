@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.SwingUtilities;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 
 import edu.ucsb.nceas.morpho.util.Log;
@@ -84,7 +85,7 @@ public class LoginCommand implements Command
               Log.debug(12, "LoginCommand: Login successful");
               loginClient.setLoginSuccessful(true);
             } else {
-              Log.debug(12, "LoginCommand: Login failed");
+              Log.debug(12, "LoginCommand: " + Language.getInstance().getMessage("LoginFailed"));
               loginClient.setLoginSuccessful(false);
             }
           }

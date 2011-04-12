@@ -25,6 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -171,7 +172,7 @@ public class NetworkToLocalCommand implements Command
           if (localDocid != null && !localDocid.equals(selectDocId))
           {
         	  JOptionPane.showMessageDialog(morphoFrame, ""+selectDocId+ " exists in local system and morpho assigns new docid "+
-        			  localDocid+ " for it.", "Information",
+        			  localDocid+ " for it.", Language.getInstance().getMessage("Information"),
                       JOptionPane.INFORMATION_MESSAGE);
           }
           
