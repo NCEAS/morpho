@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
@@ -543,7 +544,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
         Log.debug(15, "deleteExistingAndAddPageDataToDOM(): "
                   + "ADP.insertSubtree() returned NULL");
         errorOccurred = true;
-        Log.debug(5, "** ERROR: Unable to add new details to package **\n");
+        Log.debug(5, "**" + Language.getInstance().getMessage("UnableToAddNewDetails") + "**\n");
       }
       index++;
     }

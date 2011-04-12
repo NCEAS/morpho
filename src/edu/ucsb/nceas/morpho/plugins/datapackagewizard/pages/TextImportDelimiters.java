@@ -45,6 +45,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -68,7 +69,7 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 	   private final String xPathRoot = "/eml:eml/dataset/dataTable/";
 	   private static final String EMPTYSTRING = "";
 	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS; 
-	   private String title = "Text Import";
+	   private String title = Language.getInstance().getMessage("TextImport");
 	   private String subTitle = null;
 	   private String pageNumber = null;
 	   private boolean ignoreConsequtiveDelimiters = false;
@@ -88,13 +89,13 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 	    */
 	   //private boolean parseOn = true;
 	  
-	   public static final String TAB = "tab";
-	   public static final String COMMA = "comma";
-	   public static final String SPACE = "space";
-	   public static final String SEMICOLON = "semicolon";
-	   public static final String OTHER = "other";
-	   public static final String COLON ="colon";
-	   private static final String TREATCONSECUTIVE = "Treat consecutive delimiters as one";
+	   public static final String TAB = Language.getInstance().getMessage("tab");
+	   public static final String COMMA = Language.getInstance().getMessage("comma");
+	   public static final String SPACE = Language.getInstance().getMessage("space");
+	   public static final String SEMICOLON = Language.getInstance().getMessage("semicolon");
+	   public static final String OTHER = Language.getInstance().getMessage("other");
+	   public static final String COLON = Language.getInstance().getMessage("colon");
+	   private static final String TREATCONSECUTIVE = Language.getInstance().getMessage("TreatConsecutiveDelimitersAsOne");
 	   
 	   /**
 	    * Construct
@@ -139,7 +140,7 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 		    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		    JPanel vbox = this;
 		    JLabel desc1 = WidgetFactory.makeHTMLLabel(
-		    	      "<p>If the columns indicated in the table are incorrect, try changing the assumed delimiter(s)</p>", 1);
+		    	      "<p>" + Language.getInstance().getMessage("TextImportDelimiters.desc1") + "</p>", 1);
 		    vbox.add(desc1);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    

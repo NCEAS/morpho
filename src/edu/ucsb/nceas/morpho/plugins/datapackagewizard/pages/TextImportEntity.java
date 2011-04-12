@@ -46,6 +46,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -69,7 +70,7 @@ public class TextImportEntity extends AbstractUIPage
 {
 	   public static final String xPathRoot = "/eml:eml/dataset/dataTable/";
 	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_ENTITY;
-	   private String title = "Text Import";
+	   private String title = Language.getInstance().getMessage("TextImport");
 	   private String subTitle = null;
 	   private String pageNumber = null;
 	   private WizardContainerFrame frame = null;
@@ -129,12 +130,12 @@ public class TextImportEntity extends AbstractUIPage
 		    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		    JPanel vbox = this;
 		    JLabel desc1 = WidgetFactory.makeHTMLLabel(
-		    	      "<p><b>This set of screens will create metadata based on the content of the specified data file</b></p>", 1);
+		    	      "<p><b>" + Language.getInstance().getMessage("TextImportEntity.desc1") + "</b></p>", 1);
 		    vbox.add(desc1);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
 		    JPanel namePanel = WidgetFactory.makePanel();	   
-		    nameLabel = WidgetFactory.makeLabel("Title:", true);
+		    nameLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("Title") + ":", true);
 		    namePanel.add(nameLabel);
 		    TableNameTextField = WidgetFactory.makeOneLineTextField();
 		    if(textFile != null)
@@ -148,7 +149,7 @@ public class TextImportEntity extends AbstractUIPage
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
 		    JPanel tableDescriptionPanel = WidgetFactory.makePanel();	   
-		    JLabel Step1_TableDescriptionLabel = WidgetFactory.makeLabel("Description:", false);
+		    JLabel Step1_TableDescriptionLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("Description") + ":", false);
 		    tableDescriptionPanel.add(Step1_TableDescriptionLabel);
 		    TableDescriptionTextField = WidgetFactory.makeOneLineTextField();
 		    tableDescriptionPanel.add(TableDescriptionTextField);
@@ -158,7 +159,7 @@ public class TextImportEntity extends AbstractUIPage
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
 		    JPanel StartingLinePanel=  WidgetFactory.makePanel(1);	
-		    JLabel StartingLineLabel = WidgetFactory.makeLabel("Start import at row: ", false, new Dimension(120,20));
+		    JLabel StartingLineLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("StartImportAtRow") + ": ", false, new Dimension(120,20));
 		    StartingLinePanel.add(StartingLineLabel);
 		    StartingLineTextField = WidgetFactory.makeOneLineShortTextField("1");
 		    TextFieldChangeAction textFieldAction = new TextFieldChangeAction();
@@ -168,8 +169,8 @@ public class TextImportEntity extends AbstractUIPage
 		    StartingLinePanel.add(StartingLineTextField);
 		    JLabel blank = WidgetFactory.makeLabel("      ",false);
 		    StartingLinePanel.add(blank);
-		    ColumnLabelsCheckBox = WidgetFactory.makeCheckBox("Column Labels are in starting row", false);
-		    ColumnLabelsCheckBox.setActionCommand("Column Labels are in starting row");
+		    ColumnLabelsCheckBox = WidgetFactory.makeCheckBox(Language.getInstance().getMessage("ColumnLabelsInStartingRow"), false);
+		    ColumnLabelsCheckBox.setActionCommand(Language.getInstance().getMessage("ColumnLabelsInStartingRow"));
 		    ColumnLabelsCheckBox.setSelected(false);
 		    CheckBoxListener checkBoxListener = new CheckBoxListener();
 		    ColumnLabelsCheckBox.addItemListener(checkBoxListener);

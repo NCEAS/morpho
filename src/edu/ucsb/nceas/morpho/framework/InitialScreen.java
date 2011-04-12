@@ -391,8 +391,8 @@ public class InitialScreen extends JPanel
                                                 loginHeaderLabel, passwordLabel, 
                                                 passwordField, loginButton);
                         } else {
-                            Log.debug(9, "Login failed.\n" + 
-                              "Please check the Caps Lock key and try again.");
+                            Log.debug(9, Language.getInstance().getMessage("LoginFailed") + "\n" + 
+                              Language.getInstance().getMessage("CheckCaps"));
                         }
                     }
                 }));

@@ -193,7 +193,7 @@ public class CorrectionWizardController
 		// first to run wizard page to fix the issue
 		if(!wizardPageLibrary.isEmpty())
 		{
-			JOptionPane.showMessageDialog(oldFrame, MESSAGEFORWIZARD, "Warning!",
+			JOptionPane.showMessageDialog(oldFrame, MESSAGEFORWIZARD, Language.getInstance().getMessage("Warning"),
                     JOptionPane.WARNING_MESSAGE);
 			//Scenario 1 and 2. They can be told at the wizardComplete method
 		    //this part will open a tree editor too if pathListForTreeEditor is not empty
@@ -212,7 +212,7 @@ public class CorrectionWizardController
 		}
 		else if( pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
 		{
-			JOptionPane.showMessageDialog(oldFrame, MESSAGEFORTREEEDITOR, "Warning!",
+			JOptionPane.showMessageDialog(oldFrame, MESSAGEFORTREEEDITOR, Language.getInstance().getMessage("Warning"),
                     JOptionPane.WARNING_MESSAGE);
 			//Scenario 3.
 			//there is no UIPage returned, we only run tree editor to fix the issue

@@ -47,6 +47,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumnModel;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -77,7 +78,7 @@ public class TextImportAttribute extends AbstractUIPage
 	                         "INTEGER (+/- counting nums & zero: -2, -1, 0, 1..)",
 	                         "REAL  (+/- fractions & non-fractions: -1/2, 3.14..)"};
 	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_FIRST_ATTRIBUTE;
-	   private String title = "Text Import";
+	   private String title = Language.getInstance().getMessage("TextImport");
 	   private String subTitle = null;
 	   private String pageNumber = null;
 	   private WizardContainerFrame frame = null;

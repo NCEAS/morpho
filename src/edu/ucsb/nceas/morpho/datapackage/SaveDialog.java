@@ -310,8 +310,8 @@ public class SaveDialog extends JDialog {
 						JOptionPane
 								.showMessageDialog(
 										morphoFrame,
-										"Morpho couldn't transform it to the newest version of EML.",
-										"Information",
+										Language.getInstance().getMessage("SaveDialog.couldNotUpgrade"),
+										Language.getInstance().getMessage("Information"),
 										JOptionPane.INFORMATION_MESSAGE);
 					}
 

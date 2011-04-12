@@ -936,7 +936,7 @@ public class WizardContainerFrame
           boolean success = currentPage.onAdvanceAction();
           if(!success)
           {
-            JOptionPane.showMessageDialog(frame, "Please fill out the required fields before click Save for Later button.", "Warning!",
+            JOptionPane.showMessageDialog(frame, Language.getInstance().getMessage("SaveForLater.warn1"), Language.getInstance().getMessage("Warning"),
                 JOptionPane.WARNING_MESSAGE);
             return;
           }
@@ -1432,7 +1432,7 @@ public class WizardContainerFrame
            services.getServiceProvider(DataPackageInterface.class);
      DataPackageInterface dataPackage = (DataPackageInterface)provider;
      dataPackage.saveIncompleteDocumentForLater(docid, reader);
-     JOptionPane.showMessageDialog(frame, "Data package was saved as id "+docid, "Information",
+     JOptionPane.showMessageDialog(frame, Language.getInstance().getMessage("DataPackageWasSavedAsId") + " " + docid, Language.getInstance().getMessage("Information"),
          JOptionPane.PLAIN_MESSAGE);
     } 
     catch (ServiceNotHandledException snhe) 
