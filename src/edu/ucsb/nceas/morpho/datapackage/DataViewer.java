@@ -795,7 +795,7 @@ public class DataViewer extends javax.swing.JPanel
 			// TEXT
 			if (text_flag) {
 				// TABLE with data
-				if (column_labels != null && column_labels.size() > 0 && field_delimiter.trim().length() > 0 && dataFile.length() > 0) {
+				if (column_labels != null && column_labels.size() > 0 && field_delimiter.trim().length() > 0 ) { //&& dataFile.length() > 0) {
 					buildTable();
 					storingStateChangeEvent(new StateChangeEvent(
 							DataViewerPanel,
