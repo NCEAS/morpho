@@ -390,7 +390,7 @@ public class TextImportEntity extends AbstractUIPage
       } 
       else 
       {
-         adp.setLastImportedEntity(XMLUtil.normalize(TableNameTextField.getText()));
+         adp.setLastImportedEntity(TableNameTextField.getText());
          return true;
       }
 	  }
@@ -406,11 +406,11 @@ public class TextImportEntity extends AbstractUIPage
 	  public OrderedMap getPageData()
 	  {
 		  OrderedMap om = new OrderedMap();
-		  om.put(xPathRoot + "entityName", XMLUtil.normalize(TableNameTextField.getText()));
+		  om.put(xPathRoot + "entityName", TableNameTextField.getText());
 		  if(!Util.isBlank(TableDescriptionTextField.getText()))
 		  {
 		       om.put(xPathRoot + "entityDescription",
-		       XMLUtil.normalize(TableDescriptionTextField.getText()));
+		       TableDescriptionTextField.getText());
 		  }
 		    // physical NV pairs are inserted here
 		    if(physicalID == null)
@@ -499,7 +499,7 @@ public class TextImportEntity extends AbstractUIPage
 		    String numRecords = (new Integer(numrecs)).toString();
 		    if(!Util.isBlank(numRecords))
 		    {
-		    	om.put(xPathRoot + "numberOfRecords", XMLUtil.normalize(numRecords));
+		    	om.put(xPathRoot + "numberOfRecords", numRecords);
 		    }
 		    return om;
 	  }
