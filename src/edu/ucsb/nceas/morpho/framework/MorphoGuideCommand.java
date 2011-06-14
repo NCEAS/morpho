@@ -63,10 +63,19 @@ public class MorphoGuideCommand implements Command
     private Point location = new Point(helpCenterX, helpCenterY);
 	private static final String TITLE = "Morpho Help";
 	private static final String GUIDEFILEPATH = Morpho.getConfiguration().get("userguide", 0);
-	private static final String WINDOWS = "rundll32 url.dll,FileProtocolHandler "+GUIDEFILEPATH;
-	private static final String MAC = "open "+GUIDEFILEPATH;
-	private static final String LINUX = " "+GUIDEFILEPATH;
+	private static String WINDOWS = "rundll32 url.dll,FileProtocolHandler " + GUIDEFILEPATH;
+	private static String MAC = "open " + GUIDEFILEPATH;
+	private static String LINUX = " " + GUIDEFILEPATH;
 	private static final String[] pdfApplications = {"evince", "acroread", "okular", "xpdf", "kpdf", "epdfview", "gv"};
+	
+	
+	static {
+		// use absolute path for windows
+		String appHome = System.getProperty("user.dir");
+		if (appHome != null) {
+			WINDOWS = "rundll32 url.dll,FileProtocolHandler " + appHome + "/" + GUIDEFILEPATH;
+		}
+	}
 	
 	/**
 	 * Default constructor
