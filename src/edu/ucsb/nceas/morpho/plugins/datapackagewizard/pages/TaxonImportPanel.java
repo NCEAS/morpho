@@ -48,6 +48,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import java.awt.Dimension;
@@ -234,119 +236,154 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     return label;
   }
 
-  public List getListOfImportedTaxa() {
+  public List<Map<String, String>> getListOfImportedTaxa() {
 
-		List result = new ArrayList();
+	  List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 
-		if(!displayTable) {
+		if (!displayTable) {
 			return result;
 		}
 
-    int[] cols = table.getSelectedColumns();
+		int[] cols = table.getSelectedColumns();
 
+		int ecnt = adp.getEntityCount();
+		File entityFiles[] = new File[ecnt];
+		for (int i = 0; i < ecnt; i++) {
+			entityFiles[i] = null;
+		}
+		int[] numHeaderLines = new int[ecnt];
+		String[] delimiter = new String[ecnt];
+		Morpho morpho = resultPane.getFramework();
+		
+		// iterate through the selected columns
+		for (int i = 0; i < cols.length; i++) {
 
-    int ecnt = adp.getEntityCount();
-    File entityFiles[] = new File[ecnt];
-    for(int i = 0;i<ecnt;i++)
-      entityFiles[i] = null;
-    int[] numHeaderLines = new int[ecnt];
-    String[] delimiter = new String[ecnt];
-    Morpho morpho = resultPane.getFramework();
+			Vector header = table.getColumnHeaderStrings(cols[i]);
+			String taxonClass = " ";
+			if (header.size() == 4) {
+				taxonClass = (String) header.get(3);
+			}
+			
 
-    for(int i = 0; i < cols.length; i++) {
+			if (isText(header) || selectedImportChoice == 0) { // import all values
+				// get the rows of data for that column
+				List<String> colData = table.getColumnData(cols[i]);
+				for (int j = 0; j < colData.size(); j++) {
+					String dataCell = colData.get(j);
+					Map<String, String> combo = null;
+					// if it's our first column of data, then we need to construct the row first
+					if (i == 0) {
+						combo = new TreeMap<String, String>();
+						combo.put(taxonClass, dataCell);
+						result.add(combo);
+					} else {
+						combo = result.get(j);
+						combo.put(taxonClass, dataCell);
+						result.set(j, combo);
+					}
+				}
 
-      Vector header = table.getColumnHeaderStrings(cols[i]);
-      String taxonClass = " ";
-      if(header.size() == 4)
-        taxonClass = (String)header.get(3);
-      List colData = table.getColumnData(cols[i]);
+			} else { // import only values present in dataset
 
-      if(isText(header) || selectedImportChoice == 0) { // import all value
+				boolean isDefn = isDefinition(header);
+				String tableName = (String) header.get(0);
+				String colName = (String) header.get(1);
+				int entityIndex = adp.getEntityIndex(tableName);
+				if (entityFiles[entityIndex] == null) {
 
-				colData = removeRedundantData(colData);
-        Iterator it = colData.iterator();
-        while(it.hasNext()) {
-          String val = (String) it.next();
-          if(val == null || val.trim().equals(""))
-            break;
-          List t = new ArrayList();
-          t.add(val); t.add(taxonClass);
-          result.add(t);
-        }
+					entityFiles[entityIndex] = CodeDefnPanel.getEntityFile(
+							morpho, adp, entityIndex);
 
-      } else { // import only values present in dataset
+					String numHeaders = adp.getPhysicalNumberHeaderLines(
+							entityIndex, 0);
 
-        boolean isDefn = isDefinition(header);
-        String tableName = (String)header.get(0);
-        String colName = (String)header.get(1);
-        int entityIndex = adp.getEntityIndex(tableName);
-        if(entityFiles[entityIndex] == null) {
+					try {
+						if (numHeaders != null) {
+							numHeaderLines[entityIndex] = Integer.parseInt(numHeaders);
+						}
+					} catch (Exception e) {
+					}
 
-          entityFiles[entityIndex] = CodeDefnPanel.getEntityFile(morpho, adp, entityIndex);
+					String field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
+					delimiter[entityIndex] = getDelimiterString(field_delimiter);
+				}
 
-          String numHeaders = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
+				int colIdx = adp.getAttributeIndex(entityIndex, colName);
+				List<String> data = 
+					CodeDefnPanel.getOneColumnValue(
+								entityFiles[entityIndex], 
+								colIdx,
+								numHeaderLines[entityIndex],
+								delimiter[entityIndex],
+								-1);
 
-          try {
-            if(numHeaders != null) {
-              numHeaderLines[entityIndex] = Integer.parseInt(numHeaders);
-            }
-          } catch(Exception e) {}
+				if (!isDefn) { // column contains codes
 
-          String field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
-          delimiter[entityIndex] = getDelimiterString(field_delimiter);
-        }
+					for (int j = 0; j < data.size(); j++) {
+						String dataCell = data.get(j);
+						Map<String, String> combo = null;
+						if (i == 0) {
+							combo = new TreeMap<String, String>();
+							combo.put(taxonClass, dataCell);
+							result.add(combo);
+						} else {
+							combo = result.get(j);
+							combo.put(taxonClass, dataCell);
+							result.set(j, combo);
+						}
+					}
 
-        int colIdx = adp.getAttributeIndex(entityIndex, colName);
-        List data = CodeDefnPanel.getOneColumnValue(entityFiles[entityIndex], colIdx, numHeaderLines[entityIndex], delimiter[entityIndex], -1);
-        data = removeRedundantData(data);
+				} else { // column contains definitions
 
-        if(!isDefn) { // column contains codes
+					List<String> codeColData = table.getColumnData(cols[i] - 1);
+					List<String> definitionColData = table.getColumnData(cols[i]);
 
-          Iterator it = data.iterator();
-          while(it.hasNext()){
-            List t = new ArrayList();
-            t.add((String)it.next());
-            t.add(taxonClass);
-            result.add(t);
-          }
+					int cnt = 0;
+					Iterator<String> prevIt = codeColData.iterator();
+					while (prevIt.hasNext()) {
+						String code = prevIt.next();
+						String definition = definitionColData.get(cnt);
 
-        } else { // column contains definitions
+						if (data.contains(code)) {
+							
+							Map<String, String> combo = null;
+							if (i == 0) {
+								combo = new TreeMap<String, String>();
+								combo.put(taxonClass, definition);
+								result.add(combo);
+							} else {
+								combo = result.get(cnt);
+								combo.put(taxonClass, definition);
+								result.set(cnt, combo);
+							}
+						}
+						cnt++;
+					}
 
-          List prevColData = table.getColumnData(cols[i] - 1);
-          int cnt = 0;
-          Iterator prevIt = prevColData.iterator();
-          while(prevIt.hasNext()) {
-            String code = (String)prevIt.next();
-            if(data.contains(code)) {
-              List temp = new ArrayList();
-              temp.add(colData.get(cnt));
-              temp.add(taxonClass);
-              result.add(temp);
-            }
-            cnt++;
-          }
+				} // end of else contains definitions
 
-        } // end of else contains definitions
+			}// end of else import only values in table
 
-      }// end of else import only values in table
+		} // end of for loop - for each selected col
+		
+		// pare down the result to unique records
+		result = removeRedundantData(result);
 
-    } // end of for loop - for each selected col
+		return result;
+	}
 
-    return result;
-  }
+	private List<Map<String, String>> removeRedundantData(List<Map<String, String>> data) {
 
-  private List removeRedundantData(List data) {
-
-    List newData = new ArrayList();
-    Iterator it = data.iterator();
-    while(it.hasNext()) {
-
-      String d = (String)it.next();
-      if(!newData.contains(d))
-        newData.add(d);
-    }
-    return newData;
-  }
+		List<Map<String, String>> newData = new ArrayList<Map<String, String>>();
+		Iterator<Map<String, String>> it = data.iterator();
+		while (it.hasNext()) {
+			Map<String, String> record = it.next();
+			if (!newData.contains(record)) {
+				newData.add(record);
+			}
+		}
+		return newData;
+	}
 
   private boolean isDefinition(Vector headerVector) {
 
