@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -371,9 +372,9 @@ public class Taxonomic extends AbstractUIPage {
     taxonImportPanel = null;
 
     JButton importButton = new HyperlinkButton(action);
-    importButton.setPreferredSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
-    importButton.setMinimumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
-    importButton.setMaximumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
+//    importButton.setPreferredSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
+//    importButton.setMinimumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
+//    importButton.setMaximumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
     JLabel headLabel = null;
     if(displayTable == false){
       headLabel = WidgetFactory.makeHTMLLabel(headingNoImportTable, 6, false);
@@ -637,31 +638,57 @@ public class Taxonomic extends AbstractUIPage {
    // needs work
   private void taxonImportOKAction() {
 
-    List importedData = taxonImportPanel.getListOfImportedTaxa();
-    Iterator it = importedData.iterator();
+    List<Map<String, String>> importedData = taxonImportPanel.getListOfImportedTaxa();
+    Iterator<Map<String, String>> it = importedData.iterator();
     while(it.hasNext()) {
 
-      List t = (List) it.next();
-      String taxon = (String)t.get(0);
-      String rank = (String)t.get(1);
-      int rankIdx = WizardSettings.getIndexOfTaxonRank(rank);
+    	
+/*"Higher Level Taxa"*/ 
+/*"Rank"*/ 
+/*"Name"*/ 
+/*"Rank"*/ 
+/*"Name"*/ 
+/*"Common Name(s)"*/ 
+            
+    	Map<String, String> taxonRecord = it.next();
+    	List<Object> newRow = new ArrayList<Object>(Arrays.asList(new Object[] {"", "", "", "", "", "", null}));
+		newRow.set(0, "");
+    	for (Map.Entry<String,String> entry: taxonRecord.entrySet()) {
+    		String rank = entry.getKey();
+    		String taxon = entry.getValue();
+    		int rankIdx = WizardSettings.getIndexOfTaxonRank(rank);
 
-      List newRow = new ArrayList();
-      newRow.add("");
-      if(rankIdx <= 5) { // Genus or higher in hierarchy
-        newRow.add(rank); newRow.add(taxon);
-        newRow.add("");newRow.add("");
-
-      } else {
-        newRow.add("");newRow.add("");
-        newRow.add(rank); newRow.add(taxon);
-      }
-      newRow.add("");
-      TaxonLevel tl = new TaxonLevel(rank, taxon, null);
-      TaxonHierarchy hier = new TaxonHierarchy(new Vector());
-      hier.addTaxon(tl);
-      newRow.add(hier);
-      taxonList.addRow(newRow);
+			if (rankIdx <= 5) { // Genus or higher in hierarchy
+				// Higher than Genus
+				if (rankIdx < 5) { 
+					// not genus
+				} else {
+					newRow.set(1, rank); 
+					newRow.set(2, taxon);
+					//newRow.set(3, "");
+					//newRow.set(4, "");
+				}
+			} else {
+				//newRow.set(1, "");
+				//newRow.set(2, "");
+			    newRow.set(3, rank);
+			    newRow.set(4, taxon);
+			} 
+			
+			// taxa
+			TaxonHierarchy hier = (TaxonHierarchy) newRow.get(6);
+			if (hier == null) {
+				hier = new TaxonHierarchy(new Vector());
+			}
+			TaxonLevel tl = new TaxonLevel(rank, taxon, null);
+			hier.addTaxon(tl);
+			newRow.set(6, hier);
+			newRow.set(0, hier.toString());
+			
+			// common names
+			newRow.set(5, "");
+    	}
+		taxonList.addRow(newRow);
     }
 
     importTaxaDialog.setVisible(false);
@@ -2200,17 +2227,28 @@ class TaxonHierarchy implements Comparable {
   public String toString() {
 
     String ret = "";
-    for(int i = 0; i < this.taxonLevels.size(); i++) {
-
-      TaxonLevel l = (TaxonLevel)this.taxonLevels.get(i);
-      for(int j = 0; j < i;j++)
-        ret += "\t";
-      ret += "--";
+    for (int i = 0; i < this.taxonLevels.size(); i++) {
+      TaxonLevel l = (TaxonLevel) this.taxonLevels.get(i);
       ret += l.toString();
-      ret += '\n';
+      ret += ";";
     }
     return ret;
   }
+  
+  public String toStringPretty() {
+
+	    String ret = "";
+	    for(int i = 0; i < this.taxonLevels.size(); i++) {
+
+	      TaxonLevel l = (TaxonLevel)this.taxonLevels.get(i);
+	      for(int j = 0; j < i;j++)
+	        ret += "\t";
+	      ret += "--";
+	      ret += l.toString();
+	      ret += '\n';
+	    }
+	    return ret;
+	  }
 
   public Iterator iterator() {
 
