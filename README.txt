@@ -76,6 +76,12 @@ Version 1.10.0 includes support for EML 2.1.1.
 	Existing older EML documents can still be reviewed, but they must be upgraded before any modifications can be made.
 	TODO: Editing language translations for crucial metadata fields 
 ***
+Version 1.9.1 is a minor update to address particular bugs.
+	Taxonomic Import from data table can be used to import unique taxonomic hierarchies
+	New Data Table handles UTF-8 descriptions and attributes
+	User guide now available in Traditional Chinese (zh_TW locale)
+	Expanded number of translations in the UI
+***
 Version 1.9.0 is a significant update to 1.8.0 with new features and bug fixes. 
 	Multi-lingual support has been added in this release, and language packs for English, Spanish, Portuguese, French, Japanese, and Chinese are included. 
 	Explicit UTF-8 character encoding is used across the application.
