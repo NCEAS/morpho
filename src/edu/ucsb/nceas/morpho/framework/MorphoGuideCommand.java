@@ -26,13 +26,11 @@
 package edu.ucsb.nceas.morpho.framework;
 
 
-import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.lang.reflect.Method;
+
+import java.util.Locale;
 
 import javax.swing.JFrame;
 
@@ -62,19 +60,33 @@ public class MorphoGuideCommand implements Command
              HelpCommand.helpHeight);
     private Point location = new Point(helpCenterX, helpCenterY);
 	private static final String TITLE = "Morpho Help";
-	private static final String GUIDEFILEPATH = Morpho.getConfiguration().get("userguide", 0);
-	private static String WINDOWS = "rundll32 url.dll,FileProtocolHandler " + GUIDEFILEPATH;
-	private static String MAC = "open " + GUIDEFILEPATH;
-	private static String LINUX = " " + GUIDEFILEPATH;
+	private static String GUIDEFILEPATH = null;
+	private static String WINDOWS = null;
+	private static String MAC = null;
+	private static String LINUX = null;
 	private static final String[] pdfApplications = {"evince", "acroread", "okular", "xpdf", "kpdf", "epdfview", "gv"};
 	
 	
 	static {
-		// use absolute path for windows
+		
+		GUIDEFILEPATH = Morpho.getConfiguration().get("userguide", 0);
+		// use absolute path (for windows)
 		String appHome = System.getProperty("user.dir");
 		if (appHome != null) {
-			WINDOWS = "rundll32 url.dll,FileProtocolHandler " + appHome + "/" + GUIDEFILEPATH;
+			GUIDEFILEPATH = appHome + "/" + GUIDEFILEPATH;
 		}
+		String tempPath = GUIDEFILEPATH;
+		String locale = Locale.getDefault().toString();
+		tempPath = tempPath.substring(0, tempPath.lastIndexOf(".")) + "_" + locale + tempPath.substring(tempPath.lastIndexOf("."));
+		File guideFile = new File(tempPath);
+		if (guideFile.exists()) {
+			GUIDEFILEPATH = tempPath;
+		}
+		
+		WINDOWS = "rundll32 url.dll,FileProtocolHandler " + GUIDEFILEPATH;
+		MAC = "open " + GUIDEFILEPATH;
+		LINUX = " " + GUIDEFILEPATH;
+		
 	}
 	
 	/**
