@@ -40,8 +40,8 @@ Japan LTER:
 	Akiko Ogawa (aogawa@kais.kyoto-u.ac.jp)
 	Eiichi Maita (maita.eiichi@nies.go.jp)
 
-University of Campinas (UNICAMP)
-	Debora Drucker (deboradrucker@gmail.com)
+Brazilian Agricultural Research Corporation (EMBRAPA):
+	Debora Pignatari Drucker (debora@cnpm.embrapa.br)
 
 Instituto Nacional de Pesquisas da Amazonia (INPA):
 	Flavia Fonseca Pezzini (flaviapezzini@gmail.com)
