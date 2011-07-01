@@ -28,6 +28,8 @@ package edu.ucsb.nceas.morpho.query;
 
 import java.util.Vector;
 
+import edu.ucsb.nceas.morpho.util.XMLUtil;
+
 /** 
  * A single term in a query, containing the path to be searched, the
  * value to match, and any relevant search modifiers.
@@ -179,7 +181,9 @@ public class QueryTerm
     for (int i = 0; i < indent+2; i++) {
       self.append(" ");
     }
-    self.append( "<value>" + value + "</value>\n");
+    //self.append( "<value>" + value + "</value>\n");
+    self.append( "<value>" + XMLUtil.normalize(value) + "</value>\n");
+
     if (pathexpr != null) {
       for (int i = 0; i < indent+2; i++) {
         self.append(" ");
