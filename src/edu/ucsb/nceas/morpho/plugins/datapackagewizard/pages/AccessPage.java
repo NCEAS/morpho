@@ -111,8 +111,8 @@ public class AccessPage
   private JLabel warnLabel;
   private JLabel introLabel;
   private JLabel accessDesc1, accessDesc2;
-  private String userAccessType = Language.getInstance().getMessage("Allow");
-  protected String userAccess = Language.getInstance().getMessage("Read");
+  private String userAccessType = " " + Language.getInstance().getMessage("Allow");
+  protected String userAccess = " " + Language.getInstance().getMessage("Read");
   protected JComboBox typeComboBox;
   protected JComboBox accessComboBox;
   private JScrollPane accessTreePane;
