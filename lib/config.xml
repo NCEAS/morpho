@@ -320,4 +320,14 @@
           <location>xsl/eml2tonbii.xsl</location>
        </styleSheet>
   </styleSheetList>
+  <!-- map, tool, and bbox params are for configuring the map to be used in search and geo coverage -->
+  <map_filename>java_0_world_234k.jpg</map_filename>
+  <map_x_domain>-180 180</map_x_domain>
+  <map_y_domain>-90 90</map_y_domain>
+  <tool_x_domain>-180 180</tool_x_domain>
+  <tool_y_domain>-90 90</tool_y_domain>
+  <bbox_north_init>45</bbox_north_init> 
+  <bbox_west_init>-90</bbox_west_init>
+  <bbox_south_init>-45</bbox_south_init>
+  <bbox_east_init>90</bbox_east_init>
 </config>

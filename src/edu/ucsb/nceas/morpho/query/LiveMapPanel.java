@@ -60,39 +60,52 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
-import java.io.*;
-import java.util.StringTokenizer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-//1.1 import java.awt.AWTEvent;
-import java.awt.Event;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FlowLayout;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Event;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.StringTokenizer;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import tmap_30.convert.Convert;
+import tmap_30.convert.ConvertLatitude;
+import tmap_30.convert.ConvertLongitude;
+import tmap_30.map.MapCanvas;
+import tmap_30.map.MapConstants;
+import tmap_30.map.MapGrid;
+import tmap_30.map.MapRegion;
+import tmap_30.map.MapTool;
+import tmap_30.map.MaxZoomException;
+import tmap_30.map.MinZoomException;
+import tmap_30.map.PTTool;
+import tmap_30.map.PTcXTool;
+import tmap_30.map.PTcXYTool;
+import tmap_30.map.PTcYTool;
+import tmap_30.map.XTool;
+import tmap_30.map.XYTool;
+import tmap_30.map.XcYTool;
+import tmap_30.map.YTool;
+import tmap_30.map.YcXTool;
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
-
-import java.applet.Applet;
-import java.awt.TextField;
-import java.awt.Button;
-import java.awt.Choice;
-import java.awt.Frame;
-import java.awt.Panel;
-
-import javax.swing.*;
-
-import tmap_30.map.*;
-import tmap_30.convert.*;
-
-import java.awt.Container; //1.0
 
 /**
  * A map selection applet.
@@ -110,14 +123,15 @@ public class LiveMapPanel extends JPanel
 	public LiveMapPanel()
 	{
       super();
-	    init();
-
+      config = Morpho.getConfiguration();
+      init();
 	}
 
   public LiveMapPanel(boolean flag) {
       super();
+      config = Morpho.getConfiguration();
       toolFlag = flag;
-	    init();
+	  init();
       if (toolFlag) {
         map.getTool().setDelta_X(0.125);
         map.getTool().setDelta_Y(0.125);
@@ -125,7 +139,9 @@ public class LiveMapPanel extends JPanel
       }
 	}
 
-
+  ConfigXML config = null;
+  
+  final static String DEFAULT_IMAGE = "java_0_world_234k.jpg";
   final static int IMAGE_SIZE_X = 450;  // 450
   final static int IMAGE_SIZE_Y = 225;  // 225
   final static Color MAPTOOL_COLOR1 = Color.white;
@@ -136,6 +152,7 @@ public class LiveMapPanel extends JPanel
   final static int TOOL_TYPE_Y  = 2;
   final static int TOOL_TYPE_XY = 3;
 
+  /* Initial bounding box coordinates */
   double n = 45.0;
   double w = -90.0;
   double s = -45.0;
@@ -168,33 +185,71 @@ public class LiveMapPanel extends JPanel
 
 
   public void init() {
-
-    String img = "java_0_world_234k.jpg";
-    String img_x_domain = "-180 180";
-    String img_y_domain = "-90 90";
-    String toolType = "XY";
-    String tool_x_range = "-180 180";
-    String tool_y_range = "-90 90";
-
-    if (img_0==null) {
-      img_0 = getToolkit().getImage(
-              getClass().getResource("java_0_world_234k.jpg"));
-
-      tracker = new MediaTracker(this);
-      tracker.addImage(img_0, 1);
-
-      try {
-        tracker.waitForID(1);
-      } catch (InterruptedException e) {
-        System.out.println("Caught InterruptedException while loading image.");
-        //EHC: throw exception ?
-        return;
+      
+      // Initialize map to be used from configuration file
+      String img = config.get("map_filename", 0);
+      if (img == null) {
+          img = DEFAULT_IMAGE;
       }
-      if (tracker.isErrorID(1)) {
-        System.out.println("Error loading image...");
-        return;
+      String img_x_domain = config.get("map_x_domain", 0); 
+      String img_y_domain = config.get("map_y_domain", 0); 
+
+      String tool_x_range = config.get("tool_x_domain", 0); 
+      String tool_y_range = config.get("tool_y_domain", 0);
+
+      String bbox_north_init = config.get("bbox_north_init", 0);
+      if (bbox_north_init != null) {
+          n = new Double(bbox_north_init).doubleValue();
       }
-    }
+      String bbox_west_init = config.get("bbox_west_init", 0);
+      if (bbox_west_init != null) {
+          w = new Double(bbox_west_init).doubleValue();
+      }
+      String bbox_south_init = config.get("bbox_south_init", 0);
+      if (bbox_south_init != null) {
+          s = new Double(bbox_south_init).doubleValue();
+      }
+      String bbox_east_init = config.get("bbox_east_init", 0);
+      if (bbox_east_init != null) {
+          e = new Double(bbox_east_init).doubleValue();
+      }
+
+      String toolType = "XY";
+
+      // Load the map image, and if it fails, try to load the default image from the classpath
+      if (img_0==null) {
+          
+          File imgFile = new File(ConfigXML.getConfigDirectory(), img);
+          URL img_url = null;
+          if (imgFile != null && imgFile.exists()) {
+              try {
+                  img_url = imgFile.toURI().toURL();
+              } catch (MalformedURLException e) {
+                  img_url = null;
+              }
+          }
+//          img_url = getClass().getResource(img);
+          System.out.println("MAPURL: " + img_url);
+          if (img_url != null) {
+              img_0 = getToolkit().getImage(img_url);
+          } else {
+              img_0 = getToolkit().getImage(getClass().getResource(DEFAULT_IMAGE));
+          }
+          tracker = new MediaTracker(this);
+          tracker.addImage(img_0, 1);
+
+          try {
+              tracker.waitForID(1);
+          } catch (InterruptedException e) {
+              System.out.println("Caught InterruptedException while loading image.");
+              //EHC: throw exception ?
+              return;
+          }
+          if (tracker.isErrorID(1)) {
+              System.out.println("Error loading image...");
+              return;
+          }
+      }
 
 
 /* 1.0 ----------------------V-------------------------- */
