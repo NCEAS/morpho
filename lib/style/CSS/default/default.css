@@ -970,7 +970,7 @@ th.rowheader {
 
 .innercolodd {
     border:                     solid #94c1d4 1px;
-    font-size:                  .75em;
+/*    font-size:                  .75em; */
     padding-left:               2px;
     padding-right:              2px;
     text-align:                 left;
@@ -979,7 +979,7 @@ th.rowheader {
 .innercoleven {
     border:                     solid #94c1d4 1px;
     background-color:           #f1f8f8;
-    font-size:                  .75em;
+/*    font-size:                  .75em; */
     padding-left:               2px;
     padding-right:              2px;
     text-align:                 left;
