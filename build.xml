@@ -24,13 +24,13 @@
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
-      <property name="utilities-tag" value="tags/UTILITIES_1_1_0_RC1" />
+      <property name="utilities-tag" value="tags/UTILITIES_1_1_0" />
 	  <property name="svn-utilitiesUrl"
             value="https://code.ecoinformatics.org/code/utilities/${utilities-tag}" />
       <property name="eml-module" value="eml" />
 	   <property name="eml-svn-base-url" value="https://code.ecoinformatics.org/code/eml"/>
       <!-- the following two properties will be used to get newest eml doc-->
-      <property name="eml-doc-tag" value="RELEASE_EML_2_1_1_RC_2" />
+      <property name="eml-doc-tag" value="RELEASE_EML_2_1_1" />
       <property name="eml.doc.dir" value="${morpho.basedir}/docs/eml-2.1.1" />
 	  <property name="eml-doc-svn-url" value="${eml-svn-base-url}/tags/${eml-doc-tag}"/>
       <!-- the following property will be used to get eml210 schemas -->
@@ -38,11 +38,11 @@
 	  <property name="eml-210-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-210-schema-tag}"/>
    	
     <!-- the following property will be used to get eml210 schemas -->
-    <property name="eml-211-schema-tag" value="RELEASE_EML_2_1_1_RC_2" />
+    <property name="eml-211-schema-tag" value="RELEASE_EML_2_1_1" />
 	<property name="eml-211-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-211-schema-tag}"/>
    	
    	<!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
-	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_0_0_RC9" />
+	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_0_3" />
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
