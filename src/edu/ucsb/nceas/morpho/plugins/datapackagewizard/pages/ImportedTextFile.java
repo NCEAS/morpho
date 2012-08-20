@@ -668,6 +668,10 @@ public class ImportedTextFile
 			Vector vec1;
 			numcols = colTitles.size();
 			
+			// there may be line breaks within the CSV fields -- this should account for that case
+			if (nlines > records.size()) {
+				nlines = records.size();
+			}
 			for (int i = start; i < nlines; i++) {
 				tempLine = records.get(i);
 				vec1 = new Vector(Arrays.asList(tempLine));;
