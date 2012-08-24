@@ -1460,11 +1460,11 @@ public class DataPackagePlugin
    * @param location the location where the package is now: LOCAL, METACAT or
    * BOTH
    */
-  public void exportToEml2(String docid, String path, String location)
+  /*public void exportToEml2(String docid, String path, String location)
   {
     DataPackage dp = new DataPackage(location, docid, null, morpho, false);
     dp.exportToEml2(path);
-  }
+  }*/
 
 
   /**

@@ -575,7 +575,7 @@ public class PackageUtil
    * @param dataPackage the package that you want to add the triples to
    * @param morpho the morpho object that is currently running.
    */
-  public static String addTriplesToTriplesFile(TripleCollection triples,
+  /*public static String addTriplesToTriplesFile(TripleCollection triples,
                                                DataPackage dataPackage, 
                                                Morpho morpho)
   {
@@ -665,7 +665,7 @@ public class PackageUtil
     String docString = PackageUtil.printDoctype(doc);
     docString += PackageUtil.print(doc.getDocumentElement());
     return docString;
-  }
+  }*/
 
   /**
    * method to add a collection of triples to a triples string.  this method
@@ -774,7 +774,7 @@ public class PackageUtil
    * @param dataPackage the package that you want to delete the triples from
    * @param morpho the morpho object that is currently running.
    */
-  public static String deleteTriplesInTriplesFile(String searchstring,
+  /*public static String deleteTriplesInTriplesFile(String searchstring,
                                                   DataPackage dataPackage, 
                                                   Morpho morpho)
   {
@@ -895,7 +895,7 @@ public class PackageUtil
     String docString = PackageUtil.printDoctype(doc);
     docString += PackageUtil.print(doc.getDocumentElement());
     return docString;
-  }
+  }*/
   
   /**
    * gets the file types from the config file and hashes them by a specified

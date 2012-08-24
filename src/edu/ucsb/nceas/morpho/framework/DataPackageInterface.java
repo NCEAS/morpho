@@ -174,7 +174,7 @@ public interface DataPackageInterface
    * @param path the location to export it to
    * @param location the current location of the package: METACAT, LOCAL or BOTH
    */
-  public void exportToEml2(String docid, String path, String location);
+  //public void exportToEml2(String docid, String path, String location);
 
   /**
    * This method will create a dialog for open previouse version of a

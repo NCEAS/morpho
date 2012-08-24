@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.query;
 
 
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.datapackage.DataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
@@ -285,7 +284,7 @@ public class ExportCommand implements Command
   /*
    * exports the datapackage to a different location
    */
-  private void exportDatasetToEml2(String id)
+  /*private void exportDatasetToEml2(String id)
   {
     String curdir = System.getProperty("user.dir");
     curdir = curdir + System.getProperty("file.separator") + id + "_eml2.xml";
@@ -327,7 +326,7 @@ public class ExportCommand implements Command
       }
     }
 
-  }
+  }*/
 
   
   /*
