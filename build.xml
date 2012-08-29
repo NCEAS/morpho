@@ -167,6 +167,8 @@
                         value="${libdir}/activation.jar"/>
 	   <property name="PDF"
                         value="${libdir}/PDFRenderer.jar"/>
+   	<property name="junitDir"
+   	                        value="/usr/local/devtools/junit4.10"/>
       <property name="cpath"
 	      value="${libdir}/jsse.jar:${libdir}/jcert.jar:${libdir}/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}:${PDF}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
@@ -212,6 +214,7 @@
    			<fileset dir="${libdir}/axis">
    				<include name="*.jar" />
    			</fileset>
+   
        </path>
    	
    		<path id="classpath.runtime">
@@ -962,6 +965,9 @@
       <junit printsummary="yes" haltonfailure="no" fork="yes"
              haltonerror="no" showoutput="yes">
         <classpath>
+          <fileset dir="${junitDir}">
+            <include name="*.jar" />
+          </fileset>
           <fileset dir="${build.lib}">
                 <include name="*.jar" />
 			    <exclude name="standalone-compiler.jar"/>
