@@ -191,6 +191,11 @@ public class TranslationWidget extends AbstractUIPage {
 
 	@Override
 	public boolean setPageData(OrderedMap data, String rootXPath) {
+		// check for null
+		if (data == null) {
+			return true;
+		}
+		
 		// save the original data
 		this.originalData = new OrderedMap();
 		this.originalData.putAll(data);
