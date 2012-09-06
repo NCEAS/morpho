@@ -238,7 +238,14 @@ public class ReplaceDataPage extends AbstractUIPage {
 
 			// is it a text file (get more metadata)
 			ImportedTextFile importedTextFile = new ImportedTextFile(dataFile);
-			if (importedTextFile.isTextFile()) {
+			
+			boolean isTextFile = false;
+			try {
+				isTextFile = importedTextFile.isTextFile();
+			} catch (Exception e) {
+				Log.debug(1, "Error checking data file " + e.getMessage());
+			}
+			if (isTextFile) {
 				importedTextFile.parsefile();
 				returnMap.put(TextImportEntity.xPathRoot + "numberOfRecords",
 						String.valueOf(importedTextFile.getNlines_actual()));

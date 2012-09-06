@@ -817,7 +817,15 @@ public class DataLocation extends AbstractUIPage {
 	        	{
 	        		//stores the data file object into wizard container frame.
 	        		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
-	        		boolean isTextFile = dataTextFile.isTextFile();
+	        		boolean isTextFile = false; 
+	        		try {
+	        			isTextFile = dataTextFile.isTextFile();
+	        		} catch (Exception e) {
+	        			JOptionPane.showMessageDialog(mainWizFrame, "Problem with selected file: " + e.getMessage(),
+	                            "Message",
+	                            JOptionPane.INFORMATION_MESSAGE, null);
+	     			   return false;
+					}
 	        		if(!isTextFile)
 	     		   {
 	     			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
@@ -870,7 +878,15 @@ public class DataLocation extends AbstractUIPage {
 	        	{
 	        		//stores the data file object into wizard container frame.
 	        		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
-	        		boolean isTextFile = dataTextFile.isTextFile();
+	        		boolean isTextFile = false;
+	        		try {
+	        			isTextFile = dataTextFile.isTextFile();
+	        		} catch (Exception e) {
+	        			JOptionPane.showMessageDialog(mainWizFrame, "Problem with selected file: " + e.getMessage(),
+	                            "Message",
+	                            JOptionPane.INFORMATION_MESSAGE, null);
+	     			   return false;
+					}
 	        		if(!isTextFile)
 	     		   {
 	     			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
@@ -1392,7 +1408,15 @@ public class DataLocation extends AbstractUIPage {
        	{
        		//stores the data file object into wizard container frame.
        		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
-       		boolean isTextFile = dataTextFile.isTextFile();
+       		boolean isTextFile = false;
+       		try {
+    			isTextFile = dataTextFile.isTextFile();
+    		} catch (Exception e) {
+    			JOptionPane.showMessageDialog(mainWizFrame, "Problem with selected file: " + e.getMessage(),
+                        "Message",
+                        JOptionPane.INFORMATION_MESSAGE, null);
+ 			   return false;
+			}
        		if(!isTextFile)
     		{
     			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
@@ -1456,7 +1480,15 @@ public class DataLocation extends AbstractUIPage {
        	{
        		//stores the data file object into wizard container frame.
        		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
-       		boolean isTextFile = dataTextFile.isTextFile();
+       		boolean isTextFile = false;
+       		try {
+    			isTextFile = dataTextFile.isTextFile();
+    		} catch (Exception e) {
+    			JOptionPane.showMessageDialog(mainWizFrame, "Problem with selected file: " + e.getMessage(),
+                        "Message",
+                        JOptionPane.INFORMATION_MESSAGE, null);
+ 			   return false;
+			}
        		if(!isTextFile)
     		   {
     			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
