@@ -538,7 +538,7 @@ public class ImportedTextFile
 	   * @param file the File to be checked
 	   * @return boolean true if it's a text file, false if not
 	   */
-	  public boolean isTextFile() {
+	  public boolean isTextFile() throws Exception {
 		 if (dataFile == null)
 		 {
 			 return false;
@@ -561,10 +561,13 @@ public class ImportedTextFile
 	     } catch (Exception e) { 
 	    	 e.printStackTrace(); 
 	    	 text= false;
+	    	 throw e;
 	      }
 	     finally {
 	       try { in.close(); }
-	       catch (IOException e) {}
+	       catch (Exception e) {
+	    	   //ignore this, probably NPE
+	       }
 	       
 	     }
 	     return text;
