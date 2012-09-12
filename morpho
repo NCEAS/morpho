@@ -7,31 +7,62 @@
 # '$Date: 2008-11-22 01:28:10 $'
 # '$Revision: 1.30 $'
 
-if ! ls $JAVA_HOME/bin/ | grep -q java; then
- echo ----------------------------------------------------------------------
- echo ----------------------------------------------------------------------
- echo ---------------------------- N O T E ---------------------------------
- echo ---- YOU MUST SET THE JAVA_HOME ENVIRONMENT VARIABLE TO POINT TO -----
- echo --- YOUR JDK OR JRE INSTALLATION DIRECTORY BEFORE RUNNING MORPHO! ----
- echo ----- Note that Morpho may not work correctly with non-SUN JVMs, -----
- echo --------------------- such as gcj or kafee. --------------------------
- echo ----------------------------------------------------------------------
- echo ----------------------------------------------------------------------
- exit
+# use java launcher under JAVA_HOME if set, otherwise try search path
+if [ -n "$JAVA_HOME" ]; then
+    if [ ! -d "$JAVA_HOME" ]; then
+        echo "Error: JAVA_HOME is not a valid directory"
+        exit 1
+    fi
+    JAVA_HOME="$( cd $JAVA_HOME ; pwd -P )"
+    echo "Using JAVA_HOME=$JAVA_HOME"
+    JAVA_BIN="$JAVA_HOME/bin/java"
+    ERR="Your JAVA_HOME does not contain bin/java"
+else
+    JAVA_BIN="$(command -v java)"
+    echo "No JAVA_HOME variable set"
+    ERR="JAVA_HOME was not set, and no other java was found on your path"
 fi
+if [ -f "$JAVA_BIN" ]; then
+    echo "Attempting to use java launcher $JAVA_BIN"
+else
+    echo "Error: $ERR"
+    exit 1
+fi
+echo "----------------------------------"
+"$JAVA_BIN" -version || exit 1
+echo "----------------------------------"
 
+# try to determine and change to morpho install dir
+MORPHO="$0"
+if command -v readlink >/dev/null 2>&1; then
+    # recursively resolve symlinks as needed
+    # ...don't assume *GNU* readlink (with -f option) is available
+    while [ -h "$MORPHO" ] ; do
+        MORPHO="$(readlink "$MORPHO")"
+    done
+    cd "$(dirname "$MORPHO")"
+fi
+echo "Starting Morpho in $(pwd -P)"
 
-CPATH=.:$JAVA_HOME/jre/lib/rt.jar
-for i in $( ls ./lib/*.jar ); do
-	#echo "jar file: $i"
-	CPATH="$CPATH:$i"
+# set OS-specific relative path to JAR directory
+if [ "$(uname -s)" = Darwin ]; then
+    LIB=./morpho.app/Contents/Resources/Java
+else
+    LIB=./lib
+fi
+if [ ! -d "$LIB" ]; then
+    echo "Error: Morpho JAR directory not found: $LIB"
+    exit 1
+fi
+# generate classpath, with some error checking
+for JAR in $LIB/*.jar; do
+    [ -f "$JAR" ] || continue
+	CPATH="$CPATH:$JAR"
 done
+if [ -z "$CPATH" ]; then
+    echo "Error: No Morpho JAR files found in $LIB"
+    exit 1
+fi
 echo "Using dynamic classpath: $CPATH"
 
-
-echo "----------------------------------"
-
-$JAVA_HOME/bin/java -version
-
-echo "----------------------------------"
-$JAVA_HOME/bin/java -Xmx512m -Xss1m -cp $CPATH edu.ucsb.nceas.morpho.Morpho
+"$JAVA_BIN" -Xmx512m -Xss1m -cp "$CPATH" edu.ucsb.nceas.morpho.Morpho
