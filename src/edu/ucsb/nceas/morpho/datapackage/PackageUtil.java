@@ -60,7 +60,6 @@ import com.arbortext.catalog.CatalogEntityResolver;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
@@ -467,8 +466,7 @@ public class PackageUtil
     {
       try
       {
-        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-        f = fsds.openFile(name);
+        f = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(name);
         return f;
       }
       catch(FileNotFoundException fnfe)
@@ -495,8 +493,7 @@ public class PackageUtil
         if(location.equals(DataPackageInterface.LOCAL) || 
            location.equals(DataPackageInterface.BOTH))
         {
-          FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-          f = fsds.openFile(name);
+          f = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(name);
           return f;
         }
         else

@@ -40,7 +40,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -112,9 +111,8 @@ public class DataPackageFactory
     Reader in = null;
     if ((location.equals(DataPackageInterface.LOCAL))
                ||(location.equals(DataPackageInterface.BOTH))) {
-      FileSystemDataStore fsds = new FileSystemDataStore(morpho);
      try {
-        File file = fsds.openFile(docid);
+        File file = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
         in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
       }
       catch (Exception w) {Log.debug(20,"Problem opening file!");}
@@ -186,10 +184,9 @@ public class DataPackageFactory
    
       Reader in = null;  
       InputSource source = null;
-      FileSystemDataStore fsds = new FileSystemDataStore(morpho);
      try 
      {
-        File file = fsds.openIncompleteFile(docid);
+        File file = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(docid);
         in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
         source = new InputSource(in);
       }

@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -1387,14 +1386,13 @@ public class DataPackagePlugin
 //    dp.delete(location);
     if(location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE))
     {
-      FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
-      File incompleteFile = store.openIncompleteFile(docid);
+      File incompleteFile = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(docid);
       AbstractDataPackage adp = DataPackageFactory.getDataPackage(incompleteFile);
       if(adp != null)
       {
         adp.deleteDataFilesInIncompleteFolder();
       }
-      store.deleteInCompleteFile(docid);      
+      Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(docid);      
     }
     else
     {

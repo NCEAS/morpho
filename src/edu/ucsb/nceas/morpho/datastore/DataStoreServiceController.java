@@ -143,17 +143,14 @@ public class DataStoreServiceController {
 			localLoc = true;
 		}
 		if (localLoc) {
-			FileSystemDataStore fileSysDataStore = new FileSystemDataStore(
-					Morpho.thisStaticInstance);
-			boolean localSuccess = fileSysDataStore.deleteFile(accnum);
+			boolean localSuccess = Morpho.thisStaticInstance.getFileSystemDataStore().deleteFile(accnum);
 			if (!localSuccess) {
 				throw new Exception("User couldn't delete the local copy");
 			}
 			LocalQuery.removeFromCache(accnum);
 		}
 		if (metacatLoc) {
-			boolean success = Morpho.thisStaticInstance.getMetacatDataStore()
-					.deleteFile(accnum);
+			boolean success = Morpho.thisStaticInstance.getMetacatDataStore().deleteFile(accnum);
 			if (!success) {
 				throw new Exception("User couldn't delete the network copy");
 			}

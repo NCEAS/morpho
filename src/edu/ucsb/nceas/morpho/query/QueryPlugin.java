@@ -26,9 +26,13 @@
 
 package edu.ucsb.nceas.morpho.query;
 
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
+
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.OpenByIdCommand;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -43,15 +47,6 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.UISettings;
-
-import javax.swing.ImageIcon;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
-import javax.swing.table.AbstractTableModel;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 
 public class QueryPlugin implements PluginInterface, ConnectionListener,
@@ -469,8 +464,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   public void listCrashedDocument(MorphoFrame parent)
   {
 	  //First we will check if there are docs in incomplete dir.
-	  FileSystemDataStore fileStore = new FileSystemDataStore(morpho);
-	  //if(fileStore.hasIncompleteFile())
 	  {
 		  OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
 		  Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);

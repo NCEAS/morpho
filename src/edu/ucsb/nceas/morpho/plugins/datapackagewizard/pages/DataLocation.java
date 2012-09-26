@@ -57,7 +57,6 @@ import javax.swing.JTextField;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -1221,9 +1220,8 @@ public class DataLocation extends AbstractUIPage {
     {
     	nextAvailableID = an.getNextId();
     }
-    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
     try {
-      fds.saveTempDataFile(nextAvailableID, new FileInputStream(f));
+    	Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(nextAvailableID, new FileInputStream(f));
     } catch (Exception w) {
       Log.debug(1, "error in TIW saving temp data file!");
     }

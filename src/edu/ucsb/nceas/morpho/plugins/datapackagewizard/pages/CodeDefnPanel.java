@@ -74,7 +74,6 @@ import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
@@ -937,14 +936,12 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
         // is Base64
         byte[] decodedData = Base64.decode(inline);
         ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-        FileSystemDataStore fds3 = new FileSystemDataStore(morpho);
-        entityFile = fds3.saveTempDataFile(adp.getAccessionNumber(), bais);
+        entityFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(adp.getAccessionNumber(), bais);
       }
       else {
         // is assumed to be text
-        FileSystemDataStore fds2 = new FileSystemDataStore(morpho);
         InputStream inlineStream = new ByteArrayInputStream(inline.getBytes(Charset.forName("UTF-8")));
-        entityFile = fds2.saveTempDataFile(adp.getAccessionNumber(), inlineStream);
+        entityFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(adp.getAccessionNumber(), inlineStream);
       }
     } else if (adp.getDistributionUrl(entityIndex, 0,0).length()>0) {
 
@@ -966,17 +963,15 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
       try{
         String loc = adp.getLocation();
         if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
-          FileSystemDataStore fds = new FileSystemDataStore(morpho);
-          entityFile = fds.openFile(urlinfo);
+          entityFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(urlinfo);
         }
         else if (loc.equals(DataPackageInterface.METACAT)) {
           entityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(urlinfo);
         }
         else if (loc.equals("")) {  // just created the package; not yet saved!!!
-          FileSystemDataStore fds = new FileSystemDataStore(morpho);
           try
           {
-            entityFile = fds.getDataFileFromAllSources(urlinfo);
+            entityFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllSources(urlinfo);
           }
           catch(Exception eee)
           {

@@ -28,12 +28,26 @@ package edu.ucsb.nceas.morpho.datastore;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Properties;
 
 import javax.swing.Timer;
 
@@ -1341,8 +1355,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
           // use object name to replace the meaningless name such as 12.2
           if (objectName != null && !Util.isBlank(objectName))
           {
-          	FileSystemDataStore store = new FileSystemDataStore(morpho);
-          	String tmpDir = store.getTempDir();
+          	String tmpDir = Morpho.getConfiguration().get("tempDir", 0);
           	newFile = new File(tmpDir, objectName);
           	FileInputStream input = new FileInputStream(file);
           	FileOutputStream out = new FileOutputStream(newFile);

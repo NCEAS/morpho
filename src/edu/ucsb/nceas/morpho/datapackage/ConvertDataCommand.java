@@ -35,7 +35,6 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -121,14 +120,13 @@ public class ConvertDataCommand implements Command, DataPackageWizardListener
 			int currentEntityIndex = resultPane.getLastTabSelected();
 			String otherEntityURL = adp.getDistributionUrl(currentEntityIndex, 0, 0);
 			String otherEntityDocid = DataLocation.getFileNameFromURL(otherEntityURL);
-			FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
 			File otherEntityFile = null;
 			try {
 				// get from metacat only if we have to
 				if (adp.getLocation().equals(DataPackageInterface.METACAT)) {
 					otherEntityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(otherEntityDocid);
 				} else {
-					otherEntityFile = fds.openFile(otherEntityDocid);
+					otherEntityFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(otherEntityDocid);
 				}
 			} catch (Exception e) {
 				Log.debug(5, "Cannot locate otherEntity data file: " + otherEntityURL);

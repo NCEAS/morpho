@@ -32,16 +32,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -307,11 +303,9 @@ public class Util
 	 */
 	public static void deleteAutoSavedFile(String autoSavedID)
 	{
-	  if(autoSavedID != null)
-    {
-      FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
-      store.deleteInCompleteFile(autoSavedID);
-    }
+		if (autoSavedID != null) {
+			Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(autoSavedID);
+	    }
 	}
 	
 	static public boolean deleteDirectory(File path) {

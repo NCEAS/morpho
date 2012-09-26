@@ -63,8 +63,6 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
@@ -853,14 +851,12 @@ public void setTopPanel(JPanel jp) {
 
             byte[] decodedData = Base64.decode(inline);
             ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-            FileSystemDataStore fds3 = new FileSystemDataStore(morpho);
-            displayFile = fds3.saveTempDataFile(adp.getAccessionNumber(), bais);
+            displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(adp.getAccessionNumber(), bais);
           }
           else {
             // is assumed to be text
-            FileSystemDataStore fds2 = new FileSystemDataStore(morpho);
             InputStream inlineStream = new ByteArrayInputStream(inline.getBytes(Charset.forName("UTF-8")));
-            displayFile = fds2.saveTempDataFile(adp.getAccessionNumber(), inlineStream);
+            displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(adp.getAccessionNumber(), inlineStream);
           }
         } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
           // this is the case where there is a url link to the data
@@ -885,8 +881,7 @@ public void setTopPanel(JPanel jp) {
             try{
               String loc = adp.location;
               if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
-                FileSystemDataStore fds = new FileSystemDataStore(morpho);
-                displayFile = fds.openFile(urlinfo);
+                displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(urlinfo);
               }
               else if (loc.equals(DataPackageInterface.METACAT)) {
                 displayFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(urlinfo);
@@ -894,8 +889,7 @@ public void setTopPanel(JPanel jp) {
               else if (loc.equals("")) {
                 //Log.debug(5, "here");
                // just created the package; not yet saved!!!
-                FileSystemDataStore fds = new FileSystemDataStore(morpho);
-                displayFile = fds.getDataFileFromAllSources(urlinfo);
+                displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllSources(urlinfo);
                 /*try{
                   // first try looking in the profile temp dir
                   ConfigXML profile = morpho.getProfile();
