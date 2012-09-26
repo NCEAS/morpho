@@ -4183,44 +4183,18 @@ public abstract class AbstractDataPackage extends MetadataObject
           Log.debug(5, "Couldn't find "+oldDocid+" in local system, so morpho couldn't upload it to metacat");
           return;
         }
-	      uploadDataFileToMetacat(docid, dataFile, objectName);
+	      
+	      try {
+    	      InputStream dfis = new FileInputStream(dataFile);
+        	  Morpho.thisStaticInstance.getMetacatDataStore().newDataFile(docid, dataFile, objectName);
+          }
+          catch (Exception e) {
+        	  //Gets some error from metacat
+        	  Log.debug(5, "Some problem with saving data files has occurred! " + e.getMessage());
+          }
 	
 	  }
 
-  
-  
-  /*
-   * Loads the data file to metacat
-   */
-  private void uploadDataFileToMetacat(String identifier, File dataFile, String objectName)
-  {
-	        try
-	          {
-		          InputStream dfis = new FileInputStream(dataFile);
-		          try
-		          {
-		        	  Morpho.thisStaticInstance.getMetacatDataStore().newDataFile(identifier, dataFile, objectName);
-		          }
-		          catch (MetacatUploadException mue) 
-		          {
-		            //Gets some error from metacat
-		        	  Log.debug(5, "Some problem with saving data files has occurred! "+mue.getMessage());
-		          	 
-		          }
-	              // the temp file has been saved; thus delete
-		          /*if (fromTemp)
-		          {
-	                  dataFile.delete();
-		          }*/
-	          } 
-              catch (Exception qqq) 
-              {
-                 // some other problem has occured
-                 Log.debug(5, "Some problem with saving data files has occurred! "+qqq.getMessage());
-                 qqq.printStackTrace();
-              }   
-      
-  }
   
   /*
    * If the docid is revision 1, automatically increase data file identifier number without notifying user.
