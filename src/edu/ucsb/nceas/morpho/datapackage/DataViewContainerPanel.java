@@ -63,6 +63,7 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -775,9 +776,9 @@ public void setTopPanel(JPanel jp) {
     boolean local = false;
     boolean metacat = false;
 
-    if(adp.getLocation().equals(AbstractDataPackage.LOCAL)){
+    if(adp.getLocation().equals(DataStoreServiceController.LOCAL)){
       local = true;
-    } else if(adp.getLocation().equals(AbstractDataPackage.METACAT)){
+    } else if(adp.getLocation().equals(DataStoreServiceController.METACAT)){
       metacat = true;
     } else {
       local = true;
@@ -883,11 +884,11 @@ public void setTopPanel(JPanel jp) {
             // if we reach here, urlinfo should be the id in a string
             try{
               String loc = adp.location;
-              if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
+              if ((loc.equals(DataStoreServiceController.LOCAL))||(loc.equals(DataStoreServiceController.BOTH))) {
                 FileSystemDataStore fds = new FileSystemDataStore(morpho);
                 displayFile = fds.openFile(urlinfo);
               }
-              else if (loc.equals(adp.METACAT)) {
+              else if (loc.equals(DataStoreServiceController.METACAT)) {
                 displayFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(urlinfo);
               }
               else if (loc.equals("")) {

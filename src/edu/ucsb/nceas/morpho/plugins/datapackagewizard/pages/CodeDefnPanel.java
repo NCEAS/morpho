@@ -74,6 +74,7 @@ import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
@@ -964,11 +965,11 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
       // we now have the id
       try{
         String loc = adp.getLocation();
-        if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
+        if ((loc.equals(DataStoreServiceController.LOCAL))||(loc.equals(DataStoreServiceController.BOTH))) {
           FileSystemDataStore fds = new FileSystemDataStore(morpho);
           entityFile = fds.openFile(urlinfo);
         }
-        else if (loc.equals(adp.METACAT)) {
+        else if (loc.equals(DataStoreServiceController.METACAT)) {
           entityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(urlinfo);
         }
         else if (loc.equals("")) {  // just created the package; not yet saved!!!

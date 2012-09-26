@@ -25,12 +25,12 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 
 import java.awt.event.ActionEvent;
-import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.util.Log;
 
 
@@ -83,9 +83,9 @@ public class RevertCommand implements Command
       adp = morphoFrame.getAbstractDataPackage();
       boolean local = false;
       boolean metacat = false;
-      if(adp.getLocation().equals(AbstractDataPackage.LOCAL)){
+      if(adp.getLocation().equals(DataStoreServiceController.LOCAL)){
         local = true;
-      } else if(adp.getLocation().equals(AbstractDataPackage.METACAT)){
+      } else if(adp.getLocation().equals(DataStoreServiceController.METACAT)){
         metacat = true;
       } else {
         local = true;

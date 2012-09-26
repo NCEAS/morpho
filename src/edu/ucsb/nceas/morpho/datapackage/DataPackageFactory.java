@@ -40,6 +40,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -68,9 +69,9 @@ public class DataPackageFactory
 
     // temporary stub!!!
     String location = null;
-    if (metacat && !local) location = AbstractDataPackage.METACAT;
-    if (!metacat && local) location = AbstractDataPackage.LOCAL;
-    if (metacat && local) location = AbstractDataPackage.BOTH;
+    if (metacat && !local) location = DataStoreServiceController.METACAT;
+    if (!metacat && local) location = DataStoreServiceController.LOCAL;
+    if (metacat && local) location = DataStoreServiceController.BOTH;
 
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
@@ -110,12 +111,12 @@ public class DataPackageFactory
       morpho = Morpho.thisStaticInstance;
     }
     String location = null;
-    if (metacat && !local) location = AbstractDataPackage.METACAT;
-    if (!metacat && local) location = AbstractDataPackage.LOCAL;
-    if (metacat && local) location = AbstractDataPackage.BOTH;
+    if (metacat && !local) location = DataStoreServiceController.METACAT;
+    if (!metacat && local) location = DataStoreServiceController.LOCAL;
+    if (metacat && local) location = DataStoreServiceController.BOTH;
     Reader in = null;
-    if ((location.equals(AbstractDataPackage.LOCAL))
-               ||(location.equals(AbstractDataPackage.BOTH))) {
+    if ((location.equals(DataStoreServiceController.LOCAL))
+               ||(location.equals(DataStoreServiceController.BOTH))) {
       FileSystemDataStore fsds = new FileSystemDataStore(morpho);
      try {
         File file = fsds.openFile(docid);

@@ -37,6 +37,7 @@ import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -53,7 +54,7 @@ public class OpenByIdDialog extends JDialog {
 	private JPanel centerPanel = null;
 	private JTextField packageId = null;
 	private JPanel optionsPanel;
-	private String location = AbstractDataPackage.LOCAL;
+	private String location = DataStoreServiceController.LOCAL;
 
 	public OpenByIdDialog(Frame parent) {
 		super(parent);
@@ -83,10 +84,10 @@ public class OpenByIdDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				String cmd = e.getActionCommand();
 				if (cmd.equals(options[0])) {
-					location = AbstractDataPackage.LOCAL;
+					location = DataStoreServiceController.LOCAL;
 				}
 				if (cmd.equals(options[1])) {
-					location = AbstractDataPackage.METACAT;
+					location = DataStoreServiceController.METACAT;
 				}
 			}
 		});

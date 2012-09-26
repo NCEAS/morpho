@@ -32,6 +32,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -90,11 +91,11 @@ public class ImportEMLFileCommand implements Command
           String identifier = an.getNextId();
           dataPackage.setAccessionNumber(identifier);
           //serialize metadata to local 
-          dataPackage.serialize(AbstractDataPackage.LOCAL);
+          dataPackage.serialize(DataStoreServiceController.LOCAL);
           //dataPackage.setLocation(AbstractDataPackage.LOCAL);
           //open the package.
           DataPackagePlugin dataPackagePlugin = new DataPackagePlugin(Morpho.thisStaticInstance);
-          dataPackagePlugin.openDataPackage(AbstractDataPackage.LOCAL, identifier, null, null, null);
+          dataPackagePlugin.openDataPackage(DataStoreServiceController.LOCAL, identifier, null, null, null);
         }
       }
       catch(Exception e)

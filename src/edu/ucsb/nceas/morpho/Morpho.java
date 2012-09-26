@@ -68,6 +68,7 @@ import org.xml.sax.XMLReader;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -174,6 +175,9 @@ public class Morpho
     private static String userKeystore = "";
     public static Morpho thisStaticInstance;
     
+    // for interacting with the local store service
+    private FileSystemDataStore fds = null;
+    
     // for interacting with the Metacat services
     private MetacatDataStore mds = null;
 
@@ -206,6 +210,19 @@ public class Morpho
     
     public void setMetacatDataStore(MetacatDataStore mds) {
     	this.mds = mds;
+    }
+    
+    /**
+     * Get a reference to the FileSystemDataStore
+     * TODO: remove for plugable DataStoreService.
+     * @return
+     */
+    public FileSystemDataStore getFileSystemDataStore() {
+    	return fds;
+    }
+    
+    public void setFileSystemDataStore(FileSystemDataStore fds) {
+    	this.fds = fds;
     }
     
     /**
@@ -688,6 +705,9 @@ public class Morpho
              
             // Load the current profile and log in
             morpho.loadProfile(morpho);
+            
+            // create the local data store
+            morpho.setFileSystemDataStore(new FileSystemDataStore(morpho));
             
             // create the remote data store
             morpho.setMetacatDataStore(new MetacatDataStore(morpho));

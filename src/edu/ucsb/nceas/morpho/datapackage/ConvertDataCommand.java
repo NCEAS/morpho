@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -124,7 +125,7 @@ public class ConvertDataCommand implements Command, DataPackageWizardListener
 			File otherEntityFile = null;
 			try {
 				// get from metacat only if we have to
-				if (adp.getLocation().equals(AbstractDataPackage.METACAT)) {
+				if (adp.getLocation().equals(DataStoreServiceController.METACAT)) {
 					otherEntityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(otherEntityDocid);
 				} else {
 					otherEntityFile = fds.openFile(otherEntityDocid);

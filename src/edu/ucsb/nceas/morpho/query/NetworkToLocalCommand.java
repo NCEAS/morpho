@@ -26,7 +26,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
@@ -180,7 +180,7 @@ public class NetworkToLocalCommand implements Command
           saveEvent.setSynchronize(true);
           saveEvent.setInitialId(selectDocId);
           saveEvent.setFinalId(localDocid);
-          saveEvent.setLocation(AbstractDataPackage.LOCAL);
+          saveEvent.setLocation(DataStoreServiceController.LOCAL);
           StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
           
           refreshFlag = true;

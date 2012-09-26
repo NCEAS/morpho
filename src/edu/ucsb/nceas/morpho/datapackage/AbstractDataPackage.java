@@ -71,13 +71,12 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
-import edu.ucsb.nceas.morpho.query.LocalQuery;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
@@ -221,7 +220,6 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected String id;
   protected ConfigXML config;
   protected File dataPkgFile;
-  protected FileSystemDataStore fileSysDataStore;
 
 	protected static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
 	protected static Map  customUnitDictionaryAdditionalMetadataMap = new HashMap();
@@ -373,20 +371,6 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public abstract Node getReferencedNode(Node node);
 
-  /**
-   * used to signify that this package is located on a metacat server
-   */
-  public static final String METACAT = "metacat";
-
-  /**
-   * used to signify that this package is located locally
-   */
-  public static final String LOCAL = "local";
-
-  /**
-   * used to signify that this package is stored on metacat and locally.
-   */
-  public static final String BOTH = "localmetacat";
   
   /**
    * used to signify that this package is not stored.
@@ -397,7 +381,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected File getFileWithID(String ID, Morpho morpho) throws Throwable {
 
     File returnFile = null;
-    if (location.equals(METACAT)) {
+    if (location.equals(DataStoreServiceController.METACAT)) {
       try {
         Log.debug(11, "opening metacat file");
         dataPkgFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(ID);
@@ -423,10 +407,8 @@ public abstract class AbstractDataPackage extends MetadataObject
     else { //not metacat
       try {
         Log.debug(11, "opening local file");
-        if (fileSysDataStore == null) {
-          fileSysDataStore = new FileSystemDataStore(morpho);
-        }
-        dataPkgFile = fileSysDataStore.openFile(ID);
+        
+        dataPkgFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(ID);
         Log.debug(11, "local file opened");
 
       }
@@ -2190,13 +2172,12 @@ public abstract class AbstractDataPackage extends MetadataObject
   	  {
         String URLinfo = getDistributionUrl(i, 0, 0);
         String protocol = getUrlProtocol(URLinfo);
-        FileSystemDataStore fsd = new FileSystemDataStore(Morpho.thisStaticInstance);
         if(protocol != null && protocol.equals(ECOGRID) ) 
         {
           
           String docid = getUrlInfo(URLinfo);
           Log.debug(30, "handle data file  with index "+i+ ""+docid);
-          fsd.deleteInCompleteFile(docid);
+          Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(docid);
         }
   	  }
 	  }
@@ -3692,9 +3673,6 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public void serializeData(String dataDestination)  {
 	Log.debug(30, "serilaize data =====================");
-    File dataFile = null;
-    Morpho morpho = Morpho.thisStaticInstance;
-    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     getEntityArray();
     //Log.debug(1, "About to check entityArray!");
     if (entityArray == null) {
@@ -3733,7 +3711,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        String statusInLocal = null;
 	        String conflictLocation = null;
 	        //Check to see if id confilct or not
-	        if((dataDestination.equals(AbstractDataPackage.METACAT))) 
+	        if((dataDestination.equals(DataStoreServiceController.METACAT))) 
 	        {
 	    	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
 	    	    Log.debug(30, "docid "+docid+ " status in metacat is "+statusInMetacat);
@@ -3744,9 +3722,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	    	//existFlag = true;
 	    	    }
 	        }
-	        else if((dataDestination.equals(AbstractDataPackage.LOCAL))) 
+	        else if((dataDestination.equals(DataStoreServiceController.LOCAL))) 
 	        {
-	        	statusInLocal = fsds.status(docid);
+	        	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
 	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal);
 	        	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	    	    {
@@ -3755,10 +3733,10 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	    	//existFlag = true;
 	    	    }
 	        }
-	        else if (dataDestination.equals(AbstractDataPackage.BOTH))
+	        else if (dataDestination.equals(DataStoreServiceController.BOTH))
 	        {
 	    	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
-	        	statusInLocal = fsds.status(docid);
+	        	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
 	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal +" and status in metacat is"+statusInMetacat);
         		if (statusInMetacat != null && statusInLocal != null && 
         				statusInLocal.equals(DataStoreInterface.CONFLICT) && statusInMetacat.equals(DataStoreInterface.CONFLICT))
@@ -3799,14 +3777,14 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        // reset urlinfo with new docid (if docid was not changed, the url will still be same).
 	        
 	        // urlinfo should be the id in a string
-	        if (dataDestination.equals(LOCAL) || dataDestination.equals(BOTH))  {
+	        if (dataDestination.equals(DataStoreServiceController.LOCAL) || dataDestination.equals(DataStoreServiceController.BOTH))  {
 	          if( isDirty || !existInLocal )
 	          {
 	            handleLocal(docid);
 	          }
 	        }
 	        
-	        if (dataDestination.equals(METACAT) || dataDestination.equals(BOTH)) {
+	        if (dataDestination.equals(DataStoreServiceController.METACAT) || dataDestination.equals(DataStoreServiceController.BOTH)) {
 	          if(isDirty || !existInMetacat)
 	          {
 	             handleMetacat(docid, objectName);
@@ -3900,12 +3878,11 @@ public abstract class AbstractDataPackage extends MetadataObject
         {
           //now we copy the file into morpho
           AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-          FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
           String identifier = an.getNextId();
           try
           {
             InputStream dfis = new FileInputStream(localFile);
-            fds.saveDataFile(identifier, dfis);
+            Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(identifier, dfis);
             //now we can modify the online url in metadata.
             String url = ECOGRID+"://knb/"+identifier;
             setDistributionUrl(i, 0, 0, url);
@@ -3991,12 +3968,11 @@ public abstract class AbstractDataPackage extends MetadataObject
    {
      Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle incomplete "+docid);
      Morpho morpho = Morpho.thisStaticInstance;
-     FileSystemDataStore fds = new FileSystemDataStore(morpho);
      File dataFile = null;
    
      try
      {
-       dataFile = fds.openFile(docid);
+       dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
        Log.debug(30, "Docid "+docid+" exist in data dir in AbstractDataPackage.handleIncompleteDir");
        return;
      }
@@ -4012,9 +3988,9 @@ public abstract class AbstractDataPackage extends MetadataObject
        Log.debug(30, "The temp file path is "+temp);*/
        try 
        {
-         dataFile = fds.openTempFile(docid);
+         dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openTempFile(docid);
          InputStream dfis = new FileInputStream(dataFile);
-         fds.saveIncompleteDataFile(docid, dfis);
+         Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteDataFile(docid, dfis);
          dfis.close();
        }
        catch (Exception qq) 
@@ -4024,7 +4000,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         {
           //open old file name (if no file change, the old file name will be as same as docid).
           InputStream dfis = new FileInputStream(dataFile);
-          fds.saveIncompleteDataFile(docid, dfis);
+          Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteDataFile(docid, dfis);
           dfis.close();
         }
         catch (Exception qqq) 
@@ -4045,8 +4021,6 @@ public abstract class AbstractDataPackage extends MetadataObject
 	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local "+docid);
     File dataFile = null;
     String oldDocid = null;
-    Morpho morpho = Morpho.thisStaticInstance;
-    FileSystemDataStore fds = new FileSystemDataStore(morpho);
     // if morpho serilaize data into local or metacat, and docid was changed, 
     // we need to get the old docid and find the it in temp dir
     if (!original_new_id_map.isEmpty())
@@ -4074,11 +4048,11 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(30, "The temp file path is "+temp);*/
       try {
            //dataFile = fds.openTempFile(temp);
-           dataFile = fds.openTempFile(oldDocid);
+           dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openTempFile(oldDocid);
           //open old file name (if no file change, the old file name will be as same as docid).
            InputStream dfis = new FileInputStream(dataFile);
           //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-          fds.saveDataFile(docid, dfis);
+           Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
           // the temp file has been saved; thus delete
           dfis.close();
 //          dataFile.delete();
@@ -4086,11 +4060,11 @@ public abstract class AbstractDataPackage extends MetadataObject
         //try to open incomplete file
         try
         {
-          dataFile = fds.openIncompleteFile(oldDocid);
+          dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(oldDocid);
          //open old file name (if no file change, the old file name will be as same as docid).
           InputStream dfis = new FileInputStream(dataFile);
          //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-         fds.saveDataFile(docid, dfis);
+          Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
          // the temp file has been saved; thus delete
          dfis.close();
         }
@@ -4101,7 +4075,7 @@ public abstract class AbstractDataPackage extends MetadataObject
             //open old file name (if no file change, the old file name will be as same as docid).
             dataFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(oldDocid);
             InputStream dfis = new FileInputStream(dataFile);
-            fds.saveDataFile(docid, dfis);
+            Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
             dfis.close();
           }catch (Exception qqq) {
             // some other problem has occured
@@ -4124,9 +4098,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    File metacatDataFile = null;
 	    String oldDocid = null;
 	    boolean sourceFromTemp = true;
-	    Morpho morpho = Morpho.thisStaticInstance;
-		 FileSystemDataStore fds = new FileSystemDataStore(morpho);
-	    ConfigXML profile = morpho.getProfile();
+	    ConfigXML profile = Morpho.thisStaticInstance.getProfile();
 	    String separator = profile.get("separator", 0);
 	    separator = separator.trim();
 	    String temp = new String();
@@ -4176,7 +4148,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    }*/
 	      try
 	      {
-	        dataFile = fds.getDataFileFromAllLocalSources(docid);
+	        dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllLocalSources(docid);
 	      }
 	      catch(Exception eee)
         {
@@ -4185,7 +4157,6 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
 	      
 	      try {
-    	      InputStream dfis = new FileInputStream(dataFile);
         	  Morpho.thisStaticInstance.getMetacatDataStore().newDataFile(docid, dataFile, objectName);
           }
           catch (Exception e) {
@@ -4345,14 +4316,14 @@ public abstract class AbstractDataPackage extends MetadataObject
     File f = null;
     boolean localloc = false;
     boolean metacatloc = false;
-    if (location.equals(BOTH)) {
+    if (location.equals(DataStoreServiceController.BOTH)) {
       localloc = true;
       metacatloc = true;
     }
-    else if (location.equals(METACAT)) {
+    else if (location.equals(DataStoreServiceController.METACAT)) {
       metacatloc = true;
     }
-    else if (location.equals(LOCAL)) {
+    else if (location.equals(DataStoreServiceController.LOCAL)) {
       localloc = true;
     }
     else {
@@ -4401,7 +4372,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     File openfile = null;
     try {
       if (localloc) { //get the file locally and save it
-        openfile = fileSysDataStore.openFile(id);
+        openfile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(id);
       }
       else if (metacatloc) { //get the file from metacat
         openfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id);
@@ -4657,8 +4628,6 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     String origFileName;
     File dataFile = null;
-    Morpho morpho = Morpho.thisStaticInstance;
-    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
     getEntityArray();
     if (entityArray == null) {
       Log.debug(20, "there is no data!");
@@ -4699,10 +4668,10 @@ public abstract class AbstractDataPackage extends MetadataObject
         origFileName = urlinfo;
       }
       try {
-        if ( (location.equals(LOCAL)) || (location.equals(BOTH))) {
-          dataFile = fds.openFile(urlinfo);
+        if ( (location.equals(DataStoreServiceController.LOCAL)) || (location.equals(DataStoreServiceController.BOTH))) {
+          dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(urlinfo);
         }
-        else if (location.equals(METACAT)) {
+        else if (location.equals(DataStoreServiceController.METACAT)) {
           dataFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(urlinfo);
         }
       }
@@ -4720,7 +4689,7 @@ public abstract class AbstractDataPackage extends MetadataObject
             urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());*/
         try {
           //dataFile = fds.openTempFile(temp);
-          dataFile = fds.openTempFile(urlinfo);
+          dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openTempFile(urlinfo);
         }
         catch (Exception ex) {
           Log.debug(5, "Some problem while writing data files has occurred!");
@@ -4783,42 +4752,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     return list;
   }
 
-  /**
-   * Deletes the package from the specified location
-   * @param locattion the location of the package that you want to delete
-   * use either BOTH, METACAT or LOCAL
-   */
 
-  public void delete(String location) throws Exception {
-    boolean metacatLoc = false;
-    boolean localLoc = false;
-    if(location.equals(METACAT) ||
-       location.equals(BOTH))
-    {
-      metacatLoc = true;
-    }
-    if(location.equals(LOCAL) ||
-       location.equals(BOTH))
-    {
-      localLoc = true;
-    }
-    String accnum = getAccessionNumber();
-    if (localLoc) {
-      boolean localSuccess = fileSysDataStore.deleteFile(accnum);
-      if (!localSuccess)
-      {
-        throw new Exception("User couldn't delete the local copy");
-      }
-      LocalQuery.removeFromCache(accnum);
-    }
-    if (metacatLoc) {
-     boolean success = Morpho.thisStaticInstance.getMetacatDataStore().deleteFile(accnum);
-     if (!success)
-     {
-       throw new Exception("User couldn't delete the network copy");
-     }
-    }
-  }
 
   /**
    *  This method displays a summary of Package information by
@@ -5244,13 +5178,13 @@ public abstract class AbstractDataPackage extends MetadataObject
 	public static int getNextRevisionNumber(String docid, String location)
 	{
 		int version = ORIGINAL_REVISION;
-		if (location.equals(LOCAL)) {
+		if (location.equals(DataStoreServiceController.LOCAL)) {
 			version = getNextRevisionNumberFromLocal(docid);
 		}
-		if (location.equals(METACAT)) {
+		if (location.equals(DataStoreServiceController.METACAT)) {
 			version = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
 		}
-		if (location.equals(BOTH)) {
+		if (location.equals(DataStoreServiceController.BOTH)) {
 			int localNextRevision = getNextRevisionNumberFromLocal(docid);
 			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
 			version = Math.max(localNextRevision, metacatNextRevision);
@@ -5274,20 +5208,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		//Get Data dir
 		// intialize filesystem datastore if it is null
-		FileSystemDataStore fileSysDataStore = null;
-		
-		if (fileSysDataStore == null)
-		{
-			fileSysDataStore = new FileSystemDataStore(Morpho.thisStaticInstance);
-		}
-		
-		if (fileSysDataStore != null)
-		{
-		     dataDir = fileSysDataStore.getDataDir();
-		}
-		else {
-			dataDir = Morpho.thisStaticInstance.getMetacatDataStore().getDataDir();
-		}
+		dataDir = Morpho.thisStaticInstance.getFileSystemDataStore().getDataDir();
 		
 		String targetDocid = getDocIdPart(identifier);
 		Log.debug(30, "the data dir is "+dataDir);

@@ -48,7 +48,6 @@ import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
@@ -68,7 +67,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
 
   public EML2Beta6DataPackage() {
     morpho = Morpho.thisStaticInstance;
-    fileSysDataStore = new FileSystemDataStore(morpho);
   }
 
   public void serialize(String location) throws MetacatUploadException {
@@ -194,7 +192,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
         File openfile = null;
         if(localloc)
         { //get the file locally and save it
-          openfile = fileSysDataStore.openFile(docid);
+          openfile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
         }
         else if(metacatloc)
         { //get the file from metacat
@@ -450,7 +448,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       {
         //try to open the file locally, if it isn't here then try to get
         //it from metacat
-        subfile = fileSysDataStore.openFile(id.trim());
+        subfile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(id.trim());
       }
       catch(FileNotFoundException fnfe)
       {

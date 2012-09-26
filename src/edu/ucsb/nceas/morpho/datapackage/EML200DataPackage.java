@@ -62,7 +62,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
@@ -107,7 +107,7 @@ public  class EML200DataPackage extends AbstractDataPackage
    public void serializeToLocalWithOverwrite()
    {
 	   boolean overwrite = true;
-	   serialize(AbstractDataPackage.LOCAL, overwrite);
+	   serialize(DataStoreServiceController.LOCAL, overwrite);
    }
    
    /**
@@ -128,8 +128,6 @@ public  class EML200DataPackage extends AbstractDataPackage
 	 //this.setIdentifierChangedInMetacatSerialization(false);
 	 this.setPackageIDChanged(false);
 	 //System.out.println("serialize metadata ===============");
-    Morpho morpho = Morpho.thisStaticInstance;
-    FileSystemDataStore fsds = new FileSystemDataStore(morpho);;
     String statusInMetacat = null;
     String  statusInLocal  = null;
     //boolean existFlag = true;
@@ -159,7 +157,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	return;
     }
     //Check to see if id confilct or not
-    if((location.equals(AbstractDataPackage.METACAT))) 
+    if((location.equals(DataStoreServiceController.METACAT))) 
     {
 	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(getAccessionNumber());
 	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
@@ -168,9 +166,9 @@ public  class EML200DataPackage extends AbstractDataPackage
 	    	//this.setIdentifierChangedInMetacatSerialization(true);
 	    }
     }
-    else if((location.equals(AbstractDataPackage.LOCAL))) 
+    else if((location.equals(DataStoreServiceController.LOCAL))) 
     {
-    	statusInLocal = fsds.status(getAccessionNumber());
+    	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(getAccessionNumber());
     	//existFlag = existInLocal;
     	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	    {
@@ -178,10 +176,10 @@ public  class EML200DataPackage extends AbstractDataPackage
 	    	//this.setIdentifierChangedInLocalSerialization(true);
 	    }
     }
-    else if (location.equals(AbstractDataPackage.BOTH))
+    else if (location.equals(DataStoreServiceController.BOTH))
     {
 	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(getAccessionNumber());
-    	statusInLocal = fsds.status(getAccessionNumber());
+    	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(getAccessionNumber());
     	//if (existFlag)
     	//{
     		if (statusInMetacat != null && statusInLocal != null && 
@@ -222,7 +220,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	 if (choice != null && choice.equals(DocidConflictHandler.INCREASEID))
     	 {
     		 // increase to a new id
-    	    AccessionNumber an = new AccessionNumber(morpho);
+    	    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
             identifier = an.getNextId();
             setAccessionNumber(identifier);
             setPackageIDChanged(true);
@@ -248,7 +246,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     {
     	Log.debug(30, "==============In existFlag and insert revision 1 branch");
     	//since it is saving a new package, increase docid silently
-    	 AccessionNumber an = new AccessionNumber(morpho);
+    	 AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
     	 identifier = an.getNextId();
     	 setAccessionNumber(identifier);
     	 setPackageIDChanged(true);
@@ -260,7 +258,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 
       // save doc to metacat
       StringReader sr1 = new StringReader(temp);
-      if((location.equals(AbstractDataPackage.METACAT))|| (location.equals(AbstractDataPackage.BOTH))) 
+      if((location.equals(DataStoreServiceController.METACAT))|| (location.equals(DataStoreServiceController.BOTH))) 
       {
         if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.UPDATE))
         {
@@ -302,11 +300,11 @@ public  class EML200DataPackage extends AbstractDataPackage
       
       // save doc to local file system
       StringReader sr = new StringReader(temp);
-      if((location.equals(AbstractDataPackage.LOCAL)) || (location.equals(AbstractDataPackage.BOTH))) 
+      if((location.equals(DataStoreServiceController.LOCAL)) || (location.equals(DataStoreServiceController.BOTH))) 
       {
          //Log.debug(10, "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
          //fsds.saveFile("100.0",sr);
-          File newFile = fsds.saveFile(getAccessionNumber(),sr);
+          File newFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveFile(getAccessionNumber(),sr);
           if (newFile != null)
           {
              this.setSerializeLocalSuccess(true);
@@ -321,7 +319,7 @@ public  class EML200DataPackage extends AbstractDataPackage
       {
         String id = getAccessionNumber();
         Log.debug(30, "Serialize metadata into incomplete dir with docid "+id);
-        File newFile = fsds.saveIncompleteFile(id, sr);
+        File newFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteFile(id, sr);
         if (newFile != null)
         {
            this.setSerializeLocalSuccess(true);
@@ -383,7 +381,6 @@ public  class EML200DataPackage extends AbstractDataPackage
     Log.debug(20, "location: " + location);
     morpho = Morpho.thisStaticInstance;
 
-    fileSysDataStore  = new FileSystemDataStore(morpho);
     File packagefile;
     try {
       packagefile = getFileWithID(this.id, morpho);
@@ -1512,30 +1509,30 @@ public  class EML200DataPackage extends AbstractDataPackage
   public AbstractDataPackage upload(String id, boolean updatePackageId)
                                                 throws MetacatUploadException {
     Morpho morpho = Morpho.thisStaticInstance;
-    load(AbstractDataPackage.LOCAL, id, morpho);
+    load(DataStoreServiceController.LOCAL, id, morpho);
     String nextid = id;
     if (updatePackageId) {
       AccessionNumber an = new AccessionNumber(morpho);
       nextid = an.getNextId();
       this.setAccessionNumber(nextid);
           // serialize locally with the new id
-      serialize(AbstractDataPackage.LOCAL);
+      serialize(DataStoreServiceController.LOCAL);
     }
 
     try {
-    	serializeData(AbstractDataPackage.METACAT);
-        serialize(AbstractDataPackage.METACAT);
+    	serializeData(DataStoreServiceController.METACAT);
+        serialize(DataStoreServiceController.METACAT);
       // if serialize data successfully, we will serialize data. 
       if(getSerializeMetacatSuccess() == true)
       {
     	  //System.out.println("=================== serialzie metacat is true");
-    	  this.setLocation(AbstractDataPackage.METACAT);
+    	  this.setLocation(DataStoreServiceController.METACAT);
     	  
       }
       else
       {
     	  //System.out.println("=================== serialzie metacat is false");
-    	  this.setLocation(AbstractDataPackage.LOCAL);
+    	  this.setLocation(DataStoreServiceController.LOCAL);
     	  throw new MetacatUploadException("Couldn't upload the package to metacat");
       }
     }
@@ -1550,8 +1547,8 @@ public  class EML200DataPackage extends AbstractDataPackage
     Morpho morpho = Morpho.thisStaticInstance;
     //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
     try {
-      serializeData(AbstractDataPackage.LOCAL);
-      serialize(AbstractDataPackage.LOCAL);
+      serializeData(DataStoreServiceController.LOCAL);
+      serialize(DataStoreServiceController.LOCAL);
     } catch (Exception w) {
         Log.debug(5,"Exception serializing local package in 'download'");
     }

@@ -27,17 +27,16 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
-import edu.ucsb.nceas.morpho.plugins.NewPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
@@ -46,16 +45,12 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
-import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.DeleteEvent;
-import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
-import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
 
 import java.util.Vector;
 
@@ -75,8 +70,6 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -1407,15 +1400,15 @@ public class DataPackagePlugin
     {
       boolean metacat = false;
       boolean local = false;
-      if (location.equals(AbstractDataPackage.METACAT)) metacat = true;
-      if (location.equals(AbstractDataPackage.LOCAL)) local = true;
-      if (location.equals(AbstractDataPackage.BOTH)) {
+      if (location.equals(DataStoreServiceController.METACAT)) metacat = true;
+      if (location.equals(DataStoreServiceController.LOCAL)) local = true;
+      if (location.equals(DataStoreServiceController.BOTH)) {
         metacat = true;
         local = true;
       }
       AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
       if (adp!=null) {
-        adp.delete(location);
+    	  DataStoreServiceController.getInstance().delete(adp, location);
         // notify listeners of the delete
         DeleteEvent deleteEvent = new DeleteEvent(UIController.getInstance().getCurrentActiveWindow(), StateChangeEvent.DELETE_DATAPACKAGE);
         deleteEvent.setId(docid);
@@ -1439,13 +1432,13 @@ public class DataPackagePlugin
 //    dp.export(path);
     boolean local = false;
     boolean metacat = false;
-    if (location.equals(AbstractDataPackage.LOCAL)) {
+    if (location.equals(DataStoreServiceController.LOCAL)) {
       local = true;
     }
-    else if (location.equals(AbstractDataPackage.METACAT)) {
+    else if (location.equals(DataStoreServiceController.METACAT)) {
       metacat = true;
     }
-    else if (location.equals(AbstractDataPackage.BOTH)) {
+    else if (location.equals(DataStoreServiceController.BOTH)) {
       local = true;
       metacat = true;
     }
@@ -1478,13 +1471,13 @@ public class DataPackagePlugin
   {
     boolean local = false;
     boolean metacat = false;
-    if (location.equals(AbstractDataPackage.LOCAL)) {
+    if (location.equals(DataStoreServiceController.LOCAL)) {
       local = true;
     }
-    else if (location.equals(AbstractDataPackage.METACAT)) {
+    else if (location.equals(DataStoreServiceController.METACAT)) {
       metacat = true;
     }
-    else if (location.equals(AbstractDataPackage.BOTH)) {
+    else if (location.equals(DataStoreServiceController.BOTH)) {
       local = true;
       metacat = true;
     }
@@ -1619,13 +1612,13 @@ public class DataPackagePlugin
   {
     boolean local = false;
     boolean metacat = false;
-    if (location.equals(AbstractDataPackage.LOCAL)) {
+    if (location.equals(DataStoreServiceController.LOCAL)) {
       local = true;
     }
-    else if (location.equals(AbstractDataPackage.METACAT)) {
+    else if (location.equals(DataStoreServiceController.METACAT)) {
       metacat = true;
     }
-    else if (location.equals(AbstractDataPackage.BOTH)) {
+    else if (location.equals(DataStoreServiceController.BOTH)) {
       local = true;
       metacat = true;
     }

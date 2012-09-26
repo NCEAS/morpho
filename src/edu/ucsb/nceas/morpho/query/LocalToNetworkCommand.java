@@ -26,7 +26,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -189,7 +189,7 @@ public class LocalToNetworkCommand implements Command
               saveEvent.setSynchronize(true);
               saveEvent.setInitialId(selectDocId);
               saveEvent.setFinalId(metacatDocid);
-              saveEvent.setLocation(AbstractDataPackage.METACAT);
+              saveEvent.setLocation(DataStoreServiceController.METACAT);
               StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
               
               refreshFlag = true;
