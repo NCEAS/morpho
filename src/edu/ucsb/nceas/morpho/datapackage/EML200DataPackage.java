@@ -232,7 +232,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	 else
     	 {
     		 // increase revision number
-    		 int newRevision = this.getNextRevisionNumber(getAccessionNumber());
+    		 int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(getAccessionNumber(), DataStoreServiceController.BOTH);
     		 identifier = temp2+"."+newRevision;
     		 setAccessionNumber(identifier);
     		 setPackageIDChanged(true);

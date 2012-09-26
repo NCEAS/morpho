@@ -148,7 +148,7 @@ public class OpenByIdDialog extends JDialog {
 			try {
 				// append a fake revision to use these methods
 				String syntheticId = id + ".1";
-				int nextRevision = AbstractDataPackage.getNextRevisionNumber(syntheticId, location);
+				int nextRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(syntheticId, location);
 				int revision = nextRevision - 1;
 				id = id + "." + revision;
 				an = new AccessionNumber(Morpho.thisStaticInstance);

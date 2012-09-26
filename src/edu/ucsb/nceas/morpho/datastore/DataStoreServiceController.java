@@ -75,6 +75,30 @@ public class DataStoreServiceController {
 	}
 	
 	/**
+	 * Gets next revision for this doc for the given location
+	 * @param docid the partial identifier (no rev)
+	 * @param location of the doc
+	 * @return  the next revision number
+	 */
+	public int getNextRevisionNumber(String docid, String location)
+	{
+		int version = AbstractDataPackage.ORIGINAL_REVISION;
+		if (location.equals(DataStoreServiceController.LOCAL)) {
+			version = Morpho.thisStaticInstance.getFileSystemDataStore().getNextRevisionNumber(docid);
+		}
+		if (location.equals(DataStoreServiceController.METACAT)) {
+			version = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
+		}
+		if (location.equals(DataStoreServiceController.BOTH)) {
+			int localNextRevision = Morpho.thisStaticInstance.getFileSystemDataStore().getNextRevisionNumber(docid);
+			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
+			version = Math.max(localNextRevision, metacatNextRevision);
+		}
+		
+		return version;
+	}
+	
+	/**
 	 * Read file from given location
 	 * 
 	 * @param id

@@ -41,6 +41,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -597,4 +598,163 @@ public class FileSystemDataStore extends DataStore
     }
     return file;
   }
+  
+  /**
+	 * Gets next revisons from loca. This method will look at the profile/scope dir and figure
+	 * it out the maximum revision. This number will be  increase 1 to get the next revision number.
+	 * If local file system doesn't have this docid, 1 will be returned
+	 */
+	public int getNextRevisionNumber(String identifier)
+	{
+		int version = AbstractDataPackage.ORIGINAL_REVISION;
+		String dataDir = null;
+		if (identifier == null)
+		{
+			return version;
+		}
+		//Get Data dir
+		// intialize filesystem datastore if it is null
+		dataDir = getDataDir();
+		
+		String targetDocid = getDocIdPart(identifier);
+		Log.debug(30, "the data dir is "+dataDir);
+		if (dataDir != null && targetDocid != null)
+		{
+			//Gets scope name
+			String scope = null;
+			scope = getIdScope(identifier);
+			Log.debug(30, "the scope from id is "+scope);
+			File scopeFiles = new File(dataDir+File.separator+scope);
+			if (scopeFiles.isDirectory())
+			{
+				File[] list = scopeFiles.listFiles();
+				//Finds docid and revision part. The file name in above list will look 
+				//like 56.1. We will go through all files and find the maximum revision of
+				//same docid
+				if (list != null)
+				{
+					for (int i=0; i<list.length; i++)
+					{
+						File file = list[i];
+						if (file != null)
+						{
+							String name = file.getName();
+							if (name != null)
+							{
+								int index = name.lastIndexOf(".");
+								if (index != -1)
+								{
+								   String docid = name.substring(0,index);
+								   if (docid != null && docid.equals(targetDocid))
+								   {
+									   String versionStr = name.substring(index+1);
+									   if (versionStr != null)
+									   {
+										   try
+										   {
+											   int newVersion = (new Integer(versionStr)).intValue();
+											   if (newVersion > version)
+											   {
+												   version = newVersion;
+											   }
+										   }
+										   catch(Exception e)
+										   {
+											   Log.debug(30, "couldn't find the version part in file name "+name);
+										   }
+									   }
+								   }
+								}
+							}
+							
+						}
+					}
+				}
+				
+			}
+		}
+		//if we found a maximum revsion, we should increase 1 to get the next revsion
+		if (version != AbstractDataPackage.ORIGINAL_REVISION)
+		{
+			version++;
+		}
+		Log.debug(30, "The next version for docid " + identifier + " in local file system is "+version);
+		return version;
+	}
+	  
+	  /*
+	   *  Gets the scope of given id. For example, it will return jones if the docid is jones.1.1.
+	   *  It will return the substring from 0 to the second last .
+	   *  null will be returned if no scope found.
+	   * @return the scope of this id
+	   */
+	  private static String getIdScope(String id)
+	  {
+		  String scope = null;
+		  if (id != null)
+		  {
+			  int index =id.lastIndexOf(".");
+			  if (index != -1)
+			  {
+			      scope = id.substring(0, index);
+			      if (scope != null)
+			      {
+			    	  index = scope.lastIndexOf(".");
+			    	  if (index != -1)
+			    	  {
+			    		  scope = scope.substring(0,index);
+			    	  }
+			    	  else
+			    	  {
+			    		  scope = null;
+			    	  }
+			      }
+			  }
+		  }
+		  return scope;
+	  }
+	
+	/*
+	 * Get docid part of an identifier. For example, it will return 30 if package id is jones.30.1
+	 * It will return the substring from the second last dot to the last dot.
+	 * null will return if no docid part found
+	 */
+	private static String getDocIdPart(String identifier)
+	{
+	  String docid = null;
+	  //String identifier = null;
+	  /*if (initialId != null)
+	  {
+	      identifier = initialId;
+		  
+	  }
+	  else
+	  {
+		  identifier = getPackageId();
+	  }*/
+	  Log.debug(30, "The identifier which need be got docid part is "+identifier);
+	  if (identifier != null)
+	  {
+		  int index =identifier.lastIndexOf(".");
+		  if (index != -1)
+		  {
+		      docid = identifier.substring(0, index);
+		      if (docid != null)
+		      {
+		    	  index = docid.lastIndexOf(".");
+		    	  if (index != -1 )
+		    	  {
+		    		  docid = docid.substring(index+1);
+		    		  
+		    	  }
+		    	  else
+		    	  {
+		    		  docid = null;
+		    	  }
+		      }
+		  }
+	  }
+	  Log.debug(30, "the docid part is "+docid);
+	  return docid;
+	}
 }
