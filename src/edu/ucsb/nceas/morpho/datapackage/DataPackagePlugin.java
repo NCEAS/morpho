@@ -941,13 +941,7 @@ public class DataPackagePlugin
       Log.debug(5, "Morpho couldn't open the package at this location - "+location);
       return;
     }
-      boolean metacat = false;
-      boolean local = false;
-      if ((location.equals(DataPackageInterface.METACAT))||
-               (location.equals(DataPackageInterface.BOTH))) metacat = true;
-      if ((location.equals(DataPackageInterface.LOCAL))||
-               (location.equals(DataPackageInterface.BOTH))) local = true;
-      adp = DataPackageFactory.getDataPackage(identifier, metacat, local);
+    adp = DataPackageFactory.getDataPackage(identifier, location);
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
 
@@ -1337,8 +1331,8 @@ public class DataPackagePlugin
   public String upload(String docid, boolean updateIds)
               throws MetacatUploadException
   {
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, false, true);
-                      // metacat flag is false; local is true
+    // metacat flag is false; local is true
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
     AbstractDataPackage newadp = adp.upload(docid, updateIds);
     if (newadp != null)
     {
@@ -1358,10 +1352,9 @@ public class DataPackagePlugin
    */
   public String download(String docid)
   {
-//    DataPackage dp = new DataPackage(DataPackageInterface.METACAT, docid, null, morpho, true);
-//    dp.download();
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, true, false);
-                      // metacat flag is true; local is false
+	  
+    // metacat flag is true; local is false
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.METACAT);
     AbstractDataPackage newadp = adp.download(docid);
     if (newadp != null)
     {
@@ -1387,7 +1380,7 @@ public class DataPackagePlugin
     if(location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE))
     {
       File incompleteFile = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(docid);
-      AbstractDataPackage adp = DataPackageFactory.getDataPackage(incompleteFile);
+      AbstractDataPackage adp = DataPackageFactory.getDataPackage(new InputStreamReader(new FileInputStream(incompleteFile), Charset.forName("UTF-8")));
       if(adp != null)
       {
         adp.deleteDataFilesInIncompleteFolder();
@@ -1396,15 +1389,8 @@ public class DataPackagePlugin
     }
     else
     {
-      boolean metacat = false;
-      boolean local = false;
-      if (location.equals(DataPackageInterface.METACAT)) metacat = true;
-      if (location.equals(DataPackageInterface.LOCAL)) local = true;
-      if (location.equals(DataPackageInterface.BOTH)) {
-        metacat = true;
-        local = true;
-      }
-      AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
+      
+      AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, location);
       if (adp!=null) {
     	  DataStoreServiceController.getInstance().delete(adp, location);
         // notify listeners of the delete
@@ -1426,21 +1412,7 @@ public class DataPackagePlugin
    */
   public void export(String docid, String path, String location)
   {
-//    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
-//    dp.export(path);
-    boolean local = false;
-    boolean metacat = false;
-    if (location.equals(DataPackageInterface.LOCAL)) {
-      local = true;
-    }
-    else if (location.equals(DataPackageInterface.METACAT)) {
-      metacat = true;
-    }
-    else if (location.equals(DataPackageInterface.BOTH)) {
-      local = true;
-      metacat = true;
-    }
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, location);
     DataStoreServiceController.getInstance().export(adp, path);
   }
 
@@ -1467,22 +1439,8 @@ public class DataPackagePlugin
    */
   public void exportToZip(String docid, String path, String location)
   {
-    boolean local = false;
-    boolean metacat = false;
-    if (location.equals(DataPackageInterface.LOCAL)) {
-      local = true;
-    }
-    else if (location.equals(DataPackageInterface.METACAT)) {
-      metacat = true;
-    }
-    else if (location.equals(DataPackageInterface.BOTH)) {
-      local = true;
-      metacat = true;
-    }
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, location);
     DataStoreServiceController.getInstance().exportToZip(adp, path);
-
-
   }
 
    /**
@@ -1595,33 +1553,12 @@ public class DataPackagePlugin
   public Document getDocumentNode(String docid, String location)
   {
     Document doc = null; 
-    AbstractDataPackage adp = getAbstractDataPackage(docid, location);
-    if(adp != null)
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, location);
+    if (adp != null)
     {
       doc = adp.getDocument();
     }
     return doc;
-  }
-  
-  /*
-   * Gets the abstract dataPackage from given docid and location
-   */
-  private AbstractDataPackage getAbstractDataPackage(String docid, String location)
-  {
-    boolean local = false;
-    boolean metacat = false;
-    if (location.equals(DataPackageInterface.LOCAL)) {
-      local = true;
-    }
-    else if (location.equals(DataPackageInterface.METACAT)) {
-      metacat = true;
-    }
-    else if (location.equals(DataPackageInterface.BOTH)) {
-      local = true;
-      metacat = true;
-    }
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
-    return adp;
   }
 
 
@@ -1704,7 +1641,7 @@ public class DataPackagePlugin
   public void saveIncompleteDocumentForLater(String docid,  Reader xml) throws Exception
   {
     Log.debug(30, "given docid is "+docid +" in DataPackagePlugin.saveIncompleteDocumentForLater");
-    EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(xml, false, true);
+    EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(xml);
     ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
     adp.setAccessionNumber(docid);
     adp.serializeIncompleteData();
@@ -1742,7 +1679,7 @@ public class DataPackagePlugin
       
     }
       
-    AbstractDataPackage dataPackage = getAbstractDataPackage(docid, documentLocation);
+    AbstractDataPackage dataPackage = DataPackageFactory.getDataPackage(docid, documentLocation);
     if(dataPackage == null)
     {
       throw new Exception("Morpho couldn't open the data package with docid "+docid+" at the location "+documentLocation);

@@ -1,33 +1,15 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Window;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -35,7 +17,6 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
 
 
@@ -165,8 +146,7 @@ public class EMLTransformToNewestVersionDialog
 					try
 		            {
 						Vector errorPathList = null;
-						eml200Package= (EML200DataPackage)DataPackageFactory.getDataPackage(
-			                      new java.io.StringReader(newString), false, true);
+						eml200Package= (EML200DataPackage)DataPackageFactory.getDataPackage(new java.io.StringReader(newString));
 		                eml200Package.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
 		                Morpho morpho = Morpho.thisStaticInstance;
 		                //AccessionNumber an = new AccessionNumber(morpho);

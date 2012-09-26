@@ -25,11 +25,10 @@
  */
 package edu.ucsb.nceas.morpho.util;
 
-import java.util.List;
-
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import org.w3c.dom.Element;
@@ -100,9 +99,7 @@ public class EML201DocumentCorrector {
      private AbstractDataPackage getDataPackage()
      {
     	 AbstractDataPackage dataPackage = null;
-    	 boolean metacat = false;
-    	 boolean local       = true;
-    	 dataPackage = DataPackageFactory.getDataPackage(docid, metacat, local);
+    	 dataPackage = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
     	 return dataPackage;
      }
      

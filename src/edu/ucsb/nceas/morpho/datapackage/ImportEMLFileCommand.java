@@ -28,6 +28,9 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 import javax.swing.JFileChooser;
 
@@ -77,7 +80,7 @@ public class ImportEMLFileCommand implements Command
       Log.debug(30, "The chooser file is "+emlFile.getAbsolutePath());
       try
       {
-        AbstractDataPackage dataPackage = DataPackageFactory.getDataPackage(emlFile);
+        AbstractDataPackage dataPackage = DataPackageFactory.getDataPackage(new InputStreamReader(new FileInputStream(emlFile), Charset.forName("UTF-8")));
         if(dataPackage == null)
         {
           throw new Exception("Morpho couldn't create a data package from the given file.");

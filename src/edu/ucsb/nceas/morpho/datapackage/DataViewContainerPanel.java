@@ -769,25 +769,12 @@ public void setTopPanel(JPanel jp) {
    */
   public void removeDataChanges() {
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    adp = morphoFrame.getAbstractDataPackage();
-
-    boolean local = false;
-    boolean metacat = false;
-
-    if(adp.getLocation().equals(DataPackageInterface.LOCAL)){
-      local = true;
-    } else if(adp.getLocation().equals(DataPackageInterface.METACAT)){
-      metacat = true;
-    } else {
-      local = true;
-      metacat = true;
-    }
+    adp = morphoFrame.getAbstractDataPackage();  
 
     AbstractDataPackage tempAdp = null;
     Entity[] entArray = null;
     try{
-      tempAdp = DataPackageFactory.getDataPackage(adp.getAccessionNumber(),
-          metacat, local);
+      tempAdp = DataPackageFactory.getDataPackage(adp.getAccessionNumber(), adp.getLocation());
       entArray = tempAdp.getEntityArray();
     }catch(Exception e){
       Log.debug(20,"Unable to read the file in RevertCommand.java");

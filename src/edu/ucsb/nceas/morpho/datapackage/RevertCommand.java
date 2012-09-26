@@ -25,7 +25,6 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -81,25 +80,14 @@ public class RevertCommand implements Command
     }//if
     if (dvcp!=null) {
       adp = morphoFrame.getAbstractDataPackage();
-      boolean local = false;
-      boolean metacat = false;
-      if(adp.getLocation().equals(DataPackageInterface.LOCAL)){
-        local = true;
-      } else if(adp.getLocation().equals(DataPackageInterface.METACAT)){
-        metacat = true;
-      } else {
-        local = true;
-        metacat = true;
-      }
-
+      
       AbstractDataPackage tempAdp = null;
       Entity[] entArray = null;
       DataViewer dv = dvcp.getCurrentDataViewer();
       int entityIndex = dv.getEntityIndex();
 
       try {
-        tempAdp = DataPackageFactory.getDataPackage(adp.getAccessionNumber(),
-            metacat, local);
+        tempAdp = DataPackageFactory.getDataPackage(adp.getAccessionNumber(), adp.getLocation());
       } catch(Exception e){
         Log.debug(5,"Check if the datapackage was saved.");
       }

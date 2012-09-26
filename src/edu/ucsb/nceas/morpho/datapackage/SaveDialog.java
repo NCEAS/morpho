@@ -302,9 +302,7 @@ public class SaveDialog extends JDialog {
 
 						// create a new data package instance with the altered
 						// XML
-						adp = (EML200DataPackage) DataPackageFactory
-								.getDataPackage(new java.io.StringReader(
-										newString), false, true);
+						adp = (EML200DataPackage) DataPackageFactory.getDataPackage(new java.io.StringReader(newString));
 						((EML200DataPackage) adp)
 								.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
 					} else {

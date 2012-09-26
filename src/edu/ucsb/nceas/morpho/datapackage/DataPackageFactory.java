@@ -62,10 +62,9 @@ public class DataPackageFactory
    *  Create a new Datapackage given a Reader to a metadata stream
    *  location is given by 2 booleans
    */
-  public static AbstractDataPackage getDataPackage(Reader in, boolean metacat, boolean local) {
+  public static AbstractDataPackage getDataPackage(Reader in) {
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
     // then create the appropriate subclass of AbstractDataPackage and return it.
-
 
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
@@ -94,7 +93,7 @@ public class DataPackageFactory
    *  Create a new Datapackage given a docid of a metadata stream
    *  location is given by 2 booleans
    */
-  public static AbstractDataPackage getDataPackage(String docid, boolean metacat, boolean local) {
+  public static AbstractDataPackage getDataPackage(String docid, String location) {
     // first use datastore package to get a stream for the metadata
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
     // then create the appropriate subclass of AbstractDataPackage and return it.
@@ -104,10 +103,7 @@ public class DataPackageFactory
       Morpho.createMorphoInstance();
       morpho = Morpho.thisStaticInstance;
     }
-    String location = null;
-    if (metacat && !local) location = DataPackageInterface.METACAT;
-    if (!metacat && local) location = DataPackageInterface.LOCAL;
-    if (metacat && local) location = DataPackageInterface.BOTH;
+    
     Reader in = null;
     if ((location.equals(DataPackageInterface.LOCAL))
                ||(location.equals(DataPackageInterface.BOTH))) {
@@ -246,45 +242,6 @@ public class DataPackageFactory
     return dp;
   }
   
-  
-  /**
-   *  Given a xml file, create an AbstractDataPackage object
-   *
-   */
-  public static AbstractDataPackage getDataPackage(File file) {
-    AbstractDataPackage dp = null;
-    String errorMessage = "";
-    try
-    {
-      Reader reader = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
-      String doctype = getDocTypeInfo(reader);
-      if(reader != null)
-      {
-        reader.close();
-      }
-      //Log.debug(50, "doctype: "+doctype);
-      
-      if(doctype.indexOf("eml-2.0")>-1|| doctype.indexOf("eml-2.1")>-1) 
-      {
-        // Note: assumed that this is ok for any 'eml-2.0.n' mod to eml2.0
-          reader = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
-          dp = new EML200DataPackage();
-          dp.load(new InputSource(reader));
-       
-      }
-    }
-    catch(Exception e)
-    {
-      dp = null;
-      errorMessage = e.getMessage();
-    }
-   // handlers for other types of documents hosuld be inserted here !!!
-    if (dp==null) 
-    {
-      Log.debug(1,"We couldn't get the abstract datapackage object ! (DataPackaqeFactory.getDataPackage) for doctype "+docType+"\n"+errorMessage);
-    }
-    return dp;
-  }
 
   /**
    *  reads the stream and tries to determine the docType. If there is a read docType,
@@ -483,7 +440,7 @@ public class DataPackageFactory
     Attribute attributeObject = null;
     try{
       Morpho.createMorphoInstance();
-      adp = DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
+      adp = DataPackageFactory.getDataPackage("jscientist.7.1", DataPackageInterface.LOCAL);
 
       // create a simple subtree to use to test coverage insertion
       Document doc = adp.getMetadataNode().getOwnerDocument();

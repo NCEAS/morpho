@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -50,9 +51,6 @@ import java.awt.event.MouseEvent;
 import java.awt.Font;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -203,10 +201,7 @@ public class ExternalRefsPage extends AbstractUIPage
                 dataPackageTable.getModel().getValueAt(selectedRow, DOCIDINDEX);
          // create a data package base on selected docid
          // because we only search the local, so set metacat = false
-         boolean metacat = false;
-         boolean local   = true;
-         selectedDataPackage = DataPackageFactory.
-                          getDataPackage(selectedDataPackageID, metacat, local);
+         selectedDataPackage = DataPackageFactory.getDataPackage(selectedDataPackageID, DataPackageInterface.LOCAL);
          parsingPackageIntoTable(selectedDataPackage);
        }
      });

@@ -1,39 +1,19 @@
 package edu.ucsb.nceas.morphotest.datapackage;
 
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
-import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
-import edu.ucsb.nceas.morpho.datapackage.EMLTransformToNewestVersionDialog;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.PluginInterface;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-
-import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.GUIAction;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.StateChangeEvent;
-import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-import edu.ucsb.nceas.morpho.util.UISettings;
-
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.net.URLStreamHandler;
-import java.util.Enumeration;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.io.IOException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestResult;
 import junit.framework.TestSuite;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.morpho.datapackage.EMLTransformToNewestVersionDialog;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * A junit test class for testing class EMLTransformToNewestVersionDialog.
@@ -104,8 +84,7 @@ public class EMLTransformToNewestVersionDialogTest extends TestCase
 		    	index = reader.read(array);
 		    }
 		    String eml = buffer.toString();
-		    EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(
-                    new java.io.StringReader(eml), false, true);
+		    EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(new java.io.StringReader(eml));
 		    
 		    //display the data package in the window. 
 		    long starttime = System.currentTimeMillis();
