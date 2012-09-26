@@ -594,9 +594,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return List containing the cloned root Nodes of subtrees, or an empty list
    * if none found. Never returns null
    */
-  public List getSubtrees(String genericName) {
+  public List<Node> getSubtrees(String genericName) {
 
-    List returnList = new ArrayList();
+    List<Node> returnList = new ArrayList<Node>();
 
     NodeList nodelist = null;
     String genericNamePath = "";
@@ -633,9 +633,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return List containing the cloned root Nodes of subtrees, or an empty list
    * if none found. Never returns null
    */
-  public static List getSubtree(NodeList nodelist)
+  public static List<Node> getSubtree(NodeList nodelist)
   {
-	  List returnList = new ArrayList();
+	  List<Node> returnList = new ArrayList<Node>();
 	  if ((nodelist == null) || (nodelist.getLength() == 0)) {
 
 	      Log.debug(50, "AbstractDataPackage.getSubtrees() - the pass node list is empty"+
@@ -716,10 +716,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return List of deleted subtrees; empty List if not found. SHOULD NEVER
    * RETURN null
    */
-  public List deleteAllSubtrees(String genericName) {
+  public List<Node> deleteAllSubtrees(String genericName) {
 
     NodeList nodelist = null;
-    List returnList = new ArrayList();
+    List<Node> returnList = new ArrayList<Node>();
     String genericNamePath = "";
     try {
       genericNamePath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
@@ -798,9 +798,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    * of all the subtrees identified by the passed unique String.  Returns an
    * empty List if none found. <em>NOTE - should never return null</em>
    */
-  public List getIDsForNodesWithName(String genericName) {
+  public List<String> getIDsForNodesWithName(String genericName) {
 
-    List returnList = new ArrayList();
+    List<String> returnList = new ArrayList<String>();
 
     String IDXpath = "";
     NodeList IDNodes;
@@ -3982,13 +3982,10 @@ public abstract class AbstractDataPackage extends MetadataObject
   private void handleMetacat(String docid, String objectName) {
 		Log.debug(30, "----------------------------------------handle metacat "+docid);
 	    File dataFile = null;
-	    File metacatDataFile = null;
 	    String oldDocid = null;
-	    boolean sourceFromTemp = true;
 	    ConfigXML profile = Morpho.thisStaticInstance.getProfile();
 	    String separator = profile.get("separator", 0);
 	    separator = separator.trim();
-	    String temp = new String();
 	    if (!original_new_id_map.isEmpty())
 	    {
 	    	//System.out.println("the key is "+urlinfo);
@@ -4003,36 +4000,6 @@ public abstract class AbstractDataPackage extends MetadataObject
 	      {
 	    	  oldDocid = docid;
 	      }
-	    /*temp = oldDocid.substring(0, oldDocid.indexOf(separator));
-	    temp = temp + "/" +
-	        oldDocid.substring(oldDocid.indexOf(separator) + 1, oldDocid.length());
-	    // Check where is the source data file (from temp or from data file)
-	    try
-	    {
-	    	dataFile = fds.openTempFile(temp);
-	    }
-	    catch(FileNotFoundException e)
-	    {
-	      
-	    	try
-	    	{
-	    	    dataFile =  fds.openFile(oldDocid);
-	    	    sourceFromTemp = false;
-	    	}
-	    	catch(Exception ee)
-	    	{
-	    	  try
-	    	  {
-	    	    dataFile =  fds.openIncompelteFile(oldDocid);
-	    	    sourceFromTemp = false;
-	    	  }
-	    	  catch(Exception eee)
-	    	  {
-	    	    Log.debug(5, "Couldn't find "+oldDocid+" in local system, so morpho couldn't upload it to metacat");
-	    	    return;
-	    	  }
-	    	}   	
-	    }*/
 	      try
 	      {
 	        dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllLocalSources(docid);
@@ -4125,38 +4092,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	   Log.debug(30, "======================new identifier is "+identifier);
 	   return identifier;
   }
-  
-  /*
-   * Returns a checksum of the given file. 0 will be return if some bad thing happens
-   */
-  private long getFileCheckSum(File file)
-  {
-	  long checksum = 0;
-	  try {
-	        // Compute Adler-32 checksum
-	        CheckedInputStream cis = new CheckedInputStream(
-	            new FileInputStream(file), new Adler32());
-	        byte[] tempBuf = new byte[128];
-	        while (cis.read(tempBuf) >= 0) 
-	        {
-	        	
-	        }
-	        checksum = cis.getChecksum().getValue();
-	    } 
-	    catch (IOException e) 
-	    {
-	        Log.debug(30, "Couldn't get the checksum value of the file" +file.getName());
-	    }
-	    Log.debug(30, "The checksum of " +file.getName()+" is "+checksum);
-	    return checksum;
-  }
 
-
-  private void handleBoth(String docid, String objectName) 
-  {
-    handleLocal(docid);
-    handleMetacat(docid, objectName);   
-  }
 
   private String getUrlInfo(String urlinfo) {
     //String urlinfo = getDistributionUrl(entityIndex, 0, 0);
