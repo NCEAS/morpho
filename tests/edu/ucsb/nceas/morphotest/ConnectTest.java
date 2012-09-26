@@ -30,11 +30,9 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 import java.io.FileNotFoundException;
-import java.net.URLStreamHandler;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
 /**
@@ -131,9 +129,9 @@ public class ConnectTest extends TestCase
    */
   public void testValidLogin()
   {
-    boolean connected = morpho.logIn();
+    boolean connected = morpho.getMetacatDataStore().logIn();
     assertTrue(connected);
-    assertTrue(morpho.isConnected());
+    assertTrue(morpho.getMetacatDataStore().isConnected());
   }
 
   /**
@@ -141,8 +139,8 @@ public class ConnectTest extends TestCase
    */
   public void testLogout()
   {
-    morpho.logOut();
-    assertTrue(morpho.isConnected() == false);
+    morpho.getMetacatDataStore().logOut();
+    assertTrue(morpho.getMetacatDataStore().isConnected() == false);
   }
 
   /**
@@ -151,8 +149,8 @@ public class ConnectTest extends TestCase
   public void testInvalidLogin()
   {
     morpho.setPassword("garbage");
-    boolean connected = morpho.logIn();
+    boolean connected = morpho.getMetacatDataStore().logIn();
     assertTrue(connected == false);
-    assertTrue(morpho.isConnected() == false);
+    assertTrue(morpho.getMetacatDataStore().isConnected() == false);
   }
 }
