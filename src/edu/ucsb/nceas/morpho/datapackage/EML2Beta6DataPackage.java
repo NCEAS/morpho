@@ -49,7 +49,6 @@ import org.xml.sax.InputSource;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
@@ -70,7 +69,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
   public EML2Beta6DataPackage() {
     morpho = Morpho.thisStaticInstance;
     fileSysDataStore = new FileSystemDataStore(morpho);
-    metacatDataStore = new MetacatDataStore(morpho);
   }
 
   public void serialize(String location) throws MetacatUploadException {
@@ -201,9 +199,9 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
         else if(metacatloc)
         { //get the file from metacat
           if (dataFileNameMap.containsKey(docid)) {
-           openfile = metacatDataStore.openDataFile(docid);
+           openfile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(docid);
           } else {
-            openfile = metacatDataStore.openFile(docid);
+            openfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
           }
         }
 
@@ -234,7 +232,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       EMLConvert.outputfileName = path;
       // when the package is on metacat, one wants to use a url pointing to the
       // current metacat. When the package is just local, pass a file url
-      String murl = metacatDataStore.getMetacatURL();
+      String murl = Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL();
       if (!metacatloc) {
         murl = "file://"+id;
       }
@@ -458,7 +456,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       {
         try
         {
-          subfile = metacatDataStore.openFile(id.trim());
+          subfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id.trim());
         }
         catch(FileNotFoundException fnfe2)
         {

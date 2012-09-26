@@ -26,49 +26,65 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.ChangeListener;
-import java.io.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 import java.util.concurrent.Executors;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.event.ChangeListener;
+
+import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-
-import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
-import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayFactoryInterface;
-import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.util.Base64;
+import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeListener;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
-import edu.ucsb.nceas.morpho.util.Base64;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.query.LocalQuery;
-
-import edu.ucsb.nceas.utilities.*;
-
-import org.w3c.dom.Node;
-
-
-import edu.ucsb.nceas.morpho.framework.*;
-import org.w3c.dom.Document;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * A panel that presents a data-centric view of a dataPackage. In fact, the panel is somewhat
@@ -872,8 +888,7 @@ public void setTopPanel(JPanel jp) {
                 displayFile = fds.openFile(urlinfo);
               }
               else if (loc.equals(adp.METACAT)) {
-                MetacatDataStore mds = new MetacatDataStore(morpho);
-                displayFile = mds.openDataFile(urlinfo);
+                displayFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(urlinfo);
               }
               else if (loc.equals("")) {
                 //Log.debug(5, "here");

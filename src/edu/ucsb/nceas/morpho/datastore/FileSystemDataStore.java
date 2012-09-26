@@ -26,13 +26,23 @@
 
 package edu.ucsb.nceas.morpho.datastore;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.nio.charset.Charset;
+
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
-
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.*;
 
 /**
  * implements and the DataStoreInterface for accessing files on the local
@@ -490,10 +500,9 @@ public class FileSystemDataStore extends DataStore
       }
       catch(Exception e)
       {
-        MetacatDataStore mds = new MetacatDataStore(super.morpho);
         try
         {
-          file = mds.openFile(docid);
+          file = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
         }
         catch(Exception ee)
         {
@@ -571,10 +580,9 @@ public class FileSystemDataStore extends DataStore
       }
       catch(Exception e)
       {
-        MetacatDataStore mds = new MetacatDataStore(super.morpho);
         try
         {
-          file = mds.openDataFile(docid);
+          file = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(docid);
         }
         catch(Exception ee)
         {

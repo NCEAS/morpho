@@ -41,7 +41,6 @@ import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -124,9 +123,8 @@ public class DataPackageFactory
       }
       catch (Exception w) {Log.debug(20,"Problem opening file!");}
     } else { // must be on metacat only
-      MetacatDataStore mds = new MetacatDataStore(morpho);
       try{
-        File file = mds.openFile(docid);
+        File file = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
         in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
       }
       catch (Exception e) {Log.debug(20,"Problem opening file from Metacat!");}

@@ -48,7 +48,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Vector;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
@@ -73,7 +72,6 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -224,7 +222,6 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected ConfigXML config;
   protected File dataPkgFile;
   protected FileSystemDataStore fileSysDataStore;
-  protected MetacatDataStore metacatDataStore;
 
 	protected static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
 	protected static Map  customUnitDictionaryAdditionalMetadataMap = new HashMap();
@@ -403,10 +400,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     if (location.equals(METACAT)) {
       try {
         Log.debug(11, "opening metacat file");
-        if (metacatDataStore == null) {
-          metacatDataStore = new MetacatDataStore(morpho);
-        }
-        dataPkgFile = metacatDataStore.openFile(ID);
+        dataPkgFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(ID);
         Log.debug(11, "metacat file opened");
 
       }
@@ -3701,7 +3695,6 @@ public abstract class AbstractDataPackage extends MetadataObject
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-    MetacatDataStore mds = new MetacatDataStore(morpho);
     getEntityArray();
     //Log.debug(1, "About to check entityArray!");
     if (entityArray == null) {
@@ -3742,7 +3735,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        //Check to see if id confilct or not
 	        if((dataDestination.equals(AbstractDataPackage.METACAT))) 
 	        {
-	    	    statusInMetacat = mds.status(docid);
+	    	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
 	    	    Log.debug(30, "docid "+docid+ " status in metacat is "+statusInMetacat);
 	    	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	    	    {
@@ -3764,7 +3757,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        }
 	        else if (dataDestination.equals(AbstractDataPackage.BOTH))
 	        {
-	    	    statusInMetacat = mds.status(docid);
+	    	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
 	        	statusInLocal = fsds.status(docid);
 	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal +" and status in metacat is"+statusInMetacat);
         		if (statusInMetacat != null && statusInLocal != null && 
@@ -4029,7 +4022,6 @@ public abstract class AbstractDataPackage extends MetadataObject
         // if a datafile is on metacat and user wants to save locally
         try
         {
-          MetacatDataStore mds = new MetacatDataStore(morpho);
           //open old file name (if no file change, the old file name will be as same as docid).
           InputStream dfis = new FileInputStream(dataFile);
           fds.saveIncompleteDataFile(docid, dfis);
@@ -4106,9 +4098,8 @@ public abstract class AbstractDataPackage extends MetadataObject
         {
           // if a datafile is on metacat and one wants to save locally
           try{
-            MetacatDataStore mds = new MetacatDataStore(morpho);
             //open old file name (if no file change, the old file name will be as same as docid).
-            dataFile = mds.openDataFile(oldDocid);
+            dataFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(oldDocid);
             InputStream dfis = new FileInputStream(dataFile);
             fds.saveDataFile(docid, dfis);
             dfis.close();
@@ -4135,7 +4126,6 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    boolean sourceFromTemp = true;
 	    Morpho morpho = Morpho.thisStaticInstance;
 		 FileSystemDataStore fds = new FileSystemDataStore(morpho);
-		 MetacatDataStore mds = new MetacatDataStore(morpho);
 	    ConfigXML profile = morpho.getProfile();
 	    String separator = profile.get("separator", 0);
 	    separator = separator.trim();
@@ -4193,7 +4183,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           Log.debug(5, "Couldn't find "+oldDocid+" in local system, so morpho couldn't upload it to metacat");
           return;
         }
-	      uploadDataFileToMetacat(docid, dataFile, objectName, mds);
+	      uploadDataFileToMetacat(docid, dataFile, objectName);
 	
 	  }
 
@@ -4202,15 +4192,14 @@ public abstract class AbstractDataPackage extends MetadataObject
   /*
    * Loads the data file to metacat
    */
-  private void uploadDataFileToMetacat(String identifier, File dataFile, String objectName,  
-                                                         MetacatDataStore mds)
+  private void uploadDataFileToMetacat(String identifier, File dataFile, String objectName)
   {
 	        try
 	          {
 		          InputStream dfis = new FileInputStream(dataFile);
 		          try
 		          {
-	                 mds.newDataFile(identifier, dataFile, objectName);
+		        	  Morpho.thisStaticInstance.getMetacatDataStore().newDataFile(identifier, dataFile, objectName);
 		          }
 		          catch (MetacatUploadException mue) 
 		          {
@@ -4441,7 +4430,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         openfile = fileSysDataStore.openFile(id);
       }
       else if (metacatloc) { //get the file from metacat
-        openfile = metacatDataStore.openFile(id);
+        openfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id);
       }
       FileInputStream fis = new FileInputStream(openfile);
       BufferedInputStream bfis = new BufferedInputStream(fis);
@@ -4695,8 +4684,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     String origFileName;
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
-    FileSystemDataStore fds = new FileSystemDataStore(morpho);
-    MetacatDataStore mds = new MetacatDataStore(morpho);
+    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
     getEntityArray();
     if (entityArray == null) {
       Log.debug(20, "there is no data!");
@@ -4741,7 +4729,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           dataFile = fds.openFile(urlinfo);
         }
         else if (location.equals(METACAT)) {
-          dataFile = mds.openFile(urlinfo);
+          dataFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(urlinfo);
         }
       }
       catch (FileNotFoundException fnf) {
@@ -4850,7 +4838,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       LocalQuery.removeFromCache(accnum);
     }
     if (metacatLoc) {
-     boolean success = metacatDataStore.deleteFile(accnum);
+     boolean success = Morpho.thisStaticInstance.getMetacatDataStore().deleteFile(accnum);
      if (!success)
      {
        throw new Exception("User couldn't delete the network copy");
@@ -5324,10 +5312,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		     dataDir = fileSysDataStore.getDataDir();
 		}
 		else {
-			MetacatDataStore metacatDataStore = new MetacatDataStore(Morpho.thisStaticInstance);
-			if (metacatDataStore != null) {
-				dataDir = metacatDataStore.getDataDir();
-			}
+			dataDir = Morpho.thisStaticInstance.getMetacatDataStore().getDataDir();
 		}
 		
 		String targetDocid = getDocIdPart(identifier);

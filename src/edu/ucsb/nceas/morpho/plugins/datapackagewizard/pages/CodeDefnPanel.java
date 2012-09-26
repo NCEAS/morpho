@@ -50,7 +50,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -76,7 +75,6 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomTable;
@@ -971,8 +969,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
           entityFile = fds.openFile(urlinfo);
         }
         else if (loc.equals(adp.METACAT)) {
-          MetacatDataStore mds = new MetacatDataStore(morpho);
-          entityFile = mds.openFile(urlinfo);
+          entityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(urlinfo);
         }
         else if (loc.equals("")) {  // just created the package; not yet saved!!!
           FileSystemDataStore fds = new FileSystemDataStore(morpho);

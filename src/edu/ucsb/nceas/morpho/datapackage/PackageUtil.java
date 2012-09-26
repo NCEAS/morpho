@@ -61,7 +61,6 @@ import com.arbortext.catalog.CatalogEntityResolver;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
@@ -476,8 +475,7 @@ public class PackageUtil
       {
         try
         {
-          MetacatDataStore mds = new MetacatDataStore(morpho);
-          f = mds.openFile(name);
+          f = Morpho.thisStaticInstance.getMetacatDataStore().openFile(name);
           return f;
         }
         catch(FileNotFoundException fnfe2)
@@ -503,8 +501,7 @@ public class PackageUtil
         }
         else
         {
-          MetacatDataStore mds = new MetacatDataStore(morpho);
-          f = mds.openFile(name);
+          f = Morpho.thisStaticInstance.getMetacatDataStore().openFile(name);
           return f;
         }
       }

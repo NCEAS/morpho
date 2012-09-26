@@ -63,7 +63,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
@@ -130,7 +129,6 @@ public  class EML200DataPackage extends AbstractDataPackage
 	 this.setPackageIDChanged(false);
 	 //System.out.println("serialize metadata ===============");
     Morpho morpho = Morpho.thisStaticInstance;
-    MetacatDataStore mds  = new MetacatDataStore(morpho);
     FileSystemDataStore fsds = new FileSystemDataStore(morpho);;
     String statusInMetacat = null;
     String  statusInLocal  = null;
@@ -163,7 +161,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     //Check to see if id confilct or not
     if((location.equals(AbstractDataPackage.METACAT))) 
     {
-	    statusInMetacat = mds.status(getAccessionNumber());
+	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(getAccessionNumber());
 	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	    {
 	    	conflictLocation = DocidConflictHandler.METACAT;
@@ -182,7 +180,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     else if (location.equals(AbstractDataPackage.BOTH))
     {
-	    statusInMetacat = mds.status(getAccessionNumber());
+	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(getAccessionNumber());
     	statusInLocal = fsds.status(getAccessionNumber());
     	//if (existFlag)
     	//{
@@ -268,7 +266,7 @@ public  class EML200DataPackage extends AbstractDataPackage
         {
         	try
         	{
-        	    mds.saveFile(getAccessionNumber(),sr1);
+        		Morpho.thisStaticInstance.getMetacatDataStore().saveFile(getAccessionNumber(),sr1);
         	    this.setSerializeMetacatSuccess(true);
         	}
             catch(Exception e) 
@@ -283,7 +281,7 @@ public  class EML200DataPackage extends AbstractDataPackage
         {
         	try
         	{
-	            mds.newFile(getAccessionNumber(),sr1);
+        		Morpho.thisStaticInstance.getMetacatDataStore().newFile(getAccessionNumber(),sr1);
 	            this.setSerializeMetacatSuccess(true);
 	            //setAccessionNumber(temp_an);
         	}
@@ -386,7 +384,6 @@ public  class EML200DataPackage extends AbstractDataPackage
     morpho = Morpho.thisStaticInstance;
 
     fileSysDataStore  = new FileSystemDataStore(morpho);
-    metacatDataStore  = new MetacatDataStore(morpho);
     File packagefile;
     try {
       packagefile = getFileWithID(this.id, morpho);
