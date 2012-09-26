@@ -29,7 +29,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -40,8 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedInputStream;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.apache.xpath.XPathAPI;
@@ -298,19 +295,6 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return   true if there is no indicated problem; false, otherwise
    */
   abstract public void serialize(String location) throws MetacatUploadException;
-
-
-  /**
-   * This abstract method loads a datapackage from metacat or the local file
-   * system based on an identifier. Basic action is to create a DOM and assign
-   * it to the underlying MetadataObject. Actual implementation is done in
-   * classes specific to grammar
-   *
-   * @param location String
-   * @param identifier String
-   * @param morpho Morpho
-   */
-  abstract public void load(String location, String identifier, Morpho morpho);
 
   /**
     * This abstract method loads a datapackage from an XML character stream.

@@ -39,21 +39,16 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilder;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -75,51 +70,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
     // going though all the modules referenced in the triples!
   }
 
-  public void load(String location, String identifier, Morpho morpho) {
-    this.morpho = morpho;
-    this.location = location;
-    this.config = Morpho.getConfiguration();
-    id = identifier;
-    //read the file containing the triples - usually the datapackage file:
-    try {
-      tripleFile = DataStoreServiceController.getInstance().openFile(identifier, location);
-      triples = new TripleCollection(tripleFile, morpho);
-    } catch (Throwable t) {
-      //already handled in getFileWithID() method,
-      //so just abandon this instance:
-      Log.debug(1, "Unable to get tripleFile!!!");
-      return;
-    }
-//Log.debug(1,"ready to create eml2 file");
-    exportToEml2("eml2test");
-
-    File packagefile = new File("eml2test");
-    DocumentBuilder parser = Morpho.createDomParser();
-    InputSource in;
-    FileInputStream fs;
-    Document doc = null;
-    try
-    {
-    if (packagefile==null) Log.debug(1, "packagefile is NULL!");
-      fs = new FileInputStream(packagefile);
-      in = new InputSource(fs);
-
-      doc = parser.parse(in);
-      fs.close();
-   } catch(Exception e1) {
-      Log.debug(4, "Parsing threw: " + e1.toString());
-      e1.printStackTrace();
-    }
-    if (doc==null) Log.debug(1, "doc is NULL!");
-    metadataNode = doc.getDocumentElement();  // the root Node
-    try{
-      metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
-    }
-    catch (Exception e2) {
-      Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
-      e2.printStackTrace();
-    }
-  }
 
   public void load(org.xml.sax.InputSource in) {
       // TODO: maybe want to implement (not sarcasm)

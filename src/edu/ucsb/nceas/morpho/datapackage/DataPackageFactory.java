@@ -89,79 +89,42 @@ public class DataPackageFactory
   }
 
    /**
-   *  Create a new Datapackage given a docid of a metadata object
-   *  and a location 
-   */
-  public static AbstractDataPackage getDataPackage(String docid, String location) {
-    // first use datastore package to get a stream for the metadata
-    // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
-    // then create the appropriate subclass of AbstractDataPackage and return it.
+	 * Create a new Datapackage given a docid of a metadata object and a
+	 * location
+	 */
+	public static AbstractDataPackage getDataPackage(String docid,
+			String location) {
+		// first use datastore package to get a stream for the metadata
+		// read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
+		// then create the appropriate subclass of AbstractDataPackage and
+		// return it.
 
-    morpho = Morpho.thisStaticInstance;
-    if (morpho==null)  {
-      Morpho.createMorphoInstance();
-      morpho = Morpho.thisStaticInstance;
-    }
-    
-    Reader in = null;
-    if ((location.equals(DataPackageInterface.LOCAL))
-               ||(location.equals(DataPackageInterface.BOTH))) {
-     try {
-        File file = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
-        in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
-      }
-      catch (Exception w) {Log.debug(20,"Problem opening file!");}
-    } else { // must be on metacat only
-      try{
-        File file = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
-        in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
-      }
-      catch (Exception e) {Log.debug(20,"Problem opening file from Metacat!");}
-    }
-    AbstractDataPackage dp = null;
-    String type = getDocTypeInfo(in);
-    Log.debug(40,"DocTypeInfo: " + type);
-    try
-	{
-		if(in != null)in.close();
+		morpho = Morpho.thisStaticInstance;
+		if (morpho == null) {
+			Morpho.createMorphoInstance();
+			morpho = Morpho.thisStaticInstance;
+		}
+
+		Reader in = null;
+		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
+			try {
+				File file = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
+				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+			} catch (Exception w) {
+				Log.debug(20, "Problem opening file!");
+			}
+		} else { 
+			// must be on metacat only
+			try {
+				File file = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
+				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+			} catch (Exception e) {
+				Log.debug(20, "Problem opening file from Metacat!");
+			}
+		}
+		
+		return getDataPackage(in);
 	}
-	catch(IOException ie)
-	{
-		Log.debug(40, "Sorry - Couldn't close the package");
-	}
-//    if (type.equals("eml:eml")) {
-    if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1 ||type.indexOf("eml://ecoinformatics.org/eml-2.1")>-1 ) {
-      //Log.debug(20,"Creating new eml-2.0.x package from docid");
-      dp = new EML200DataPackage();
-      //Log.debug(40,"loading new eml-2.0.x DOM");
-      dp.load(location,docid,morpho);
-      dp.setInitialId(docid);
-    }
-
-    else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
-              (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
-      //Log.debug(20,"Creating new eml2Beta6 package");
-      AbstractDataPackage adptemp = new EML2Beta6DataPackage();
-      adptemp.setInitialId(docid);
-      adptemp.load(location,docid,morpho);
-//      adptemp.location = "";
-      // adptemp is created using the EML2Beta6DataPackage class
-      // however, the load routine for this class currently converts the
-      // document to an EML200 doctype, so we really want to return an
-      // AbstractDataPackage of that type for later use when the doc is
-      // serialized
-      dp = getDataPackage(adptemp.metadataNode);
-      dp.setInitialId(docid);
-//      dp.location = "";  // has NOT been saved
-      //Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
-    }
-
-
-
-//    dp.showPackageSummary();
-
-    return dp;
-  }
   
  
  /**

@@ -372,37 +372,6 @@ public  class EML200DataPackage extends AbstractDataPackage
     return res;
   }
 
-  public void load(String location, String identifier, Morpho morpho) {
-    this.location   = location;
-    this.id         = identifier;
-    this.config     = Morpho.getConfiguration();
-
-    Log.debug(20, "Creating new DataPackage Object");
-    Log.debug(20, "id: " + this.id);
-    Log.debug(20, "location: " + location);
-    morpho = Morpho.thisStaticInstance;
-
-    File packagefile;
-    try {
-      packagefile = DataStoreServiceController.getInstance().openFile(identifier, location);
-     } catch (Throwable t) {
-      //already handled in getFileWithID() method,
-      //so just abandon this instance:
-      return;
-    }
-
-    FileInputStream fs;
-
-    if (packagefile==null){ Log.debug(1, "packagefile is NULL!"); }
-    try {
-        fs = new FileInputStream(packagefile);
-        load(new InputSource(fs));
-        fs.close();
-    } catch (java.io.IOException ioe) {
-        Log.debug(15, "IOException: " + ioe.getMessage());
-    }
-  }
-
   public void load(InputSource in) {
       DocumentBuilder parser = Morpho.createDomParser();
       Document doc = null;
@@ -1506,22 +1475,25 @@ public  class EML200DataPackage extends AbstractDataPackage
 
   public AbstractDataPackage upload(String id, boolean updatePackageId)
                                                 throws MetacatUploadException {
-    Morpho morpho = Morpho.thisStaticInstance;
-    load(DataPackageInterface.LOCAL, id, morpho);
-    String nextid = id;
-    if (updatePackageId) {
-      AccessionNumber an = new AccessionNumber(morpho);
-      nextid = an.getNextId();
-      this.setAccessionNumber(nextid);
-          // serialize locally with the new id
-      serialize(DataPackageInterface.LOCAL);
-    }
-
     try {
+
+	    // reload the local content
+	    File packagefile = DataStoreServiceController.getInstance().openFile(id, DataPackageInterface.LOCAL);
+	    load(new InputSource(new FileInputStream(packagefile)));
+	
+	    String nextid = id;
+	    if (updatePackageId) {
+	      AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+	      nextid = an.getNextId();
+	      this.setAccessionNumber(nextid);
+	      // serialize locally with the new id
+	      serialize(DataPackageInterface.LOCAL);
+	    }
+
     	serializeData(DataPackageInterface.METACAT);
         serialize(DataPackageInterface.METACAT);
       // if serialize data successfully, we will serialize data. 
-      if(getSerializeMetacatSuccess() == true)
+      if (getSerializeMetacatSuccess() == true)
       {
     	  //System.out.println("=================== serialzie metacat is true");
     	  this.setLocation(DataPackageInterface.METACAT);
@@ -1534,7 +1506,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	  throw new MetacatUploadException("Couldn't upload the package to metacat");
       }
     }
-    catch (Exception w) {
+    catch (Throwable w) {
       Log.debug(5, "error in uploading! "+w.getMessage());
       throw new MetacatUploadException(w.getMessage());
     }
