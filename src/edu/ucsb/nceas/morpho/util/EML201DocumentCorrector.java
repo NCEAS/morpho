@@ -74,7 +74,7 @@ public class EML201DocumentCorrector {
       */
      public void correctDocument() throws Exception
      {
-    	 AbstractDataPackage dataPackage = getDataPackage();
+    	 AbstractDataPackage dataPackage = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
     	 if (dataPackage != null && dataPackage instanceof EML200DataPackage)
     	 {
     		  EML200DataPackage eml2Package = (EML200DataPackage)dataPackage;
@@ -93,15 +93,6 @@ public class EML201DocumentCorrector {
     	 }
      }
      
-     /*
-      * Get the local eml document package with the given id
-      */
-     private AbstractDataPackage getDataPackage()
-     {
-    	 AbstractDataPackage dataPackage = null;
-    	 dataPackage = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
-    	 return dataPackage;
-     }
      
      /*
       * Remove the extral attributes from reference element
