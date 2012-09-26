@@ -32,6 +32,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -78,7 +79,8 @@ public class ExportDataCommand implements Command {
 			int response = jfc.showSaveDialog(morphoFrame);
 			if (response == JFileChooser.APPROVE_OPTION) {
 				File saveTarget = jfc.getSelectedFile();
-				boolean success = adp.exportDataFiles(
+				boolean success = DataStoreServiceController.getInstance().exportDataFiles(
+						adp, 
 						saveTarget.getAbsolutePath(), 
 						new Integer(entityIndex));
 				if (success) {

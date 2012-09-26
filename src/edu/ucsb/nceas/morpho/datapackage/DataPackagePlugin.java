@@ -1443,7 +1443,7 @@ public class DataPackagePlugin
       metacat = true;
     }
     AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
-    adp.export(path);
+    DataStoreServiceController.getInstance().export(adp, path);
   }
 
   /**
@@ -1482,7 +1482,7 @@ public class DataPackagePlugin
       metacat = true;
     }
     AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
-    adp.exportToZip(path);
+    DataStoreServiceController.getInstance().exportToZip(adp, path);
 
 
   }

@@ -31,15 +31,12 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -49,19 +46,16 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeImportWizardListener;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
 import edu.ucsb.nceas.morpho.plugins.EntityWizardListener;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.InsertingAttributeImportWizardListener;
 import edu.ucsb.nceas.morpho.plugins.NewPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
-import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
-import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
-import edu.ucsb.nceas.morpho.util.LoadDataPath;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
 import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -94,7 +88,7 @@ public class IncompleteDocumentLoader
       return;
     }
     this.dataPackage = dataPackage;
-    this.dataPackage.setLocation(AbstractDataPackage.TEMPLOCATION);
+    this.dataPackage.setLocation(DataStoreServiceController.TEMPLOCATION);
     init();
     readXpathUIMappingInfo();
   }

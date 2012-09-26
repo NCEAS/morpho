@@ -31,6 +31,7 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -71,7 +72,7 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
       }
       Log.debug(30, "AbstractDataPackage complete");
       adp.setAutoSavedID(autoSavedID);
-      adp.setLocation(AbstractDataPackage.TEMPLOCATION);
+      adp.setLocation(DataStoreServiceController.TEMPLOCATION);
       openMorphoFrameForDataPackage(adp);
       Log.debug(45, "\n\n********** Wizard finished: DOM:");
       Log.debug(45, XMLUtil.getDOMTreeAsString(newDOM));
