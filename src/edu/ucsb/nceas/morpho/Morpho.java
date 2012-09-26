@@ -27,7 +27,6 @@
 package edu.ucsb.nceas.morpho;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,15 +34,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
@@ -60,7 +54,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
-import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -75,14 +68,12 @@ import org.xml.sax.XMLReader;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
-import edu.ucsb.nceas.morpho.framework.HttpMessage;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.MorphoGuideCommand;
@@ -91,7 +82,6 @@ import edu.ucsb.nceas.morpho.framework.ProfileAddedListener;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SplashFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -118,7 +108,7 @@ import edu.ucsb.nceas.morpho.util.Util;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.10.0-RC2";
+    public static String VERSION = "2.0.0";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -155,13 +145,10 @@ public class Morpho
 
     private String userName = "public";
     private String passWord = "none";
-    private String metacatURL = null;
+
     private static ConfigXML config;
     private static ConfigXML profileConfig;
     private ConfigXML profile;
-    private static boolean connected = false;
-    private boolean networkStatus = false;
-    private boolean sslStatus = false;
 
     //private Action[] fileMenuActions = null;
     //private Action[] editMenuActions = null;
@@ -171,20 +158,9 @@ public class Morpho
     private static final List profileAddedListenerList = new ArrayList();
     private static MorphoFrame initialFrame;
     private boolean pluginsLoaded = false;
-    private String sessionCookie = null;
     private Itis itis;
 
     private boolean versionFlag = true;
-
-    private URL metacatPingURL = null;
-    private URLConnection urlConn = null;
-    private boolean origNetworkStatus = false;
-    private static final String AUTHENTICATEERROR = "peer not authenticated";
-    /**
-     * The polling interval, in milliSeconds, between attempts to verify that
-     * MetaCat is available over the network
-     */
-    private final static int METACAT_PING_INTERVAL = 30000;
 
     /** The hardcoded XML configuration file */
     private static String configFile = "config.xml";
@@ -197,10 +173,10 @@ public class Morpho
     private static String keystorePass = "changeit";
     private static String userKeystore = "";
     public static Morpho thisStaticInstance;
-    /** flag set to indicate that connection to metacat is busy
-     *  used by doPing to avoid thread problem
-     */
-    public static boolean connectionBusy = false;
+    
+    // for interacting with the Metacat services
+    private MetacatDataStore mds = null;
+
 
     /**
      * Creates a new instance of Morpho
@@ -215,41 +191,23 @@ public class Morpho
 
         // Create the connection registry
         connectionRegistry = new Vector();
-
-        // Get the configuration file information needed by the framework
-        loadConfigurationParameters();
-
-        // NOTE: current test for SSL connection is to determine whether
-        // metacat_url is set to be "https://..." in the config.xml file.
-        // This check happens only ONCE on start-up, so if Morpho is ever
-        // revised to allow users to change metacat urls whilst it is running,
-        // we need to revise this to check more often.
-        // 05/20/02- Currently, SSL is not used, so will always be false
-        sslStatus = (metacatURL.indexOf("https://") == 0);
         
-  
-        //create URL object to poll for metacat connectivity
-        try {
-            metacatPingURL = new URL(metacatURL);
-        } catch (MalformedURLException mfue) {
-            Log.debug(5, "unable to read or resolve Metacat URL");
-        }
-
-        // detects whether metacat is available, and if so, sets
-        // networkStatus = true
-        // Boolean "true" tells doPing() method this is startup, so we don't get
-        // "No such service registered." exception from getServiceProvider()
-        boolean startup = true;
-        startPing(startup);
-        finishPing(startup);
-
-        //start a Timer to check periodically whether metacat remains available
-        //over the network...
-        Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
-        timer.setRepeats(true);
-        timer.start();
+        
     }
 
+    /**
+     * Get a reference to the MetacatDataStore
+     * TODO: remove for plugable DataStoreService.
+     * @return
+     */
+    public MetacatDataStore getMetacatDataStore() {
+    	return mds;
+    }
+    
+    public void setMetacatDataStore(MetacatDataStore mds) {
+    	this.mds = mds;
+    }
+    
     /**
      * Set the username associated with this framework
      *
@@ -284,9 +242,9 @@ public class Morpho
         setProfileDontLogin(newProfile, false);
 
         if (initialFrame==null) {
-            establishConnection();
+            mds.establishConnection();
         } else if(!initialFrame.isShowing()) {
-            establishConnection();
+            mds.establishConnection();
         }
         fireConnectionChangedEvent();
     }
@@ -435,141 +393,6 @@ public class Morpho
       }
     }
 
-    /**
-     * Send a request to Metacat
-     *
-     * @param prop           the properties to be sent to Metacat
-     * @param requiresLogin  indicates whether a valid connection is required
-     *                       for the operation
-     * @return               InputStream as returned by Metacat
-     */
-    public InputStream getMetacatInputStream(Properties prop,
-            boolean requiresLogin)
-    {
-        if (requiresLogin) {
-            if (!connected) {
-                // Ask the user to connect
-                establishConnection();
-            }
-        }
-        return getMetacatInputStream(prop);
-    }
-
-    /**
-     * Gets the SessionCookie attribute of the Morpho object
-     *
-     * @return   The SessionCookie value
-     */
-    public String getSessionCookie()
-    {
-        return sessionCookie;
-    }
-
-    /**
-     * Send a request to Metacat
-     *
-     * @param prop  the properties to be sent to Metacat
-     * @return      InputStream as returned by Metacat
-     */
-    synchronized public InputStream getMetacatInputStream(Properties prop)
-    {   connectionBusy = true;
-        InputStream returnStream = null;
-        // Now contact metacat and send the request
-
-        /*
-            Note:  The reason that there are three try statements all executing
-            the same code is that there is a problem with the initial connection
-            using the HTTPClient protocol handler.  These try statements make
-            sure that a connection is made because it gives each connection a
-            2nd and 3rd chance to work before throwing an error.
-            THIS IS A TOTAL HACK.  THIS NEEDS TO BE LOOKED INTO AFTER THE BETA1
-            RELEASE OF MORPHO!!!  cwb (7/24/01)
-          */
-        try {
-            Log.debug(20, "Sending data to: " + metacatURL);
-            URL url = new URL(metacatURL);
-            HttpMessage msg = new HttpMessage(url);
-            returnStream = msg.sendPostData(prop);
-            sessionCookie = HttpMessage.getCookie();
-           connectionBusy = false;
-           return returnStream;
-        } catch (Exception e) {
-            try {
-                Log.debug(20, "Sending data (again) to : " + metacatURL);
-                URL url = new URL(metacatURL);
-                HttpMessage msg = new HttpMessage(url);
-                returnStream = msg.sendPostData(prop);
-                sessionCookie = HttpMessage.getCookie();
-                connectionBusy = false;
-                return returnStream;
-            } catch (Exception e2) {
-                try {
-                    Log.debug(20, "Sending data (again)(again) to: " +
-                        metacatURL);
-                    URL url = new URL(metacatURL);
-                    HttpMessage msg = new HttpMessage(url);
-                    returnStream = msg.sendPostData(prop);
-                    sessionCookie = HttpMessage.getCookie();
-                    connectionBusy = false;
-                    return returnStream;
-                } catch (Exception e3) {
-                    Log.debug(1, "Fatal error sending data to Metacat: " +
-                        e3.getMessage());
-                    e.printStackTrace(System.err);
-                }
-            }
-        }
-        connectionBusy = false;
-        return returnStream;
-    }
-
-    /**
-     * Send a request to Metacat
-     *
-     * @param prop           the properties to be sent to Metacat
-     * @param requiresLogin  indicates whether a valid connection is required
-     *      for the operation
-     * @return               a string as returned by Metacat
-     */
-    public String getMetacatString(Properties prop, boolean requiresLogin)
-    {
-        if (requiresLogin) {
-            if (!connected) {
-                // Ask the user to connect
-                establishConnection();
-            }
-        }
-        return (String)getMetacatString(prop);
-    }
-
-    /**
-     * Send a request to Metacat
-     *
-     * @param prop  the properties to be sent to Metacat
-     * @return      a string as returned by Metacat
-     */
-    public String getMetacatString(Properties prop)
-    {
-        String response = null;
-
-        // Now contact metacat and send the request
-        try {
-            InputStreamReader returnStream =
-                    new InputStreamReader(getMetacatInputStream(prop));
-            StringWriter sw = new StringWriter();
-            int len;
-            char[] characters = new char[512];
-            while ((len = returnStream.read(characters, 0, 512)) != -1) {
-                sw.write(characters, 0, len);
-            }
-            returnStream.close();
-            response = sw.toString();
-            sw.close();
-        } catch (Exception e) {
-            Log.debug(1, "Fatal error sending data to Metacat.");
-        }
-        return response;
-    }
 
     /**
      * Get the username associated with this framework
@@ -592,36 +415,7 @@ public class Morpho
         return passWord;
     }
 
-    /**
-     * Determines if the framework has a valid login
-     *
-     * @return   boolean true if connected to Metacat, false otherwise
-     */
-    public static boolean isConnected()
-    {
-        return connected;
-    }
-
-    /**
-     * Determines if the framework is using an ssl connection
-     *
-     * @return   boolean true if using SSL, false otherwise
-     */
-    public boolean getSslStatus()
-    {
-        return sslStatus;
-    }
-
-    /**
-     * Determine whether a network connection is available before trying to open
-     * a socket, since this would cause an error
-     *
-     * @return   boolean true if the network is reachable
-     */
-    public boolean getNetworkStatus()
-    {
-        return networkStatus;
-    }
+    
 
     /**
      * Get the configuration object associated with the framework. Plugins use
@@ -724,7 +518,7 @@ public class Morpho
             Vector dirty = controller.removeCleanWindows();
             if (dirty.size()<1) {
             // close the application
-              logOutExit();
+              mds.logOutExit();
               config.save();
               System.exit(0);
             } else {
@@ -734,182 +528,6 @@ public class Morpho
               }
             }
         } catch (Exception e) {
-        }
-    }
-
-    /**
-     * sends a data file to the metacat using "multipart/form-data" encoding
-     *
-     * @param id    the id to assign to the file on metacat (e.g., knb.1.1)
-     * @param file  the file to send
-     * @param objectName  the object name associate with the file
-     * @return      the response stream from metacat
-     */
-    public InputStream sendDataFile(String id, File file, String objectName)
-    {
-        String retmsg = "";
-        String filename = null;
-        InputStream returnStream = null;
-        File newFile = null;
-
-        if (!connected) {
-            // Ask the user to connect
-            establishConnection();
-        }
-
-        // Now contact metacat and send the request
-        try {
-            //FileInputStream data = new FileInputStream(file);
-
-            Log.debug(20, "Sending data to: |" + metacatURL + "|");
-            URL url = new URL(metacatURL.trim());
-            HttpMessage msg = new HttpMessage(url);
-            Properties args = new Properties();
-            args.put("action", "upload");
-            args.put("docid", id);
-
-            Properties dataStreams = new Properties();
-            // use object name to replace the meaningless name such as 12.2
-            if (objectName != null && !Util.isBlank(objectName))
-            {
-            	FileSystemDataStore store = new FileSystemDataStore(thisStaticInstance);
-            	String tmpDir = store.getTempDir();
-            	newFile = new File(tmpDir, objectName);
-            	FileInputStream input = new FileInputStream(file);
-            	FileOutputStream out = new FileOutputStream(newFile);
-            	byte[] c = new byte[3*1024];
-            	int read = input.read(c);
-            	while (read !=-1)
-            	{
-            		out.write(c, 0, read);
-            		read = input.read(c);
-            	}
-            	input.close();
-            	out.close();
-            	filename = newFile.getAbsolutePath();
-            }
-            else
-            {
-                filename = file.getAbsolutePath();
-            }
-            Log.debug(20, "Sending data file: " + filename);
-            dataStreams.put("datafile", filename);
-
-            /*
-            Note:  The reason that there are three try statements all executing
-            the same code is that there is a problem with the initial connection
-            using the HTTPClient protocol handler.  These try statements make
-            sure that a connection is made because it gives each connection a
-            2nd and 3rd chance to work before throwing an error.
-            THIS IS A TOTAL HACK.  THIS NEEDS TO BE LOOKED INTO AFTER THE BETA1
-            RELEASE OF MORPHO!!!  cwb (7/24/01)
-              */
-            try {
-                returnStream = msg.sendPostData(args, dataStreams);
-            } catch (Exception ee) {
-                try {
-                    returnStream = msg.sendPostData(args, dataStreams);
-                } catch (Exception eee) {
-                    try {
-                        returnStream = msg.sendPostData(args, dataStreams);
-                    } catch (Exception eeee) {
-                        throw new Exception(eeee.getMessage());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.debug(1, "Fatal error sending binary data to Metacat: " +
-                    e.getMessage());
-            e.printStackTrace(System.err);
-        }
-        finally
-        {
-        	try
-        	{
-        		
-        		if(newFile != null)
-        		{
-        			Log.debug(40, "delete file===============");
-        			newFile.delete();
-        		}
-        	}
-        	catch(Exception e)
-        	{
-        		 Log.debug(20, "============couldn't delete the new file ");
-        	}
-        }
-        return returnStream;
-    }
-
-    /**
-     * Log into metacat.
-     *
-     * @return   boolean true if the attempt to log in succeeded
-     */
-    public boolean logIn()
-    {
-        Properties prop = new Properties();
-        prop.put("action", "login");
-        prop.put("qformat", "xml");
-        Log.debug(20, "Logging in using uid: " + userName);
-        prop.put("username", userName);
-        prop.put("password", passWord);
-
-        // Now contact metacat
-        String response = getMetacatString(prop);
-        boolean wasConnected = connected;
-        if (response.indexOf("<login>") != -1) {
-            connected = true;
-        } else {
-            HttpMessage.setCookie(null);
-            connected = false;
-        }
-
-        if (wasConnected != connected) {
-            UIController controller = UIController.getInstance();
-            if (controller != null) {
-                controller.updateAllStatusBars();
-            }
-            fireConnectionChangedEvent();
-        }
-
-        return connected;
-    }
-
-    /**
-     * Log out of metacat
-     */
-    public void logOut()
-    {
-        if (connected) {
-            passWord = "none";
-            // get rid of existing password info
-            Properties prop = new Properties();
-            prop.put("action", "logout");
-            prop.put("qformat", "xml");
-
-            String response = getMetacatString(prop);
-            doLogoutCleanup();
-        }
-    }
-
-
-    /**
-     * Log out of metacat when exiting.
-     */
-    public void logOutExit()
-    {
-        if (connected) {
-            passWord = "none";
-            // get rid of existing password info
-            Properties prop = new Properties();
-            prop.put("action", "logout");
-            prop.put("qformat", "xml");
-
-            String response = getMetacatString(prop);
-            HttpMessage.setCookie(null);
-            connected = false;
-
         }
     }
 
@@ -1071,6 +689,12 @@ public class Morpho
             // Load the current profile and log in
             morpho.loadProfile(morpho);
             
+            // create the remote data store
+            morpho.setMetacatDataStore(new MetacatDataStore(morpho));
+         
+            // Get the configuration file information needed by the framework
+            morpho.loadConfigurationParameters();
+            
             // Correct the invalid eml 201 documents
             CorrectEML201DocsFrame correctFrame = new CorrectEML201DocsFrame(morpho);
             correctFrame.doCorrection();
@@ -1205,7 +829,7 @@ public class Morpho
      *
      * @param scope  The new LastID value
      */
-    private void setLastID(String scope)
+    public void setLastID(String scope)
     {
         //MB 05-21-02: if (connected && networkStatus) {
         // only execute if connected to avoid hanging when there is
@@ -1242,9 +866,9 @@ public class Morpho
         Properties lastIDProp = new Properties();
         lastIDProp.put("action", "getlastdocid");
         lastIDProp.put("scope", scope);
-         if (networkStatus)
+         if (mds != null && mds.getNetworkStatus())
          {
-             temp= getMetacatString(lastIDProp);
+             temp= mds.getMetacatString(lastIDProp);
          }
         Log.debug(30, "the last id from metacat ===== "+temp);
         //localMaxDocid will be 54 if the biggest file name is 54.2
@@ -1401,7 +1025,7 @@ public class Morpho
         // FILE MENU ACTIONS
         Command connectCommand = new Command() {
             public void execute(ActionEvent e) {
-                establishConnection();
+                mds.establishConnection();
             }
         };
         GUIAction connectItemAction =
@@ -1567,20 +1191,7 @@ public class Morpho
 
     }
 
-    /** Create a new connection to metacat */
-    private void establishConnection()
-    {
-        if (networkStatus) {
-            ConnectionFrame cf = new ConnectionFrame(this);
-            cf.setVisible(true);
-        } else {
-            profile.set("searchmetacat", 0, "false");
-            Log.debug(6,
-            			/*"No network connection available - can't log in"*/
-            		   Language.getInstance().getMessage("Morpho.NoNetworkConnection")
-            			);
-        }
-    }
+    
 
     /** Create a new profile */
 
@@ -1597,7 +1208,7 @@ public class Morpho
     /** Switch profiles (from one existing profile to another) */
     private void switchProfile()
     {
-        logOut();
+        mds.logOut();
         String currentProfile = getCurrentProfileName();
 
         String[] profilesList = getProfilesList();
@@ -1636,19 +1247,11 @@ public class Morpho
       MorphoPrefsDialog MorphoPrefsDialog1 = new MorphoPrefsDialog(mf, this);
       MorphoPrefsDialog1.setModal(true);
       MorphoPrefsDialog1.setVisible(true);
-      // need to recheck the ssl status
-      sslStatus = (metacatURL.indexOf("https://") == 0);
       UIController.getInstance().updateAllStatusBars();
       // when preference change, the lastID should be change too.
       // since the remote server may have different max docid
       String scope = profile.get("scope", 0);
       setLastID(scope);
-     //create URL object to poll for metacat connectivity since the metaca may be changed.
-      try {
-          metacatPingURL = new URL(metacatURL);
-      } catch (MalformedURLException mfue) {
-          Log.debug(5, "unable to read or resolve Metacat URL");
-      }
 
     }
 
@@ -1744,32 +1347,19 @@ public class Morpho
         return object;
     }
 
-    /**
-     * cleanup routine called by logout() and by MetacatPinger thread Keeps all
-     * this stuff in one place so as not repeat code
-     */
-    private void doLogoutCleanup()
-    {
-        HttpMessage.setCookie(null);
-        connected = false;
-        if (UIController.getInstance()!= null)
-        {
-           UIController.getInstance().updateAllStatusBars();
-        }
-        fireConnectionChangedEvent();
-    }
+    
 
     /**
      * Fire off notifications for all of the registered ConnectionListeners when
      * the connection status changes.
      */
-    private void fireConnectionChangedEvent()
+    public void fireConnectionChangedEvent()
     {
         for (int i = 0; i < connectionRegistry.size(); i++) {
             ConnectionListener listener =
                     (ConnectionListener)connectionRegistry.elementAt(i);
             if (listener != null) {
-                listener.connectionChanged(isConnected());
+                listener.connectionChanged(mds.isConnected());
             }
         }
     }
@@ -1821,31 +1411,8 @@ public class Morpho
     /** Load configuration parameters from the config file as needed */
     private void loadConfigurationParameters()
     {
-        metacatURL = config.get("metacat_url", 0);
         String temp_uname = config.get("username", 0);
         userName = (temp_uname != null) ? temp_uname : "public";
-    }
-
-
-  /**
-   * Set metacat URL string
-   *
-   * @param mURL String
-   */
-  public void setMetacatURLString(String mURL)
-    {
-        metacatURL = mURL;
-    }
-
-
-  /**
-   * Get metacat URL string
-   *
-   * @return String
-   */
-  public String getMetacatURLString()
-    {
-        return metacatURL;
     }
 
 
@@ -1875,141 +1442,7 @@ public class Morpho
         return sorted;
     }
 
-    /**
-     * overload to give default functionality; boolean flag needed only at
-     * startup
-     */
-    private void doPing()
-    {
-        doPing(false);
-    }
-
-    /**
-     * Sets networkStatus to boolean true if metacat connection can be made
-     *
-     * @param isStartUp  - set to boolean "true" when calling for first time, so
-     *      we don't get "No such service registered." exception from
-     *      getServiceProvider()
-     */
-    private void doPing(final boolean isStartUp)
-    {
-      if (!connectionBusy) {
-        final SwingWorker sbUpdater =
-            new SwingWorker()
-            {
-                public Object construct()
-                {
-                    startPing(isStartUp);
-                    return null;
-                    //return value not used by this program
-                }
-
-                //Runs on the event-dispatching thread.
-                public void finished()
-                {
-                    finishPing(isStartUp);
-                }
-            };
-        sbUpdater.start();
-      }
-    }
-
-    /**
-     * Start the ping operation. At startup this is called in the main
-     * application thread, but later it is used in a distinct thread to keep the
-     * application responsive.
-     */
-    private void startPing(boolean isStartup)
-    {
-        //check if metacat can be reached:
-        origNetworkStatus = networkStatus;
-        try {
-            Log.debug(55, "Determining net status ...");
-            urlConn = metacatPingURL.openConnection();
-            urlConn.connect();
-            networkStatus = (urlConn.getDate() > 0L);
-            Log.debug(55, "... which is: " + networkStatus);
-        } catch (IOException ioe) {
-        	if(isStartup && ioe.getMessage().contains(AUTHENTICATEERROR))
-        	{
-               Log.debug(5, " - Unable to open network connection to Metacat: "+ioe.getMessage());
-        	}
-        	else
-        	{
-        		Log.debug(55, " - unable to open network connection to Metacat");
-        	}
-            networkStatus = false;
-            if (profile != null) {
-                profile.set("searchmetacat", 0, "false");
-            }
-        } catch (NullPointerException npe) {
-              Log.debug(55, " - unable to open network connection to Metacat");
-              networkStatus = false;
-              if (profile != null) {
-                  profile.set("searchmetacat", 0, "false");
-              }
-          }
-    }
-
-    /**
-     * Finish the ping operation. At startup this is called in the main
-     * application thread, but later it is used in a distinct thread to keep the
-     * application responsive.
-     *
-     * @param isStartUp  set to true if this is the startup sequence before
-     *                   plugins have been loaded
-     */
-    private void finishPing(boolean isStartUp)
-    {
-        Log.debug(55, "doPing() called - network available?? - " +
-                networkStatus);
-        if (origNetworkStatus != networkStatus) {
-            //if lost connection, can't log out, but can still do cleanup
-            if (!networkStatus) {
-                profile.set("searchmetacat", 0, "false");
-                doLogoutCleanup();
-            } else {
-                if (!isStartUp) {
-                    //update package list
-                    /*
-                        try {
-                        ServiceProvider provider
-                        = getServiceProvider(QueryRefreshInterface.class);
-                        ((QueryRefreshInterface)provider).refresh();
-                        } catch (ServiceNotHandledException snhe) {
-                        Log.debug(6, snhe.getMessage());
-                        }
-                      */
-                	//When got the network connection, we should reset last docid, since
-                	//remote metacat may have bigger docid number
-                	if (profile != null)
-                	{
-                		Log.debug(55, "reset lastid when network is avaliable");
-                	    String scope = profile.get("scope", 0);
-                        setLastID(scope);
-                	}
-                }
-                //update status bar
-            }
-            if (!isStartUp) {
-                UIController.getInstance().updateAllStatusBars();
-            }
-        }
-    }
-
-    /**
-     * This ActionListener is notified by the swing.Timer every
-     * METACAT_PING_INTERVAL milliSeconds, upon which it tries to contact the
-     * Metacat defined by "metacatURL"
-     */
-    ActionListener pingActionListener =
-        new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                doPing();
-            }
-        };
+    
 
     /**
      * set look & feel to system default
@@ -2339,7 +1772,7 @@ public class Morpho
     /** Switch profiles (from one existing profile to another) */
 	private void removeProfile()
 	{
-    logOut();
+    mds.logOut();
     String currentProfile = getCurrentProfileName();
 
     String[] allProfilesList = getProfilesList();

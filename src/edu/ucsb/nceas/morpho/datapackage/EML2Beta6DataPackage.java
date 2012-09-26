@@ -234,7 +234,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       EMLConvert.outputfileName = path;
       // when the package is on metacat, one wants to use a url pointing to the
       // current metacat. When the package is just local, pass a file url
-      String murl = morpho.getMetacatURLString();
+      String murl = metacatDataStore.getMetacatURL();
       if (!metacatloc) {
         murl = "file://"+id;
       }

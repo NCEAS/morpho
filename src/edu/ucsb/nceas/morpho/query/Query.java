@@ -815,7 +815,7 @@ public class Query extends DefaultHandler {
 */
 
       metacatResults = new HeadResultSet(this, QueryRefreshInterface.NONEXIST, QueryRefreshInterface.NETWWORKCOMPLETE,
-                                     queryMetacat(), morpho);
+                                     morpho.getMetacatDataStore().queryMetacat(toXml()), morpho);
 
     }
 
@@ -843,32 +843,6 @@ public class Query extends DefaultHandler {
     // return the merged results
     return results;
   }
-
-  /** Send the query to metacat, get back the XML resultset */
-  private InputStream queryMetacat()
-  {
-    Log.debug(30, "(2.1) Executing metacat query...");
-    InputStream queryResult = null;
-
-    Properties prop = new Properties();
-    prop.put("action", "squery");
-    prop.put("query", toXml());
-    prop.put("qformat", "xml");
-    try
-    {
-      queryResult = morpho.getMetacatInputStream(prop);
-    }
-    catch(Exception w)
-    {
-      Log.debug(1, "Error in submitting structured query");
-      Log.debug(1, w.getMessage());
-    }
-
-    Log.debug(30, "(2.3) Metacat output is:\n" + queryResult);
-    Log.debug(30, "(2.4) Done Executing metacat query...");
-    return queryResult;
-  }
-
  
 
   /**
@@ -963,7 +937,7 @@ public class Query extends DefaultHandler {
          // parsing result set
          String localStatus = QueryRefreshInterface.NONEXIST;
          String metacatStatus = QueryRefreshInterface.NETWWORKCOMPLETE;
-         ResultsetHandler handler = new ResultsetHandler(queryMetacat(),
+         ResultsetHandler handler = new ResultsetHandler(morpho.getMetacatDataStore().queryMetacat(toXml()),
                                             dataVector,  morpho, localStatus, metacatStatus);
          // start another thread for parser
          Thread parserThread = new Thread(handler);

@@ -189,10 +189,10 @@ public class ConnectionFrame  extends javax.swing.JDialog
   
   private void updateEnabeDisable() 
   {
-    DisconnectButton.setEnabled(container.isConnected());
-    connectButton.setEnabled(!container.isConnected());
-    CancelButton.setEnabled(!container.isConnected());
-    PWTextField.setEnabled(!container.isConnected());
+    DisconnectButton.setEnabled(container.getMetacatDataStore().isConnected());
+    connectButton.setEnabled(!container.getMetacatDataStore().isConnected());
+    CancelButton.setEnabled(!container.getMetacatDataStore().isConnected());
+    PWTextField.setEnabled(!container.getMetacatDataStore().isConnected());
     if (PWTextField.isEnabled()) PWTextField.requestFocus();
   }
   
@@ -328,7 +328,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
    */
   void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-    container.logOut();
+    container.getMetacatDataStore().logOut();
     updateEnabeDisable();
     
 //    DisconnectButton.setEnabled(false);

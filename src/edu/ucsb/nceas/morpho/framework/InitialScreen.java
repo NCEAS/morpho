@@ -94,7 +94,7 @@ public class InitialScreen extends JPanel
     
     
     
-    private boolean prevLoginStatus = !Morpho.isConnected(); 
+    private boolean prevLoginStatus = false; 
                                             // initially set opposite so login  
                                             // panel will be updated - see
                                             // updateLoginStatus() method 
@@ -104,6 +104,8 @@ public class InitialScreen extends JPanel
         this.setLayout(new BorderLayout(0,0));
         this.morpho      = morpho;
         this.parentFrame = parentFrame;
+        
+        prevLoginStatus = !morpho.getMetacatDataStore().isConnected();
         
         profileComboBox = new JComboBox();
         currentProfileLDAPLabel = new JLabel();
@@ -350,7 +352,7 @@ public class InitialScreen extends JPanel
         //LOGOUT LINK:
         logoutCommand = new Command(){
             public void execute(ActionEvent e) {
-                morpho.logOut();
+                morpho.getMetacatDataStore().logOut();
                 updateLoginStatus(  loginMessageLabel, 
                                     loginHeaderLabel, passwordLabel, 
                                     passwordField, loginButton);
@@ -442,7 +444,7 @@ public class InitialScreen extends JPanel
         loginPanel.setTitle(  
                          UISettings.INIT_SCRN_PANELS_LOGIN_TITLE_TEXT_OPEN
                         +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN
-                        +((morpho.isConnected())? 
+                        +((morpho.getMetacatDataStore().isConnected())? 
                                         UISettings.INIT_SCR_LOGGED_IN_STATUS :
                                         UISettings.INIT_SCR_LOGGEDOUT_STATUS)
                         +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE
@@ -450,15 +452,15 @@ public class InitialScreen extends JPanel
 
         loginMessageLabel.setText(  
                         UISettings.INIT_SCR_PANEL_LITE_FONT_OPEN
-                        +((morpho.isConnected())? 
+                        +((morpho.getMetacatDataStore().isConnected())? 
                                         UISettings.INIT_SCR_LOGGED_IN_MESSAGE :
                                         UISettings.INIT_SCR_LOGIN_MESSAGE)
                         +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
 
         //if no change, don't need to update panel
-        if (morpho.isConnected()==prevLoginStatus) return;
+        if (morpho.getMetacatDataStore().isConnected()==prevLoginStatus) return;
 
-        if (morpho.isConnected()) {
+        if (morpho.getMetacatDataStore().isConnected()) {
             loginPanel.clearRow3();
             loginPanel.addToRow3(logoutLink);
             logoutLink.resetRollovers();

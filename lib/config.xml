@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.10.0-RC2</version>
+  <version>2.0.0</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
@@ -19,7 +19,7 @@
   <local_dtd_directory>catalog</local_dtd_directory>
   <local_catalog_path>catalog/catalog</local_catalog_path>
   <debug_level>30</debug_level>
-  <log_file>true</log_file>
+  <log_file>false</log_file>
   <back_dot_morpho_dir>true</back_dot_morpho_dir>
   <disableSavingIncompleteDoc>false</disableSavingIncompleteDoc>
   <triplesTag>//triple</triplesTag>

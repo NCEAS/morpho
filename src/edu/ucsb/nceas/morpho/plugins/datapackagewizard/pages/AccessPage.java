@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 
@@ -235,8 +234,7 @@ public class AccessPage
     this.add(bottomPanel, BorderLayout.SOUTH);
 
     if (Access.accessTreeNode != null &&
-        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.
-        getMetacatURLString()) == 0) {
+        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL()) == 0) {
 
       displayTree(Access.accessTreeNode);
     }
@@ -307,8 +305,7 @@ public class AccessPage
       for (int i = 0; i < nl.getLength(); i++) {
         cn = nl.item(i).getFirstChild(); // assume 1st child is text node
         if ( (cn != null) && (cn.getNodeType() == Node.TEXT_NODE) &&
-            cn.getNodeValue().compareTo(
-            Morpho.thisStaticInstance.getMetacatURLString()) == 0) {
+            cn.getNodeValue().compareTo(Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL()) == 0) {
           serverNode = cn;
           continue;
         }
@@ -433,7 +430,7 @@ public class AccessPage
         cn = nl.item(i).getFirstChild(); // assume 1st child is text node
         if ( (cn != null) && (cn.getNodeType() == Node.TEXT_NODE) &&
             cn.getNodeValue().compareTo(
-            Morpho.thisStaticInstance.getMetacatURLString()) == 0) {
+            		Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL()) == 0) {
           serverNode = cn;
           continue;
         }
@@ -463,7 +460,7 @@ public class AccessPage
     Node result = doc1.createElement("result");
     Node server = doc1.createElement("server");
     Node serverName = doc1.createTextNode(
-        Morpho.thisStaticInstance.getMetacatURLString());
+    		Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL());
 
     Node principalNode = doc.getDocumentElement();
 
@@ -495,7 +492,7 @@ public class AccessPage
     Node result = doc1.createElement("result");
     Node server = doc1.createElement("server");
     Node serverName = doc1.createTextNode(
-        Morpho.thisStaticInstance.getMetacatURLString());
+    		Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL());
 
     Node principalNode = doc.getDocumentElement();
 
@@ -509,7 +506,7 @@ public class AccessPage
       Node tempNode = nl.item(count);
       String value = tempNode.getFirstChild().getNodeValue();
       if (value != null && value.compareTo(
-          Morpho.thisStaticInstance.getMetacatURLString()) == 0) {
+    		  Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL()) == 0) {
         Node listNode = tempNode.getParentNode();
         listNode.getParentNode().removeChild(listNode);
       }
@@ -549,9 +546,7 @@ public class AccessPage
       //// File is not on harddisk and data is not avaiable from
       //// display a dn field to be entered by user...
       if (Access.accessTreeNode != null &&
-          Access.accessTreeMetacatServerName.compareTo(Morpho.
-          thisStaticInstance.
-          getMetacatURLString()) == 0) {
+          Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL()) == 0) {
         Log.debug(10,
             "Retrieving access information from Metacat server failed. "
             + "Displaying the old access information.");
@@ -721,8 +716,7 @@ public class AccessPage
   protected void cancelGetDocumentFromMetacat() {
 
     if (Access.accessTreeNode != null &&
-        Access.accessTreeMetacatServerName.compareTo(Morpho.
-        thisStaticInstance.getMetacatURLString()) == 0) {
+        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL()) == 0) {
       Log.debug(10,
           "Retrieving access information from Metacat server cancelled. "
           + "Using the old access tree.");
@@ -939,8 +933,7 @@ public class AccessPage
 
     if (treeNode != null) {
       Access.accessTreeNode = treeNode;
-      Access.accessTreeMetacatServerName = Morpho.thisStaticInstance.
-          getMetacatURLString();
+      Access.accessTreeMetacatServerName = Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL();
     } else {
       Log.debug(1, "Unable to retrieve access tree. "
           + "The old list will be displayed again");
@@ -1632,15 +1625,12 @@ class QueryMetacatThread
   }
 
   public void run() {
-    Properties prop = new Properties();
-    prop.put("action", "getprincipals");
 
-    Morpho morpho = Morpho.thisStaticInstance;
     try {
       queryResult = null;
       //if (morpho.isConnected()) {
-      if (morpho.getNetworkStatus()) {
-        queryResult = morpho.getMetacatInputStream(prop);
+      if (Morpho.thisStaticInstance.getMetacatDataStore().getNetworkStatus()) {
+        queryResult = Morpho.thisStaticInstance.getMetacatDataStore().getPrincipals();
       }
       if (!accessPage.isQueryMetacatCancelled()) {
         accessPage.parseInputStream(queryResult);
@@ -1652,7 +1642,7 @@ class QueryMetacatThread
 
       if (Access.accessTreeNode != null &&
           Access.accessTreeMetacatServerName.compareTo(Morpho.
-          thisStaticInstance.getMetacatURLString()) == 0) {
+          thisStaticInstance.getMetacatDataStore().getMetacatURL()) == 0) {
         Log.debug(10,
             "Retrieving access information from Metacat server failed. "
             + "Using the old access tree.");

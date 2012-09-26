@@ -256,7 +256,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final String HTMLEXTENSION = ".html";
   private final String METADATAHTML = "metadata";
   private final String EXPORTSYLE = "export";
-  private static final int ORIGINAL_REVISION = 1;
+  public static final int ORIGINAL_REVISION = 1;
   private final static String OPEN = "<";
   private final static String SLASH = "/";
   private final static String CLOSE = ">";
@@ -5259,7 +5259,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	{
 		int version = ORIGINAL_REVISION;
 		int localNextRevision = getNextRevisionNumberFromLocal(docid);
-		int metacatNextRevision = getNextRevisionNumberFromMetacat(docid);
+		int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
 		//choose the bigger one as the next revision
 		if (localNextRevision > metacatNextRevision)
 		{
@@ -5286,11 +5286,11 @@ public abstract class AbstractDataPackage extends MetadataObject
 			version = getNextRevisionNumberFromLocal(docid);
 		}
 		if (location.equals(METACAT)) {
-			version = getNextRevisionNumberFromMetacat(docid);
+			version = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
 		}
 		if (location.equals(BOTH)) {
 			int localNextRevision = getNextRevisionNumberFromLocal(docid);
-			int metacatNextRevision = getNextRevisionNumberFromMetacat(docid);
+			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
 			version = Math.max(localNextRevision, metacatNextRevision);
 		}
 		
@@ -5440,51 +5440,6 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  return docid;
 	}
 	
-	/*
-	 * Gets next version from metacat. "getrevisionanddoctype" method of Metacat API will
-	 * return the max version of metacat. So we should increase 1 to get next version number.
-	 * If couldn't connect metacat or metacat doesn't have this docid, 1 will be returned.
-	 */
-	public static int getNextRevisionNumberFromMetacat(String identifier)
-	{
-		int version = ORIGINAL_REVISION;
-		String semiColon = ";";
-		//String docid = null;
-		//Gets metacat url from configuration
-		if (Morpho.thisStaticInstance != null && Morpho.thisStaticInstance.getNetworkStatus() && identifier != null)
-		{
-			String metacatURL = Morpho.thisStaticInstance.getMetacatURLString();
-			String result = null;
-		    Properties lastVersionProp = new Properties();
-		    lastVersionProp.put("action", "getrevisionanddoctype");
-		    //docid = getPackageId();
-		    lastVersionProp.put("docid", identifier);
-		    result = Morpho.thisStaticInstance.getMetacatString(lastVersionProp);
-		    Log.debug(30, "the result is ============= "+result);
-		    // Get version
-		    if (result != null)
-		    {
-		    	int index = result.indexOf(semiColon);
-		    	if (index != -1)
-		    	{
-		    		String versionStr = result.substring(0, index);
-		    		try
-		    		{
-		    			version = (new Integer(versionStr).intValue());
-		    			//increase 1 to get next version
-		    			version = version +1;
-		    		}
-		    		catch(Exception e)
-		    		{
-		    			Log.debug(20, "Couldn't transfer version string "+versionStr +" into integer");
-		    		}
-		    	}
-		    }
-		    
-		}
-		Log.debug(30, "Next version for doicd " +identifier+" in metacat is "+version);
-		return version;
-	}
 	 /**
 	   * Gets the status of serializing metadata to local
 	   * @return

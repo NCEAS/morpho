@@ -282,7 +282,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 
     config.save();
     
-    morpho.setMetacatURLString(config.get("metacat_url", 0));
+    morpho.getMetacatDataStore().setMetacatURL(config.get("metacat_url", 0));
 
     morpho.initializeLogging(config);
     // need to add  Look and Feel support
