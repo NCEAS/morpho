@@ -59,8 +59,7 @@ public class DataPackageFactory
   protected static Morpho morpho = null;
 
   /**
-   *  Create a new Datapackage given a Reader to a metadata stream
-   *  location is given by 2 booleans
+   *  Create a new datapackage given a Reader to a metadata stream
    */
   public static AbstractDataPackage getDataPackage(Reader in) {
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
@@ -90,8 +89,8 @@ public class DataPackageFactory
   }
 
    /**
-   *  Create a new Datapackage given a docid of a metadata stream
-   *  location is given by 2 booleans
+   *  Create a new Datapackage given a docid of a metadata object
+   *  and a location 
    */
   public static AbstractDataPackage getDataPackage(String docid, String location) {
     // first use datastore package to get a stream for the metadata
@@ -252,7 +251,7 @@ public class DataPackageFactory
    *  This method avoids creating a DOM in case the XML doc is very large (i.e. contains inline
    *  data)
    */
-  protected static String getDocTypeInfo(Reader in) {
+  private static String getDocTypeInfo(Reader in) {
     String temp = getSchemaLine(in);
     
     //Log.debug(1,"line is:"+temp);
@@ -307,7 +306,7 @@ public class DataPackageFactory
 
   // 'borrowed' from MetaCatServlet class of metacat
   // this method should return everything inside the linenum set of angle brackets
-    protected static String getSchemaLine(Reader xml)   {
+    private static String getSchemaLine(Reader xml)   {
     int linenum = 1;
     // find the line
     String secondLine = null;
@@ -386,7 +385,7 @@ public class DataPackageFactory
    *  This method is designed to try and determine the type of document
    *  the dom indicated by the rootNode 'rNode' represents
    */
-  public static String getDocType(Node rNode) {
+  private static String getDocType(Node rNode) {
     Element rootNode = (Element)rNode;
     Document domDoc = rootNode.getOwnerDocument();
     Log.debug(50,"domDoc is: "+XMLUtilities.getDOMTreeAsString(rootNode));
