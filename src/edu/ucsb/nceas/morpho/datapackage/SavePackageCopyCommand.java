@@ -25,7 +25,10 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import java.awt.event.ActionEvent;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -37,12 +40,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SaveEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-
-import java.awt.event.ActionEvent;
-
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.Morpho;
 
 
 /**
@@ -110,13 +107,13 @@ public class SavePackageCopyCommand implements Command
     adp.setAccessionNumber(nextid);
 
     try{
-      adp.serialize(DataStoreServiceController.LOCAL);
-      adp.setLocation(DataStoreServiceController.LOCAL);
-      adp.serializeData(DataStoreServiceController.LOCAL);
+      adp.serialize(DataPackageInterface.LOCAL);
+      adp.setLocation(DataPackageInterface.LOCAL);
+      adp.serializeData(DataPackageInterface.LOCAL);
       SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
       saveEvent.setInitialId(oldid);
       saveEvent.setFinalId(nextid);
-      saveEvent.setLocation(DataStoreServiceController.LOCAL);
+      saveEvent.setLocation(DataPackageInterface.LOCAL);
       saveEvent.setDuplicate(true);
       StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
     } catch (MetacatUploadException e){

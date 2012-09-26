@@ -54,7 +54,7 @@ public class OpenByIdDialog extends JDialog {
 	private JPanel centerPanel = null;
 	private JTextField packageId = null;
 	private JPanel optionsPanel;
-	private String location = DataStoreServiceController.LOCAL;
+	private String location = DataPackageInterface.LOCAL;
 
 	public OpenByIdDialog(Frame parent) {
 		super(parent);
@@ -84,10 +84,10 @@ public class OpenByIdDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				String cmd = e.getActionCommand();
 				if (cmd.equals(options[0])) {
-					location = DataStoreServiceController.LOCAL;
+					location = DataPackageInterface.LOCAL;
 				}
 				if (cmd.equals(options[1])) {
-					location = DataStoreServiceController.METACAT;
+					location = DataPackageInterface.METACAT;
 				}
 			}
 		});

@@ -59,6 +59,7 @@ import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
@@ -3597,7 +3598,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        String statusInLocal = null;
 	        String conflictLocation = null;
 	        //Check to see if id confilct or not
-	        if((dataDestination.equals(DataStoreServiceController.METACAT))) 
+	        if((dataDestination.equals(DataPackageInterface.METACAT))) 
 	        {
 	    	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
 	    	    Log.debug(30, "docid "+docid+ " status in metacat is "+statusInMetacat);
@@ -3608,7 +3609,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	    	//existFlag = true;
 	    	    }
 	        }
-	        else if((dataDestination.equals(DataStoreServiceController.LOCAL))) 
+	        else if((dataDestination.equals(DataPackageInterface.LOCAL))) 
 	        {
 	        	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
 	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal);
@@ -3619,7 +3620,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	    	//existFlag = true;
 	    	    }
 	        }
-	        else if (dataDestination.equals(DataStoreServiceController.BOTH))
+	        else if (dataDestination.equals(DataPackageInterface.BOTH))
 	        {
 	    	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
 	        	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
@@ -3663,14 +3664,14 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        // reset urlinfo with new docid (if docid was not changed, the url will still be same).
 	        
 	        // urlinfo should be the id in a string
-	        if (dataDestination.equals(DataStoreServiceController.LOCAL) || dataDestination.equals(DataStoreServiceController.BOTH))  {
+	        if (dataDestination.equals(DataPackageInterface.LOCAL) || dataDestination.equals(DataPackageInterface.BOTH))  {
 	          if( isDirty || !existInLocal )
 	          {
 	            handleLocal(docid);
 	          }
 	        }
 	        
-	        if (dataDestination.equals(DataStoreServiceController.METACAT) || dataDestination.equals(DataStoreServiceController.BOTH)) {
+	        if (dataDestination.equals(DataPackageInterface.METACAT) || dataDestination.equals(DataPackageInterface.BOTH)) {
 	          if(isDirty || !existInMetacat)
 	          {
 	             handleMetacat(docid, objectName);
@@ -4112,7 +4113,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  }
 		  else
 		  {
-			  int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(identifier, DataStoreServiceController.BOTH);
+			  int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(identifier, DataPackageInterface.BOTH);
 	    	   identifier = scope+"."+newRevision;
 		  }
 		  // store the new id and original id into a map. 

@@ -40,9 +40,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -67,11 +67,6 @@ public class DataPackageFactory
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
     // then create the appropriate subclass of AbstractDataPackage and return it.
 
-    // temporary stub!!!
-    String location = null;
-    if (metacat && !local) location = DataStoreServiceController.METACAT;
-    if (!metacat && local) location = DataStoreServiceController.LOCAL;
-    if (metacat && local) location = DataStoreServiceController.BOTH;
 
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
@@ -111,12 +106,12 @@ public class DataPackageFactory
       morpho = Morpho.thisStaticInstance;
     }
     String location = null;
-    if (metacat && !local) location = DataStoreServiceController.METACAT;
-    if (!metacat && local) location = DataStoreServiceController.LOCAL;
-    if (metacat && local) location = DataStoreServiceController.BOTH;
+    if (metacat && !local) location = DataPackageInterface.METACAT;
+    if (!metacat && local) location = DataPackageInterface.LOCAL;
+    if (metacat && local) location = DataPackageInterface.BOTH;
     Reader in = null;
-    if ((location.equals(DataStoreServiceController.LOCAL))
-               ||(location.equals(DataStoreServiceController.BOTH))) {
+    if ((location.equals(DataPackageInterface.LOCAL))
+               ||(location.equals(DataPackageInterface.BOTH))) {
       FileSystemDataStore fsds = new FileSystemDataStore(morpho);
      try {
         File file = fsds.openFile(docid);

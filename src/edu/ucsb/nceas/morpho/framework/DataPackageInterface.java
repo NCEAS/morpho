@@ -57,6 +57,11 @@ public interface DataPackageInterface
    * used to signify that this package is stored on metacat and locally.
    */
   public static final String BOTH     = "localmetacat";
+  
+  /**
+	 * used to signify that this package is not stored.
+	 */
+	public static final String TEMPLOCATION = "";
 
   /**
    * Denotes an instance of the CreateNewDataPackageCommand object

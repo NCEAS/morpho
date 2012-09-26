@@ -26,10 +26,17 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.awt.event.ActionEvent;
+import java.io.File;
+
+import javax.swing.JOptionPane;
+
+import org.w3c.dom.Node;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
@@ -41,13 +48,6 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportedTextFile;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
-
-import java.awt.event.ActionEvent;
-import java.io.File;
-
-import javax.swing.JOptionPane;
-
-import org.w3c.dom.Node;
 
 /**
  * Class to handle import data file command
@@ -125,7 +125,7 @@ public class ConvertDataCommand implements Command, DataPackageWizardListener
 			File otherEntityFile = null;
 			try {
 				// get from metacat only if we have to
-				if (adp.getLocation().equals(DataStoreServiceController.METACAT)) {
+				if (adp.getLocation().equals(DataPackageInterface.METACAT)) {
 					otherEntityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(otherEntityDocid);
 				} else {
 					otherEntityFile = fds.openFile(otherEntityDocid);

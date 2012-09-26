@@ -1400,9 +1400,9 @@ public class DataPackagePlugin
     {
       boolean metacat = false;
       boolean local = false;
-      if (location.equals(DataStoreServiceController.METACAT)) metacat = true;
-      if (location.equals(DataStoreServiceController.LOCAL)) local = true;
-      if (location.equals(DataStoreServiceController.BOTH)) {
+      if (location.equals(DataPackageInterface.METACAT)) metacat = true;
+      if (location.equals(DataPackageInterface.LOCAL)) local = true;
+      if (location.equals(DataPackageInterface.BOTH)) {
         metacat = true;
         local = true;
       }
@@ -1432,13 +1432,13 @@ public class DataPackagePlugin
 //    dp.export(path);
     boolean local = false;
     boolean metacat = false;
-    if (location.equals(DataStoreServiceController.LOCAL)) {
+    if (location.equals(DataPackageInterface.LOCAL)) {
       local = true;
     }
-    else if (location.equals(DataStoreServiceController.METACAT)) {
+    else if (location.equals(DataPackageInterface.METACAT)) {
       metacat = true;
     }
-    else if (location.equals(DataStoreServiceController.BOTH)) {
+    else if (location.equals(DataPackageInterface.BOTH)) {
       local = true;
       metacat = true;
     }
@@ -1471,13 +1471,13 @@ public class DataPackagePlugin
   {
     boolean local = false;
     boolean metacat = false;
-    if (location.equals(DataStoreServiceController.LOCAL)) {
+    if (location.equals(DataPackageInterface.LOCAL)) {
       local = true;
     }
-    else if (location.equals(DataStoreServiceController.METACAT)) {
+    else if (location.equals(DataPackageInterface.METACAT)) {
       metacat = true;
     }
-    else if (location.equals(DataStoreServiceController.BOTH)) {
+    else if (location.equals(DataPackageInterface.BOTH)) {
       local = true;
       metacat = true;
     }
@@ -1612,13 +1612,13 @@ public class DataPackagePlugin
   {
     boolean local = false;
     boolean metacat = false;
-    if (location.equals(DataStoreServiceController.LOCAL)) {
+    if (location.equals(DataPackageInterface.LOCAL)) {
       local = true;
     }
-    else if (location.equals(DataStoreServiceController.METACAT)) {
+    else if (location.equals(DataPackageInterface.METACAT)) {
       metacat = true;
     }
-    else if (location.equals(DataStoreServiceController.BOTH)) {
+    else if (location.equals(DataPackageInterface.BOTH)) {
       local = true;
       metacat = true;
     }

@@ -40,8 +40,8 @@ import javax.swing.JPanel;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -210,17 +210,17 @@ public class SaveDialog extends JDialog {
 			networkLoc.setEnabled(true);
 			localLoc.setSelected(true);
 			networkLoc.setSelected(false);
-		} else if (location.equals(DataStoreServiceController.LOCAL)) {
+		} else if (location.equals(DataPackageInterface.LOCAL)) {
 			localLoc.setEnabled(false);
 			networkLoc.setEnabled(true);
 			localLoc.setSelected(false);
 			networkLoc.setSelected(true);
-		} else if (location.equals(DataStoreServiceController.METACAT)) {
+		} else if (location.equals(DataPackageInterface.METACAT)) {
 			localLoc.setEnabled(true);
 			networkLoc.setEnabled(false);
 			localLoc.setSelected(true);
 			networkLoc.setSelected(false);
-		} else if (location.equals(DataStoreServiceController.BOTH)) {
+		} else if (location.equals(DataPackageInterface.BOTH)) {
 			localLoc.setEnabled(false);
 			networkLoc.setEnabled(false);
 			localLoc.setSelected(false);
@@ -345,38 +345,38 @@ public class SaveDialog extends JDialog {
 			// BOTH
 			if ((localLoc.isSelected()) && (localLoc.isEnabled())
 					&& (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				adp.serializeData(DataStoreServiceController.BOTH);
-				adp.serialize(DataStoreServiceController.BOTH);
+				adp.serializeData(DataPackageInterface.BOTH);
+				adp.serialize(DataPackageInterface.BOTH);
 				if (adp.getSerializeLocalSuccess()
 						&& adp.getSerializeMetacatSuccess()) {
-					adp.setLocation(DataStoreServiceController.BOTH);
+					adp.setLocation(DataPackageInterface.BOTH);
 				} else if (adp.getSerializeLocalSuccess()) {
-					adp.setLocation(DataStoreServiceController.LOCAL);
+					adp.setLocation(DataPackageInterface.LOCAL);
 				} else if (adp.getSerializeMetacatSuccess()) {
-					adp.setLocation(DataStoreServiceController.METACAT);
+					adp.setLocation(DataPackageInterface.METACAT);
 				} else {
 					adp.setLocation("");
 				}
 			// LOCAL
 			} else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
-				adp.serializeData(DataStoreServiceController.LOCAL);
-				adp.serialize(DataStoreServiceController.LOCAL);
+				adp.serializeData(DataPackageInterface.LOCAL);
+				adp.serialize(DataPackageInterface.LOCAL);
 				if (adp.getSerializeLocalSuccess()) {
-					adp.setLocation(DataStoreServiceController.LOCAL);
+					adp.setLocation(DataPackageInterface.LOCAL);
 				} else {
 					adp.setLocation("");
 				}
 			// METACAT
 			} else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				adp.serializeData(DataStoreServiceController.METACAT);
-				adp.serialize(DataStoreServiceController.METACAT);
+				adp.serializeData(DataPackageInterface.METACAT);
+				adp.serialize(DataPackageInterface.METACAT);
 				if (adp.getSerializeMetacatSuccess()) {
-					adp.setLocation(DataStoreServiceController.METACAT);
+					adp.setLocation(DataPackageInterface.METACAT);
 				} else if (adp.getLocation() != null
-						&& adp.getLocation().equals(DataStoreServiceController.LOCAL)
+						&& adp.getLocation().equals(DataPackageInterface.LOCAL)
 						&& !adp.getPackageIDChanged()
 						&& !adp.getDataIDChanged()) {
-					adp.setLocation(DataStoreServiceController.LOCAL);
+					adp.setLocation(DataPackageInterface.LOCAL);
 				} else {
 					adp.setLocation("");
 				}

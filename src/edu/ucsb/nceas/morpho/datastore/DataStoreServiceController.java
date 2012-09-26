@@ -26,6 +26,7 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
 import edu.ucsb.nceas.morpho.util.IOUtil;
@@ -40,26 +41,6 @@ import edu.ucsb.nceas.morpho.util.XMLTransformer;
  * 
  */
 public class DataStoreServiceController {
-
-	/**
-	 * used to signify that this package is located on a metacat server
-	 */
-	public static final String METACAT = "metacat";
-
-	/**
-	 * used to signify that this package is located locally
-	 */
-	public static final String LOCAL = "local";
-	
-	/**
-	 * used to signify that this package is not stored.
-	 */
-	public static final String TEMPLOCATION = "";
-
-	/**
-	 * used to signify that this package is stored on metacat and locally.
-	 */
-	public static final String BOTH = "localmetacat";
 
 	private static DataStoreServiceController instance;
 
@@ -83,13 +64,13 @@ public class DataStoreServiceController {
 	public int getNextRevisionNumber(String docid, String location)
 	{
 		int version = AbstractDataPackage.ORIGINAL_REVISION;
-		if (location.equals(DataStoreServiceController.LOCAL)) {
+		if (location.equals(DataPackageInterface.LOCAL)) {
 			version = Morpho.thisStaticInstance.getFileSystemDataStore().getNextRevisionNumber(docid);
 		}
-		if (location.equals(DataStoreServiceController.METACAT)) {
+		if (location.equals(DataPackageInterface.METACAT)) {
 			version = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
 		}
-		if (location.equals(DataStoreServiceController.BOTH)) {
+		if (location.equals(DataPackageInterface.BOTH)) {
 			int localNextRevision = Morpho.thisStaticInstance.getFileSystemDataStore().getNextRevisionNumber(docid);
 			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
 			version = Math.max(localNextRevision, metacatNextRevision);
@@ -109,7 +90,7 @@ public class DataStoreServiceController {
 	public File openFile(String id, String location) throws Throwable {
 
 		File returnFile = null;
-		if (location.equals(DataStoreServiceController.METACAT)) {
+		if (location.equals(DataPackageInterface.METACAT)) {
 			try {
 				Log.debug(11, "opening metacat file");
 				returnFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id);
@@ -155,10 +136,10 @@ public class DataStoreServiceController {
 		boolean localLoc = false;
 		String accnum = adp.getAccessionNumber();
 
-		if (location.equals(METACAT) || location.equals(BOTH)) {
+		if (location.equals(DataPackageInterface.METACAT) || location.equals(DataPackageInterface.BOTH)) {
 			metacatLoc = true;
 		}
-		if (location.equals(LOCAL) || location.equals(BOTH)) {
+		if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
 			localLoc = true;
 		}
 		if (localLoc) {
@@ -195,12 +176,12 @@ public class DataStoreServiceController {
 		File f = null;
 		boolean localloc = false;
 		boolean metacatloc = false;
-		if (location.equals(DataStoreServiceController.BOTH)) {
+		if (location.equals(DataPackageInterface.BOTH)) {
 			localloc = true;
 			metacatloc = true;
-		} else if (location.equals(DataStoreServiceController.METACAT)) {
+		} else if (location.equals(DataPackageInterface.METACAT)) {
 			metacatloc = true;
-		} else if (location.equals(DataStoreServiceController.LOCAL)) {
+		} else if (location.equals(DataPackageInterface.LOCAL)) {
 			localloc = true;
 		} else {
 			Log.debug(1, "Package has not been saved! Unable to export!");
@@ -508,7 +489,7 @@ public class DataStoreServiceController {
 		
 		String location = adp.getLocation();
 		
-		if (location.equals(TEMPLOCATION)) {
+		if (location.equals(DataPackageInterface.TEMPLOCATION)) {
 			Log.debug(5, "Morpho cannot export a data package that has not been saved!");
 			return false;
 		}
@@ -555,11 +536,11 @@ public class DataStoreServiceController {
 				origFileName = urlinfo;
 			}
 			try {
-				if ((location.equals(DataStoreServiceController.LOCAL))
-						|| (location.equals(DataStoreServiceController.BOTH))) {
+				if ((location.equals(DataPackageInterface.LOCAL))
+						|| (location.equals(DataPackageInterface.BOTH))) {
 					dataFile = Morpho.thisStaticInstance
 							.getFileSystemDataStore().openFile(urlinfo);
-				} else if (location.equals(DataStoreServiceController.METACAT)) {
+				} else if (location.equals(DataPackageInterface.METACAT)) {
 					dataFile = Morpho.thisStaticInstance.getMetacatDataStore()
 							.openFile(urlinfo);
 				}

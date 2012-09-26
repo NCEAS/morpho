@@ -25,24 +25,24 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SaveEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-
-import java.awt.event.ActionEvent;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 /**
  * Class to handle download a package from network command
@@ -180,7 +180,7 @@ public class NetworkToLocalCommand implements Command
           saveEvent.setSynchronize(true);
           saveEvent.setInitialId(selectDocId);
           saveEvent.setFinalId(localDocid);
-          saveEvent.setLocation(DataStoreServiceController.LOCAL);
+          saveEvent.setLocation(DataPackageInterface.LOCAL);
           StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
           
           refreshFlag = true;

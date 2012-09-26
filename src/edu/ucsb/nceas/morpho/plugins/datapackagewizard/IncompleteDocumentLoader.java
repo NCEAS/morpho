@@ -36,7 +36,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -88,7 +87,7 @@ public class IncompleteDocumentLoader
       return;
     }
     this.dataPackage = dataPackage;
-    this.dataPackage.setLocation(DataStoreServiceController.TEMPLOCATION);
+    this.dataPackage.setLocation(DataPackageInterface.TEMPLOCATION);
     init();
     readXpathUIMappingInfo();
   }

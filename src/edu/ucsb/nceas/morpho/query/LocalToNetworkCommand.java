@@ -189,7 +189,7 @@ public class LocalToNetworkCommand implements Command
               saveEvent.setSynchronize(true);
               saveEvent.setInitialId(selectDocId);
               saveEvent.setFinalId(metacatDocid);
-              saveEvent.setLocation(DataStoreServiceController.METACAT);
+              saveEvent.setLocation(DataPackageInterface.METACAT);
               StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
               
               refreshFlag = true;

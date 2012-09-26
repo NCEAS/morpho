@@ -776,9 +776,9 @@ public void setTopPanel(JPanel jp) {
     boolean local = false;
     boolean metacat = false;
 
-    if(adp.getLocation().equals(DataStoreServiceController.LOCAL)){
+    if(adp.getLocation().equals(DataPackageInterface.LOCAL)){
       local = true;
-    } else if(adp.getLocation().equals(DataStoreServiceController.METACAT)){
+    } else if(adp.getLocation().equals(DataPackageInterface.METACAT)){
       metacat = true;
     } else {
       local = true;
@@ -884,11 +884,11 @@ public void setTopPanel(JPanel jp) {
             // if we reach here, urlinfo should be the id in a string
             try{
               String loc = adp.location;
-              if ((loc.equals(DataStoreServiceController.LOCAL))||(loc.equals(DataStoreServiceController.BOTH))) {
+              if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
                 FileSystemDataStore fds = new FileSystemDataStore(morpho);
                 displayFile = fds.openFile(urlinfo);
               }
-              else if (loc.equals(DataStoreServiceController.METACAT)) {
+              else if (loc.equals(DataPackageInterface.METACAT)) {
                 displayFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(urlinfo);
               }
               else if (loc.equals("")) {
