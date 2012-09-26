@@ -73,6 +73,49 @@ public class DataStoreServiceController {
 		}
 		return instance;
 	}
+	
+	/**
+	 * Read file from given location
+	 * 
+	 * @param id
+	 * @param location
+	 * @return
+	 * @throws Throwable
+	 */
+	public File openFile(String id, String location) throws Throwable {
+
+		File returnFile = null;
+		if (location.equals(DataStoreServiceController.METACAT)) {
+			try {
+				Log.debug(11, "opening metacat file");
+				returnFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id);
+				Log.debug(11, "metacat file opened");
+			} catch (FileNotFoundException fnfe) {
+				Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
+						+ "metacat file not found: " + fnfe.getMessage());
+				fnfe.printStackTrace();
+				throw fnfe.fillInStackTrace();
+
+			} catch (CacheAccessException cae) {
+				Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
+						+ "metacat cache problem: " + cae.getMessage());
+				cae.printStackTrace();
+				throw cae.fillInStackTrace();
+			}
+		} else { // not metacat
+			try {
+				Log.debug(11, "opening local file");
+				returnFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(id);
+				Log.debug(11, "local file opened");
+			} catch (FileNotFoundException fnfe) {
+				Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
+						+ "local file not found: " + fnfe.getMessage());
+				fnfe.printStackTrace();
+				throw fnfe.fillInStackTrace();
+			}
+		}
+		return returnFile;
+	}
 
 	/**
 	 * Deletes the package from the specified location

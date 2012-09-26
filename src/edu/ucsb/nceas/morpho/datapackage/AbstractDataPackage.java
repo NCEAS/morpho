@@ -27,20 +27,11 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,10 +42,6 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.swing.JOptionPane;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.apache.xpath.XPathAPI;
@@ -67,23 +54,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
-import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
-import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -219,7 +201,6 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected String location = "";
   protected String id;
   protected ConfigXML config;
-  protected File dataPkgFile;
 
 	protected static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
 	protected static Map  customUnitDictionaryAdditionalMetadataMap = new HashMap();
@@ -370,53 +351,6 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  and implemented in the EML200DataPackage class.
    */
   public abstract Node getReferencedNode(Node node);
-
-
-  // util to read the file from either FileSystemDataStore or MetacatDataStore
-  protected File getFileWithID(String ID, Morpho morpho) throws Throwable {
-
-    File returnFile = null;
-    if (location.equals(DataStoreServiceController.METACAT)) {
-      try {
-        Log.debug(11, "opening metacat file");
-        dataPkgFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(ID);
-        Log.debug(11, "metacat file opened");
-
-      }
-      catch (FileNotFoundException fnfe) {
-
-        Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
-                  + "metacat file not found: " + fnfe.getMessage());
-        fnfe.printStackTrace();
-        throw fnfe.fillInStackTrace();
-
-      }
-      catch (CacheAccessException cae) {
-
-        Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
-                  + "metacat cache problem: " + cae.getMessage());
-        cae.printStackTrace();
-        throw cae.fillInStackTrace();
-      }
-    }
-    else { //not metacat
-      try {
-        Log.debug(11, "opening local file");
-        
-        dataPkgFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(ID);
-        Log.debug(11, "local file opened");
-
-      }
-      catch (FileNotFoundException fnfe) {
-
-        Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
-                  + "local file not found: " + fnfe.getMessage());
-        fnfe.printStackTrace();
-        throw fnfe.fillInStackTrace();
-      }
-    }
-    return dataPkgFile;
-  }
 
   /**
    *  sets the initialId variable

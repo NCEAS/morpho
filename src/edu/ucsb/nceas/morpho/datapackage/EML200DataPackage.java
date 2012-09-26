@@ -383,17 +383,14 @@ public  class EML200DataPackage extends AbstractDataPackage
 
     File packagefile;
     try {
-      packagefile = getFileWithID(this.id, morpho);
+      packagefile = DataStoreServiceController.getInstance().openFile(identifier, location);
      } catch (Throwable t) {
       //already handled in getFileWithID() method,
       //so just abandon this instance:
       return;
     }
 
-    DocumentBuilder parser = Morpho.createDomParser();
-    InputSource in;
     FileInputStream fs;
-    Document doc = null;
 
     if (packagefile==null){ Log.debug(1, "packagefile is NULL!"); }
     try {

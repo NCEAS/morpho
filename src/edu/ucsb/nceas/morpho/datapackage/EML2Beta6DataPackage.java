@@ -48,6 +48,7 @@ import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
@@ -77,11 +78,11 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
   public void load(String location, String identifier, Morpho morpho) {
     this.morpho = morpho;
     this.location = location;
-    this.config = morpho.getConfiguration();
+    this.config = Morpho.getConfiguration();
     id = identifier;
     //read the file containing the triples - usually the datapackage file:
     try {
-      tripleFile = getFileWithID(identifier, morpho);
+      tripleFile = DataStoreServiceController.getInstance().openFile(identifier, location);
       triples = new TripleCollection(tripleFile, morpho);
     } catch (Throwable t) {
       //already handled in getFileWithID() method,
