@@ -1057,6 +1057,49 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     } 
   }
 
+  /**
+	 * Gets the last docid from metacat system
+	 * 
+	 * @param scope the docid scope
+	 * @return the last docid for given scope, withour revision or scope
+	 */
+	public int getLastDocid(String scope) {
+
+		String result = null;
+		String temp = null;
+		int metacatId = 0;
+
+		Properties lastIDProp = new Properties();
+		lastIDProp.put("action", "getlastdocid");
+		lastIDProp.put("scope", scope);
+		temp = getMetacatString(lastIDProp);
+
+		Log.debug(30, "the last id from metacat ===== " + temp);
+		if (temp != null) {
+			int ind1 = temp.indexOf("<docid>");
+			int ind2 = temp.indexOf("</docid>");
+			if ((ind1 > 0) && (ind2 > 0)) {
+				result = temp.substring(ind1 + 7, ind2);
+				if (!result.equals("null")) {
+					// now remove the version and scope parts of the id
+					result = result.substring(0, result.lastIndexOf("."));
+					result = result.substring(result.indexOf(".") + 1, result.length());
+					try {
+						// double check that it is a number
+						metacatId = (new Integer(result).intValue());
+					} catch (NumberFormatException nfe) {
+						Log.debug(30, "Last id from metacat: '" + result + "' is not integer.");
+					}
+
+				}
+
+			}
+		}
+		
+		return metacatId;
+
+	}
+  
 /**
    * sets access to a document in metacat. 
    * @param docid id to set permission for

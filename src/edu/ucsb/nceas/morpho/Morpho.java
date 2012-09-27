@@ -46,7 +46,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.Action;
@@ -882,80 +881,19 @@ public class Morpho
     {
     	
         String result = null;
-        String temp  =  null;
-        Properties lastIDProp = new Properties();
-        lastIDProp.put("action", "getlastdocid");
-        lastIDProp.put("scope", scope);
-         if (mds != null && mds.getNetworkStatus())
-         {
-             temp= mds.getMetacatString(lastIDProp);
-         }
-        Log.debug(30, "the last id from metacat ===== "+temp);
+        
         //localMaxDocid will be 54 if the biggest file name is 54.2
         int localMaxDocid = getMaxLocalId(scope);
-        /*
-            if successful temp should be of the form
-            <?xml version="1.0"?>
-            <lastDocid>
-            <scope>fegraus</scope>
-            <docid>fegraus.53.1</docid>
-            </lastDocid>
-          */
-        if (temp != null) {
-            int ind1 = temp.indexOf("<docid>");
-            int ind2 = temp.indexOf("</docid>");
-            if ((ind1 > 0) && (ind2 > 0)) {
-                result = temp.substring(ind1 + 7, ind2);
-                if (!result.equals("null")) {
-                    // now remove the version and header parts of the id
-                    result = result.substring(0, result.lastIndexOf("."));
-                    result = result.substring(result.indexOf(".") + 1,
-                        result.length());
-                    int metacatId = 0;
-                    try 
-            		{
-            			metacatId = (new Integer(result).intValue());
-            		} 
-            		catch (NumberFormatException nfe) 
-            		{
-	                    Log.debug(30, "Last id from metacat is not integer.");
-	                }
-            		//choose the bigger one between local and metacat
-                    if (metacatId < localMaxDocid )
-                    {
-                        result = ""+localMaxDocid;
-                    }
-                } 
-                else 
-                {
-                	// no metacat lastid branch
-                	if (localMaxDocid > 0)
-                	{
-                		//we have the maxid in local file, so use it.
-                		result = ""+localMaxDocid;
-                	}
-                	else
-                	{
-                         result = null;
-                	}
-                }
-            }
-        }
-        // add a code to handle somehow we can't get result from metacat
-       if (result == null)
-        {
-        	// no metacat lastid branch
-        	if (localMaxDocid > 0)
-        	{
-        		//we have the maxid in local file, so use it.
-        		result = ""+localMaxDocid;
-        	}
-        	else
-        	{
-                 result = null;
-        	}
-        }
-        Log.debug(30, "Final Last id is "+result);
+        Log.debug(30, "the last id locally ===== " + localMaxDocid);
+
+        //get the metacat last docid
+        int metacatId  =  mds.getLastDocid(scope);
+        Log.debug(30, "the last id from metacat ===== " + metacatId);
+     
+        // pick the highest
+        result = String.valueOf(Math.max(localMaxDocid, metacatId));
+              
+        Log.debug(30, "Final Last id is " + result);
         return result;
     }
     
