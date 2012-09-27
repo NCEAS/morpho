@@ -484,6 +484,54 @@ public class FileSystemDataStore extends DataStore
     return getDataFileFromAllLocalSources(docid);
   }
   
+  
+  /**
+	 * Gets the max local id for given scope in current the profile. The local
+	 * file's names look like 100.1, 102.1... under scope dir. In this case, 102
+	 * will be returned.
+	 */
+	public int getLastDocid(String scope) {
+		int docid = 0;
+		int maxDocid = 0;
+		String currentProfile = morpho.getProfile().get("profilename", 0);
+		ConfigXML config = Morpho.getConfiguration();
+		String profileDir = ConfigXML.getConfigDirectory() + File.separator
+				+ config.get("profile_directory", 0) + File.separator
+				+ currentProfile;
+		String datadir = profileDir + File.separator
+				+ morpho.getProfile().get("datadir", 0) + File.separator
+				+ scope;
+		datadir = datadir.trim();
+		Log.debug(30, "the data dir is ===== " + datadir);
+		File directoryFile = new File(datadir);
+		File[] files = directoryFile.listFiles();
+		if (files != null) {
+			for (int i = 0; i < files.length; i++) {
+				File currentfile = files[i];
+				if (currentfile != null && currentfile.isFile()) {
+					String fileName = currentfile.getName();
+					Log.debug(50, "the file name in dir is " + fileName);
+					if (fileName != null) {
+						fileName = fileName.substring(0, fileName.indexOf("."));
+						Log.debug(50,
+								"the file name after removing revision in dir is "
+										+ fileName);
+						try {
+							docid = new Integer(fileName).intValue();
+							if (docid > maxDocid) {
+								maxDocid = docid;
+							}
+						} catch (NumberFormatException nfe) {
+							Log.debug(30, "Not loading file with invalid name");
+						}
+					}
+				}
+			}
+		}
+		Log.debug(30, "The max docid in local file system for scope " + scope + " is " + maxDocid);
+		return maxDocid;
+	}
+  
   /**
    * Gets metadata file from both local and metacata source
    * @param docid

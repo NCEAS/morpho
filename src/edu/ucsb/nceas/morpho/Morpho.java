@@ -883,7 +883,7 @@ public class Morpho
         String result = null;
         
         //localMaxDocid will be 54 if the biggest file name is 54.2
-        int localMaxDocid = getMaxLocalId(scope);
+        int localMaxDocid = fds.getLastDocid(scope);
         Log.debug(30, "the last id locally ===== " + localMaxDocid);
 
         //get the metacat last docid
@@ -897,57 +897,7 @@ public class Morpho
         return result;
     }
     
-    /*
-     * Gets the max local id for given scope in current the profile.  The local file's names look like 100.1, 102.1... under scope dir.
-     * In this case, 102 will be returned.
-     */
-    private int getMaxLocalId(String scope)
-    {
-    	    int docid =0;
-    	    int maxDocid =0;
-    	    String currentProfile = profile.get("profilename", 0);
-  		    String separator = profile.get("separator", 0);
-  		    ConfigXML config = getConfiguration();
-  		    String profileDir = config.getConfigDirectory() + File.separator +
-  		                       config.get("profile_directory", 0) + File.separator +
-  		                       currentProfile;
-  		    String datadir = profileDir + File.separator + profile.get("datadir", 0)+File.separator+scope;
-  		    datadir = datadir.trim();
-  		    Log.debug(30, "the data dir is ===== "+datadir);
-  		    File directoryFile = new File(datadir);
-    	    File[] files = directoryFile.listFiles();
-    	    if (files != null)
-    	    {
-    	      for (int i=0;i<files.length;i++)
-    	        {
-    	            File currentfile = files[i];   	            
-    	            if (currentfile != null && currentfile.isFile()) {  	                
-    	                	String fileName = currentfile.getName();
-    	                	Log.debug(50, "the file name in dir is "+fileName);
-    	                	if (fileName != null)
-    	                	{
-    	                		fileName = fileName.substring(0, fileName.indexOf("."));
-    	                		Log.debug(50, "the file name after removing revision in dir is "+fileName);
-    	                		try 
-    	                		{
-    	                			docid = (new Integer(fileName).intValue());
-    	                			if (docid > maxDocid)
-    	                			{
-    	                				maxDocid = docid;
-    	                			}
-    	                		} 
-    	                		catch (NumberFormatException nfe) 
-    	                		{
-    	    	                    Log.debug(30, "Not loading file with invalid name");
-    	    	                }
-    	                	
-    	                	}
-    	            }
-    	        }
-    	    }
-    	Log.debug(30, "The max docid in local file system for scope "+scope+" is "+maxDocid);      
-    	return maxDocid;
-    }
+    
 
     /**
      * Load all of the plugins specified in the configuration file. The plugins
