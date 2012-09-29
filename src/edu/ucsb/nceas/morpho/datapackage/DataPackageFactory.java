@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -59,34 +60,44 @@ public class DataPackageFactory
   protected static Morpho morpho = null;
 
   /**
-   *  Create a new datapackage given a Reader to a metadata stream
-   */
-  public static AbstractDataPackage getDataPackage(Reader in) {
-    // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
-    // then create the appropriate subclass of AbstractDataPackage and return it.
+	 * Create a new datapackage given a Reader to a metadata stream
+	 */
+	public static AbstractDataPackage getDataPackage(Reader originalIn) {
+		// read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii,
+		// etc)
+		// then create the appropriate subclass of AbstractDataPackage and
+		// return it.
 
-    AbstractDataPackage dp = null;
-    String type = getDocTypeInfo(in);
-    //Log.debug(15,"DocTypeInfo: " + type);
-//    if (type.equals("eml:eml")) {
-    if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1 || type.indexOf("eml://ecoinformatics.org/eml-2.1") > -1) {
-      //Log.debug(15,"Creating new eml-2.0.x package from metadata stream");
-      dp = new EML200DataPackage();
-      //Log.debug(15,"loading new eml-2.0.x DOM");
-      try {
-          in.reset();
-      } catch (IOException ioe) {
-          Log.debug(15, "!!ERROR!! Unable reset XML input stream");
-      }
-      dp.load(new InputSource(in));
+		// mark so we can get back to the beginning of the stream
+		BufferedReader in = new BufferedReader(originalIn);
+		try {
+			in.mark(2048);
+		} catch (IOException ioe) {
+			Log.debug(15, "!!ERROR!! Unable mark XML input stream");
+		}
+		AbstractDataPackage dp = null;
+		String type = getDocTypeInfo(in);
+		// Log.debug(15,"DocTypeInfo: " + type);
+		// if (type.equals("eml:eml")) {
+		if (type.indexOf("eml://ecoinformatics.org/eml-2.0") > -1
+				|| type.indexOf("eml://ecoinformatics.org/eml-2.1") > -1) {
+			//Log.debug(15,"Creating new eml-2.0.x package from metadata stream"
+			// );
+			dp = new EML200DataPackage();
+			// Log.debug(15,"loading new eml-2.0.x DOM");
+			try {
+				in.reset();
+			} catch (IOException ioe) {
+				Log.debug(15, "!!ERROR!! Unable reset XML input stream");
+			}
+			dp.load(new InputSource(in));
 
-    }
-    else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
-              (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
-      dp = new EML2Beta6DataPackage();
-    }
-    return dp;
-  }
+		} else if ((type.indexOf("eml-dataset-2.0.0beta6") > -1)
+				|| (type.indexOf("eml-dataset-2.0.0beta4") > -1)) {
+			dp = new EML2Beta6DataPackage();
+		}
+		return dp;
+	}
 
    /**
 	 * Create a new Datapackage given a docid of a metadata object and a
