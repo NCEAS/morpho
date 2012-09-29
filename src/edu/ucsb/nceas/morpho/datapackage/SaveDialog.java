@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -324,7 +325,7 @@ public class SaveDialog extends JDialog {
 			try {
 				if (id.indexOf(AccessionNumber.TEMP) > -1) {
 					AccessionNumber an = new AccessionNumber(morpho);
-					String nextid = an.getNextId();
+					String nextid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.BOTH);
 					adp.setAccessionNumber(nextid);
 				} else {
 					AccessionNumber an = new AccessionNumber(morpho);
@@ -334,7 +335,7 @@ public class SaveDialog extends JDialog {
 			} catch (Exception www) {
 				// no valid accession number; thus create one
 				AccessionNumber an = new AccessionNumber(morpho);
-				String nextid = an.getNextId();
+				String nextid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.BOTH);
 				adp.setAccessionNumber(nextid);
 			}
 		}

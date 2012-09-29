@@ -35,6 +35,7 @@ import java.nio.charset.Charset;
 import javax.swing.JFileChooser;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -90,8 +91,7 @@ public class ImportEMLFileCommand implements Command
           //serialize local data file into morpho first
           dataPackage.serializeDataInImportExternalEMLFile();
           //given a new id to this dataPackage
-          AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-          String identifier = an.getNextId();
+          String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
           dataPackage.setAccessionNumber(identifier);
           //serialize metadata to local 
           dataPackage.serialize(DataPackageInterface.LOCAL);

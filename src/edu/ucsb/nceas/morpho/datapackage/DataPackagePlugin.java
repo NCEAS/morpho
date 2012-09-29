@@ -1471,9 +1471,7 @@ public class DataPackagePlugin
    */
   public String getNextId(Morpho morpho)
   {
-    String identifier = null;
-    AccessionNumber accession = new AccessionNumber(morpho);
-    identifier = accession.getNextId();
+    String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
     return identifier;
   }
 

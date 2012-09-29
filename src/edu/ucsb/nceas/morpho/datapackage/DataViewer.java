@@ -68,6 +68,7 @@ import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -1362,12 +1363,12 @@ public class DataViewer extends javax.swing.JPanel
 				   }
 				   else
 				   {
-					   id = an.getNextId();
+					   id = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 				   }
 				}
 				else
 				{
-				   id = an.getNextId();
+				   id = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 				}
 				
 			} else {
@@ -1399,7 +1400,7 @@ public class DataViewer extends javax.swing.JPanel
 			  if (!curid.equals("")) {
 				  newid = a.incRev(curid);
 			  } else {
-				  newid = a.getNextId();
+				  newid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 			  }
 			  adp.setAccessionNumber(newid);
       }

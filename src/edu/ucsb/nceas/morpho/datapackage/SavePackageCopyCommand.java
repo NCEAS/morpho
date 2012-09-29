@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.awt.event.ActionEvent;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -102,8 +103,7 @@ public class SavePackageCopyCommand implements Command
     String location = adp.getLocation();
     String oldid = adp.getPackageId();
 
-    AccessionNumber an = new AccessionNumber(morpho);
-    String nextid = an.getNextId();
+    String nextid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
     adp.setAccessionNumber(nextid);
 
     try{

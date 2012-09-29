@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -180,7 +181,7 @@ public class ImportOtherEntityCommand implements Command {
 	  private String saveDataFileAsTemp(File f, String currentId) {
 	    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
 	    if (currentId  == null) {
-	    	currentId = an.getNextId();
+	    	currentId = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 	    } else {
 	    	currentId = an.incRev(currentId);
 	    }

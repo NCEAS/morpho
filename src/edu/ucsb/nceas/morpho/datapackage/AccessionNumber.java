@@ -26,25 +26,24 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.util.Log;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
+
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.DocumentType;
-import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xpath.XPathAPI;
-import com.arbortext.catalog.*;
+
+import com.arbortext.catalog.CatalogEntityResolver;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * Class that implements Accession Number utility functions for morpho
@@ -62,69 +61,7 @@ public class AccessionNumber
     profile = morpho.getProfile();
   }
 
-  /**
-   * returns the next local id from the config file
-   * returns null if configXML was unable to increment the id number
-   */
-  public synchronized String getNextId()
-  {
-	 long idFromMetacatAndLocalSystem = -1;
-	 long lastid = -1;
-    String scope = profile.get("scope", 0);
-    //Get last id from metacat and local system
-    String IDFromMetacatAndLocal = morpho.getLastID(scope);
-    if (IDFromMetacatAndLocal != null)
-    {
-    	idFromMetacatAndLocalSystem = (new Long(IDFromMetacatAndLocal).longValue());
-    	//in order to get next id, this number should be increase 1
-    	idFromMetacatAndLocalSystem++;
-    }
-    //Gets last id from profile
-    String lastidS = profile.get("lastId", 0);
-    try
-    {
-        lastid = (new Long(lastidS)).longValue();
-    }
-    catch(Exception e)
-    {
-    	Log.debug(30, "couldn't get lastid from profile");
-    }
-    Log.debug(30, "the last id from profile "+lastid);
-    Log.debug(30, "the last id from Metacat and local file system "+idFromMetacatAndLocalSystem);
-    //Chooses the bigger one between profile and metacat(local).
-    if (lastid < idFromMetacatAndLocalSystem )
-    {
-    	lastid =  idFromMetacatAndLocalSystem;
-    }
-    
-    if (lastid == -1)
-    {
-    	Log.debug(1, "Error incrementing the accession number id");
-        return null;
-    }
-    String separator = profile.get("separator", 0);
-    
-    if(scope.trim().equals("USERNAME"))
-    { //this keyword means to use the username for the scope
-      String username = profile.get("username", 0);
-      scope = username;
-    }
-    
-    String identifier = scope + separator + lastid;
-    lastid++;
-    String s = "" + lastid;
-    if(!profile.set("lastId", 0, s))
-    {
-      Log.debug(1, "Error incrementing the accession number id");
-      return null;
-    }
-    else
-    {
-      profile.save();
-      Log.debug(30, "the next id is "+identifier+".1");
-      return identifier + ".1"; 
-    }
-  }
+  
   
   /**
    * Gets the next available temp id from profile file.

@@ -67,12 +67,14 @@ import org.xml.sax.XMLReader;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -842,62 +844,29 @@ public class Morpho
 
         return parser;
     }
-
+    
     /**
-     * Sets the LastID attribute of the Morpho object
+     * Sets the LastId attribute for the current profile for the given scope
      *
-     * @param scope  The new LastID value
+     * @param scope  the scope 
      */
     public void setLastID(String scope)
     {
-        //MB 05-21-02: if (connected && networkStatus) {
-        // only execute if connected to avoid hanging when there is
-        // no network connection
-        //if (networkStatus) {
-            String id = getLastID(scope);
-            if (id != null) {
-                long num = (new Long(id)).longValue();
-                String curval = profile.get("lastId", 0);
-                long curnum = (new Long(curval)).longValue();
-                if (curnum <= num) {
-                    num = num + 1;
-                    // required because Metacat does not return the latest id
-                    id = (new Long(num)).toString();
-                    profile.set("lastId", 0, id);
-                    profile.save();
-                }
+        //TODO: should only deal with LOCAL, but existing functionality queried BOTH
+        String id = DataStoreServiceController.getInstance().getLastDocid(scope, DataPackageInterface.BOTH);
+        if (id != null) {
+            long num = Long.parseLong(id);
+            String curval = Morpho.thisStaticInstance.getProfile().get("lastId", 0);
+            long curnum = (new Long(curval)).longValue();
+            if (curnum <= num) {
+                num = num + 1;
+                // required because Metacat does not return the latest id
+                id = String.valueOf(num);
+                Morpho.thisStaticInstance.getProfile().set("lastId", 0, String.valueOf(id));
+                Morpho.thisStaticInstance.getProfile().save();
             }
-       //}
+        }
     }
-
-    /**
-     * Gets the LastID attribute of the Morpho object. It will go through both local and
-     * metacat system
-     *
-     * @param scope  Description of Parameter
-     * @return       The LastID value
-     */
-    public String getLastID(String scope)
-    {
-    	
-        String result = null;
-        
-        //localMaxDocid will be 54 if the biggest file name is 54.2
-        int localMaxDocid = fds.getLastDocid(scope);
-        Log.debug(30, "the last id locally ===== " + localMaxDocid);
-
-        //get the metacat last docid
-        int metacatId  =  mds.getLastDocid(scope);
-        Log.debug(30, "the last id from metacat ===== " + metacatId);
-     
-        // pick the highest
-        result = String.valueOf(Math.max(localMaxDocid, metacatId));
-              
-        Log.debug(30, "Final Last id is " + result);
-        return result;
-    }
-    
-    
 
     /**
      * Load all of the plugins specified in the configuration file. The plugins

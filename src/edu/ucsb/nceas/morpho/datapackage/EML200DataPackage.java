@@ -221,8 +221,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	 if (choice != null && choice.equals(DocidConflictHandler.INCREASEID))
     	 {
     		 // increase to a new id
-    	    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-            identifier = an.getNextId();
+            identifier = DataStoreServiceController.getInstance().getNextId(location);
             setAccessionNumber(identifier);
             setPackageIDChanged(true);
             temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
@@ -247,8 +246,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     {
     	Log.debug(30, "==============In existFlag and insert revision 1 branch");
     	//since it is saving a new package, increase docid silently
-    	 AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-    	 identifier = an.getNextId();
+    	 identifier = DataStoreServiceController.getInstance().getNextId(location);
     	 setAccessionNumber(identifier);
     	 setPackageIDChanged(true);
     	 temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
@@ -1483,8 +1481,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 	
 	    String nextid = id;
 	    if (updatePackageId) {
-	      AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-	      nextid = an.getNextId();
+	      nextid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.METACAT);
 	      this.setAccessionNumber(nextid);
 	      // serialize locally with the new id
 	      serialize(DataPackageInterface.LOCAL);

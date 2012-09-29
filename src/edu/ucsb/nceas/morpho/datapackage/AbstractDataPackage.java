@@ -3748,8 +3748,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         if(localFile != null && localFile.isFile())
         {
           //now we copy the file into morpho
-          AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-          String identifier = an.getNextId();
+          String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
           try
           {
             InputStream dfis = new FileInputStream(localFile);
@@ -4059,8 +4058,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  // decides docid base on user choice
 		  if (!update)
 		  {
-		     AccessionNumber an = new AccessionNumber(morpho);
-	         identifier = an.getNextId();
+	         identifier = DataStoreServiceController.getInstance().getNextId(conflictLocation);
 		  }
 		  else
 		  {
