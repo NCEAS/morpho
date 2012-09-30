@@ -1361,15 +1361,12 @@ public class DataPackagePlugin
 		AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.METACAT);
 
 		try {
-			DataStoreServiceController.getInstance().serializeData(adp,
-					DataPackageInterface.LOCAL);
-			DataStoreServiceController.getInstance().serialize(adp,
-					DataPackageInterface.LOCAL);
+			DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.LOCAL);
+			DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.LOCAL);
 		} catch (Exception w) {
 			Log.debug(5, "Exception serializing local package in 'download'");
 		}
-		AbstractDataPackage newadp = DataPackageFactory.getDataPackage(docid,
-				DataPackageInterface.LOCAL);
+		AbstractDataPackage newadp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
 
 		if (newadp != null) {
 			return newadp.getPackageId();

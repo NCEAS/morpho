@@ -99,7 +99,6 @@ public class SavePackageCopyCommand implements Command
       adp = dvcp.getAbstractDataPackage();
     }
 
-    Morpho morpho = Morpho.thisStaticInstance;
     String location = adp.getLocation();
     String oldid = adp.getPackageId();
 
@@ -107,9 +106,9 @@ public class SavePackageCopyCommand implements Command
     adp.setAccessionNumber(nextid);
 
     try{
+      DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.LOCAL);
       DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.LOCAL);
       adp.setLocation(DataPackageInterface.LOCAL);
-      DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.LOCAL);
       SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
       saveEvent.setInitialId(oldid);
       saveEvent.setFinalId(nextid);
