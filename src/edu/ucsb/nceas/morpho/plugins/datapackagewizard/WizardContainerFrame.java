@@ -66,6 +66,7 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -263,8 +264,7 @@ public class WizardContainerFrame
 	    	   autoSaveID = adp.getAccessionNumber();
 	    	   if(autoSaveID == null || autoSaveID.trim().equals(""))
 	    	   {
-	    		   AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-	    	     autoSaveID = an.getNextId();
+	    	     autoSaveID = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 	    	     //manuallySaveID = NewPackageWizardListener.TEMPORARYID;
 	    		    	 
 	    	   }

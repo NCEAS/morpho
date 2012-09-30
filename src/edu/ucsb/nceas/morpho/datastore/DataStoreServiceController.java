@@ -80,6 +80,78 @@ public class DataStoreServiceController {
 	}
 	
 	/**
+     * Gets the docid attribute for given location. 
+     *
+     * @param scope  scope of the docid
+     * @return       the last docid used for the location (n.b., "scope.docid.rev")
+     */
+    public String getLastDocid(String scope, String location)
+    {
+    	
+    	// during start up this can be null
+    	if (Morpho.thisStaticInstance.getFileSystemDataStore() == null || Morpho.thisStaticInstance.getFileSystemDataStore() == null) {
+    		return null;
+    	}
+    	
+        String result = null;
+        
+        //localMaxDocid will be 54 if the biggest file name is 54.2
+        int localMaxDocid = Morpho.thisStaticInstance.getFileSystemDataStore().getLastDocid(scope);
+        Log.debug(30, "the last id locally ===== " + localMaxDocid);
+
+        //get the metacat last docid
+        int metacatId  =  Morpho.thisStaticInstance.getMetacatDataStore().getLastDocid(scope);
+        Log.debug(30, "the last id from metacat ===== " + metacatId);
+		
+		if (location.equals(DataPackageInterface.LOCAL)) {
+	        result = String.valueOf(localMaxDocid);
+		}
+		if (location.equals(DataPackageInterface.METACAT)) {
+	        result = String.valueOf(metacatId);
+		}
+		if (location.equals(DataPackageInterface.BOTH)) {
+			// pick the highest
+	        result = String.valueOf(Math.max(localMaxDocid, metacatId));
+		}
+              
+        Log.debug(30, "Final Last id is " + result);
+        return result;
+    }
+    
+    /**
+	 * returns the next id for the given location
+	 * for the current scope
+	 * 
+	 */
+	public synchronized String getNextId(String location) {
+		long lastid = -1;
+		String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+		// Get last id from metacat and local system
+		String lastIdString = DataStoreServiceController.getInstance().getLastDocid(scope, location);
+		if (lastIdString != null) {
+			lastid = (new Long(lastIdString).longValue());
+			// in order to get next id, this number should be increase 1
+			lastid++;
+		}
+
+		Log.debug(30, "the last id: " + lastid);
+
+		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
+
+		String identifier = scope + separator + lastid;
+		lastid++;
+		String s = "" + lastid;
+		if (!Morpho.thisStaticInstance.getProfile().set("lastId", 0, s)) {
+			Log.debug(1, "Error incrementing the accession number id");
+			return null;
+		} else {
+			Morpho.thisStaticInstance.getProfile().save();
+			Log.debug(30, "the next id is " + identifier + ".1");
+			return identifier + ".1";
+		}
+	}
+	
+	/**
 	 * Read file from given location
 	 * 
 	 * @param id

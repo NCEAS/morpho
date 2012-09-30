@@ -57,7 +57,9 @@ import javax.swing.JTextField;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
@@ -1214,11 +1216,10 @@ public class DataLocation extends AbstractUIPage {
    * name
    */
   private String saveDataFileAsTemp(File f) {
-    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
     //String id = an.getNextId();
     if (nextAvailableID == null)
     {
-    	nextAvailableID = an.getNextId();
+    	nextAvailableID = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
     }
     try {
     	Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(nextAvailableID, new FileInputStream(f));

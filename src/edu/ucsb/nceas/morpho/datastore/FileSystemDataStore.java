@@ -529,6 +529,19 @@ public class FileSystemDataStore extends DataStore
 			}
 		}
 		Log.debug(30, "The max docid in local file system for scope " + scope + " is " + maxDocid);
+
+		int lastid = -1;
+		String lastidS = morpho.getProfile().get("lastId", 0);
+		try {
+			lastid = Integer.parseInt(lastidS);
+		} catch (Exception e) {
+			Log.debug(30, "couldn't get lastid from profile");
+		}
+		Log.debug(30, "the last id from profile " + lastid);
+
+		// choose the larger of the two
+		maxDocid = Math.max(maxDocid, lastid);
+
 		return maxDocid;
 	}
   
