@@ -39,7 +39,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -84,12 +83,6 @@ public class SaveDialog extends JDialog {
 
 	/** selected docid */
 	String selectDocId = null;
-
-	/** flag to indicate selected data package has local copy */
-	private boolean inLocal = false;
-
-	/** flag to indicate selected data package has local copy */
-	private boolean inNetwork = false;
 
 	/** the AbstractDataPackage object to be saved */
 	AbstractDataPackage adp = null;
@@ -229,18 +222,12 @@ public class SaveDialog extends JDialog {
 		}
 
 		try {
-			/*
-			 * String emlVersion = ((EML200DataPackage)adp).getEMLVersion();
-			 * Log.debug(10, "\n\n**********Got the EML version: " +
-			 * emlVersion); boolean askUpgrade = (emlVersion.toLowerCase()
-			 * .indexOf(EML200DataPackage.LATEST_EML_VER) == -1);
-			 */
+
 			boolean askUpgrade = false;
 			if (!((EML200DataPackage) adp).isLatestEMLVersion()) {
 				askUpgrade = true;
 			}
-			// show and check the checkbox for upgrading EML if not latest
-			// version
+			// show and check the checkbox for upgrading EML if not latest version
 			upgradeEml.setSelected(askUpgrade);
 			upgradeEml.setVisible(askUpgrade);
 
@@ -251,10 +238,6 @@ public class SaveDialog extends JDialog {
 		setVisible(true);
 
 	}
-
-	/** Method to enable executeButton and assign command */
-	private void enableExecuteButton(Object object, JDialog dialog) {
-	}// enableExecuteButton
 
 	class SymAction implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -279,11 +262,9 @@ public class SaveDialog extends JDialog {
 		}
 
 		boolean problem = false;
-		Morpho morpho = Morpho.thisStaticInstance;
 		String location = adp.getLocation();
 		// track the save event
-		SaveEvent saveEvent = new SaveEvent(this,
-				StateChangeEvent.SAVE_DATAPACKAGE);
+		SaveEvent saveEvent = new SaveEvent(this, StateChangeEvent.SAVE_DATAPACKAGE);
 		String id = adp.getAccessionNumber();
 		// initial id
 		saveEvent.setInitialId(id);
@@ -291,24 +272,15 @@ public class SaveDialog extends JDialog {
 			try {
 				if (upgradeEml.isSelected()) {
 					// change the XML
-					String newString = ((EML200DataPackage) adp)
-							.transformToLastestEML();
+					String newString = ((EML200DataPackage) adp).transformToLastestEML();
 					if (newString != null) {
-						/*
-						 * Log.debug(15, "Reloading ADP with its own XML:\n" +
-						 * XMLUtil.getDOMTreeAsString(
-						 * newNode.getOwnerDocument()) .substring(0, 512) +
-						 * ".............");
-						 */
-
+						
 						// create a new data package instance with the altered
 						// XML
 						adp = (EML200DataPackage) DataPackageFactory.getDataPackage(new java.io.StringReader(newString));
-						((EML200DataPackage) adp)
-								.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+						((EML200DataPackage) adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
 					} else {
-						JOptionPane
-								.showMessageDialog(
+						JOptionPane.showMessageDialog(
 										morphoFrame,
 										Language.getInstance().getMessage("SaveDialog.couldNotUpgrade"),
 										Language.getInstance().getMessage("Information"),
@@ -407,8 +379,7 @@ public class SaveDialog extends JDialog {
 		this.dispose();
 
 		if (!problem) {
-			UIController.getInstance().removeDocidFromIdleWizardRecorder(
-					adp.getAutoSavedD());
+			UIController.getInstance().removeDocidFromIdleWizardRecorder(adp.getAutoSavedD());
 			// delete the incomplete file
 			Util.deleteAutoSavedFile(adp);
 			
@@ -421,8 +392,7 @@ public class SaveDialog extends JDialog {
 			if (showPackageFlag) {
 				UIController.showNewPackageNoLocChange(adp);
 			} else {
-				MorphoFrame morphoFrame = UIController.getInstance()
-						.getCurrentActiveWindow();
+				MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 				morphoFrame.setVisible(false);
 				UIController controller = UIController.getInstance();
 				controller.removeWindow(morphoFrame);
