@@ -109,7 +109,7 @@ public class SavePackageCopyCommand implements Command
     try{
       adp.serialize(DataPackageInterface.LOCAL);
       adp.setLocation(DataPackageInterface.LOCAL);
-      adp.serializeData(DataPackageInterface.LOCAL);
+      DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.LOCAL);
       SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
       saveEvent.setInitialId(oldid);
       saveEvent.setFinalId(nextid);

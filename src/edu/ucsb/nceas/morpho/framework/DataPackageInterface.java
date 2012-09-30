@@ -59,6 +59,12 @@ public interface DataPackageInterface
   public static final String BOTH     = "localmetacat";
   
   /**
+   * used to specify incomplete location
+   */
+  public static final String INCOMPLETE = "incompleteDir";
+
+  
+  /**
 	 * used to signify that this package is not stored.
 	 */
 	public static final String TEMPLOCATION = "";

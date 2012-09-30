@@ -117,7 +117,7 @@ public  class EML200DataPackage extends AbstractDataPackage
    public void serializeIncompleteMetadata()
    {
      boolean overwrite = true;
-     serialize(AbstractDataPackage.INCOMPLETEDIR, overwrite);
+     serialize(DataPackageInterface.INCOMPLETE, overwrite);
    }
    
   // serialize to the indicated location
@@ -314,7 +314,7 @@ public  class EML200DataPackage extends AbstractDataPackage
         	  //this.setIdentifierChangedInLocalSerialization(false);
           }
        }
-      else if(location.equals(AbstractDataPackage.INCOMPLETEDIR))
+      else if(location.equals(DataPackageInterface.INCOMPLETE))
       {
         String id = getAccessionNumber();
         Log.debug(30, "Serialize metadata into incomplete dir with docid "+id);
@@ -1487,7 +1487,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 	      serialize(DataPackageInterface.LOCAL);
 	    }
 
-    	serializeData(DataPackageInterface.METACAT);
+    	DataStoreServiceController.getInstance().serializeData(this, DataPackageInterface.METACAT);
         serialize(DataPackageInterface.METACAT);
       // if serialize data successfully, we will serialize data. 
       if (getSerializeMetacatSuccess() == true)
@@ -1511,10 +1511,9 @@ public  class EML200DataPackage extends AbstractDataPackage
   }
 
   public AbstractDataPackage download(String id) {
-    Morpho morpho = Morpho.thisStaticInstance;
     //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
     try {
-      serializeData(DataPackageInterface.LOCAL);
+      DataStoreServiceController.getInstance().serializeData(this, DataPackageInterface.LOCAL);
       serialize(DataPackageInterface.LOCAL);
     } catch (Exception w) {
         Log.debug(5,"Exception serializing local package in 'download'");

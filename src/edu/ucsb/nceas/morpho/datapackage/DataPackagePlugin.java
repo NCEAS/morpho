@@ -1642,7 +1642,7 @@ public class DataPackagePlugin
     EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(xml);
     ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
     adp.setAccessionNumber(docid);
-    adp.serializeIncompleteData();
+    DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.INCOMPLETE);
     adp.removeTracingChangeElement();
     adp.serializeIncompleteMetadata();
     //Util.deleteAutoSavedFile(autoSavedID);

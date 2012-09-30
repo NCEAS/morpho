@@ -34,7 +34,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -212,7 +210,6 @@ public abstract class AbstractDataPackage extends MetadataObject
   private Node[] lastAttributeArray = null; //DFH
   private int lastEntityIndex = -1;
   //boolean serializeDataAtBothLocation = false;
-  private Hashtable original_new_id_map = new Hashtable(); // store the map between new data id and old data id
   //store the index of entity which data file has unsaved change (dirty)
   private Vector dirtyEntityIndexList = new Vector(); 
 
@@ -264,7 +261,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final static String NEWS = "news";
   private final static String MAILTO = "mailto";
   private final static String TELNET = "telnet";
-  private final static String ECOGRID = "ecogrid";
+  public final static String ECOGRID = "ecogrid";
   private final static String FILE = "file";
   private final static String[] PROTOCOLLIST = {HTTPS, HTTP, FTP, NEWS, MAILTO,TELNET, ECOGRID};
   private boolean serializeLocalSuccess = false;
@@ -282,7 +279,6 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected String completionStatus = null; 
   public  static final String COMPLETED = "completed";
   public static final String IMPORTLATER = "importLater";
-  public static final String INCOMPLETEDIR = "impleteDir";
  
  
   /**
@@ -3530,176 +3526,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(5, "exception in setting entity access: " + w.toString());
     }
   }
-
-  /*
-   * This method loops through all the entities in a package and checks for
-   * url references to data files (i.e. data external to the data package).
-   * Both metatcat and local file stores are checked to see if the data has
-   * already been saved. If not, the temp directory is checked. Note that it
-   * is assumed that the data file has been assigned an id and stored in the
-   * temp directory if it has not been saved to one of the stores
-   *
-   * It has been assumed that the 'location' has been set to point to the
-   * place where the data is to be saved.
-   */
-  public void serializeData(String dataDestination)  {
-	Log.debug(30, "serilaize data =====================");
-    getEntityArray();
-    //Log.debug(1, "About to check entityArray!");
-    if (entityArray == null) {
-      Log.debug(30, "Entity array is null, no need to serialize data");
-      return; // there is no data!
-    }
-    if (dataDestination == null)
-    {
-    	Log.debug(30, "User didn't specify the data destination");
-    	return;
-    }
-    
-    setDataIDChanged(false);
-    for (int i = 0; i < entityArray.length; i++) {
-      String URLinfo = getDistributionUrl(i, 0, 0);
-      String protocol = getUrlProtocol(URLinfo);
-      String objectName = getPhysicalName(i, 0);
-      Log.debug(25, "object name is ===================== "+ objectName);
-      if(protocol != null && protocol.equals(ECOGRID) ) {
-    	  
-        String docid = getUrlInfo(URLinfo);
-        Log.debug(30, "handle data file  with index "+i+ ""+docid);
-        //if (urlinfo != null)
-        //{
-        	//String docid = getDocidFromEcoGridURL(urlinfo);
-    	if (docid != null)
-    	{
-    		boolean isDirty = containsDirtyEntityIndex(i);
-    		Log.debug(30, "url "+docid+" with index "+i+" is dirty "+isDirty);
-    		// Detects if docid conflict occurs
-	        //boolean updateFlag = !(version.equals("1"));
-	        //boolean existFlag = false;
-    		  boolean existInMetacat = false;
-    		  boolean existInLocal = false;
-	        String statusInMetacat = null;
-	        String statusInLocal = null;
-	        String conflictLocation = null;
-	        //Check to see if id confilct or not
-	        if((dataDestination.equals(DataPackageInterface.METACAT))) 
-	        {
-	    	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
-	    	    Log.debug(30, "docid "+docid+ " status in metacat is "+statusInMetacat);
-	    	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
-	    	    {
-	    	    	conflictLocation = DocidConflictHandler.METACAT;
-	    	    	existInMetacat = true;
-	    	    	//existFlag = true;
-	    	    }
-	        }
-	        else if((dataDestination.equals(DataPackageInterface.LOCAL))) 
-	        {
-	        	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
-	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal);
-	        	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
-	    	    {
-	    	    	conflictLocation = DocidConflictHandler.LOCAL;
-	    	    	existInLocal = true;
-	    	    	//existFlag = true;
-	    	    }
-	        }
-	        else if (dataDestination.equals(DataPackageInterface.BOTH))
-	        {
-	    	    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
-	        	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
-	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal +" and status in metacat is"+statusInMetacat);
-        		if (statusInMetacat != null && statusInLocal != null && 
-        				statusInLocal.equals(DataStoreInterface.CONFLICT) && statusInMetacat.equals(DataStoreInterface.CONFLICT))
-	        	{
-	        			conflictLocation =  DocidConflictHandler.LOCAL + " and "+ DocidConflictHandler.METACAT;
-	        			existInMetacat = true;
-	        			existInLocal = true;
-	        			//existFlag = true;
-	        		    //this.setIdentifierChangedInLocalSerialization(true);
-	        		    //this.setIdentifierChangedInMetacatSerialization(true);
-	        	}
-	        	else if (statusInMetacat != null  && statusInMetacat.equals(DataStoreInterface.CONFLICT))
-	        	{
-	        			conflictLocation =  DocidConflictHandler.METACAT;
-	        			existInMetacat = true;
-	        			//existFlag = true;
-	        			//this.setIdentifierChangedInMetacatSerialization(true);
-	        	}
-	        	else if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
-	        	{
-	        			conflictLocation =  DocidConflictHandler.LOCAL;
-	        			existInLocal = true;
-	        			//existFlag = true;
-	        			//this.setIdentifierChangedInLocalSerialization(true);
-	        	}
-	        	
-	        }
-	      
-	        if (conflictLocation != null && isDirty)
-	        {
-	        	 // If docid conflict and the entity is dirty, we need to
-		        // pop-out an window to change the docid
-	        	Log.debug(30, "The docid "+docid+" exists and has unsaved data. So increase docid for it");
-	        	docid = handleDataIdConfiction(docid, conflictLocation);      	
-	        	
-	        }
-	     
-	        // reset urlinfo with new docid (if docid was not changed, the url will still be same).
-	        
-	        // urlinfo should be the id in a string
-	        if (dataDestination.equals(DataPackageInterface.LOCAL) || dataDestination.equals(DataPackageInterface.BOTH))  {
-	          if( isDirty || !existInLocal )
-	          {
-	            handleLocal(docid);
-	          }
-	        }
-	        
-	        if (dataDestination.equals(DataPackageInterface.METACAT) || dataDestination.equals(DataPackageInterface.BOTH)) {
-	          if(isDirty || !existInMetacat)
-	          {
-	             handleMetacat(docid, objectName);
-	          }
-	        }
-	        
-	        if(dataDestination.equals(INCOMPLETEDIR))
-	        {
-	          handleIncompleteDir(docid);
-	         }
-	        /*else if (dataDestination.equals(BOTH)) {
-	        	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation true ");
-	          //serializeDataAtBothLocation =true;
-	          handleBoth(docid, objectName);
-	        }*/
-	        // reset the map after finishing save. There is no need for this pair after saving
-	        original_new_id_map = new Hashtable();
-	        
-	        // newDataFile must have worked; thus update the package
-	        String urlinfo = "ecogrid://knb/"+docid;
-	        setDistributionUrl(i, 0, 0, urlinfo);
-	        //File was saved successfully, we need to remove the index from the vector.
-	        if (isDirty)
-    		{
-    		    removeDirtyEntityIndex(i);
-    		}
-    	}
-        //}
-      }
-    }
-   
-    
-    //Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation false ");
-    //serializeDataAtBothLocation =false;
-  }
   
-  
-  /**
-   * Serialize data into into incomplete directory
-   */
-  public void serializeIncompleteData()
-  {
-    serializeData(INCOMPLETEDIR);
-  }
   
   /**
    * Serialize metadata into into incomplete directory
@@ -3830,253 +3657,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 	   Log.debug(30, "the docid stripped from ecogridURL is "+docid);
 	   return docid;
    }
-   
-   /*
-    * Save the data file inot incomplete dir
-    */
-   private void handleIncompleteDir(String docid)
-   {
-     Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle incomplete "+docid);
-     Morpho morpho = Morpho.thisStaticInstance;
-     File dataFile = null;
-   
-     try
-     {
-       dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
-       Log.debug(30, "Docid "+docid+" exist in data dir in AbstractDataPackage.handleIncompleteDir");
-       return;
-     }
-     catch(Exception m)
-     {
-       /*ConfigXML profile = morpho.getProfile();
-       String separator = profile.get("separator", 0);
-       separator = separator.trim();
-       String temp = new String();
-       temp = docid.substring(0, docid.indexOf(separator));
-       temp += "/" +
-             docid.substring(docid.indexOf(separator) + 1, docid.length());
-       Log.debug(30, "The temp file path is "+temp);*/
-       try 
-       {
-         dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openTempFile(docid);
-         InputStream dfis = new FileInputStream(dataFile);
-         Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteDataFile(docid, dfis);
-         dfis.close();
-       }
-       catch (Exception qq) 
-       {
-        // if a datafile is on metacat and user wants to save locally
-        try
-        {
-          //open old file name (if no file change, the old file name will be as same as docid).
-          InputStream dfis = new FileInputStream(dataFile);
-          Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteDataFile(docid, dfis);
-          dfis.close();
-        }
-        catch (Exception qqq) 
-        {
-          // some other problem has occured
-          Log.debug(5, "Some problem with saving local data files has occurred! "+qqq.getMessage());
-          qq.printStackTrace();
-        }//end catch
-      }
-     }     
-     
-   }
-
-  /*
-   * Saves the entity into local system
-   */
-  private void handleLocal(String docid) {
-	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local "+docid);
-    File dataFile = null;
-    String oldDocid = null;
-    // if morpho serilaize data into local or metacat, and docid was changed, 
-    // we need to get the old docid and find the it in temp dir
-    if (!original_new_id_map.isEmpty())
-    {
-    	//System.out.println("the key is "+urlinfo);
-    	//System.out.println("the hashtable is "+original_new_id_map);
-    	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~change id in local serialization ");
-    	oldDocid = (String)original_new_id_map.get(docid);
-    	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~the id from map is " +oldDocid);  	
-    	
-      }
-      // if oldDocid is null, that means docid change. So we set old docid to be the current id
-      if (oldDocid == null)
-      {
-    	  oldDocid = docid;
-      }
-      Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~eventually old id is  " +oldDocid); 
-      /*ConfigXML profile = morpho.getProfile();
-      String separator = profile.get("separator", 0);
-      separator = separator.trim();
-      String temp = new String();
-      temp = oldDocid.substring(0, oldDocid.indexOf(separator));
-      temp += "/" +
-            oldDocid.substring(oldDocid.indexOf(separator) + 1, oldDocid.length());
-      Log.debug(30, "The temp file path is "+temp);*/
-      try {
-           //dataFile = fds.openTempFile(temp);
-           dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openTempFile(oldDocid);
-          //open old file name (if no file change, the old file name will be as same as docid).
-           InputStream dfis = new FileInputStream(dataFile);
-          //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-           Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
-          // the temp file has been saved; thus delete
-          dfis.close();
-//          dataFile.delete();
-      }catch (Exception qq) {
-        //try to open incomplete file
-        try
-        {
-          dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(oldDocid);
-         //open old file name (if no file change, the old file name will be as same as docid).
-          InputStream dfis = new FileInputStream(dataFile);
-         //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-          Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
-         // the temp file has been saved; thus delete
-         dfis.close();
-        }
-        catch(Exception e)
-        {
-          // if a datafile is on metacat and one wants to save locally
-          try{
-            //open old file name (if no file change, the old file name will be as same as docid).
-            dataFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(oldDocid);
-            InputStream dfis = new FileInputStream(dataFile);
-            Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
-            dfis.close();
-          }catch (Exception qqq) {
-            // some other problem has occured
-            Log.debug(5, "Some problem with saving local data files has occurred! "+qqq.getMessage());
-            qq.printStackTrace();
-          }//end catch
-        }
-      }
-    
-  }
-  
-  
-  
-  /*
-   * Saves data files to Metacat
-   */
-  private void handleMetacat(String docid, String objectName) {
-		Log.debug(30, "----------------------------------------handle metacat "+docid);
-	    File dataFile = null;
-	    String oldDocid = null;
-	    ConfigXML profile = Morpho.thisStaticInstance.getProfile();
-	    String separator = profile.get("separator", 0);
-	    separator = separator.trim();
-	    if (!original_new_id_map.isEmpty())
-	    {
-	    	//System.out.println("the key is "+urlinfo);
-	    	//System.out.println("the hashtable is "+original_new_id_map);
-	    	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~change id in local serialization ");
-	    	oldDocid = (String)original_new_id_map.get(docid);
-	    	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~the id from map is " +oldDocid);  	
-	    	
-	      }
-	      // if oldDocid is null, that means docid change. So we set old docid to be the current id
-	      if (oldDocid == null)
-	      {
-	    	  oldDocid = docid;
-	      }
-	      try
-	      {
-	        dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllLocalSources(docid);
-	      }
-	      catch(Exception eee)
-        {
-          Log.debug(5, "Couldn't find "+oldDocid+" in local system, so morpho couldn't upload it to metacat");
-          return;
-        }
-	      
-	      try {
-        	  Morpho.thisStaticInstance.getMetacatDataStore().newDataFile(docid, dataFile, objectName);
-          }
-          catch (Exception e) {
-        	  //Gets some error from metacat
-        	  Log.debug(5, "Some problem with saving data files has occurred! " + e.getMessage());
-          }
-	
-	  }
-
-  
-  /*
-   * If the docid is revision 1, automatically increase data file identifier number without notifying user.
-   * If the docid is bigger than revision 1, user will be asked to make a chioce: increasing docid or increasing revision.
-   */
-  private String handleDataIdConfiction(String identifier, String conflictLocation) 
-  {
-	   Morpho morpho = Morpho.thisStaticInstance;
-	    String version = null;
-	    int revision = -1;
-	    String scope = null;
-	    boolean update = true;
-	    String originalIdentifier = null;
-	    if (identifier != null)
-	    {
-	    	originalIdentifier = identifier;
-	    	// get revision number
-		    int lastperiod = identifier.lastIndexOf(".");
-		    if (lastperiod>-1) {
-		      version = identifier.substring(lastperiod+1, identifier.length());
-		      scope = identifier.substring(0, lastperiod);
-		      Log.debug(55, "scope: "+scope+"---version: "+version);
-		    }
-		  try
-		  {
-			  revision = (new Integer(version).intValue());
-			  if (revision == 1)
-			  {
-				  update = false;
-			  }
-		  }
-		  catch(Exception e)
-		  {
-			  Log.debug(5, "Couldn't find the revison in docid "+identifier +" since "+e.getMessage());
-		  }
-		  
-		  //if it is update, we need give user options to choose: increase docid or revision number
-		  if (update)
-		  {
-		    DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, conflictLocation);
-			  String choice = docidIncreaseDialog.showDialog();
-	       //Log.debug(5, "choice is "+choice);
-		      if (choice != null && choice.equals(DocidConflictHandler.INCREASEID))
-		      {
-		            update =false;
-		      }
-		      else
-		      {
-		    	  update = true;
-		      }
-		  }
-		  
-		  // decides docid base on user choice
-		  if (!update)
-		  {
-	         identifier = DataStoreServiceController.getInstance().getNextId(conflictLocation);
-		  }
-		  else
-		  {
-			  int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(identifier, DataPackageInterface.BOTH);
-	    	   identifier = scope+"."+newRevision;
-		  }
-		  // store the new id and original id into a map. 
-		  // So when morpho know the new id when it serialize
-          original_new_id_map.put(identifier,originalIdentifier);
-          setDataIDChanged(true);
-	  
-	  }
-	   Log.debug(30, "======================new identifier is "+identifier);
-	   return identifier;
-  }
 
 
-  private String getUrlInfo(String urlinfo) {
+  public static String getUrlInfo(String urlinfo) {
     //String urlinfo = getDistributionUrl(entityIndex, 0, 0);
     // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
     // protocol is probably 'ecogrid'; system name is 'knb'
@@ -4102,7 +3685,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     return urlinfo;
 }
 
-  private String getUrlProtocol(String urlinfo) {
+  public static String getUrlProtocol(String urlinfo) {
     //String urlinfo = getDistributionUrl(entityIndex, 0, 0);
     int indx2 = urlinfo.indexOf("://");
     if (indx2<0) return "";
@@ -4590,7 +4173,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  /*
 	   * Tests if the specified index is a component in this dirtyEntityIndexList vector
 	   */
-	  private boolean containsDirtyEntityIndex(int index)
+	  public boolean containsDirtyEntityIndex(int index)
 	  {
 		  return this.dirtyEntityIndexList.contains(index);
 	  }
@@ -4598,7 +4181,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  /*
 	   * Removes the sepcified index from this dirtyEntityIndexList vector
 	   */
-	  private void removeDirtyEntityIndex(int index)
+	  public void removeDirtyEntityIndex(int index)
 	  {
 		  this.dirtyEntityIndexList.removeElement(index);
 	  }
