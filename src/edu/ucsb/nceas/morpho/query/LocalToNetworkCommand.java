@@ -175,7 +175,7 @@ public class LocalToNetworkCommand implements Command
             try
             {
             	
-              String metacatDocid = dataPackage.upload(selectDocId, false);
+              String metacatDocid = dataPackage.upload(selectDocId);
               if (metacatDocid != null && !metacatDocid.equals(selectDocId))
               {
             	  // create a local copy for the new document.

@@ -1328,18 +1328,21 @@ public class DataPackagePlugin
    * @throws MetacatUploadException
    * @return String
    */
-  public String upload(String docid, boolean updateIds)
-              throws MetacatUploadException
+  public String upload(String docid) throws MetacatUploadException
   {
-    // metacat flag is false; local is true
+    // get the local copy
     AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
-    AbstractDataPackage newadp = adp.upload(docid, updateIds);
-    if (newadp != null)
-    {
+    
+    // save remote
+    DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.METACAT);
+	DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.METACAT);
+	
+	// check
+    AbstractDataPackage newadp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.METACAT);
+    if (newadp != null) {
          return newadp.getPackageId();
     }
-    else
-    {
+    else {
     	return null;
     }
     

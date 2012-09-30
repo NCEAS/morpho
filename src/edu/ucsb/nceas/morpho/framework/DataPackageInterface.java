@@ -130,12 +130,10 @@ public interface DataPackageInterface
    * locally to metacat and return a new id or orignal id.
    *
    * @param docid the id of the package to upload
-   * @param updatedIds boolean to tell whether to automatically update ids when
-   *   a conflict is found.
    * @throws MetacatUploadException
    * @return String
    */
-  public String upload(String docid, boolean updatedIds)
+  public String upload(String docid)
               throws MetacatUploadException;
 
   /**

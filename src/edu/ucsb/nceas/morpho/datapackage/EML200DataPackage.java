@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import java.io.CharArrayWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,9 +59,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
@@ -1190,44 +1186,6 @@ public  class EML200DataPackage extends AbstractDataPackage
       }
   }
 
-  public AbstractDataPackage upload(String id, boolean updatePackageId)
-                                                throws MetacatUploadException {
-    try {
-
-	    // reload the local content
-	    File packagefile = DataStoreServiceController.getInstance().openFile(id, DataPackageInterface.LOCAL);
-	    load(new InputSource(new FileInputStream(packagefile)));
-	
-	    String nextid = id;
-	    if (updatePackageId) {
-	      nextid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.METACAT);
-	      this.setAccessionNumber(nextid);
-	      // serialize locally with the new id
-	      DataStoreServiceController.getInstance().serialize(this, DataPackageInterface.LOCAL);
-	    }
-
-    	DataStoreServiceController.getInstance().serializeData(this, DataPackageInterface.METACAT);
-    	DataStoreServiceController.getInstance().serialize(this, DataPackageInterface.METACAT);
-      // if serialize data successfully, we will serialize data. 
-      if (getSerializeMetacatSuccess() == true)
-      {
-    	  //System.out.println("=================== serialzie metacat is true");
-    	  this.setLocation(DataPackageInterface.METACAT);
-    	  
-      }
-      else
-      {
-    	  //System.out.println("=================== serialzie metacat is false");
-    	  this.setLocation(DataPackageInterface.LOCAL);
-    	  throw new MetacatUploadException("Couldn't upload the package to metacat");
-      }
-    }
-    catch (Throwable w) {
-      Log.debug(5, "error in uploading! "+w.getMessage());
-      throw new MetacatUploadException(w.getMessage());
-    }
-    return this;
-  }
 
   /**
    * This method follows the pointer stored in 'references' node to return the

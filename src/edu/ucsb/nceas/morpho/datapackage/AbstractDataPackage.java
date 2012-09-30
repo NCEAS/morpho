@@ -48,7 +48,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
@@ -284,18 +283,6 @@ public abstract class AbstractDataPackage extends MetadataObject
     * @param in InputSource
     */
    abstract public void load(InputSource in);
-
-
-  /**
-   * Copies the AbstractDataPackage with the indicated id from the local file
-   * store to Metacat
-   *
-   * @param id String
-   * @throws MetacatUploadException
-   * @return AbstractDataPackage
-   */
-  abstract public AbstractDataPackage upload(String id, boolean updatePackageId) throws
-      MetacatUploadException;
 
 
   /**

@@ -71,10 +71,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
 
   }
 
-    public AbstractDataPackage upload(String id, boolean updatePackageIds) throws MetacatUploadException {
-
-    return this;
-  }
 
   /**
    * transforms a package to eml2; first exports the metadata
