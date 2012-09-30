@@ -27,9 +27,6 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,10 +48,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
@@ -262,7 +257,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final static String MAILTO = "mailto";
   private final static String TELNET = "telnet";
   public final static String ECOGRID = "ecogrid";
-  private final static String FILE = "file";
+  public final static String FILE = "file";
   private final static String[] PROTOCOLLIST = {HTTPS, HTTP, FTP, NEWS, MAILTO,TELNET, ECOGRID};
   private boolean serializeLocalSuccess = false;
   private boolean serializeMetacatSuccess = false;
@@ -3528,79 +3523,11 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
   
   
-  /**
-   * Serialize metadata into into incomplete directory
-   */
-  public void serializeIncompleteMetadata()
-  {
-    
-  }
-   
-  
-  /**
-   * Serialize data into morpho locally when user imports an external EML file to morpho.
-   * This method will be called in ImportEMLFileCommand.
-   * This method only serialize local file (on distrubition url) to morpho. It wouldn't
-   * serialize any http, ftp and ecogrid url into morpho
-   */
-  public void serializeDataInImportExternalEMLFile()
-  {
-    if (entityArray == null) 
-    {
-      Log.debug(30, "Entity array is null, no need to serialize data in AbstractDataPackage.serializeDataInImportExternalEMLFile()");
-      return; // there is no data!
-    }
-    for (int i = 0; i < entityArray.length; i++) 
-    {
-      String URLinfo = getDistributionUrl(i, 0, 0);
-      String protocol = getUrlProtocol(URLinfo);
-      if(!isProtocolInList(protocol))
-      {
-        if(protocol != null && protocol.equalsIgnoreCase(FILE))
-        {
-          //this is  a file protocol. we may try to remove the file protocol and to see if it is a local file
-          URLinfo = removeFileProtocol(URLinfo);
-        }
-        //This is not online url. It may be a local file.
-        File localFile = null;
-        try
-        {
-          localFile = new File(URLinfo);
-        }
-        catch(Exception e)
-        {
-          Log.debug(30, "The online url "+URLinfo+" couldn't be found in file stystem since "+e.getMessage());
-          return;
-        }
-        if(localFile != null && localFile.isFile())
-        {
-          //now we copy the file into morpho
-          String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
-          try
-          {
-            InputStream dfis = new FileInputStream(localFile);
-            Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(identifier, dfis);
-            //now we can modify the online url in metadata.
-            String url = ECOGRID+"://knb/"+identifier;
-            setDistributionUrl(i, 0, 0, url);
-            
-          }
-          catch(Exception e)
-          {
-            Log.debug(30, "couldn't serialize local file "+localFile.getAbsolutePath()+" into morpho "+
-                  " in AbstractDataPacakge.serializeDataInImportExternalEMLFile");
-          }
-        }
-      }
-    }
-  }
-  
-  
   
   /*
    * Determine if the specified protocol is in PROTOCOLLIST.
    */
-  private boolean isProtocolInList(String protocol)
+  public static boolean isProtocolInList(String protocol)
   {
     boolean inList = false;
     if(protocol != null)
@@ -3621,7 +3548,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   /*
    * Remove prfix "file://" from the given url.
    */
-  private String removeFileProtocol(String url)
+  public static String removeFileProtocol(String url)
   {
     String fileName = "";
     String prefix = FILE+"://";

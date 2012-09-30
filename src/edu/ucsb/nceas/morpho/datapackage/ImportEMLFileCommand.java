@@ -89,7 +89,7 @@ public class ImportEMLFileCommand implements Command
         else
         {
           //serialize local data file into morpho first
-          dataPackage.serializeDataInImportExternalEMLFile();
+          Morpho.thisStaticInstance.getFileSystemDataStore().serializeDataInImportExternalEMLFile(dataPackage);
           //given a new id to this dataPackage
           String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
           dataPackage.setAccessionNumber(identifier);

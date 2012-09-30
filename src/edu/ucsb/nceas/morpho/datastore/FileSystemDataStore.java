@@ -43,6 +43,7 @@ import java.nio.charset.Charset;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -865,5 +866,56 @@ public class FileSystemDataStore extends DataStore
 	  }
 	  Log.debug(30, "the docid part is "+docid);
 	  return docid;
+	}
+	
+	/**
+	 * Serialize data into morpho locally when user imports an external EML file
+	 * to morpho. This method will be called in ImportEMLFileCommand. This
+	 * method only serialize local file (on distrubition url) to morpho. It
+	 * wouldn't serialize any http, ftp and ecogrid url into morpho
+	 */
+	public void serializeDataInImportExternalEMLFile(AbstractDataPackage adp) {
+		if (adp.getEntityArray() == null) {
+			Log.debug(30,"Entity array is null, no need to serialize data in AbstractDataPackage.serializeDataInImportExternalEMLFile()");
+			return; // there is no data!
+		}
+		for (int i = 0; i < adp.getEntityArray().length; i++) {
+			String URLinfo = adp.getDistributionUrl(i, 0, 0);
+			String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
+			if (!AbstractDataPackage.isProtocolInList(protocol)) {
+				if (protocol != null && protocol.equalsIgnoreCase(AbstractDataPackage.FILE)) {
+					// this is a file protocol. we may try to remove the file
+					// protocol and to see if it is a local file
+					URLinfo = AbstractDataPackage.removeFileProtocol(URLinfo);
+				}
+				// This is not online url. It may be a local file.
+				File localFile = null;
+				try {
+					localFile = new File(URLinfo);
+				} catch (Exception e) {
+					Log.debug(30, "The online url " + URLinfo
+							+ " couldn't be found in file stystem since "
+							+ e.getMessage());
+					return;
+				}
+				if (localFile != null && localFile.isFile()) {
+					// now we copy the file into morpho
+					String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
+					try {
+						InputStream dfis = new FileInputStream(localFile);
+						Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(identifier, dfis);
+						// now we can modify the online url in metadata.
+						String url = AbstractDataPackage.ECOGRID + "://knb/" + identifier;
+						adp.setDistributionUrl(i, 0, 0, url);
+
+					} catch (Exception e) {
+						Log.debug(30, "couldn't serialize local file "
+										+ localFile.getAbsolutePath()
+										+ " into morpho "
+										+ " in AbstractDataPacakge.serializeDataInImportExternalEMLFile");
+					}
+				}
+			}
+		}
 	}
 }
