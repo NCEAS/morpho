@@ -27,18 +27,18 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.util.Vector;
+
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Log;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class OpenPreviousDialog extends javax.swing.JDialog
 {
@@ -147,9 +147,11 @@ public class OpenPreviousDialog extends javax.swing.JDialog
         return;
       }
       String location = "";
-      if (localLoc) location = "local";
+      if (localLoc) {
+    	  location = DataPackageInterface.LOCAL;
+      }
       else {
-        location = "metacat";
+        location = DataPackageInterface.METACAT;
       }
       dataPackage.openDataPackage(location, temp, null, null, null);
 		this.setVisible(false);
