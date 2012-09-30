@@ -1644,7 +1644,7 @@ public class DataPackagePlugin
     adp.setAccessionNumber(docid);
     DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.INCOMPLETE);
     adp.removeTracingChangeElement();
-    adp.serializeIncompleteMetadata();
+    DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.INCOMPLETE);
     //Util.deleteAutoSavedFile(autoSavedID);
     //return adp.getAccessionNumber();
   }

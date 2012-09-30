@@ -94,7 +94,7 @@ public class ImportEMLFileCommand implements Command
           String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
           dataPackage.setAccessionNumber(identifier);
           //serialize metadata to local 
-          dataPackage.serialize(DataPackageInterface.LOCAL);
+          DataStoreServiceController.getInstance().serialize(dataPackage, DataPackageInterface.LOCAL);
           //dataPackage.setLocation(AbstractDataPackage.LOCAL);
           //open the package.
           DataPackagePlugin dataPackagePlugin = new DataPackagePlugin(Morpho.thisStaticInstance);

@@ -107,7 +107,7 @@ public class SavePackageCopyCommand implements Command
     adp.setAccessionNumber(nextid);
 
     try{
-      adp.serialize(DataPackageInterface.LOCAL);
+      DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.LOCAL);
       adp.setLocation(DataPackageInterface.LOCAL);
       DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.LOCAL);
       SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
@@ -116,8 +116,8 @@ public class SavePackageCopyCommand implements Command
       saveEvent.setLocation(DataPackageInterface.LOCAL);
       saveEvent.setDuplicate(true);
       StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
-    } catch (MetacatUploadException e){
-      Log.debug(5, "Problem Saving Datapackage Locally");
+    } catch (Exception e){
+      Log.debug(5, "Problem Saving Datapackage copy: " + e.getMessage());
     }
 
     if (showPackageFlag) {

@@ -65,12 +65,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
     morpho = Morpho.thisStaticInstance;
   }
 
-  public void serialize(String location) throws MetacatUploadException {
-    // this method should serialize the ENTIRE package by
-    // going though all the modules referenced in the triples!
-  }
-
-
   public void load(org.xml.sax.InputSource in) {
       // TODO: maybe want to implement (not sarcasm)
       Log.debug(15, "Loading from XML is not supported by EML2Beta6DataPackage");
@@ -631,19 +625,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
         "EML2Beta6DataPackage - method not implemented - "
        +"removeTracingChangeElement");  
   }
-  
-  /**
-   * Serialize metadata into into incomplete directory
-   */
-  public void serializeIncompleteMetadata()
-  {
-    throw new java.lang.UnsupportedOperationException(
-        "EML2Beta6DataPackage - method not implemented - "
-       +"serializeIncompleteMetadata");  
-  }
-  
-  
- 
   
 }
 

@@ -42,7 +42,6 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -343,7 +342,7 @@ public class SaveDialog extends JDialog {
 			if ((localLoc.isSelected()) && (localLoc.isEnabled())
 					&& (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
 				DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.BOTH);
-				adp.serialize(DataPackageInterface.BOTH);
+				DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.BOTH);
 				if (adp.getSerializeLocalSuccess()
 						&& adp.getSerializeMetacatSuccess()) {
 					adp.setLocation(DataPackageInterface.BOTH);
@@ -357,7 +356,7 @@ public class SaveDialog extends JDialog {
 			// LOCAL
 			} else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
 				DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.LOCAL);
-				adp.serialize(DataPackageInterface.LOCAL);
+				DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.LOCAL);
 				if (adp.getSerializeLocalSuccess()) {
 					adp.setLocation(DataPackageInterface.LOCAL);
 				} else {
@@ -366,7 +365,7 @@ public class SaveDialog extends JDialog {
 			// METACAT
 			} else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
 				DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.METACAT);
-				adp.serialize(DataPackageInterface.METACAT);
+				DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.METACAT);
 				if (adp.getSerializeMetacatSuccess()) {
 					adp.setLocation(DataPackageInterface.METACAT);
 				} else if (adp.getLocation() != null
@@ -384,7 +383,7 @@ public class SaveDialog extends JDialog {
 				problem = true;
 			}
 		// TODO: these exceptions seem to be caught earlier in the serialize steps	
-		} catch (MetacatUploadException mue) {
+		} catch (Exception mue) {
 			String errormsg = mue.getMessage();
 			if (errormsg.indexOf("ERROR SAVING DATA TO METACAT") > -1) {
 				// error in saving data file

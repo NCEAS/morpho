@@ -274,18 +274,6 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected String completionStatus = null; 
   public  static final String COMPLETED = "completed";
   public static final String IMPORTLATER = "importLater";
- 
- 
-  /**
-   * This abstract method turns the datapackage into a form (e.g. string) that
-   * can be saved in the file system or metacat. Actual implementation is done
-   * in classes specific to grammar
-   *
-   * @param location String
-   *
-   * @return   true if there is no indicated problem; false, otherwise
-   */
-  abstract public void serialize(String location) throws MetacatUploadException;
 
   /**
     * This abstract method loads a datapackage from an XML character stream.

@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.util;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -86,7 +87,8 @@ public class EML201DocumentCorrector {
     			  removeExtralAttributes(eml2Package);
     			  // save the new  package to old id.
     			  //System.out.println("after calling removing");
-    			  eml2Package.serializeToLocalWithOverwrite();
+    			  // TODO: overwrite local without ID? seems like a bad idea
+    			  DataStoreServiceController.getInstance().serialize(eml2Package, DataPackageInterface.LOCAL, true);
     			  //System.out.println("saving package");
     		  }
     			  
