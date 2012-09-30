@@ -26,87 +26,25 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.TransformerException;
-
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import com.arbortext.catalog.CatalogEntityResolver;
-
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * Class that implements Accession Number utility functions for morpho
  */
 public class AccessionNumber 
 {
-  private Morpho morpho;
-  private ConfigXML profile;
-  public static final String TEMP = "temporary";
-  private static final String TEMPIDNAME = "lastTempId";
-  
-  public AccessionNumber(Morpho morpho)
-  {
-    this.morpho = morpho;
-    profile = morpho.getProfile();
-  }
 
+  private static AccessionNumber instance = null;
   
-  
-  /**
-   * Gets the next available temp id from profile file.
-   * @return the next available id
-   */
-  public synchronized String getNextTempID()
-  {
-    long startID = 1;
-    long lastid = -1;
-    //Gets last id from profile
-    String lastidS = profile.get(TEMPIDNAME, 0);
-    String separator = profile.get("separator", 0);
-    try
-    {
-        lastid = (new Long(lastidS)).longValue();
-    }
-    catch(Exception e)
-    {
-      Log.debug(30, "couldn't get lastid for temp from profile");
-      lastid = startID;
-    }
-    String identifier = TEMP + separator + lastid;
-    lastid++;
-    String s = "" + lastid;
-    if(!profile.set(TEMPIDNAME, 0, s))
-    {
-      
-      boolean success = profile.insert(TEMPIDNAME, s);
-      if(success)
-      {
-        profile.save();
-        return identifier + ".1"; 
-      }
-      else
-      {
-        Log.debug(1, "Error incrementing the accession number id");
-        return null;
-      }
-    }
-    else
-    {
-      profile.save();
-      Log.debug(30, "the next id is "+identifier+".1");
-      return identifier + ".1"; 
-    }
+  private AccessionNumber() {}
+
+  public static AccessionNumber getInstance() {
+	  if (instance == null) {
+		  instance = new AccessionNumber();
+	  }
+	  return instance;
   }
   
   /**
@@ -125,7 +63,7 @@ public class AccessionNumber
    */
   public String incRev(String id, boolean addOne)
   { 
-    String sep = profile.get("separator", 0);
+    String sep = Morpho.thisStaticInstance.getProfile().get("separator", 0);
     int count = 0;
     for(int i=0; i<id.length(); i++)
     {
@@ -151,109 +89,7 @@ public class AccessionNumber
     return id.substring(0, revIndex) + "." + rev;
   }
   
-  public String incRevInTriples(File xmlfile, String oldid, String newid)
-  {
-    Vector oldids = new Vector();
-    oldids.addElement(oldid);
-    Vector newids = new Vector();
-    newids.addElement(newid);
-    return incRevInTriples(xmlfile, oldids, newids);
-  }
   
-  /**
-   * searches an xml file for triples.  If it finds oldid it increments its
-   * revision number with the newid provided.
-   * @param xmlfile the xml file that you want to search
-   * @param oldid the id that you want incremented.
-   * @param newid the id that you want oldid to be replaced with
-   * @return returns the newly created triples file with the updated triples
-   */
-  public String incRevInTriples(File xmlfile, Vector oldid, Vector newid)
-  {
-    System.out.println("oldid: " + oldid.toString() + " newid: " + newid.toString());
-    DocumentBuilder parser = Morpho.createDomParser();
-    Document doc;
-    InputSource in;
-    FileInputStream fs;
-    CatalogEntityResolver cer = new CatalogEntityResolver();
-    
-    //get the DOM rep of the document without triples
-    try
-    {
-      ConfigXML config = morpho.getConfiguration();
-      String catalogPath = //config.getConfigDirectory() + File.separator +
-                                       config.get("local_catalog_path", 0);
-      doc = PackageUtil.getDoc(xmlfile, catalogPath);
-    }
-    catch (Exception e)
-    {
-      Log.debug(0, "error parsing " + xmlfile.getPath() + " : " +
-                         e.getMessage());
-      e.printStackTrace();
-      return null;
-    }
-    
-    NodeList tripleList = null;
-    String triplePath = "//triple";
-    
-    try
-    {
-      //find where the triples go in the file
-      tripleList = XPathAPI.selectNodeList(doc, triplePath);
-    }
-    catch(TransformerException se)
-    {
-      System.err.println("incRevInTriples() : parse threw: " + 
-                         se.toString());
-    }
-    
-    for(int i=0; i<tripleList.getLength(); i++)
-    {
-      Node triple = tripleList.item(i);
-      NodeList children = triple.getChildNodes();
-      String sub = null;
-      String rel = null;
-      String obj = null;
-      if(children.getLength() > 2)
-      {
-        for(int j=0; j<children.getLength(); j++)
-        {
-          Node childNode = children.item(j);
-          String nodename = childNode.getNodeName().trim().toUpperCase();
-          if(nodename.equals("SUBJECT") || nodename.equals("OBJECT"))
-          {
-            String nodeval;
-            try
-            {
-              nodeval = childNode.getFirstChild().getNodeValue().trim();
-            }
-            catch(NullPointerException npe)
-            {
-              continue;
-            }
-            //System.out.println("node found: " + nodeval + " oldid: " + oldid.trim());
-            if(/*nodeval.equals(oldid.trim())*/oldid.contains(nodeval.trim()))
-            {
-              String newidS = "";
-              for(int k=0; k<newid.size(); k++)
-              {
-                newidS = (String)newid.elementAt(k);
-                if(nodeval.trim().equals(oldid.elementAt(k)))
-                {
-                  break;
-                }
-              }
-              System.out.println("replacing: " + nodeval + " with " + newidS);
-              childNode.getFirstChild().setNodeValue(newidS);
-            }
-          }
-        }
-      }
-    }
-    
-    return PackageUtil.printDoctype(doc) + 
-           PackageUtil.print(doc.getDocumentElement());
-  }
   
   /**
    * Returns a vector with all components of the accession number.  The vector
@@ -262,14 +98,14 @@ public class AccessionNumber
    * ex: [nceas, 5, 2, .]
    * @param id the id to return the parts of
    */
-  public Vector getParts(String id)
+  public Vector<String> getParts(String id)
   {
-    String separator = profile.get("separator", 0);
+    String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
     String scope = id.substring(0, id.indexOf(separator));
     String idpart = id.substring(id.indexOf(separator)+1, 
                                  id.lastIndexOf(separator));
     String rev = id.substring(id.lastIndexOf(separator) + 1, id.length());
-    Vector v = new Vector();
+    Vector<String> v = new Vector<String>();
     v.addElement(scope);
     v.addElement(idpart);
     v.addElement(rev);
@@ -284,28 +120,12 @@ public class AccessionNumber
    * @return scope+separator+id
    */
   public String getIdNoRev(String fullId) {
-	  Vector idVec = getParts(fullId);
+	  Vector<String> idVec = getParts(fullId);
       String scope = (String)idVec.elementAt(0);
       String id = (String)idVec.elementAt(1);
       String rev = (String)idVec.elementAt(2);
       String sep = (String)idVec.elementAt(3);
       return scope + sep + id;
   }
-  /**
-   * In morpho, the internal file name will look like 300.1 or 300.2. This
-   * method will add scope to it. If intralFileName is null, null will be
-   * returned
-   * @param dataFileName
-   * @return
-   */
-  public String getDocIdFromInternalFileName(String internalFileName)
-  {
-	  String id = null;
-	  if (internalFileName != null)
-	  {
-		  id = profile.get("scope", 0) + profile.get("separator", 0) +internalFileName;
-		  //System.out.println("===============the id is "+id);
-	  }
-	  return id;
-  }
+
 }

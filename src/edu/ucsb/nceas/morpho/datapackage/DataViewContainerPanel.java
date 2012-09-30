@@ -865,6 +865,7 @@ public void setTopPanel(JPanel jp) {
             // should have trimmed 'other'
             if (urlinfo.length()==0) return;
             // if we reach here, urlinfo should be the id in a string
+            dataId = urlinfo;
             try{
               String loc = adp.location;
               if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
@@ -877,35 +878,7 @@ public void setTopPanel(JPanel jp) {
                 //Log.debug(5, "here");
                // just created the package; not yet saved!!!
                 displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllSources(urlinfo);
-                /*try{
-                  // first try looking in the profile temp dir
-                  ConfigXML profile = morpho.getProfile();
-                  String separator = profile.get("separator", 0);
-                  separator = separator.trim();
-                  FileSystemDataStore fds = new FileSystemDataStore(morpho);
-                  String temp = new String();
-                  temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-                  temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-                  displayFile = fds.openTempFile(temp);
-                }
-                catch (Exception q1) {
-                  // oops - now try locally
-                  try{
-                    FileSystemDataStore fds = new FileSystemDataStore(morpho);
-                    displayFile = fds.openFile(urlinfo);
-                  }
-                  catch (Exception q2) {
-                    // now try metacat
-                    try{
-                      MetacatDataStore mds = new MetacatDataStore(morpho);
-                      displayFile = mds.openDataFile(urlinfo);
-                    }
-                    catch (Exception q3) {
-                      // give up!
-                      Log.debug(5,"Exception opening datafile after trying all sources!");
-                    }
-                  }
-                }*/
+                
               }
             }
             catch (Exception q) {
@@ -932,6 +905,7 @@ public void setTopPanel(JPanel jp) {
         dv.setEntityIndex(index);
 
         dv.setDataFile(displayFile);
+        dv.setDataFileId(dataId);
         //dv.setCurrentURLInfo(currentURLInfo);
         dv.init();
         dvArray[index] = dv;

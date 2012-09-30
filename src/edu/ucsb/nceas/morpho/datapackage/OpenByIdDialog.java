@@ -36,7 +36,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -139,8 +138,7 @@ public class OpenByIdDialog extends JDialog {
 		// check that the id is formatted correctly
 		AccessionNumber an = null;
 		try {
-			an = new AccessionNumber(Morpho.thisStaticInstance);
-			an.getParts(id);
+			AccessionNumber.getInstance().getParts(id);
 		} catch (Exception e) {
 			// try to look up the last revision
 			Log.debug(30, "Looking up latest revision");
@@ -151,8 +149,7 @@ public class OpenByIdDialog extends JDialog {
 				int nextRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(syntheticId, location);
 				int revision = nextRevision - 1;
 				id = id + "." + revision;
-				an = new AccessionNumber(Morpho.thisStaticInstance);
-				an.getParts(id);
+				AccessionNumber.getInstance().getParts(id);
 			} catch (Exception e2) {
 				Log.debug(5, Language.getInstance().getMessage("InvalidId"));
 				return;

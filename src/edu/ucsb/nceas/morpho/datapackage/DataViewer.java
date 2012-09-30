@@ -1350,30 +1350,11 @@ public class DataViewer extends javax.swing.JPanel
 	public void saveCurrentTable(boolean changePackageId) {
 		if (adp!=null) {  // new eml2.0.0 handling
 			String id = "";
-			AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
 			//System.out.println("the file id is "+dataFileId);
-			if (dataFileId==null) {
-				if (dataFile != null)
-				{
-				   String fileName = dataFile.getName();
-				   String oldId = an.getDocIdFromInternalFileName(fileName);
-				   if (oldId != null)
-				   {
-				      id = an.incRev(oldId);
-				   }
-				   else
-				   {
-					   id = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
-				   }
-				}
-				else
-				{
-				   id = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
-				}
-				
+			if (dataFileId == null) {
+				id = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 			} else {
-				
-				id = an.incRev(dataFileId);
+				id = AccessionNumber.getInstance().incRev(dataFileId);
 			}
 			dataFileId = id;  // update to new value
 			//System.out.println("reset the dataFileId "+dataFileId);
@@ -1394,11 +1375,10 @@ public class DataViewer extends javax.swing.JPanel
 			adp.setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+dataFileId);
 			adp.setLocation("");
 			if (changePackageId) {
-			  AccessionNumber a = new AccessionNumber(morpho);
 			  String curid = adp.getAccessionNumber();
 			  String newid = null;
 			  if (!curid.equals("")) {
-				  newid = a.incRev(curid);
+				  newid = AccessionNumber.getInstance().incRev(curid);
 			  } else {
 				  newid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 			  }

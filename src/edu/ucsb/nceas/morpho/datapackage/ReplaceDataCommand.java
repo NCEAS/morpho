@@ -184,7 +184,6 @@ public class ReplaceDataCommand implements Command {
 	   * assign id to the data file and save it with that id
 	   */
 	  private String saveDataFileAsTemp(File f, String currentId, boolean useNewId) {
-	    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
 	    // force new id generation
 	    if (useNewId) {
 	    	currentId = null;
@@ -192,7 +191,7 @@ public class ReplaceDataCommand implements Command {
 	    if (currentId  == null) {
 	    	currentId = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 	    } else {
-	    	currentId = an.incRev(currentId);
+	    	currentId = AccessionNumber.getInstance().incRev(currentId);
 	    }
 	    try {
 	    	Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(currentId, new FileInputStream(f));

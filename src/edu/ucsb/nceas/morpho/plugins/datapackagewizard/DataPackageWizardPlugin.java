@@ -28,10 +28,23 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
@@ -44,27 +57,11 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
-import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
-
-import javax.swing.JOptionPane;
-
-import org.apache.xerces.dom.DOMImplementationImpl;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 
 /**
@@ -120,8 +117,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
       getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML211_DOCUMENT_TEXT));
     if(tempDataPackage == null) return;
-    AccessionNumber accessionNumber = new AccessionNumber(Morpho.thisStaticInstance);
-    String tempID = accessionNumber.getNextTempID();
+    String tempID = Morpho.thisStaticInstance.getFileSystemDataStore().getNextTempID();
     tempDataPackage.setAccessionNumber(tempID);
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
     int entityIndex = -1;

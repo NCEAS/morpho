@@ -26,6 +26,17 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileInputStream;
+
+import javax.xml.transform.TransformerException;
+
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -43,18 +54,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileInputStream;
-
-import javax.xml.transform.TransformerException;
-
-import org.apache.xerces.dom.DOMImplementationImpl;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 
 /**
@@ -179,11 +178,10 @@ public class ImportOtherEntityCommand implements Command {
 	   * assign id to the data file and save it with that id
 	   */
 	  private String saveDataFileAsTemp(File f, String currentId) {
-	    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
 	    if (currentId  == null) {
 	    	currentId = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
 	    } else {
-	    	currentId = an.incRev(currentId);
+	    	currentId = AccessionNumber.getInstance().incRev(currentId);
 	    }
 	    try {
 	    	Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(currentId, new FileInputStream(f));

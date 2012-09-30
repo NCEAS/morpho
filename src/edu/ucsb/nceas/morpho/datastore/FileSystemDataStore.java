@@ -52,6 +52,9 @@ import edu.ucsb.nceas.morpho.util.Log;
 public class FileSystemDataStore extends DataStore
                                  implements DataStoreInterface
 {
+	
+	  public static final String TEMP = "temporary";
+	  private static final String TEMPIDNAME = "lastTempId";
   /**
    * create a new FileSystemDataStore for a Morpho
    */
@@ -544,6 +547,51 @@ public class FileSystemDataStore extends DataStore
 
 		return maxDocid;
 	}
+	
+	  /**
+	   * Gets the next available temp id from profile file.
+	   * @return the next available id
+	   */
+	  public synchronized String getNextTempID()
+	  {
+	    long startID = 1;
+	    long lastid = -1;
+	    //Gets last id from profile
+	    String lastidS = Morpho.thisStaticInstance.getProfile().get(TEMPIDNAME, 0);
+	    String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
+	    try
+	    {
+	        lastid = (new Long(lastidS)).longValue();
+	    }
+	    catch(Exception e)
+	    {
+	      Log.debug(30, "couldn't get lastid for temp from profile");
+	      lastid = startID;
+	    }
+	    String identifier = TEMP + separator + lastid;
+	    lastid++;
+	    String s = "" + lastid;
+	    if (!Morpho.thisStaticInstance.getProfile().set(TEMPIDNAME, 0, s))
+	    {
+	      
+	      boolean success = Morpho.thisStaticInstance.getProfile().insert(TEMPIDNAME, s);
+	      if (success) {
+	    	  Morpho.thisStaticInstance.getProfile().save();
+	    	  return identifier + ".1"; 
+	      }
+	      else
+	      {
+	        Log.debug(1, "Error incrementing the accession number id");
+	        return null;
+	      }
+	    }
+	    else
+	    {
+	    	Morpho.thisStaticInstance.getProfile().save();
+	      Log.debug(30, "the next id is "+identifier+".1");
+	      return identifier + ".1"; 
+	    }
+	  }
   
   /**
    * Gets metadata file from both local and metacata source
