@@ -1533,25 +1533,6 @@ public class DataPackagePlugin
       }//if
     return flagInNetwork;
   }
-  
-  /**
-   * Method to get a Document node as a representation of data package for
-   * given id and location
-   * @param docid the identifier of the package
-   * @param location the location of the package
-   * @return
-   */
-  public Document getDocumentNode(String docid, String location)
-  {
-    Document doc = null; 
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, location);
-    if (adp != null)
-    {
-      doc = adp.getDocument();
-    }
-    return doc;
-  }
-
 
   /*
    * Method to get package in a given morphoFrame. If the morpho frame doesn't

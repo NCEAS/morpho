@@ -48,6 +48,9 @@ import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -391,11 +394,8 @@ public class ExportToAnotherMetadataDialog implements Command
     try
     {
       XMLTransformer transformer = XMLTransformer.getInstance();
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
-                 services.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      Document emlDoc = dataPackage.getDocumentNode(docid, documentLocation);
+      AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, documentLocation);
+      Document emlDoc = adp.getDocument();
       if(emlDoc == null)
       {
         Log.debug(5, "Morpho couldn't generate the document for the package "+docid);
