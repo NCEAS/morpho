@@ -1346,25 +1346,34 @@ public class DataPackagePlugin
   }
 
   /**
-   * Downloads the package from metacat.  The location is assumed to be
-   * DataPackageInterface.METACAT
-   * @param docid the id of the package to download
-   */
-  public String download(String docid)
-  {
-	  
-    // metacat flag is true; local is false
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.METACAT);
-    AbstractDataPackage newadp = adp.download(docid);
-    if (newadp != null)
-    {
-         return newadp.getPackageId();
-    }
-    else
-    {
-    	return null;
-    }
-  }
+	 * Downloads the package from metacat. The location is assumed to be
+	 * DataPackageInterface.METACAT
+	 * 
+	 * @param docid
+	 *            the id of the package to download
+	 */
+	public String download(String docid) {
+
+		// get from remote, save to local
+		AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.METACAT);
+
+		try {
+			DataStoreServiceController.getInstance().serializeData(adp,
+					DataPackageInterface.LOCAL);
+			DataStoreServiceController.getInstance().serialize(adp,
+					DataPackageInterface.LOCAL);
+		} catch (Exception w) {
+			Log.debug(5, "Exception serializing local package in 'download'");
+		}
+		AbstractDataPackage newadp = DataPackageFactory.getDataPackage(docid,
+				DataPackageInterface.LOCAL);
+
+		if (newadp != null) {
+			return newadp.getPackageId();
+		} else {
+			return null;
+		}
+	}
 
 
   /**

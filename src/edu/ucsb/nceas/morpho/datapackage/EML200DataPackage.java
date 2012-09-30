@@ -1229,34 +1229,6 @@ public  class EML200DataPackage extends AbstractDataPackage
     return this;
   }
 
-  public AbstractDataPackage download(String id) {
-    //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
-    try {
-      DataStoreServiceController.getInstance().serializeData(this, DataPackageInterface.LOCAL);
-      DataStoreServiceController.getInstance().serialize(this, DataPackageInterface.LOCAL);
-    } catch (Exception w) {
-        Log.debug(5,"Exception serializing local package in 'download'");
-    }
-    // now download the associated data files
-    /*Vector idlist = getAssociatedDataFiles();
-    Enumeration e = idlist.elements();
-    MetacatDataStore mds = new MetacatDataStore(morpho);
-    FileSystemDataStore fds = new FileSystemDataStore(morpho);
-    while (e.hasMoreElements()) {
-      String curid = (String)e.nextElement();
-      try{
-        File datafile = mds.openDataFile(curid);
-        FileReader fr = new FileReader(datafile);
-        fds.saveFile(curid, fr);
-      }
-      catch (Exception q3) {
-        Log.debug(5,"Exception opening datafile from metacat and saving locally");
-      }
-    }*/
-    return this;
-  }
-
-
   /**
    * This method follows the pointer stored in 'references' node to return the
    * DOM node referred to by 'references'

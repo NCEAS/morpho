@@ -76,11 +76,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
     return this;
   }
 
-  public AbstractDataPackage download(String id) {
-
-    return this;
-  }
-
   /**
    * transforms a package to eml2; first exports the metadata
    * @param path the path to which this package should be exported.

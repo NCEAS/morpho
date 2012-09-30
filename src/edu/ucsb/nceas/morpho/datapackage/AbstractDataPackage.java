@@ -299,16 +299,6 @@ public abstract class AbstractDataPackage extends MetadataObject
 
 
   /**
-   * Copies the AbstractDataPackage with the indicated id from metacat to the
-   * local file store
-   *
-   * @param id String
-   * @return AbstractDataPackage
-   */
-  abstract public AbstractDataPackage download(String id);
-
-
-  /**
    *  This method follows the pointer stored in 'references' node to return the
    *  DOM node referred to by 'references'
    *  This is really specific to eml2; thus just declared as abstract here
