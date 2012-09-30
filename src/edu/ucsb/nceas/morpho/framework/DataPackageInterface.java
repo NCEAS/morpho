@@ -198,16 +198,6 @@ public interface DataPackageInterface
 
 
   /**
-   * returns the next local id from the config file returns null if configXML
-   * was unable to increment the id number
-   *
-   * @param morpho the morpho file
-   * @return String
-   */
-  public String getNextId(Morpho morpho);
-
-
-  /**
    * Method to get docid from a given morpho frame
    *
    * @param morphoFrame the morphoFrame which contains a datapackage

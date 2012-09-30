@@ -41,6 +41,7 @@ import java.util.Hashtable;
 import javax.swing.Action;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -105,23 +106,9 @@ public class SaveQueryCommand implements Command
       // Serialize the query in the profiles directory
       
       String identifier = query.getIdentifier();
-      if (identifier == null) 
-      {
-        //identifier = a.getNextId();
-        DataPackageInterface dataPackage = null;
-        try 
-        {
-          ServiceController services = ServiceController.getInstance();
-          ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-          dataPackage = (DataPackageInterface)provider;
-        } 
-        catch (ServiceNotHandledException snhe) 
-        {
-          Log.debug(6, "Error in save query: "+snhe);
-        }
-        identifier = dataPackage.getNextId(morpho);
-        
+      if (identifier == null) {
+    	  // get a local identifier
+        identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
         query.setIdentifier(identifier);
       }
       

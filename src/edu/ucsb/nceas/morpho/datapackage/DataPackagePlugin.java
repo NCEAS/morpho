@@ -1100,8 +1100,6 @@ public class DataPackagePlugin
   private MorphoFrame openNewDataPackageFrame(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator, boolean visible)
   {
     Log.debug(11, "DataPackage: Got service request to open a newly created AbstractDataPackage");
-    boolean metacat = false;
-    boolean local = false;
 
     long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
@@ -1468,20 +1466,6 @@ public class DataPackagePlugin
                                                       morpho, local);
     // Set open dialog show
     open.setVisible(true);
-  }
-
-
-  /**
-   * returns the next local id from the config file returns null if configXML
-   * was unable to increment the id number
-   *
-   * @param morpho the morpho file
-   * @return String
-   */
-  public String getNextId(Morpho morpho)
-  {
-    String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
-    return identifier;
   }
 
 
