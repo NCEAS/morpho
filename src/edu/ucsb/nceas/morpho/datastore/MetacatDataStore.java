@@ -69,7 +69,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 {
   private Morpho morpho;
   
-  private String sessionCookie = null;
   private String metacatURL = null;
   private boolean networkStatus = false;
   private boolean sslStatus = false;
@@ -199,7 +198,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param prop  the properties to be sent to Metacat
    * @return      InputStream as returned by Metacat
    */
-  synchronized public InputStream getMetacatInputStream(Properties prop)
+  synchronized private InputStream getMetacatInputStream(Properties prop)
   {   connectionBusy = true;
       InputStream returnStream = null;
       // Now contact metacat and send the request
@@ -218,7 +217,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
           URL url = new URL(metacatURL);
           HttpMessage msg = new HttpMessage(url);
           returnStream = msg.sendPostData(prop);
-          sessionCookie = HttpMessage.getCookie();
          connectionBusy = false;
          return returnStream;
       } catch (Exception e) {
@@ -227,7 +225,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
               URL url = new URL(metacatURL);
               HttpMessage msg = new HttpMessage(url);
               returnStream = msg.sendPostData(prop);
-              sessionCookie = HttpMessage.getCookie();
               connectionBusy = false;
               return returnStream;
           } catch (Exception e2) {
@@ -237,7 +234,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
                   URL url = new URL(metacatURL);
                   HttpMessage msg = new HttpMessage(url);
                   returnStream = msg.sendPostData(prop);
-                  sessionCookie = HttpMessage.getCookie();
                   connectionBusy = false;
                   return returnStream;
               } catch (Exception e3) {
@@ -254,29 +250,10 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
   /**
    * Send a request to Metacat
    *
-   * @param prop           the properties to be sent to Metacat
-   * @param requiresLogin  indicates whether a valid connection is required
-   *      for the operation
-   * @return               a string as returned by Metacat
-   */
-  public String getMetacatString(Properties prop, boolean requiresLogin)
-  {
-      if (requiresLogin) {
-          if (!connected) {
-              // Ask the user to connect
-              establishConnection();
-          }
-      }
-      return (String)getMetacatString(prop);
-  }
-
-  /**
-   * Send a request to Metacat
-   *
    * @param prop  the properties to be sent to Metacat
    * @return      a string as returned by Metacat
    */
-  public String getMetacatString(Properties prop)
+  private String getMetacatString(Properties prop)
   {
       String response = null;
 
@@ -745,9 +722,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     //-if successfull, write file to cache, return pointer to that file
     //-if not successfull, throw exception, display metacat error.
     String access = "no";
-    StringBuffer fileText = new StringBuffer();
     StringBuffer messageBuf = new StringBuffer();
-    String accessFileId = null;
 
     BufferedReader bfile = new BufferedReader(file);
     try
@@ -1319,16 +1294,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       }
       return getMetacatInputStream(prop);
   }
-
-  /**
-   * Gets the SessionCookie attribute of the Morpho object
-   *
-   * @return   The SessionCookie value
-   */
-  public String getSessionCookie()
-  {
-      return sessionCookie;
-  }
   
   /**
    * Determines if the framework has a valid login
@@ -1387,7 +1352,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    */
   private InputStream sendDataFile(String id, File file, String objectName)
   {
-      String retmsg = "";
       String filename = null;
       InputStream returnStream = null;
       File newFile = null;
