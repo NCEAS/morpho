@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -84,6 +85,37 @@ public class DataStoreServiceController {
 		}
 		
 		return version;
+	}
+	
+	/**
+	 * Create a new Datapackage given a docid of a metadata object and a
+	 * location
+	 */
+	public AbstractDataPackage read(String docid, String location) {
+		// first use datastore package to get a stream for the metadata
+		// read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
+		// then create the appropriate subclass of AbstractDataPackage and
+		// return it.
+
+		Reader in = null;
+		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
+			try {
+				File file = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
+				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+			} catch (Exception w) {
+				Log.debug(20, "Problem opening file!");
+			}
+		} else { 
+			// must be on metacat only
+			try {
+				File file = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
+				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+			} catch (Exception e) {
+				Log.debug(20, "Problem opening file from Metacat!");
+			}
+		}
+		
+		return DataPackageFactory.getDataPackage(in);
 	}
 	
 	/**
@@ -156,49 +188,6 @@ public class DataStoreServiceController {
 			Log.debug(30, "the next id is " + identifier + ".1");
 			return identifier + ".1";
 		}
-	}
-	
-	/**
-	 * Read file from given location
-	 * 
-	 * @param id
-	 * @param location
-	 * @return
-	 * @throws Throwable
-	 */
-	public File openFile(String id, String location) throws Throwable {
-
-		File returnFile = null;
-		if (location.equals(DataPackageInterface.METACAT)) {
-			try {
-				Log.debug(11, "opening metacat file");
-				returnFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id);
-				Log.debug(11, "metacat file opened");
-			} catch (FileNotFoundException fnfe) {
-				Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
-						+ "metacat file not found: " + fnfe.getMessage());
-				fnfe.printStackTrace();
-				throw fnfe.fillInStackTrace();
-
-			} catch (CacheAccessException cae) {
-				Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
-						+ "metacat cache problem: " + cae.getMessage());
-				cae.printStackTrace();
-				throw cae.fillInStackTrace();
-			}
-		} else { // not metacat
-			try {
-				Log.debug(11, "opening local file");
-				returnFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(id);
-				Log.debug(11, "local file opened");
-			} catch (FileNotFoundException fnfe) {
-				Log.debug(0, "Error in DataPackage.getFileFromDataStore(): "
-						+ "local file not found: " + fnfe.getMessage());
-				fnfe.printStackTrace();
-				throw fnfe.fillInStackTrace();
-			}
-		}
-		return returnFile;
 	}
 
 	/**

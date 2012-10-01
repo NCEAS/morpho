@@ -41,6 +41,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -52,12 +53,6 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  */
 public class DataPackageFactory
 {
-  /**
-   *  a uri in string form characterizing the docType of the current document
-   */
-  protected static String docType = null;
-
-  protected static Morpho morpho = null;
 
   /**
 	 * Create a new datapackage given a Reader to a metadata stream
@@ -98,44 +93,6 @@ public class DataPackageFactory
 		}
 		return dp;
 	}
-
-   /**
-	 * Create a new Datapackage given a docid of a metadata object and a
-	 * location
-	 */
-	public static AbstractDataPackage getDataPackage(String docid,
-			String location) {
-		// first use datastore package to get a stream for the metadata
-		// read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
-		// then create the appropriate subclass of AbstractDataPackage and
-		// return it.
-
-		morpho = Morpho.thisStaticInstance;
-		if (morpho == null) {
-			Morpho.createMorphoInstance();
-			morpho = Morpho.thisStaticInstance;
-		}
-
-		Reader in = null;
-		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
-			try {
-				File file = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
-				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
-			} catch (Exception w) {
-				Log.debug(20, "Problem opening file!");
-			}
-		} else { 
-			// must be on metacat only
-			try {
-				File file = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
-				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
-			} catch (Exception e) {
-				Log.debug(20, "Problem opening file from Metacat!");
-			}
-		}
-		
-		return getDataPackage(in);
-	}
   
  
  /**
@@ -144,12 +101,6 @@ public class DataPackageFactory
   * @return
   */
   public static AbstractDataPackage getDataPackageFromIncompeteDir(String docid) {
-    morpho = Morpho.thisStaticInstance;
-    if (morpho==null)  
-    {
-      Morpho.createMorphoInstance();
-      morpho = Morpho.thisStaticInstance;
-    }
    
       Reader in = null;  
       InputSource source = null;
@@ -228,7 +179,8 @@ public class DataPackageFactory
   private static String getDocTypeInfo(Reader in) {
     String temp = getSchemaLine(in);
     
-    //Log.debug(1,"line is:"+temp);
+    String docType = null;
+	//Log.debug(1,"line is:"+temp);
     // this should return a line of text which is either the DOCTYPE declaraton or the root node
     if (temp.indexOf("DOCTYPE")>-1) {
       // get PUBLIC and/or SYSRWM values
@@ -238,7 +190,7 @@ public class DataPackageFactory
         if(st.countTokens()>1) {
           String temp1 = st.nextToken(); // should be 'PUBLIC'
           temp1 = st.nextToken();
-          docType = temp1;
+          docType  = temp1;
         }
       }
       else if(temp.indexOf("SYSTEM")>-1){
@@ -413,7 +365,7 @@ public class DataPackageFactory
     Attribute attributeObject = null;
     try{
       Morpho.createMorphoInstance();
-      adp = DataPackageFactory.getDataPackage("jscientist.7.1", DataPackageInterface.LOCAL);
+      adp = DataStoreServiceController.getInstance().read("jscientist.7.1", DataPackageInterface.LOCAL);
 
       // create a simple subtree to use to test coverage insertion
       Document doc = adp.getMetadataNode().getOwnerDocument();

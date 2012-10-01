@@ -25,6 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -87,7 +88,7 @@ public class RevertCommand implements Command
       int entityIndex = dv.getEntityIndex();
 
       try {
-        tempAdp = DataPackageFactory.getDataPackage(adp.getAccessionNumber(), adp.getLocation());
+        tempAdp = DataStoreServiceController.getInstance().read(adp.getAccessionNumber(), adp.getLocation());
       } catch(Exception e){
         Log.debug(5,"Check if the datapackage was saved.");
       }

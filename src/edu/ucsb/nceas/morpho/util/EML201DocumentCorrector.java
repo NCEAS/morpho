@@ -26,7 +26,6 @@
 package edu.ucsb.nceas.morpho.util;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -75,7 +74,7 @@ public class EML201DocumentCorrector {
       */
      public void correctDocument() throws Exception
      {
-    	 AbstractDataPackage dataPackage = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
+    	 AbstractDataPackage dataPackage = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
     	 if (dataPackage != null && dataPackage instanceof EML200DataPackage)
     	 {
     		  EML200DataPackage eml2Package = (EML200DataPackage)dataPackage;

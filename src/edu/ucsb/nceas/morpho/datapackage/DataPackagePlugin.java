@@ -941,7 +941,7 @@ public class DataPackagePlugin
       Log.debug(5, "Morpho couldn't open the package at this location - "+location);
       return;
     }
-    adp = DataPackageFactory.getDataPackage(identifier, location);
+    adp = DataStoreServiceController.getInstance().read(identifier, location);
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
 
@@ -1329,14 +1329,14 @@ public class DataPackagePlugin
   public String upload(String docid) throws MetacatUploadException
   {
     // get the local copy
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
+    AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
     
     // save remote
     DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.METACAT);
 	DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.METACAT);
 	
 	// check
-    AbstractDataPackage newadp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.METACAT);
+    AbstractDataPackage newadp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
     if (newadp != null) {
          return newadp.getPackageId();
     }
@@ -1356,7 +1356,7 @@ public class DataPackagePlugin
 	public String download(String docid) {
 
 		// get from remote, save to local
-		AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.METACAT);
+		AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
 
 		try {
 			DataStoreServiceController.getInstance().serializeData(adp, DataPackageInterface.LOCAL);
@@ -1364,7 +1364,7 @@ public class DataPackagePlugin
 		} catch (Exception w) {
 			Log.debug(5, "Exception serializing local package in 'download'");
 		}
-		AbstractDataPackage newadp = DataPackageFactory.getDataPackage(docid, DataPackageInterface.LOCAL);
+		AbstractDataPackage newadp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
 
 		if (newadp != null) {
 			return newadp.getPackageId();
@@ -1397,7 +1397,7 @@ public class DataPackagePlugin
     else
     {
       
-      AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, location);
+      AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, location);
       if (adp!=null) {
     	  DataStoreServiceController.getInstance().delete(adp, location);
         // notify listeners of the delete
@@ -1419,7 +1419,7 @@ public class DataPackagePlugin
    */
   public void export(String docid, String path, String location)
   {
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, location);
+    AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, location);
     DataStoreServiceController.getInstance().export(adp, path);
   }
 
@@ -1446,7 +1446,7 @@ public class DataPackagePlugin
    */
   public void exportToZip(String docid, String path, String location)
   {
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, location);
+    AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, location);
     DataStoreServiceController.getInstance().exportToZip(adp, path);
   }
 
@@ -1651,7 +1651,7 @@ public class DataPackagePlugin
       
     }
       
-    AbstractDataPackage dataPackage = DataPackageFactory.getDataPackage(docid, documentLocation);
+    AbstractDataPackage dataPackage = DataStoreServiceController.getInstance().read(docid, documentLocation);
     if(dataPackage == null)
     {
       throw new Exception("Morpho couldn't open the data package with docid "+docid+" at the location "+documentLocation);

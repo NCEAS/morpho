@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -201,7 +202,7 @@ public class ExternalRefsPage extends AbstractUIPage
                 dataPackageTable.getModel().getValueAt(selectedRow, DOCIDINDEX);
          // create a data package base on selected docid
          // because we only search the local, so set metacat = false
-         selectedDataPackage = DataPackageFactory.getDataPackage(selectedDataPackageID, DataPackageInterface.LOCAL);
+         selectedDataPackage = DataStoreServiceController.getInstance().read(selectedDataPackageID, DataPackageInterface.LOCAL);
          parsingPackageIntoTable(selectedDataPackage);
        }
      });

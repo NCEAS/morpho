@@ -63,6 +63,7 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
@@ -774,7 +775,7 @@ public void setTopPanel(JPanel jp) {
     AbstractDataPackage tempAdp = null;
     Entity[] entArray = null;
     try{
-      tempAdp = DataPackageFactory.getDataPackage(adp.getAccessionNumber(), adp.getLocation());
+      tempAdp = DataStoreServiceController.getInstance().read(adp.getAccessionNumber(), adp.getLocation());
       entArray = tempAdp.getEntityArray();
     }catch(Exception e){
       Log.debug(20,"Unable to read the file in RevertCommand.java");
