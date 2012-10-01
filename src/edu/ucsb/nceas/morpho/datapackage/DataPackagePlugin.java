@@ -1332,7 +1332,7 @@ public class DataPackagePlugin
     AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
     
     // save remote
-	DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.METACAT);
+	DataStoreServiceController.getInstance().save(adp, DataPackageInterface.METACAT);
 	
 	// check
     AbstractDataPackage newadp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
@@ -1358,7 +1358,7 @@ public class DataPackagePlugin
 		AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
 
 		try {
-			DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.LOCAL);
+			DataStoreServiceController.getInstance().save(adp, DataPackageInterface.LOCAL);
 		} catch (Exception w) {
 			Log.debug(5, "Exception serializing local package in 'download'");
 		}
@@ -1615,7 +1615,7 @@ public class DataPackagePlugin
     ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
     adp.setAccessionNumber(docid);
     adp.removeTracingChangeElement();
-    DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.INCOMPLETE);
+    DataStoreServiceController.getInstance().save(adp, DataPackageInterface.INCOMPLETE);
     //Util.deleteAutoSavedFile(autoSavedID);
     //return adp.getAccessionNumber();
   }

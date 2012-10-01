@@ -87,7 +87,7 @@ public class EML201DocumentCorrector {
     			  // save the new  package to old id.
     			  //System.out.println("after calling removing");
     			  // TODO: overwrite local without ID? seems like a bad idea
-    			  DataStoreServiceController.getInstance().serialize(eml2Package, DataPackageInterface.LOCAL, true);
+    			  DataStoreServiceController.getInstance().save(eml2Package, DataPackageInterface.LOCAL, true);
     			  //System.out.println("saving package");
     		  }
     			  

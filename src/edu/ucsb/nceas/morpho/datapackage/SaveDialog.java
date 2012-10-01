@@ -313,7 +313,7 @@ public class SaveDialog extends JDialog {
 			// BOTH
 			if ((localLoc.isSelected()) && (localLoc.isEnabled())
 					&& (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.BOTH);
+				DataStoreServiceController.getInstance().save(adp, DataPackageInterface.BOTH);
 				if (adp.getSerializeLocalSuccess()
 						&& adp.getSerializeMetacatSuccess()) {
 					adp.setLocation(DataPackageInterface.BOTH);
@@ -326,7 +326,7 @@ public class SaveDialog extends JDialog {
 				}
 			// LOCAL
 			} else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.LOCAL);
+				DataStoreServiceController.getInstance().save(adp, DataPackageInterface.LOCAL);
 				if (adp.getSerializeLocalSuccess()) {
 					adp.setLocation(DataPackageInterface.LOCAL);
 				} else {
@@ -334,7 +334,7 @@ public class SaveDialog extends JDialog {
 				}
 			// METACAT
 			} else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.METACAT);
+				DataStoreServiceController.getInstance().save(adp, DataPackageInterface.METACAT);
 				if (adp.getSerializeMetacatSuccess()) {
 					adp.setLocation(DataPackageInterface.METACAT);
 				} else if (adp.getLocation() != null

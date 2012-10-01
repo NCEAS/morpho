@@ -104,7 +104,7 @@ public class SavePackageCopyCommand implements Command
     adp.setAccessionNumber(nextid);
 
     try{
-      DataStoreServiceController.getInstance().serialize(adp, DataPackageInterface.LOCAL);
+      DataStoreServiceController.getInstance().save(adp, DataPackageInterface.LOCAL);
       adp.setLocation(DataPackageInterface.LOCAL);
       SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
       saveEvent.setInitialId(oldid);

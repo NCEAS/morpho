@@ -1045,8 +1045,8 @@ public class DataStoreServiceController {
 	 * @param adp
 	 * @param location
 	 */
-	public void serialize(AbstractDataPackage adp, String location) {
-		serialize(adp, location, false);
+	public void save(AbstractDataPackage adp, String location) {
+		save(adp, location, false);
 	}
 	
 	/**
@@ -1058,7 +1058,7 @@ public class DataStoreServiceController {
 	 *            -- can bypass the id conflict for local saves - consider
 	 *            removing!!
 	 */
-	public void serialize(AbstractDataPackage adp, String location,
+	public void save(AbstractDataPackage adp, String location,
 			boolean overwrite) {
 
 		// save the data first
