@@ -1099,27 +1099,21 @@ public class DataStoreServiceController {
 		}
 		// Check to see if id confilct or not
 		if ((location.equals(DataPackageInterface.METACAT))) {
-			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore()
-					.status(adp.getAccessionNumber());
-			if (statusInMetacat != null
-					&& statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(adp.getAccessionNumber());
+			if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.METACAT;
 				// this.setIdentifierChangedInMetacatSerialization(true);
 			}
 		} else if ((location.equals(DataPackageInterface.LOCAL))) {
-			statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore()
-					.status(adp.getAccessionNumber());
+			statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(adp.getAccessionNumber());
 			// existFlag = existInLocal;
-			if (statusInLocal != null
-					&& statusInLocal.equals(DataStoreInterface.CONFLICT)) {
+			if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.LOCAL;
 				// this.setIdentifierChangedInLocalSerialization(true);
 			}
 		} else if (location.equals(DataPackageInterface.BOTH)) {
-			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore()
-					.status(adp.getAccessionNumber());
-			statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore()
-					.status(adp.getAccessionNumber());
+			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(adp.getAccessionNumber());
+			statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(adp.getAccessionNumber());
 			// if (existFlag)
 			// {
 			if (statusInMetacat != null && statusInLocal != null
@@ -1178,8 +1172,7 @@ public class DataStoreServiceController {
 		} else if (conflictLocation != null) {
 			Log.debug(30, "==============In existFlag and insert revision 1 branch");
 			// since it is saving a new package, increase docid silently
-			identifier = DataStoreServiceController.getInstance().getNextId(
-					location);
+			identifier = DataStoreServiceController.getInstance().getNextId(location);
 			adp.setAccessionNumber(identifier);
 			adp.setPackageIDChanged(true);
 			temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
