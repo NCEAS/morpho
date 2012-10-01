@@ -48,48 +48,34 @@ public class AccessionNumber
   }
   
   /**
-   * returns an id with an incremented id.
-   */
-  public String incRev(String id)
-  {
-    return incRev(id, true);
-  }
-  
-  /**
-   * parses id and adds a revision number to it.  if addOne is true and there is
-   * already a revision number then one is added to the existing revision number
-   * @param id the id to parse
-   * @param addOne true adds one to a existing revision number false does not.
-   */
-  public String incRev(String id, boolean addOne)
-  { 
-    String sep = Morpho.thisStaticInstance.getProfile().get("separator", 0);
-    int count = 0;
-    for(int i=0; i<id.length(); i++)
-    {
-      if(id.charAt(i) == sep.trim().charAt(0))
-      {
-        count++;
-      }
-    }
-    
-    if(count == 1)
-    {
-      return id + ".1";
-    }
-    
-    int revIndex = id.lastIndexOf(".");
-    String revNumStr = id.substring(revIndex + 1, id.length());
-    Integer revNum = new Integer(revNumStr);
-    int rev = revNum.intValue();
-    if(addOne)
-    {
-      rev++;
-    }
-    return id.substring(0, revIndex) + "." + rev;
-  }
-  
-  
+	 * Parses id and increments revision number
+	 * 
+	 * @param id the id to parse and increment revision
+	 */
+	public String incRev(String id) {
+		String sep = Morpho.thisStaticInstance.getProfile().get("separator", 0);
+		int count = 0;
+		for (int i = 0; i < id.length(); i++) {
+			if (id.charAt(i) == sep.trim().charAt(0)) {
+				count++;
+			}
+		}
+
+		// no rev was given, so we use 1
+		if (count == 1) {
+			return id + sep + "1";
+		}
+
+		// we have all three parts and can parse  them
+		Vector<String> idParts = getParts(id);
+		
+		String revNumStr = idParts.get(2);
+		Integer revNum = new Integer(revNumStr);
+		int rev = revNum.intValue();
+		rev++;
+		return idParts.get(0) + sep + idParts.get(1) + sep + rev;
+	}
+
   
   /**
    * Returns a vector with all components of the accession number.  The vector
@@ -123,7 +109,7 @@ public class AccessionNumber
 	  Vector<String> idVec = getParts(fullId);
       String scope = (String)idVec.elementAt(0);
       String id = (String)idVec.elementAt(1);
-      String rev = (String)idVec.elementAt(2);
+      //String rev = (String)idVec.elementAt(2);
       String sep = (String)idVec.elementAt(3);
       return scope + sep + id;
   }
