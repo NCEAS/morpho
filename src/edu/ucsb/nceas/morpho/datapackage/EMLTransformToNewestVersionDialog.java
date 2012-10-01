@@ -128,7 +128,6 @@ public class EMLTransformToNewestVersionDialog
 			if (eml200Package != null)
 			{
 				//TODO transform the datapakcage to the newest version
-				String id = eml200Package.getAccessionNumber();
 				String newString = null;
 				boolean hasError = false;
 				try

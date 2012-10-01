@@ -19,6 +19,7 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Hashtable;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -27,6 +28,7 @@ import javax.swing.JOptionPane;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -218,16 +220,13 @@ public class DataStoreServiceController {
 
 		// for css
 		try {
-			InputStream input = this.getClass().getResourceAsStream(
-					"/style/CSS/export.css");
+			InputStream input = this.getClass().getResourceAsStream("/style/CSS/export.css");
 			InputStreamReader styleSheetReader = new InputStreamReader(input);
 			// FileReader styleSheetReader = new FileReader(styleSheetSource);
-			StringBuffer buffer = IOUtil.getAsStringBuffer(styleSheetReader,
-					true);
+			StringBuffer buffer = IOUtil.getAsStringBuffer(styleSheetReader, true);
 			// Create a wrter
 			String fileName = cssPath + "/export.css";
-			Writer writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(fileName), Charset.forName("UTF-8")));
+			Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("UTF-8")));
 			IOUtil.writeToWriter(buffer, writer, true);
 		} catch (Exception e) {
 			Log.debug(30, "Error in copying css: " + e.getMessage());
@@ -239,11 +238,9 @@ public class DataStoreServiceController {
 		File openfile = null;
 		try {
 			if (localloc) { // get the file locally and save it
-				openfile = Morpho.thisStaticInstance.getFileSystemDataStore()
-						.openFile(id);
+				openfile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(id);
 			} else if (metacatloc) { // get the file from metacat
-				openfile = Morpho.thisStaticInstance.getMetacatDataStore()
-						.openFile(id);
+				openfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id);
 			}
 			FileInputStream fis = new FileInputStream(openfile);
 			BufferedInputStream bfis = new BufferedInputStream(fis);
@@ -279,8 +276,7 @@ public class DataStoreServiceController {
 			Reader xmlInputReader = null;
 			Reader result = null;
 			StringBuffer tempPathBuff = new StringBuffer();
-			xmlInputReader = new InputStreamReader(
-					new FileInputStream(openfile), Charset.forName("UTF-8"));
+			xmlInputReader = new InputStreamReader(new FileInputStream(openfile), Charset.forName("UTF-8"));
 
 			XMLTransformer transformer = XMLTransformer.getInstance();
 			// add some property for style sheet
@@ -304,8 +300,7 @@ public class DataStoreServiceController {
 				result = transformer.transform(xmlInputReader);
 			} catch (IOException e) {
 				e.printStackTrace();
-				Log.debug(9, "Unexpected Error Styling Document: "
-						+ e.getMessage());
+				Log.debug(9, "Unexpected Error Styling Document: " + e.getMessage());
 				e.fillInStackTrace();
 				throw e;
 			} finally {
@@ -318,8 +313,7 @@ public class DataStoreServiceController {
 				// "true" closes Reader after reading
 			} catch (IOException e) {
 				e.printStackTrace();
-				Log.debug(9, "Unexpected Error Reading Styled Document: "
-						+ e.getMessage());
+				Log.debug(9, "Unexpected Error Reading Styled Document: " + e.getMessage());
 				e.fillInStackTrace();
 				throw e;
 			}
@@ -1023,14 +1017,11 @@ public class DataStoreServiceController {
 		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
-		String temp2 = identifier;
-		String version = null;
-		int lastperiod = identifier.lastIndexOf(".");
-		if (lastperiod > -1) {
-			version = identifier.substring(lastperiod + 1, identifier.length());
-			temp2 = temp2.substring(0, lastperiod);
-			// Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
-		}
+		Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
+		// get docid without revision
+		String docidNoRev = idParts.get(0) + "." + idParts.get(1);
+		// get revision
+		String version = idParts.get(2);
 		// boolean existsFlag = mds.exists(temp2+".1");
 
 		boolean isRevisionOne = false;
@@ -1104,7 +1095,7 @@ public class DataStoreServiceController {
 			} else {
 				// increase revision number
 				int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(adp.getAccessionNumber(), DataPackageInterface.BOTH);
-				identifier = temp2 + "." + newRevision;
+				identifier = docidNoRev + "." + newRevision;
 				adp.setAccessionNumber(identifier);
 				adp.setPackageIDChanged(true);
 				temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
