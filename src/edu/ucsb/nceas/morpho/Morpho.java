@@ -67,6 +67,7 @@ import org.xml.sax.XMLReader;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
@@ -852,16 +853,22 @@ public class Morpho
      */
     public void setLastID(String scope)
     {
-        //TODO: should only deal with LOCAL, but existing functionality queried BOTH
-        String id = DataStoreServiceController.getInstance().getLastDocid(scope, DataPackageInterface.BOTH);
-        if (id != null) {
-            long num = Long.parseLong(id);
+        // look up last remote id
+    	if (Morpho.thisStaticInstance.getMetacatDataStore() == null) {
+    		return;
+    	}
+
+    	//TODO: this should not be done like this, but for now we will still look up Ids from Metacat
+        String lastId = Morpho.thisStaticInstance.getMetacatDataStore().generateIdentifier();
+        int id = Integer.parseInt(AccessionNumber.getInstance().getParts(lastId).get(1));
+        if (id > 0) {
+            int num = id;
             String curval = Morpho.thisStaticInstance.getProfile().get("lastId", 0);
             long curnum = (new Long(curval)).longValue();
             if (curnum <= num) {
                 num = num + 1;
                 // required because Metacat does not return the latest id
-                id = String.valueOf(num);
+                id = num;
                 Morpho.thisStaticInstance.getProfile().set("lastId", 0, String.valueOf(id));
                 Morpho.thisStaticInstance.getProfile().save();
             }

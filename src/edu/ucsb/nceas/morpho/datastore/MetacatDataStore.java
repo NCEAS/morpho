@@ -729,13 +729,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
   
  
   
-  public File saveFile(String name, Reader file, 
-                       boolean checkforaccessfile) 
-              throws MetacatUploadException
-  {
-    return saveFile(name, file, "update", checkforaccessfile);
-  }
-  
   /**
    * Save an xml metadata file to metacat.  This method is for xml metadata 
    * documents only do not use this method to upload binary data files.
@@ -1063,7 +1056,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 	 * @param scope the docid scope
 	 * @return the last docid for given scope, withour revision or scope
 	 */
-	public int getLastDocid(String scope) {
+	private int getLastDocid(String scope) {
 
 		String result = null;
 		String temp = null;
@@ -1098,6 +1091,27 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 		
 		return metacatId;
 
+	}
+	
+	/**
+	 * Generate identifer from Metacat store
+	 * @return
+	 */
+	public String generateIdentifier() {
+		String identifier = null;
+		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
+		String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+		// Get last id
+		int lastid = getLastDocid(scope);
+		if (lastid > -1) {
+			// in order to get next id, this number should be increase 1
+			lastid++;
+
+			// scope.docid
+			identifier = scope + separator + lastid + separator + 1;
+		}
+		
+		return identifier;
 	}
   
 /**
@@ -1371,7 +1385,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param objectName  the object name associate with the file
    * @return      the response stream from metacat
    */
-  public InputStream sendDataFile(String id, File file, String objectName)
+  private InputStream sendDataFile(String id, File file, String objectName)
   {
       String retmsg = "";
       String filename = null;

@@ -488,13 +488,46 @@ public class FileSystemDataStore extends DataStore
     return getDataFileFromAllLocalSources(docid);
   }
   
+  /**
+	 * returns an id for the given location
+	 * for the current scope
+	 * 
+	 */
+	public synchronized String generateIdentifier() {
+		int lastid = -1;
+		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
+		String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+		// Get last id f
+		lastid = getLastDocid(scope);
+		if (lastid > 0) {
+			// in order to get next id, this number should be increase 1
+			lastid++;
+		}
+
+		// scope.docid
+		String identifier = scope + separator + lastid + separator + 1;
+
+		// set to the next in local for he next time we call this
+		lastid++;
+		if (!Morpho.thisStaticInstance.getProfile().set("lastId", 0, String.valueOf(lastid))) {
+			Log.debug(1, "Error incrementing the locally stored docid");
+			identifier = null;
+		} else {
+			Morpho.thisStaticInstance.getProfile().save();
+			Log.debug(30, "the next id is " + identifier + ".1");
+			identifier = identifier + ".1";
+		}
+		Log.debug(30, "generated  local identifier: " + identifier);
+
+		return identifier;
+	}
   
   /**
 	 * Gets the max local id for given scope in current the profile. The local
 	 * file's names look like 100.1, 102.1... under scope dir. In this case, 102
 	 * will be returned.
 	 */
-	public int getLastDocid(String scope) {
+	private int getLastDocid(String scope) {
 		int docid = 0;
 		int maxDocid = 0;
 		String currentProfile = morpho.getProfile().get("profilename", 0);
@@ -517,9 +550,7 @@ public class FileSystemDataStore extends DataStore
 					Log.debug(50, "the file name in dir is " + fileName);
 					if (fileName != null) {
 						fileName = fileName.substring(0, fileName.indexOf("."));
-						Log.debug(50,
-								"the file name after removing revision in dir is "
-										+ fileName);
+						Log.debug(50, "the file name after removing revision in dir is " + fileName);
 						try {
 							docid = new Integer(fileName).intValue();
 							if (docid > maxDocid) {

@@ -26,26 +26,21 @@
 
 package edu.ucsb.nceas.morpho.datastore;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.*;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.util.Log;
-
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.Reader;
+import java.util.Hashtable;
 
 import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.DocumentType;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
 
-import com.arbortext.catalog.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.PackageUtil;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * creates an abstract class for getting files from any dataStore using the same
@@ -60,7 +55,6 @@ public abstract class DataStore implements DataStoreInterface
   protected String cachedir;
   protected String tempdir;
   protected String incompletedir;
-  protected String scope;
   public final static String INCOMPLATEDIR = "incomplete";
   
   /**
@@ -89,7 +83,6 @@ public abstract class DataStore implements DataStoreInterface
     	incompletedir = profileDirName + File.separator + incomplete;
     }
     separator = profile.get("separator", 0);
-    scope = profile.get("scope", 0);
     separator = separator.trim();
   }
   
