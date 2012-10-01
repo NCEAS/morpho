@@ -136,7 +136,6 @@ public class OpenByIdDialog extends JDialog {
 		}
 		
 		// check that the id is formatted correctly
-		AccessionNumber an = null;
 		try {
 			AccessionNumber.getInstance().getParts(id);
 		} catch (Exception e) {
