@@ -681,7 +681,7 @@ public class DataStoreServiceController {
 	 * It has been assumed that the 'location' has been set to point to the
 	 * place where the data is to be saved.
 	 */
-	public void serializeData(AbstractDataPackage adp, String dataDestination) {
+	private void serializeData(AbstractDataPackage adp, String dataDestination) {
 		Log.debug(30, "serilaize data =====================");
 		adp.getEntityArray();
 		// Log.debug(1, "About to check entityArray!");
@@ -809,7 +809,7 @@ public class DataStoreServiceController {
 
 					// reset the map after finishing save. There is no need for
 					// this pair after saving
-					original_new_id_map = new Hashtable();
+					original_new_id_map = new Hashtable<String, String>();
 
 					// newDataFile must have worked; thus update the package
 					String urlinfo = "ecogrid://knb/" + docid;
@@ -1051,217 +1051,203 @@ public class DataStoreServiceController {
 	
 	/**
 	 * serialize the package to the indicated location
+	 * 
 	 * @param adp
 	 * @param location
-	 * @param overwrite -- can bypass the id conflict for local saves - consider removing!!
+	 * @param overwrite
+	 *            -- can bypass the id conflict for local saves - consider
+	 *            removing!!
 	 */
-	public void serialize(AbstractDataPackage adp, String location, boolean overwrite) {
-		  adp.setSerializeLocalSuccess(false);
-		  adp.setSerializeMetacatSuccess(false);
-		 //this.setIdentifierChangedInLocalSerialization(false);
-		 //this.setIdentifierChangedInMetacatSerialization(false);
-		  adp.setPackageIDChanged(false);
-		 //System.out.println("serialize metadata ===============");
-	    String statusInMetacat = null;
-	    String  statusInLocal  = null;
-	    //boolean existFlag = true;
-	    String conflictLocation = null;
-	    //String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
-	    String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
-	    // To check if this update or insert action
-	    String identifier = adp.getAccessionNumber();
-	    String temp2 = identifier;
-	    String version = null;
-	    int lastperiod = identifier.lastIndexOf(".");
-	    if (lastperiod>-1) {
-	      version = identifier.substring(lastperiod+1, identifier.length());
-	      temp2 = temp2.substring(0, lastperiod);
-	      //Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
-	    }
-	    //boolean existsFlag = mds.exists(temp2+".1");
-	    
-	    boolean isRevisionOne = false;
-	    if (version != null)
-	    {
-	    	isRevisionOne = version.equals("1");
-	    }
-	    else
-	    {
-	    	Log.debug(5,"No revision number assigned to docid. Couldn't save it");
-	    	return;
-	    }
-	    //Check to see if id confilct or not
-	    if((location.equals(DataPackageInterface.METACAT))) 
-	    {
-		    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(adp.getAccessionNumber());
-		    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
-		    {
-		    	conflictLocation = DocidConflictHandler.METACAT;
-		    	//this.setIdentifierChangedInMetacatSerialization(true);
-		    }
-	    }
-	    else if((location.equals(DataPackageInterface.LOCAL))) 
-	    {
-	    	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(adp.getAccessionNumber());
-	    	//existFlag = existInLocal;
-	    	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
-		    {
-		    	conflictLocation = DocidConflictHandler.LOCAL;
-		    	//this.setIdentifierChangedInLocalSerialization(true);
-		    }
-	    }
-	    else if (location.equals(DataPackageInterface.BOTH))
-	    {
-		    statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(adp.getAccessionNumber());
-	    	statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(adp.getAccessionNumber());
-	    	//if (existFlag)
-	    	//{
-	    		if (statusInMetacat != null && statusInLocal != null && 
-	    				statusInLocal.equals(DataStoreInterface.CONFLICT) && statusInMetacat.equals(DataStoreInterface.CONFLICT) )
-	    		{
-	    			conflictLocation =  DocidConflictHandler.LOCAL + " and "+ DocidConflictHandler.METACAT;
-	    		    //this.setIdentifierChangedInLocalSerialization(true);
-	    		    //this.setIdentifierChangedInMetacatSerialization(true);
-	    		}
-	    		else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
-	    		{
-	    			conflictLocation =  DocidConflictHandler.METACAT;
-	    			//this.setIdentifierChangedInMetacatSerialization(true);
-	    		}
-	    		else if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
-	    		{
-	    			conflictLocation =  DocidConflictHandler.LOCAL;
-	    			//this.setIdentifierChangedInLocalSerialization(true);
-	    		}
-	    	//}
-	    }
-	    
-	    // if we allow local overwrite, we reset confilcLocation. It will skip 
-	    // the code to handle conflict
-	    if (overwrite)
-	    {
-	    	conflictLocation = null;
-	    }
-	    
-	    //We need to change id to resolve id confilcition
-	    if (conflictLocation != null && !isRevisionOne)
-	    {
-	    	Log.debug(30, "=============In existFlag and update branch");
-	    	// ToDo - add a frame to give user option to increase docid or revision
-	    	DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, conflictLocation);
-	    	 String choice = docidIncreaseDialog.showDialog();
-	    	 //Log.debug(5, "choice is "+choice);
-	    	 if (choice != null && choice.equals(DocidConflictHandler.INCREASEID))
-	    	 {
-	    		 // increase to a new id
-	            identifier = DataStoreServiceController.getInstance().getNextId(location);
-	            adp.setAccessionNumber(identifier);
-	            adp.setPackageIDChanged(true);
-	            temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
-	            //since we changed the revision number, the status of docid will be changed
-	            statusInMetacat = DataStoreInterface.NONEXIST;
-	            statusInLocal = DataStoreInterface.NONEXIST;
-	    	 }
-	    	 else
-	    	 {
-	    		 // increase revision number
-	    		 int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(adp.getAccessionNumber(), DataPackageInterface.BOTH);
-	    		 identifier = temp2+"."+newRevision;
-	    		 adp.setAccessionNumber(identifier);
-	    		 adp.setPackageIDChanged(true);
-	             temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
-	    		 Log.debug(30, "The new id (after increase revision number) is "+identifier);
-	    		 statusInMetacat = DataStoreInterface.UPDATE;
-	             statusInLocal = DataStoreInterface.UPDATE;
-	    	 }
-	    }
-	    else if (conflictLocation != null)
-	    {
-	    	Log.debug(30, "==============In existFlag and insert revision 1 branch");
-	    	//since it is saving a new package, increase docid silently
-	    	 identifier = DataStoreServiceController.getInstance().getNextId(location);
-	    	 adp.setAccessionNumber(identifier);
-	    	 adp.setPackageIDChanged(true);
-	    	 temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
-	    	 statusInMetacat = DataStoreInterface.NONEXIST;
-	         statusInLocal = DataStoreInterface.NONEXIST;
-	    }
-	     // Log.debug(30, temp);
+	public void serialize(AbstractDataPackage adp, String location,
+			boolean overwrite) {
 
-	      // save doc to metacat
-	      StringReader sr1 = new StringReader(temp);
-	      if((location.equals(DataPackageInterface.METACAT))|| (location.equals(DataPackageInterface.BOTH))) 
-	      {
-	        if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.UPDATE))
-	        {
-	        	try
-	        	{
-	        		Morpho.thisStaticInstance.getMetacatDataStore().saveFile(adp.getAccessionNumber(),sr1);
-	        		adp.setSerializeMetacatSuccess(true);
-	        	}
-	            catch(Exception e) 
-	            {
-	            	adp.setSerializeMetacatSuccess(false);
-	            	//this.setIdentifierChangedInMetacatSerialization(false);
-	            	//System.out.println(" in other exception Exception==========  "+e.getMessage());
-	                Log.debug(5,"Problem with saving to metacat in EML200DataPackage!\n"+e.getMessage());              
-	            }
-	        }
-	        else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.NONEXIST))
-	        {
-	        	try
-	        	{
-	        		Morpho.thisStaticInstance.getMetacatDataStore().newFile(adp.getAccessionNumber(),sr1);
-	        		adp.setSerializeMetacatSuccess(true);
-		            //setAccessionNumber(temp_an);
-	        	}
-	             catch(Exception e) 
-	             {
-	            	 adp.setSerializeMetacatSuccess(false);
-	            	 //this.setIdentifierChangedInMetacatSerialization(false);
-	                 Log.debug(5,"Problem with saving to metacat in EML200DataPackage!\n"+e.getMessage());
-	             }
-	        }
-	        else
-	        {
-	        	adp.setSerializeMetacatSuccess(false);
-	       	    //this.setIdentifierChangedInMetacatSerialization(false);
-	            Log.debug(5,"Problem with saving to metacat in EML200DataPackage since couldn't get the docid status in Metacat");
-	        }
-	      }
-	      
-	      // save doc to local file system
-	      StringReader sr = new StringReader(temp);
-	      if((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) 
-	      {
-	         //Log.debug(10, "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
-	         //fsds.saveFile("100.0",sr);
-	          File newFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveFile(adp.getAccessionNumber(),sr);
-	          if (newFile != null)
-	          {
-	        	  adp.setSerializeLocalSuccess(true);
-	          }
-	          else
-	          {
-	        	  adp.setSerializeLocalSuccess(false);
-	        	  //this.setIdentifierChangedInLocalSerialization(false);
-	          }
-	       }
-	      else if(location.equals(DataPackageInterface.INCOMPLETE))
-	      {
-	        String id = adp.getAccessionNumber();
-	        Log.debug(30, "Serialize metadata into incomplete dir with docid "+id);
-	        File newFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteFile(id, sr);
-	        if (newFile != null)
-	        {
-	        	adp.setSerializeLocalSuccess(true);
-	        }
-	        else
-	        {
-	        	adp.setSerializeLocalSuccess(false);
-	          //this.setIdentifierChangedInLocalSerialization(false);
-	        }
-	      }
-	  }
+		// save the data first
+		serializeData(adp, location);
+
+		// now save the metadata
+		adp.setSerializeLocalSuccess(false);
+		adp.setSerializeMetacatSuccess(false);
+		// this.setIdentifierChangedInLocalSerialization(false);
+		// this.setIdentifierChangedInMetacatSerialization(false);
+		adp.setPackageIDChanged(false);
+		// System.out.println("serialize metadata ===============");
+		String statusInMetacat = null;
+		String statusInLocal = null;
+		// boolean existFlag = true;
+		String conflictLocation = null;
+		// String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(),
+		// false);
+		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+		// To check if this update or insert action
+		String identifier = adp.getAccessionNumber();
+		String temp2 = identifier;
+		String version = null;
+		int lastperiod = identifier.lastIndexOf(".");
+		if (lastperiod > -1) {
+			version = identifier.substring(lastperiod + 1, identifier.length());
+			temp2 = temp2.substring(0, lastperiod);
+			// Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
+		}
+		// boolean existsFlag = mds.exists(temp2+".1");
+
+		boolean isRevisionOne = false;
+		if (version != null) {
+			isRevisionOne = version.equals("1");
+		} else {
+			Log.debug(5,"No revision number assigned to docid. Couldn't save it");
+			return;
+		}
+		// Check to see if id confilct or not
+		if ((location.equals(DataPackageInterface.METACAT))) {
+			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore()
+					.status(adp.getAccessionNumber());
+			if (statusInMetacat != null
+					&& statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+				conflictLocation = DocidConflictHandler.METACAT;
+				// this.setIdentifierChangedInMetacatSerialization(true);
+			}
+		} else if ((location.equals(DataPackageInterface.LOCAL))) {
+			statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore()
+					.status(adp.getAccessionNumber());
+			// existFlag = existInLocal;
+			if (statusInLocal != null
+					&& statusInLocal.equals(DataStoreInterface.CONFLICT)) {
+				conflictLocation = DocidConflictHandler.LOCAL;
+				// this.setIdentifierChangedInLocalSerialization(true);
+			}
+		} else if (location.equals(DataPackageInterface.BOTH)) {
+			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore()
+					.status(adp.getAccessionNumber());
+			statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore()
+					.status(adp.getAccessionNumber());
+			// if (existFlag)
+			// {
+			if (statusInMetacat != null && statusInLocal != null
+					&& statusInLocal.equals(DataStoreInterface.CONFLICT)
+					&& statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+				conflictLocation = DocidConflictHandler.LOCAL + " and " + DocidConflictHandler.METACAT;
+				// this.setIdentifierChangedInLocalSerialization(true);
+				// this.setIdentifierChangedInMetacatSerialization(true);
+			} else if (statusInMetacat != null
+					&& statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+				conflictLocation = DocidConflictHandler.METACAT;
+				// this.setIdentifierChangedInMetacatSerialization(true);
+			} else if (statusInLocal != null
+					&& statusInLocal.equals(DataStoreInterface.CONFLICT)) {
+				conflictLocation = DocidConflictHandler.LOCAL;
+				// this.setIdentifierChangedInLocalSerialization(true);
+			}
+			// }
+		}
+
+		// if we allow local overwrite, we reset confilcLocation. It will skip
+		// the code to handle conflict
+		if (overwrite) {
+			conflictLocation = null;
+		}
+
+		// We need to change id to resolve id confilcition
+		if (conflictLocation != null && !isRevisionOne) {
+			Log.debug(30, "=============In existFlag and update branch");
+			// ToDo - add a frame to give user option to increase docid or
+			// revision
+			DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, conflictLocation);
+			String choice = docidIncreaseDialog.showDialog();
+			// Log.debug(5, "choice is "+choice);
+			if (choice != null && choice.equals(DocidConflictHandler.INCREASEID)) {
+				// increase to a new id
+				identifier = DataStoreServiceController.getInstance().getNextId(location);
+				adp.setAccessionNumber(identifier);
+				adp.setPackageIDChanged(true);
+				temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+				// since we changed the revision number, the status of docid
+				// will be changed
+				statusInMetacat = DataStoreInterface.NONEXIST;
+				statusInLocal = DataStoreInterface.NONEXIST;
+			} else {
+				// increase revision number
+				int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(adp.getAccessionNumber(), DataPackageInterface.BOTH);
+				identifier = temp2 + "." + newRevision;
+				adp.setAccessionNumber(identifier);
+				adp.setPackageIDChanged(true);
+				temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+				Log.debug(30, "The new id (after increase revision number) is " + identifier);
+				statusInMetacat = DataStoreInterface.UPDATE;
+				statusInLocal = DataStoreInterface.UPDATE;
+			}
+		} else if (conflictLocation != null) {
+			Log.debug(30, "==============In existFlag and insert revision 1 branch");
+			// since it is saving a new package, increase docid silently
+			identifier = DataStoreServiceController.getInstance().getNextId(
+					location);
+			adp.setAccessionNumber(identifier);
+			adp.setPackageIDChanged(true);
+			temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+			statusInMetacat = DataStoreInterface.NONEXIST;
+			statusInLocal = DataStoreInterface.NONEXIST;
+		}
+		// Log.debug(30, temp);
+
+		// save doc to metacat
+		StringReader sr1 = new StringReader(temp);
+		if ((location.equals(DataPackageInterface.METACAT))
+				|| (location.equals(DataPackageInterface.BOTH))) {
+			if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.UPDATE)) {
+				try {
+					Morpho.thisStaticInstance.getMetacatDataStore().saveFile(adp.getAccessionNumber(), sr1);
+					adp.setSerializeMetacatSuccess(true);
+				} catch (Exception e) {
+					adp.setSerializeMetacatSuccess(false);
+					// this.setIdentifierChangedInMetacatSerialization(false);
+					// System.out.println(
+					// " in other exception Exception==========  "
+					// +e.getMessage());
+					Log.debug(5, "Problem with saving to metacat in EML200DataPackage!\n"
+									+ e.getMessage());
+				}
+			} else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.NONEXIST)) {
+				try {
+					Morpho.thisStaticInstance.getMetacatDataStore().newFile(adp.getAccessionNumber(), sr1);
+					adp.setSerializeMetacatSuccess(true);
+					// setAccessionNumber(temp_an);
+				} catch (Exception e) {
+					adp.setSerializeMetacatSuccess(false);
+					// this.setIdentifierChangedInMetacatSerialization(false);
+					Log.debug(5, "Problem with saving to metacat in EML200DataPackage!\n"
+									+ e.getMessage());
+				}
+			} else {
+				adp.setSerializeMetacatSuccess(false);
+				// this.setIdentifierChangedInMetacatSerialization(false);
+				Log.debug(5, "Problem with saving to metacat in EML200DataPackage since couldn't get the docid status in Metacat");
+			}
+		}
+
+		// save doc to local file system
+		StringReader sr = new StringReader(temp);
+		if ((location.equals(DataPackageInterface.LOCAL))
+				|| (location.equals(DataPackageInterface.BOTH))) {
+			// Log.debug(10,
+			// "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
+			// fsds.saveFile("100.0",sr);
+			File newFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveFile(adp.getAccessionNumber(), sr);
+			if (newFile != null) {
+				adp.setSerializeLocalSuccess(true);
+			} else {
+				adp.setSerializeLocalSuccess(false);
+				// this.setIdentifierChangedInLocalSerialization(false);
+			}
+		} else if (location.equals(DataPackageInterface.INCOMPLETE)) {
+			String id = adp.getAccessionNumber();
+			Log.debug(30, "Serialize metadata into incomplete dir with docid " + id);
+			File newFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteFile(id, sr);
+			if (newFile != null) {
+				adp.setSerializeLocalSuccess(true);
+			} else {
+				adp.setSerializeLocalSuccess(false);
+				// this.setIdentifierChangedInLocalSerialization(false);
+			}
+		}
+	}
 
 }
