@@ -153,7 +153,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 	 * return the max version of metacat. So we should increase 1 to get next version number.
 	 * If couldn't connect metacat or metacat doesn't have this docid, 1 will be returned.
 	 */
-	public int getNextRevisionNumberFromMetacat(String identifier)
+	public int getNextRevisionNumber(String identifier)
 	{
 		int version = AbstractDataPackage.ORIGINAL_REVISION;
 		String semiColon = ";";

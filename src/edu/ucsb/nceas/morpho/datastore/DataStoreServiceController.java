@@ -78,11 +78,11 @@ public class DataStoreServiceController {
 			version = Morpho.thisStaticInstance.getFileSystemDataStore().getNextRevisionNumber(docid);
 		}
 		if (location.equals(DataPackageInterface.METACAT)) {
-			version = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
+			version = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumber(docid);
 		}
 		if (location.equals(DataPackageInterface.BOTH)) {
 			int localNextRevision = Morpho.thisStaticInstance.getFileSystemDataStore().getNextRevisionNumber(docid);
-			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumberFromMetacat(docid);
+			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumber(docid);
 			version = Math.max(localNextRevision, metacatNextRevision);
 		}
 		
