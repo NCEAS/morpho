@@ -900,7 +900,7 @@ public class FileSystemDataStore extends DataStore
 				}
 				if (localFile != null && localFile.isFile()) {
 					// now we copy the file into morpho
-					String identifier = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
+					String identifier = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
 					try {
 						InputStream dfis = new FileInputStream(localFile);
 						Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(identifier, dfis);

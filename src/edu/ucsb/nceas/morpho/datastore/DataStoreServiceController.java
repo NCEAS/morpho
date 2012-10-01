@@ -162,7 +162,7 @@ public class DataStoreServiceController {
 	 * for the current scope
 	 * 
 	 */
-	public synchronized String getNextId(String location) {
+	public synchronized String generateIdentifier(String location) {
 		long lastid = -1;
 		String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 		// Get last id from metacat and local system
@@ -988,7 +988,7 @@ public class DataStoreServiceController {
 
 			// decides docid base on user choice
 			if (!update) {
-				identifier = DataStoreServiceController.getInstance().getNextId(conflictLocation);
+				identifier = DataStoreServiceController.getInstance().generateIdentifier(conflictLocation);
 			} else {
 				int newRevision = 
 					DataStoreServiceController.getInstance().getNextRevisionNumber(identifier, DataPackageInterface.BOTH);
@@ -1150,7 +1150,7 @@ public class DataStoreServiceController {
 			// Log.debug(5, "choice is "+choice);
 			if (choice != null && choice.equals(DocidConflictHandler.INCREASEID)) {
 				// increase to a new id
-				identifier = DataStoreServiceController.getInstance().getNextId(location);
+				identifier = DataStoreServiceController.getInstance().generateIdentifier(location);
 				adp.setAccessionNumber(identifier);
 				adp.setPackageIDChanged(true);
 				temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
@@ -1172,7 +1172,7 @@ public class DataStoreServiceController {
 		} else if (conflictLocation != null) {
 			Log.debug(30, "==============In existFlag and insert revision 1 branch");
 			// since it is saving a new package, increase docid silently
-			identifier = DataStoreServiceController.getInstance().getNextId(location);
+			identifier = DataStoreServiceController.getInstance().generateIdentifier(location);
 			adp.setAccessionNumber(identifier);
 			adp.setPackageIDChanged(true);
 			temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());

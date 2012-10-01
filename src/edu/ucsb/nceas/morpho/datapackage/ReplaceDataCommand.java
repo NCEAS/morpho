@@ -189,7 +189,7 @@ public class ReplaceDataCommand implements Command {
 	    	currentId = null;
 	    }
 	    if (currentId  == null) {
-	    	currentId = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.LOCAL);
+	    	currentId = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
 	    } else {
 	    	currentId = AccessionNumber.getInstance().incRev(currentId);
 	    }

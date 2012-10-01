@@ -296,7 +296,7 @@ public class SaveDialog extends JDialog {
 
 			try {
 				if (id.indexOf(FileSystemDataStore.TEMP) > -1) {
-					String nextid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.BOTH);
+					String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.BOTH);
 					adp.setAccessionNumber(nextid);
 				} else {
 					String newid = AccessionNumber.getInstance().incRev(id);
@@ -304,7 +304,7 @@ public class SaveDialog extends JDialog {
 				}
 			} catch (Exception www) {
 				// no valid accession number; thus create one
-				String nextid = DataStoreServiceController.getInstance().getNextId(DataPackageInterface.BOTH);
+				String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.BOTH);
 				adp.setAccessionNumber(nextid);
 			}
 		}
