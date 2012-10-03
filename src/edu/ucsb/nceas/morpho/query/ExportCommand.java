@@ -27,8 +27,10 @@
 package edu.ucsb.nceas.morpho.query;
 
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -177,8 +179,8 @@ public class ExportCommand implements Command
     {
       //Try if it is datapackage frame
       selectDocId = dataPackage.getDocIdFromMorphoFrame(morphoFrame);
-      metacatLoc = dataPackage.isDataPackageInNetwork(morphoFrame);
-      localLoc = dataPackage.isDataPackageInLocal(morphoFrame);
+      metacatLoc = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.METACAT);
+      localLoc = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.LOCAL);
        // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))
       {

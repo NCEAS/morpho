@@ -25,6 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -141,8 +142,8 @@ public class OpenDeleteDialogCommand implements Command
       }
        //Try if it is datapackage frame
       selectDocId = dataPackage.getDocIdFromMorphoFrame(frame);
-      boolean inNetwork   = dataPackage.isDataPackageInNetwork(frame);
-      boolean inLocal     = dataPackage.isDataPackageInLocal(frame);
+      boolean inNetwork   = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.METACAT);
+      boolean inLocal     = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.LOCAL);
       if(inNetwork)
       {
         networkStatus = DataPackageInterface.METACAT;

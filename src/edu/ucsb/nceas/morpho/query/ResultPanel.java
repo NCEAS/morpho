@@ -48,6 +48,7 @@ import javax.swing.table.TableColumn;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -747,9 +748,9 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         localStatus = (String) rowV.elementAt(ResultSet.ISLOCALINDEX);
         //metacatLoc = ( (Boolean) rowV.elementAt(10)).booleanValue();
         metacatStatus = (String) rowV.elementAt(ResultSet.ISMETACATINDEX);
-        packageName = getIdWithoutVersion(selectedId);
+        packageName = AccessionNumber.getInstance().getIdNoRev(selectedId);
         Log.debug(30, "the package name is: " + packageName);
-        vers = getNumberOfPrevVersions(selectedId);
+        vers = AccessionNumber.getInstance().getNumberOfPrevVersions(selectedId);
         Log.debug(30, "the number of previous version is: " + vers);
         doctype = (String) rowV.elementAt(8);
         // Fire state change event only in morpho frame
@@ -854,32 +855,5 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     }
 
   }
-
-  /**
-   * Given a docid, caculate the number of its previous versions
-   * @param docId,  docId need to caculate previouse version
-   */
-  public static int getNumberOfPrevVersions(String docId)
-  {
-      int prevVersions = 0;
-      int iii = docId.lastIndexOf(".");
-      String ver = docId.substring(iii+1,docId.length());
-      prevVersions = (new Integer(ver)).intValue();
-      prevVersions = prevVersions - 1;
-      return prevVersions;
-  }
-
-  /**
-   * Given a docid, return the string withoutversion
-   * @param docId,  docId need to be trimed version
-   */
-  public static String getIdWithoutVersion(String docId)
-  {
-      int prevVersions = 0;
-      int iii = docId.lastIndexOf(".");
-      String ver = docId.substring(0,iii);
-      return ver;
-  }
-
 
 }

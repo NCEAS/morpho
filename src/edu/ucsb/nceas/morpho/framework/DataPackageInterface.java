@@ -203,25 +203,6 @@ public interface DataPackageInterface
    */
   public String getDocIdFromMorphoFrame(MorphoFrame morphoFrame);
 
-
-  /**
-   * Method to determine a data package which in a morpho frame if is in local
-   *
-   * @param morphoFrame the morpho frame containing the data package
-   * @return boolean
-   */
-  public boolean isDataPackageInLocal(MorphoFrame morphoFrame);
-  
-
-  /**
-   * Method to determine a data package which in a morpho frame if is in network
-   *
-   * @param morphoFrame the morpho frame containing the data package
-   * @return boolean
-   */
-  public boolean isDataPackageInNetwork(MorphoFrame morphoFrame);
-
-
   /**
    * return an instance of a Command object, identified by one of the integer
    * constants defined above

@@ -1176,5 +1176,23 @@ public class DataStoreServiceController {
 			}
 		}
 	}
+	
+	/**
+	 * Does this id exist at the given location?
+	 * @param docid
+	 * @param location
+	 * @return
+	 */
+	public boolean exists(String docid, String location) {
+		
+		String status = DataStoreInterface.NONEXIST;
+		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
+			status = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
+		} else {
+			status = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
+		}
+		return !status.equals(DataStoreInterface.NONEXIST);
+		
+	}
 
 }

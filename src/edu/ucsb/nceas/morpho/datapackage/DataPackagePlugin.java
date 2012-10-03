@@ -1474,56 +1474,6 @@ public class DataPackagePlugin
     return docid;
   }
 
-
-  /**
-   * Method to determine a data package which in a morpho frame if is in local
-   *
-   * @param morphoFrame the morpho frame containing the data package
-   * @return boolean
-   */
-  public boolean isDataPackageInLocal(MorphoFrame morphoFrame)
-  {
-    String location = null;
-    boolean flagInLocal = false;
-     DataViewContainerPanel dvcp = morphoFrame.getDataViewContainerPanel();
-     AbstractDataPackage adp = dvcp.getAbstractDataPackage();
-
-       location = adp.getLocation();
-
-
-      if (location.equals(DataPackageInterface.LOCAL) ||
-         location.equals(DataPackageInterface.BOTH))
-      {
-        flagInLocal = true;
-        Log.debug(50, "docid is in local");
-      }//if
-    return flagInLocal;
-  }
-
-
-  /**
-   * Method to determine a data package which in a morpho frame if is in network
-   *
-   * @param morphoFrame the morpho frame containing the data package
-   * @return boolean
-   */
-  public boolean isDataPackageInNetwork(MorphoFrame morphoFrame)
-  {
-    String location = null;
-    boolean flagInNetwork = false;
-     DataViewContainerPanel dvcp = morphoFrame.getDataViewContainerPanel();
-     AbstractDataPackage adp = dvcp.getAbstractDataPackage();
-       location = adp.getLocation();
-
-      if (location.equals(DataPackageInterface.METACAT) ||
-         location.equals(DataPackageInterface.BOTH))
-      {
-        flagInNetwork = true;
-        Log.debug(50, "docid is in network");
-      }//if
-    return flagInNetwork;
-  }
-
   /*
    * Method to get package in a given morphoFrame. If the morpho frame doesn't
    * contain a datapackage, null will be returned

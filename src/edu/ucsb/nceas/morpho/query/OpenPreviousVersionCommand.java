@@ -27,6 +27,8 @@
 package edu.ucsb.nceas.morpho.query;
 
 
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -146,9 +148,9 @@ public class OpenPreviousVersionCommand implements Command
     {
       //Try a data pakcage frame
       String docId = dataPackage.getDocIdFromMorphoFrame(morphoFrame);
-      localLoc = dataPackage.isDataPackageInLocal(morphoFrame);
-      packageName = ResultPanel.getIdWithoutVersion(docId);
-      version = ResultPanel.getNumberOfPrevVersions(docId);
+      localLoc = DataStoreServiceController.getInstance().exists(docId, DataPackageInterface.LOCAL);
+      packageName = AccessionNumber.getInstance().getIdNoRev(docId);
+      version = AccessionNumber.getInstance().getNumberOfPrevVersions(docId);
       
     }
     
