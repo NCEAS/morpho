@@ -920,7 +920,7 @@ public class LocalQuery
     //in case no incomplete dir in old version profile
     if(incomplete == null || incomplete.trim().equals(""))
     {
-    	incompleteDir = profileDir+ File.separator + DataStore.INCOMPLATEDIR;
+    	incompleteDir = profileDir+ File.separator + DataStore.INCOMPLETEDIR;
     }
     else
     {

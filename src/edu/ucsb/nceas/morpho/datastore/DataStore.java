@@ -51,7 +51,7 @@ public abstract class DataStore implements DataStoreInterface
   protected Morpho morpho;
   private ConfigXML config;
   protected String separator;
-  public final static String INCOMPLATEDIR = "incomplete";
+  public final static String INCOMPLETEDIR = "incomplete";
   
   /**
    * create a new FileSystemDataStore for a Morpho
@@ -113,7 +113,7 @@ public abstract class DataStore implements DataStoreInterface
 		String incomplete = profile.get("incompletedir", 0);
 		// in case no incomplete dir in old version profile
 		if (incomplete == null || incomplete.trim().equals("")) {
-			incompletedir = profileDirName + File.separator + INCOMPLATEDIR;
+			incompletedir = profileDirName + File.separator + INCOMPLETEDIR;
 		} else {
 			incompletedir = profileDirName + File.separator + incomplete;
 		}
