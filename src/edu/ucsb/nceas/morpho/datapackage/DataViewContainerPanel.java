@@ -868,7 +868,7 @@ public void setTopPanel(JPanel jp) {
             // if we reach here, urlinfo should be the id in a string
             dataId = urlinfo;
             try{
-              String loc = adp.location;
+              String loc = adp.getLocation();
               if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
                 displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(urlinfo);
               }

@@ -825,15 +825,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
   {
     return saveFile(name, file, "insert", true);
   }
-  
-  
-  public File newFile(String name, Reader file, 
-                      boolean checkforaccessfile)
-         throws MetacatUploadException
-  {
-    return saveFile(name, file,"insert", checkforaccessfile);
-  }
-  
+   
   /**
    * method to create a new data file on metacat.  This method uploads the
    * given file with the given id.  It does nothing to control access or

@@ -71,124 +71,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
 
   }
 
-
-  /**
-   * transforms a package to eml2; first exports the metadata
-   * @param path the path to which this package should be exported.
-   */
-  public void exportToEml2(String path)
-  {
-    Log.debug(20, "exporting...");
-    Log.debug(20, "path: " + path);
-    Log.debug(20, "id: " + id);
-    Log.debug(20, "location: " + location);
-    Vector fileV = new Vector(); //vector of all files in the package
-    boolean localloc = false;
-    boolean metacatloc = false;
-    if(location.equals(DataPackageInterface.BOTH))
-    {
-      localloc = true;
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.METACAT))
-    {
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.LOCAL))
-    {
-      localloc = true;
-    }
-
-    //get a list of the files and save them to the new location. if the file
-    //is a data file, save it with its original name.
-
-    String sourcePath = "metadata";
-    File savedirSub = new File(sourcePath);
-    savedirSub.mkdirs();
-    Hashtable dataFileNameMap = getMapBetweenDataIdAndDataFileName();
-    Vector files = getAllIdentifiers();
-    for(int i=0; i<files.size(); i++)
-    {
-      try
-      {
-       //save one file at a time
-        // Get docid for the vector
-        String docid = (String)files.elementAt(i);
-        // Get the hash table between docid and data file name
-        File f = null;
-        // if it is data file user filename to replace docid
-        if (dataFileNameMap.containsKey(docid))
-        {
-        }
-        else
-        {
-          // for metadata file
-          f = new File(sourcePath + "/" + docid);
-        }
-        File openfile = null;
-        if(localloc)
-        { //get the file locally and save it
-          openfile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
-        }
-        else if(metacatloc)
-        { //get the file from metacat
-          if (dataFileNameMap.containsKey(docid)) {
-           openfile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(docid);
-          } else {
-            openfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
-          }
-        }
-
-        if (f!=null) {
-          fileV.addElement(openfile);
-          FileInputStream fis = new FileInputStream(openfile);
-          BufferedInputStream bfis = new BufferedInputStream(fis);
-          FileOutputStream fos = new FileOutputStream(f);
-          BufferedOutputStream bfos = new BufferedOutputStream(fos);
-          int c = bfis.read();
-          while(c != -1)
-          { //copy the files to the source directory
-            bfos.write(c);
-            c = bfis.read();
-          }
-          bfos.flush();
-          bfis.close();
-          bfos.close();
-        }
-      }
-      catch(Exception e)
-      {
-        System.out.println("Error in DataPackage.exportToEml2(): " + e.getMessage());
-        e.printStackTrace();
-      }
-    }//for
-    try{
-      EMLConvert.outputfileName = path;
-      // when the package is on metacat, one wants to use a url pointing to the
-      // current metacat. When the package is just local, pass a file url
-      String murl = Morpho.thisStaticInstance.getMetacatDataStore().getMetacatURL();
-      if (!metacatloc) {
-        murl = "file://"+id;
-      }
-      EMLConvert.doTransform("metadata/"+id, murl);
-    }
-    catch (Exception ee) {
-        System.out.println("Error in EMLConvert: " + ee.getMessage());
-        ee.printStackTrace();
-    }
-    // now delete the temp files
-    String[] filelist = savedirSub.list();
-    for (int k=0;k<filelist.length;k++) {
-      File nf = new File(savedirSub, filelist[k]);
-      nf.delete();
-    }
-    savedirSub.delete();
-
-//    JOptionPane.showMessageDialog(null,
-//                    "Conversion to EML2 Complete ! ");
-
-  }
-
     /*
    * Method to get the map between data docid to data file name (oringinal)
    */
@@ -224,8 +106,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
     }//for
     return map;
   }
-
-
+  
   /**
    * returns a vector containing a distinct set of all of the file ids that make
    * up this package
@@ -342,21 +223,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
    */
   public String getAccessFileId(String id) {
     File accessfile = null;
-    boolean localloc = false;
-    boolean metacatloc = false;
-    if(location.equals(DataPackageInterface.BOTH))
-    {
-      localloc = true;
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.METACAT))
-    {
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.LOCAL))
-    {
-      localloc = true;
-    }
+    
     // assume that id is the object;
     // ie eml-access is related to id
     Vector triplesV = triples.getCollectionByObject(id) ;
