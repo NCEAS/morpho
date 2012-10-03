@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -445,7 +446,7 @@ public class DeleteCommand implements Command
                 Log.debug(30, "delete local copy from local copy "
                           +"and networkcopy - delete the local icon");
                 // set index= ISLOCALINDEX value flase
-                row.set(ResultSet.ISLOCALINDEX, QueryRefreshInterface.NONEXIST);
+                row.set(ResultSet.ISLOCALINDEX, DataStoreInterface.NONEXIST);
 
              }
              else if (chosenDeletingStatus.equals(DataPackageInterface.LOCAL) && packageLocalStatus.equals(DataPackageInterface.LOCAL)
@@ -461,7 +462,7 @@ public class DeleteCommand implements Command
                 Log.debug(30, "delete network copy from local copy and "+
                           "network copy - delete network icon");
                 // set index=ISMETACATINDEX value false
-                row.set(ResultSet.ISMETACATINDEX, QueryRefreshInterface.NONEXIST);
+                row.set(ResultSet.ISMETACATINDEX, DataStoreInterface.NONEXIST);
              }
              else if (chosenDeletingStatus.equals(DataPackageInterface.METACAT) && !packageLocalStatus.equals(DataPackageInterface.LOCAL)
                      && packageNetworkStatus.equals(DataPackageInterface.METACAT))

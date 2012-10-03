@@ -50,6 +50,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -812,7 +813,7 @@ public class Query extends DefaultHandler {
 // end looking at result
 */
 
-      metacatResults = new HeadResultSet(this, QueryRefreshInterface.NONEXIST, QueryRefreshInterface.NETWWORKCOMPLETE,
+      metacatResults = new HeadResultSet(this, DataStoreInterface.NONEXIST, QueryRefreshInterface.NETWWORKCOMPLETE,
                                      morpho.getMetacatDataStore().queryMetacat(toXml()), morpho);
 
     }
@@ -933,7 +934,7 @@ public class Query extends DefaultHandler {
          SynchronizeVector dataVector = new SynchronizeVector();
          //String source = "metacat";
          // parsing result set
-         String localStatus = QueryRefreshInterface.NONEXIST;
+         String localStatus = DataStoreInterface.NONEXIST;
          String metacatStatus = QueryRefreshInterface.NETWWORKCOMPLETE;
          ResultsetHandler handler = new ResultsetHandler(morpho.getMetacatDataStore().queryMetacat(toXml()),
                                             dataVector,  morpho, localStatus, metacatStatus);

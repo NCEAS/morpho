@@ -26,8 +26,9 @@
 
 package edu.ucsb.nceas.morpho.datastore;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.Reader;
 
 /**
  * creates an interface for getting files from any dataStore using the same

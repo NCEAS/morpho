@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStore;
+import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -541,7 +542,7 @@ public class LocalQuery
     //rss.addElement(new Boolean(true));                    // isLocal
     //rss.addElement(new Boolean(false));                   // isMetacat
     rss.addElement(localStatus);                    // isLocal
-    rss.addElement(QueryRefreshInterface.NONEXIST); // isMetacat
+    rss.addElement(DataStoreInterface.NONEXIST); // isMetacat
     // Note that this tripleList does not contain the types of the
     // subject and objects identified inthe triple, so it differs
     // from the tripleList generated for metacat results

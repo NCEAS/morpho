@@ -25,6 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -150,7 +151,7 @@ public class OpenDeleteDialogCommand implements Command
       }
       else
       {
-        networkStatus = QueryRefreshInterface.NONEXIST;
+        networkStatus = DataStoreInterface.NONEXIST;
       }
       if(inLocal)
       {
@@ -158,7 +159,7 @@ public class OpenDeleteDialogCommand implements Command
       }
       else
       {
-        localStatus = QueryRefreshInterface.NONEXIST;
+        localStatus = DataStoreInterface.NONEXIST;
       }
       /*Log.debug(5, "local status is "+localStatus+
           "\nnewtwork status is "+networkStatus+"\non datapackage. openDeleteDialogCommand");*/

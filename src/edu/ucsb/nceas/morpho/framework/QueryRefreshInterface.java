@@ -66,9 +66,6 @@ public interface QueryRefreshInterface
   public static final String LOCALUSERSAVEDINCOMPLETE = "user-saved-incomplete";
   
   public static final String LOCALINCOMPLETEPACKAGE = "localIncomplete";
-  
-  public static final String NONEXIST = "non-exsit";
-
 
   /**
    * Denotes an instance of the OpenDataPackageCommand object
