@@ -39,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -378,7 +379,7 @@ public class SaveDialog extends JDialog {
 		if (!problem) {
 			UIController.getInstance().removeDocidFromIdleWizardRecorder(adp.getAutoSavedD());
 			// delete the incomplete file
-			Util.deleteAutoSavedFile(adp);
+			Morpho.thisStaticInstance.getFileSystemDataStore().deleteAutoSavedFile(adp);
 			
 			// alert listeners
 			saveEvent.setFinalId(adp.getAccessionNumber());

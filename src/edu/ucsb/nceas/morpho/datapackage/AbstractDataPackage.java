@@ -1987,30 +1987,6 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		entityArray = null;
 	}
-	
-	/**
-	 * Deletes all associated data files in incomplete dir
-	 */
-	public void deleteDataFilesInIncompleteFolder()
-	{
-	  if(entityArray != null)
-	  { 
-  	  for (int i = 0; i < entityArray.length; i++) 
-  	  {
-        String URLinfo = getDistributionUrl(i, 0, 0);
-        String protocol = getUrlProtocol(URLinfo);
-        if(protocol != null && protocol.equals(ECOGRID) ) 
-        {
-          
-          String docid = getUrlInfo(URLinfo);
-          Log.debug(30, "handle data file  with index "+i+ ""+docid);
-          Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(docid);
-        }
-  	  }
-	  }
-	}
-
-
 
   /**
    * This method automatically adds an entity in the DOM at the next available

@@ -65,7 +65,6 @@ import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -93,7 +92,6 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportEntity;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -2085,7 +2083,7 @@ public class WizardContainerFrame
     {
     	//FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
     	//store.deleteInCompleteFile(autoSaveID);
-    	Util.deleteAutoSavedFile(adp);
+    	Morpho.thisStaticInstance.getFileSystemDataStore().deleteAutoSavedFile(adp);
     }
     else if(autoSaveID != null)
     {

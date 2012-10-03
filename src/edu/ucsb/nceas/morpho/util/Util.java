@@ -36,8 +36,6 @@ import javax.swing.JComponent;
 
 import org.w3c.dom.Node;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -276,37 +274,6 @@ public class Util
     	Log.debug(30, "The count string in string "+predictStr+" is "+count+" in Util.getCountStringofPedict");
     	return count;
     }
-		
-	/**
-	 * Delete the auto-saved file for given abstract data package.
-	 * @param adp
-	 */
-	public static void deleteAutoSavedFile(AbstractDataPackage adp)
-	{
-	      if(adp != null)
-	      {
-	    	 //delete the incomplete file
-	  	    String autoSavedID = adp.getAutoSavedD();
-	  	    if(autoSavedID != null)
-	  	    {
-	  	      deleteAutoSavedFile(autoSavedID);
-	  	      adp.setAutoSavedID(null);
-	  	      //delete the data file too
-	  	      adp.deleteDataFilesInIncompleteFolder();
-	  	    }
-	      }
-	}
-	
-	/**
-	 * Delete the auto-saved file for given file id.
-	 * @param autoSavedID
-	 */
-	public static void deleteAutoSavedFile(String autoSavedID)
-	{
-		if (autoSavedID != null) {
-			Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(autoSavedID);
-	    }
-	}
 	
 	static public boolean deleteDirectory(File path) {
 		if (path.exists()) {

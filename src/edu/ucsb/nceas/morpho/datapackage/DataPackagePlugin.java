@@ -1373,40 +1373,32 @@ public class DataPackagePlugin
 
 
   /**
-   * Deletes the package.
-   *
-   * @param docid the id of the package to download
-   * @param location String
-   */
-  public void delete(String docid, String location) throws Exception
-  {
-//    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
-//    dp.delete(location);
-    if(location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE))
-    {
-      File incompleteFile = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(docid);
-      AbstractDataPackage adp = DataPackageFactory.getDataPackage(new InputStreamReader(new FileInputStream(incompleteFile), Charset.forName("UTF-8")));
-      if(adp != null)
-      {
-        adp.deleteDataFilesInIncompleteFolder();
-      }
-      Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(docid);      
-    }
-    else
-    {
-      
-      AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, location);
-      if (adp!=null) {
-    	  DataStoreServiceController.getInstance().delete(adp, location);
-        // notify listeners of the delete
-        DeleteEvent deleteEvent = new DeleteEvent(UIController.getInstance().getCurrentActiveWindow(), StateChangeEvent.DELETE_DATAPACKAGE);
-        deleteEvent.setId(docid);
-        deleteEvent.setLocation(location);
-        StateChangeMonitor.getInstance().notifyStateChange(deleteEvent);
-      }
-    }
-   
-  }
+	 * Deletes the package.
+	 * 
+	 * @param docid the id of the package to download
+	 * @param location String
+	 */
+	public void delete(String docid, String location) throws Exception {
+
+		if (location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE)) {
+			File incompleteFile = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(docid);
+			AbstractDataPackage adp = DataPackageFactory.getDataPackage(new InputStreamReader(new FileInputStream(incompleteFile), Charset.forName("UTF-8")));
+			if (adp != null) {
+				Morpho.thisStaticInstance.getFileSystemDataStore().deleteDataFilesInIncompleteFolder(adp);
+			}
+			Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(docid);
+		} else {
+			AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, location);
+			if (adp != null) {
+				DataStoreServiceController.getInstance().delete(adp, location);
+				// notify listeners of the delete
+				DeleteEvent deleteEvent = new DeleteEvent(UIController.getInstance().getCurrentActiveWindow(), StateChangeEvent.DELETE_DATAPACKAGE);
+				deleteEvent.setId(docid);
+				deleteEvent.setLocation(location);
+				StateChangeMonitor.getInstance().notifyStateChange(deleteEvent);
+			}
+		}
+	}
 
   /**
    * Exports the package.

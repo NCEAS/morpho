@@ -33,7 +33,6 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.util.Util;
 
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -68,7 +67,6 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
@@ -654,7 +652,7 @@ public class MorphoFrame extends JFrame
            String docid = dataPackage.getAutoSavedD();
            UIController.getInstance().removeDocidFromIdleWizardRecorder(docid);
          }
-         Util.deleteAutoSavedFile(dataPackage);
+         Morpho.thisStaticInstance.getFileSystemDataStore().deleteAutoSavedFile(dataPackage);
         
         
       }

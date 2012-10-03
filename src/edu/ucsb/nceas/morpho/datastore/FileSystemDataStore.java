@@ -124,11 +124,6 @@ public class FileSystemDataStore extends DataStore
     return saveFile(name, file, getDataDir());
   }
   
-  public File saveTempFile(String name, Reader file)
-  {
-    return saveFile(name, file, getTempDir());
-  }
-  
   public File openTempFile(String name) throws FileNotFoundException
   {
     Log.debug(21, "opening "+name+" from temp dir - temp: " + getTempDir());
@@ -207,7 +202,7 @@ public class FileSystemDataStore extends DataStore
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  public File saveFile(String name, Reader file, String rootDir)
+  private File saveFile(String name, Reader file, String rootDir)
   {
 	BufferedWriter bwriter = null; 
 	BufferedReader bsr = null;
@@ -324,61 +319,55 @@ public class FileSystemDataStore extends DataStore
     * successfully deleted, false otherwise.
     * @param name the name of the file to delete
     */
-    public boolean deleteInCompleteFile(String name)
-    {
-      String path = parseId(name);
-      String filePath = getIncompleteDir() + "/" +path;
-      
-      File delfile = new File(filePath); //the path to the file
+    public boolean deleteInCompleteFile(String name) {
+		String path = parseId(name);
+		String filePath = getIncompleteDir() + "/" + path;
+		File delfile = new File(filePath); // the path to the file
+
+		boolean success = false;
+		try {
+			success = delfile.delete();
+		} catch (Exception e) {
+			//System.out.println("got an exception in deleting the local file");
+			e.printStackTrace();
+		}
+		Log.debug(30, "the success value for deleting incomplete file " + name + " is " + success);
+		return success;
+	}
     
-      boolean success = false;
-      
-      try
-      {
-     	
-     	 success = delfile.delete();
-     	 
-      }
-      catch(Exception e)
-      {
-     	 //System.out.println("got an exception in deleting the local file");
-     	 e.printStackTrace();
-      }
-      Log.debug(30, "the success value for deleting incomplete file "+name+" is "+success);
-      return success;
-    }
-   
-   /**
-    * Check if there is files in incomplete dir.
-    * @return true if there are incomplete files
-    */
-   public boolean hasIncompleteFile()
-   {
-	   boolean has = false;
-	   String filePath = getIncompleteDir();
-		 File incompleteDirectory = new File(filePath);
-		 File[] children = incompleteDirectory.listFiles();
-		 if (children != null && children.length > 0 )
-		 {
-		   for(int i=0; i<children.length; i++)
-		   {
-		     File childDir = new File(filePath+File.separator+children[i].getName());
-		     if(childDir != null && childDir.isDirectory())
-		     {
-		       File[] grandChildren = childDir.listFiles();
-	         if(grandChildren != null && grandChildren.length > 0)
-	         {
-	           has = true;
-	           break;
-	         }
-		     }	    
-		   }
-			   
-		 }
-	   
-	   //Log.debug(5, "The return is "+has);
-	   return has;
-   }
+	/**
+	 * Delete the auto-saved files for given abstract data package.
+	 * @param adp
+	 */
+	public void deleteAutoSavedFile(AbstractDataPackage adp) {
+		if (adp != null) {
+			// delete the incomplete file
+			String autoSavedID = adp.getAutoSavedD();
+			if (autoSavedID != null) {
+				deleteInCompleteFile(autoSavedID);
+				adp.setAutoSavedID(null);
+				// delete the data file too
+				deleteDataFilesInIncompleteFolder(adp);
+			}
+		}
+	}
+    
+	/**
+	 * Deletes all associated data files in incomplete dir
+	 */
+	public void deleteDataFilesInIncompleteFolder(AbstractDataPackage adp) {
+		if (adp.getEntityArray() != null) {
+			for (int i = 0; i < adp.getEntityArray().length; i++) {
+				String URLinfo = adp.getDistributionUrl(i, 0, 0);
+				String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
+				if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
+					String docid = AbstractDataPackage.getUrlInfo(URLinfo);
+					Log.debug(30, "handle data file  with index " + i + "" + docid);
+					Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(docid);
+				}
+			}
+		}
+	}
   
   /**
    * Test method
@@ -426,7 +415,7 @@ public class FileSystemDataStore extends DataStore
   *  in memory) This version uses an InputStream rather than a Reader to
   *  avoid problems with binary file corruption
   */
-  public File saveDataFile(String name, InputStream file, String rootDir)
+  private File saveDataFile(String name, InputStream file, String rootDir)
   {
     BufferedInputStream bfile = null;
     BufferedOutputStream bos = null;
