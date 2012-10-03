@@ -293,8 +293,8 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     FileOutputStream fos;
     Reader reader;
     
-    File localfile = new File(cachedir + "/" + path); //the path to the file
-    File localdir = new File(cachedir + "/" + dirs); //the dir part of the path
+    File localfile = new File(getCacheDir() + "/" + path); //the path to the file
+    File localdir = new File(getCacheDir() + "/" + dirs); //the dir part of the path
     
     if((localfile.exists())&&(localfile.length()>0))
     { //if the file is cached locally, read it from the hard drive
@@ -446,8 +446,8 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     FileOutputStream fos;
     Reader reader;
     
-    File localfile = new File(cachedir + "/" + path); //the path to the file
-    File localdir = new File(cachedir + "/" + dirs); //the dir part of the path
+    File localfile = new File(getCacheDir() + "/" + path); //the path to the file
+    File localdir = new File(getCacheDir() + "/" + dirs); //the dir part of the path
     
     if((localfile.exists())&&(localfile.length()>0))
     { //if the file is cached locally, read it from the hard drive
@@ -606,8 +606,8 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 	String status  = DataStoreInterface.NONEXIST;
     String path = parseId(name);
     String dirs = path.substring(0, path.lastIndexOf("/")); 
-    File localfile = new File(cachedir + "/" + path); //the path to the file
-    File localdir = new File(cachedir + "/" + dirs); //the dir part of the path
+    File localfile = new File(getCacheDir() + "/" + path); //the path to the file
+    File localdir = new File(getCacheDir() + "/" + dirs); //the dir part of the path
     
     if((localfile.exists())&&(localfile.length()>0))
     { //if the file is cached locally, read it from the hard drive
@@ -729,7 +729,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     {
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
-      File tempfile = new File(tempdir + "/metacat.noid");
+      File tempfile = new File(getTempDir() + "/metacat.noid");
       Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempfile), Charset.forName("UTF-8")));
       BufferedWriter bfw = new BufferedWriter(fw);
       int c = bfile.read();

@@ -50,11 +50,7 @@ public abstract class DataStore implements DataStoreInterface
 {
   protected Morpho morpho;
   private ConfigXML config;
-  protected String datadir;
   protected String separator;
-  protected String cachedir;
-  protected String tempdir;
-  protected String incompletedir;
   public final static String INCOMPLATEDIR = "incomplete";
   
   /**
@@ -63,25 +59,8 @@ public abstract class DataStore implements DataStoreInterface
   public DataStore(Morpho morpho)
   {
     this.morpho = morpho;
-    config = morpho.getConfiguration();
+    config = Morpho.getConfiguration();
     ConfigXML profile = morpho.getProfile();
-    String profileDirName = config.getConfigDirectory() + File.separator +
-                            config.get("profile_directory", 0) + 
-                            File.separator +
-                            profile.get("profilename", 0);
-    datadir = profileDirName + File.separator + profile.get("datadir", 0);
-    tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
-    cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
-    String incomplete = profile.get("incompletedir", 0);
-    //in case no incomplete dir in old version profile
-    if(incomplete == null || incomplete.trim().equals(""))
-    {
-    	incompletedir = profileDirName + File.separator + INCOMPLATEDIR;
-    }
-    else
-    {
-    	incompletedir = profileDirName + File.separator + incomplete;
-    }
     separator = profile.get("separator", 0);
     separator = separator.trim();
   }
@@ -90,24 +69,60 @@ public abstract class DataStore implements DataStoreInterface
    * Gets the temp directory
    * @return
    */
-  public String getTempDir()
-  {
-	  return tempdir;
-  }
+  protected String getTempDir() {
+		ConfigXML profile = morpho.getProfile();
+		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
+				+ config.get("profile_directory", 0) + File.separator
+				+ profile.get("profilename", 0);
+		String tempdir = profileDirName + File.separator
+				+ profile.get("tempdir", 0);
+
+		return tempdir;
+	}
   
   /**
    * Gets the data dir directory
    * @return
    */
-  public String getDataDir()
-  {
-	  return datadir;
-  }
+  protected String getDataDir() {
+		ConfigXML profile = morpho.getProfile();
+		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
+				+ config.get("profile_directory", 0) + File.separator
+				+ profile.get("profilename", 0);
+		String datadir = profileDirName + File.separator
+				+ profile.get("datadir", 0);
+		return datadir;
+	}
   
-  public void debug(int code, String message)
-  {
-    Log.debug(code, message);
-  }
+  protected String getCacheDir() {
+		ConfigXML profile = morpho.getProfile();
+		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
+				+ config.get("profile_directory", 0) + File.separator
+				+ profile.get("profilename", 0);
+		String cachedir = profileDirName + File.separator
+				+ profile.get("cachedir", 0);
+		return cachedir;
+	}
+  
+  protected String getIncompleteDir() {
+		String incompletedir = null;
+		ConfigXML profile = morpho.getProfile();
+		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
+				+ config.get("profile_directory", 0) + File.separator
+				+ profile.get("profilename", 0);
+		String incomplete = profile.get("incompletedir", 0);
+		// in case no incomplete dir in old version profile
+		if (incomplete == null || incomplete.trim().equals("")) {
+			incompletedir = profileDirName + File.separator + INCOMPLATEDIR;
+		} else {
+			incompletedir = profileDirName + File.separator + incomplete;
+		}
+		return incompletedir;
+	}
+
+	public void debug(int code, String message) {
+		Log.debug(code, message);
+	}
   
   /** 
    * Parses a dotted notation id into a file path.  johnson2343.13223 becomes

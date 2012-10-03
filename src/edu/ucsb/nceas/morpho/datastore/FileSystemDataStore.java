@@ -80,7 +80,7 @@ public class FileSystemDataStore extends DataStore
   public File openFile(String name) throws FileNotFoundException
   {
     String path = parseId(name);
-    path = datadir + "/" + path;
+    path = getDataDir() + "/" + path;
     File file = new File(path);
     if(!file.exists())
     {
@@ -109,7 +109,7 @@ public class FileSystemDataStore extends DataStore
   public File openIncompleteFile(String name) throws FileNotFoundException
   {
 	   String path = parseId(name);
-	    path = incompletedir + "/" + path;
+	    path = getIncompleteDir() + "/" + path;
 	    File file = new File(path);
 	    if(!file.exists())
 	    {
@@ -121,22 +121,22 @@ public class FileSystemDataStore extends DataStore
   
   public File saveFile(String name, Reader file)
   {
-    return saveFile(name, file, datadir);
+    return saveFile(name, file, getDataDir());
   }
   
   public File saveTempFile(String name, Reader file)
   {
-    return saveFile(name, file, tempdir);
+    return saveFile(name, file, getTempDir());
   }
   
   public File openTempFile(String name) throws FileNotFoundException
   {
-    Log.debug(21, "opening "+name+" from temp dir - temp: "+tempdir);
+    Log.debug(21, "opening "+name+" from temp dir - temp: " + getTempDir());
     String path = parseId(name);
-    File file = new File(tempdir+"/"+path);
+    File file = new File(getTempDir() + "/" + path);
     if(!file.exists())
     {
-      throw new FileNotFoundException("file " + tempdir + "/" + name + " does not exist");
+      throw new FileNotFoundException("file " + getTempDir() + "/" + name + " does not exist");
     }
     
     return file;
@@ -144,12 +144,12 @@ public class FileSystemDataStore extends DataStore
 
   public File saveDataFile(String name, InputStream file)
   {
-    return saveDataFile(name, file, datadir);
+    return saveDataFile(name, file, getDataDir());
   }
   
   public File saveTempDataFile(String name, InputStream file)
   {
-    return saveDataFile(name, file, tempdir);
+    return saveDataFile(name, file, getTempDir());
   }
   
   /**
@@ -161,7 +161,7 @@ public class FileSystemDataStore extends DataStore
 		  
   public File saveIncompleteDataFile(String name, InputStream file)
   {
-    return saveDataFile(name, file, incompletedir);
+    return saveDataFile(name, file, getIncompleteDir());
   }
   
   /**
@@ -172,7 +172,7 @@ public class FileSystemDataStore extends DataStore
    */
   public File saveIncompleteFile(String name, Reader file)
   {
-    return saveFile(name, file, incompletedir);
+    return saveFile(name, file, getIncompleteDir());
   }
  
   
@@ -185,8 +185,7 @@ public class FileSystemDataStore extends DataStore
   {
 	  String status = DataStoreInterface.NONEXIST;
 	  String path = parseId(docid);
-      String dirs = path.substring(0, path.lastIndexOf("/"));
-      File savefile = new File(datadir + "/" + path); //the path to the file
+      File savefile = new File(getDataDir() + "/" + path); //the path to the file
       if(savefile.exists())
       {
         status = DataStoreInterface.CONFLICT;
@@ -271,12 +270,12 @@ public class FileSystemDataStore extends DataStore
    */
   public File newFile(String name, Reader file)
   {
-    return saveFile(name, file, datadir);
+    return saveFile(name, file, getDataDir());
   }
   
   
   public File newDataFile(String name, InputStream is) {
-    return saveDataFile(name, is, datadir);
+    return saveDataFile(name, is, getDataDir());
   }
   
   /**
@@ -287,7 +286,7 @@ public class FileSystemDataStore extends DataStore
    public boolean deleteFile(String name)
    {
      String path = parseId(name);
-     String filePath = datadir + "/" +path;
+     String filePath = getDataDir() + "/" +path;
      //System.out.println("the deleted file path will be !"+filePath+"!");
      File delfile = new File(filePath); //the path to the file
      //System.out.println("the file exists "+delfile.exists());
@@ -328,7 +327,7 @@ public class FileSystemDataStore extends DataStore
     public boolean deleteInCompleteFile(String name)
     {
       String path = parseId(name);
-      String filePath = incompletedir + "/" +path;
+      String filePath = getIncompleteDir() + "/" +path;
       
       File delfile = new File(filePath); //the path to the file
     
@@ -356,7 +355,7 @@ public class FileSystemDataStore extends DataStore
    public boolean hasIncompleteFile()
    {
 	   boolean has = false;
-	   String filePath = incompletedir;
+	   String filePath = getIncompleteDir();
 		 File incompleteDirectory = new File(filePath);
 		 File[] children = incompleteDirectory.listFiles();
 		 if (children != null && children.length > 0 )
