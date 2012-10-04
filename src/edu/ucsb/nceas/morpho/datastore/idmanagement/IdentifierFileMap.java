@@ -104,14 +104,14 @@ public class IdentifierFileMap {
    * @param file the file associated the identifier
    */
   public synchronized void setMap(String identifier, File file) throws FileNotFoundException, 
-  IOException, UnsupportedCharsetException, IllegalCharsetNameException, Exception{
+  IOException, UnsupportedCharsetException, IllegalCharsetNameException, NullPointerException{
     if( identifier != null && file != null ) {
       mappingProperties.setProperty(identifier, file.getAbsolutePath());
       mappingProperties.store(new OutputStreamWriter(new FileOutputStream(mappingPropertyFile), Charset.forName(UTF8)), "");
     } else if (identifier == null) {
-      throw new Exception("Can't set the identifier null associated with a file name");
+      throw new NullPointerException("Can't map the identifier having the null value with a file name");
     } else if (file == null) {
-      throw new Exception("Can't set file null assoicated with an identifier "+identifier);
+      throw new NullPointerException("Can't map the file having the null value with an identifier "+identifier);
     }
     
   }
