@@ -29,16 +29,8 @@ package edu.ucsb.nceas.morpho.datastore;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
-import java.util.Hashtable;
-
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.PackageUtil;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -149,78 +141,7 @@ public abstract class DataStoreService implements DataStoreInterface
     debug(11, "docid in parseIdFromMessage: " + docid);
     return docid;
   }
-  
-  /**
-   * inserts a documents id into a specified path in the document.  the document
-   * is returned as a string
-   * @param file the file to insert the id into
-   * @param id the id to insert into the file.
-   */
-  protected String insertIdInFile(File file, String id)
-  {
-    String catalogPath = //config.getConfigDirectory() + File.separator +
-                                     config.get("local_catalog_path", 0);
-    Document doc;
-    try
-    {
-      doc = PackageUtil.getDoc(file, catalogPath);
-    }
-    catch(Exception e)
-    {
-      debug(20, "Error getting a DOM rep. of file.  This is probably a data " +
-            "file: " + 
-            file.getPath() + " : " +
-            e.getMessage());
-      return null;
-    }
-    DocumentType dt = doc.getDoctype();
-    String doctype = dt.getPublicId();
-    Hashtable docatts = PackageUtil.getConfigFileTypeAttributes(morpho, 
-                                                                "xmlfiletype");
-    Hashtable h = (Hashtable)docatts.get(doctype);
-    
-    if (h==null) return null;
-    if (h.get("idpath")==null) return null;
-    
-    String idpath = (String)h.get("idpath");
-    
-    NodeList idNL;
-    try
-    {
-      idNL = XPathAPI.selectNodeList(doc, idpath);
-    }
-    catch(Exception ee)
-    {
-      debug(0, "Error XPath searching file: " + file.getPath() + " : " +
-            ee.getMessage());
-      return null;
-    }
-    
-    String idNodeName = idpath.substring(idpath.lastIndexOf("/") + 1, 
-                                         idpath.length()).trim();
-    debug(19, "idNodeName: " + idNodeName);
-    if(idNL.getLength() != 0)
-    { //the path exists, change the value
-      for(int i=0; i<idNL.getLength(); i++)
-      {
-        Node n = idNL.item(i);
-        String nname = n.getNodeName();
-        if(nname.equals(idNodeName))
-        {
-          if (n.getFirstChild()!=null) {
-            n.getFirstChild().setNodeValue(id);
-          }
-          else {            // add a text node to idNodeName
-            Node txtnode =  doc.createTextNode(id);
-            n.appendChild(txtnode);
-          }
-        }
-      }
-    }
-    
-    return PackageUtil.printDoctype(doc) + 
-           PackageUtil.print(doc.getDocumentElement());
-  }
+
   
   abstract public File openFile(String name) throws FileNotFoundException, 
                                                     CacheAccessException;
