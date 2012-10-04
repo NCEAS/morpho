@@ -652,7 +652,7 @@ public class MorphoFrame extends JFrame
            String docid = dataPackage.getAutoSavedD();
            UIController.getInstance().removeDocidFromIdleWizardRecorder(docid);
          }
-         Morpho.thisStaticInstance.getFileSystemDataStore().deleteAutoSavedFile(dataPackage);
+         Morpho.thisStaticInstance.getLocalDataStoreService().deleteAutoSavedFile(dataPackage);
         
         
       }

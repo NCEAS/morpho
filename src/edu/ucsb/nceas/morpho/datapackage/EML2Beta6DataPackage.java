@@ -251,7 +251,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       {
         //try to open the file locally, if it isn't here then try to get
         //it from metacat
-        subfile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(id.trim());
+        subfile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(id.trim());
       }
       catch(FileNotFoundException fnfe)
       {

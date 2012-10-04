@@ -106,7 +106,7 @@ public class DataPackageFactory
       InputSource source = null;
      try 
      {
-        File file = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(docid);
+        File file = Morpho.thisStaticInstance.getLocalDataStoreService().openIncompleteFile(docid);
         in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
         source = new InputSource(in);
       }

@@ -1222,7 +1222,7 @@ public class DataLocation extends AbstractUIPage {
     	nextAvailableID = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
     }
     try {
-    	Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(nextAvailableID, new FileInputStream(f));
+    	Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(nextAvailableID, new FileInputStream(f));
     } catch (Exception w) {
       Log.debug(1, "error in TIW saving temp data file!");
     }

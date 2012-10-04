@@ -936,12 +936,12 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
         // is Base64
         byte[] decodedData = Base64.decode(inline);
         ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-        entityFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(adp.getAccessionNumber(), bais);
+        entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(adp.getAccessionNumber(), bais);
       }
       else {
         // is assumed to be text
         InputStream inlineStream = new ByteArrayInputStream(inline.getBytes(Charset.forName("UTF-8")));
-        entityFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(adp.getAccessionNumber(), inlineStream);
+        entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(adp.getAccessionNumber(), inlineStream);
       }
     } else if (adp.getDistributionUrl(entityIndex, 0,0).length()>0) {
 
@@ -963,7 +963,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
       try{
         String loc = adp.getLocation();
         if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
-          entityFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(urlinfo);
+          entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
         }
         else if (loc.equals(DataPackageInterface.METACAT)) {
           entityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(urlinfo);
@@ -971,7 +971,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
         else if (loc.equals("")) {  // just created the package; not yet saved!!!
           try
           {
-            entityFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllSources(urlinfo);
+            entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllSources(urlinfo);
           }
           catch(Exception eee)
           {

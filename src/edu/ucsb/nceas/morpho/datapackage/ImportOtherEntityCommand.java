@@ -184,7 +184,7 @@ public class ImportOtherEntityCommand implements Command {
 	    	currentId = AccessionNumber.getInstance().incRev(currentId);
 	    }
 	    try {
-	    	Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(currentId, new FileInputStream(f));
+	    	Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(currentId, new FileInputStream(f));
 	    } catch (Exception w) {
 	      Log.debug(1, "Error saving replacement data file!");
 	    }

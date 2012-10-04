@@ -839,12 +839,12 @@ public void setTopPanel(JPanel jp) {
 
             byte[] decodedData = Base64.decode(inline);
             ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-            displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(adp.getAccessionNumber(), bais);
+            displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(adp.getAccessionNumber(), bais);
           }
           else {
             // is assumed to be text
             InputStream inlineStream = new ByteArrayInputStream(inline.getBytes(Charset.forName("UTF-8")));
-            displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveTempDataFile(adp.getAccessionNumber(), inlineStream);
+            displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(adp.getAccessionNumber(), inlineStream);
           }
         } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
           // this is the case where there is a url link to the data
@@ -870,7 +870,7 @@ public void setTopPanel(JPanel jp) {
             try{
               String loc = adp.getLocation();
               if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
-                displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(urlinfo);
+                displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
               }
               else if (loc.equals(DataPackageInterface.METACAT)) {
                 displayFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(urlinfo);
@@ -878,7 +878,7 @@ public void setTopPanel(JPanel jp) {
               else if (loc.equals("")) {
                 //Log.debug(5, "here");
                // just created the package; not yet saved!!!
-                displayFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllSources(urlinfo);
+                displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllSources(urlinfo);
                 
               }
             }

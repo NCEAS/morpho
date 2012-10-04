@@ -69,7 +69,7 @@ import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -178,7 +178,7 @@ public class Morpho
     public static Morpho thisStaticInstance;
     
     // for interacting with the local store service
-    private FileSystemDataStore fds = null;
+    private LocalDataStoreService lds = null;
     
     // for interacting with the Metacat services
     private MetacatDataStore mds = null;
@@ -215,16 +215,16 @@ public class Morpho
     }
     
     /**
-     * Get a reference to the FileSystemDataStore
-     * TODO: remove for plugable DataStoreService.
+     * Get a reference to the LocalDataStoreService
+     * TODO: remove for support on a per-profile basis
      * @return
      */
-    public FileSystemDataStore getFileSystemDataStore() {
-    	return fds;
+    public LocalDataStoreService getLocalDataStoreService() {
+    	return lds;
     }
     
-    public void setFileSystemDataStore(FileSystemDataStore fds) {
-    	this.fds = fds;
+    public void setLocalDataStoreService(LocalDataStoreService lds) {
+    	this.lds = lds;
     }
     
     /**
@@ -709,7 +709,7 @@ public class Morpho
             morpho.loadProfile(morpho);
             
             // create the local data store
-            morpho.setFileSystemDataStore(new FileSystemDataStore(morpho));
+            morpho.setLocalDataStoreService(new LocalDataStoreService(morpho));
             
             // create the remote data store
             morpho.setMetacatDataStore(new MetacatDataStore(morpho));

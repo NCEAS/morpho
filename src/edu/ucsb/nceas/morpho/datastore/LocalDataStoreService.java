@@ -50,7 +50,7 @@ import edu.ucsb.nceas.morpho.util.Log;
  * implements and the DataStoreInterface for accessing files on the local
  * file system.
  */
-public class FileSystemDataStore extends DataStore
+public class LocalDataStoreService extends DataStore
                                  implements DataStoreInterface
 {
 	
@@ -59,7 +59,7 @@ public class FileSystemDataStore extends DataStore
   /**
    * create a new FileSystemDataStore for a Morpho
    */
-  public FileSystemDataStore(Morpho morpho)
+  public LocalDataStoreService(Morpho morpho)
   {
     super(morpho);
   }
@@ -363,7 +363,7 @@ public class FileSystemDataStore extends DataStore
 				if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
 					String docid = AbstractDataPackage.getUrlInfo(URLinfo);
 					Log.debug(30, "handle data file  with index " + i + "" + docid);
-					Morpho.thisStaticInstance.getFileSystemDataStore().deleteInCompleteFile(docid);
+					Morpho.thisStaticInstance.getLocalDataStoreService().deleteInCompleteFile(docid);
 				}
 			}
 		}
@@ -382,7 +382,7 @@ public class FileSystemDataStore extends DataStore
       try
       {
         Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
-        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+        LocalDataStoreService fsds = new LocalDataStoreService(morpho);
         File newfile = fsds.openFile(filename);
         fsds.saveFile(filename2, new InputStreamReader(new FileInputStream(newfile), Charset.forName("UTF-8")));
       }
@@ -396,7 +396,7 @@ public class FileSystemDataStore extends DataStore
       try
       {
         Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
-        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+        LocalDataStoreService fsds = new LocalDataStoreService(morpho);
         File newfile = new File(filename);
         fsds.saveFile(filename2, new InputStreamReader(new FileInputStream(newfile), Charset.forName("UTF-8")));
       }
@@ -922,7 +922,7 @@ public class FileSystemDataStore extends DataStore
 					String identifier = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
 					try {
 						InputStream dfis = new FileInputStream(localFile);
-						Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(identifier, dfis);
+						Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(identifier, dfis);
 						// now we can modify the online url in metadata.
 						String url = AbstractDataPackage.ECOGRID + "://knb/" + identifier;
 						adp.setDistributionUrl(i, 0, 0, url);

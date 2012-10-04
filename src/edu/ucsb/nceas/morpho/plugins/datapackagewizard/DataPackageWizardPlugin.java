@@ -117,7 +117,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
       getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML211_DOCUMENT_TEXT));
     if(tempDataPackage == null) return;
-    String tempID = Morpho.thisStaticInstance.getFileSystemDataStore().getNextTempID();
+    String tempID = Morpho.thisStaticInstance.getLocalDataStoreService().getNextTempID();
     tempDataPackage.setAccessionNumber(tempID);
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
     int entityIndex = -1;

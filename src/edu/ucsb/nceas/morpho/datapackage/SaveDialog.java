@@ -41,7 +41,7 @@ import javax.swing.JPanel;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -296,7 +296,7 @@ public class SaveDialog extends JDialog {
 			}
 
 			try {
-				if (id.indexOf(FileSystemDataStore.TEMP) > -1) {
+				if (id.indexOf(LocalDataStoreService.TEMP) > -1) {
 					String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.BOTH);
 					adp.setAccessionNumber(nextid);
 				} else {
@@ -379,7 +379,7 @@ public class SaveDialog extends JDialog {
 		if (!problem) {
 			UIController.getInstance().removeDocidFromIdleWizardRecorder(adp.getAutoSavedD());
 			// delete the incomplete file
-			Morpho.thisStaticInstance.getFileSystemDataStore().deleteAutoSavedFile(adp);
+			Morpho.thisStaticInstance.getLocalDataStoreService().deleteAutoSavedFile(adp);
 			
 			// alert listeners
 			saveEvent.setFinalId(adp.getAccessionNumber());

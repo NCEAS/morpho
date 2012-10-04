@@ -1405,7 +1405,7 @@ public class WizardContainerFrame
   private void autoSavingPackageInCompleteDir(String docid, String xml)
   {
 	  StringReader reader = new StringReader(xml);
-	  Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteFile(docid, reader);
+	  Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteFile(docid, reader);
   }
   
   /*
@@ -2083,7 +2083,7 @@ public class WizardContainerFrame
     {
     	//FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
     	//store.deleteInCompleteFile(autoSaveID);
-    	Morpho.thisStaticInstance.getFileSystemDataStore().deleteAutoSavedFile(adp);
+    	Morpho.thisStaticInstance.getLocalDataStoreService().deleteAutoSavedFile(adp);
     }
     else if(autoSaveID != null)
     {

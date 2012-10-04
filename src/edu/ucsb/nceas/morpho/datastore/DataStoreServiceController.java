@@ -75,13 +75,13 @@ public class DataStoreServiceController {
 	{
 		int version = AbstractDataPackage.ORIGINAL_REVISION;
 		if (location.equals(DataPackageInterface.LOCAL)) {
-			version = Morpho.thisStaticInstance.getFileSystemDataStore().getNextRevisionNumber(docid);
+			version = Morpho.thisStaticInstance.getLocalDataStoreService().getNextRevisionNumber(docid);
 		}
 		if (location.equals(DataPackageInterface.METACAT)) {
 			version = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumber(docid);
 		}
 		if (location.equals(DataPackageInterface.BOTH)) {
-			int localNextRevision = Morpho.thisStaticInstance.getFileSystemDataStore().getNextRevisionNumber(docid);
+			int localNextRevision = Morpho.thisStaticInstance.getLocalDataStoreService().getNextRevisionNumber(docid);
 			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumber(docid);
 			version = Math.max(localNextRevision, metacatNextRevision);
 		}
@@ -102,7 +102,7 @@ public class DataStoreServiceController {
 		Reader in = null;
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
 			try {
-				File file = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
+				File file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(docid);
 				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 			} catch (Exception w) {
 				Log.debug(20, "Problem opening file!");
@@ -127,7 +127,7 @@ public class DataStoreServiceController {
 	 */
 	public synchronized String generateIdentifier(String location) {
 		if (location.equals(DataPackageInterface.LOCAL)) {
-			return Morpho.thisStaticInstance.getFileSystemDataStore().generateIdentifier();
+			return Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier();
 		}
 		if (location.equals(DataPackageInterface.METACAT)) {
 			return Morpho.thisStaticInstance.getMetacatDataStore().generateIdentifier();
@@ -156,7 +156,7 @@ public class DataStoreServiceController {
 			localLoc = true;
 		}
 		if (localLoc) {
-			boolean localSuccess = Morpho.thisStaticInstance.getFileSystemDataStore().deleteFile(accnum);
+			boolean localSuccess = Morpho.thisStaticInstance.getLocalDataStoreService().deleteFile(accnum);
 			if (!localSuccess) {
 				throw new Exception("User couldn't delete the local copy");
 			}
@@ -238,7 +238,7 @@ public class DataStoreServiceController {
 		File openfile = null;
 		try {
 			if (localloc) { // get the file locally and save it
-				openfile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(id);
+				openfile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(id);
 			} else if (metacatloc) { // get the file from metacat
 				openfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id);
 			}
@@ -541,7 +541,7 @@ public class DataStoreServiceController {
 				if ((location.equals(DataPackageInterface.LOCAL))
 						|| (location.equals(DataPackageInterface.BOTH))) {
 					dataFile = Morpho.thisStaticInstance
-							.getFileSystemDataStore().openFile(urlinfo);
+							.getLocalDataStoreService().openFile(urlinfo);
 				} else if (location.equals(DataPackageInterface.METACAT)) {
 					dataFile = Morpho.thisStaticInstance.getMetacatDataStore()
 							.openFile(urlinfo);
@@ -564,7 +564,7 @@ public class DataStoreServiceController {
 				try {
 					// dataFile = fds.openTempFile(temp);
 					dataFile = Morpho.thisStaticInstance
-							.getFileSystemDataStore().openTempFile(urlinfo);
+							.getLocalDataStoreService().openTempFile(urlinfo);
 				} catch (Exception ex) {
 					Log
 							.debug(5,
@@ -664,7 +664,7 @@ public class DataStoreServiceController {
 							existInMetacat = true;
 						}
 					} else if ((dataDestination.equals(DataPackageInterface.LOCAL))) {
-						statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
+						statusInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().status(docid);
 						Log.debug(30, "docid " + docid + " status in local is "
 								+ statusInLocal);
 						if (statusInLocal != null
@@ -676,7 +676,7 @@ public class DataStoreServiceController {
 						statusInMetacat = Morpho.thisStaticInstance
 								.getMetacatDataStore().status(docid);
 						statusInLocal = Morpho.thisStaticInstance
-								.getFileSystemDataStore().status(docid);
+								.getLocalDataStoreService().status(docid);
 						Log.debug(30, "docid " + docid + " status in local is "
 								+ statusInLocal + " and status in metacat is"
 								+ statusInMetacat);
@@ -793,23 +793,23 @@ public class DataStoreServiceController {
 		
 		try {
 			// dataFile = fds.openTempFile(temp);
-			dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openTempFile(oldDocid);
+			dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openTempFile(oldDocid);
 			// open old file name (if no file change, the old file name will be as same as docid).
 			InputStream dfis = new FileInputStream(dataFile);
 			// Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-			Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
+			Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(docid, dfis);
 			// the temp file has been saved; thus delete
 			dfis.close();
 			// dataFile.delete();
 		} catch (Exception qq) {
 			// try to open incomplete file
 			try {
-				dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openIncompleteFile(oldDocid);
+				dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openIncompleteFile(oldDocid);
 				// open old file name (if no file change, the old file name will
 				// be as same as docid).
 				InputStream dfis = new FileInputStream(dataFile);
 				// Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-				Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
+				Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(docid, dfis);
 				// the temp file has been saved; thus delete
 				dfis.close();
 			} catch (Exception e) {
@@ -819,7 +819,7 @@ public class DataStoreServiceController {
 					// will be as same as docid).
 					dataFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(oldDocid);
 					InputStream dfis = new FileInputStream(dataFile);
-					Morpho.thisStaticInstance.getFileSystemDataStore().saveDataFile(docid, dfis);
+					Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(docid, dfis);
 					dfis.close();
 				} catch (Exception qqq) {
 					// some other problem has occured
@@ -859,7 +859,7 @@ public class DataStoreServiceController {
 			oldDocid = docid;
 		}
 		try {
-			dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().getDataFileFromAllLocalSources(docid);
+			dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(docid);
 		} catch (Exception eee) {
 			Log.debug(5,"Couldn't find "
 						+ oldDocid
@@ -949,22 +949,22 @@ public class DataStoreServiceController {
 		File dataFile = null;
 
 		try {
-			dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(docid);
+			dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(docid);
 			Log.debug(30, "Docid " + docid
 							+ " exist in data dir in AbstractDataPackage.handleIncompleteDir");
 			return;
 		} catch (Exception m) {
 			try {
-				dataFile = Morpho.thisStaticInstance.getFileSystemDataStore().openTempFile(docid);
+				dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openTempFile(docid);
 				InputStream dfis = new FileInputStream(dataFile);
-				Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteDataFile(docid, dfis);
+				Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteDataFile(docid, dfis);
 				dfis.close();
 			} catch (Exception qq) {
 				// if a datafile is on metacat and user wants to save locally
 				try {
 					// open old file name (if no file change, the old file name will be as same as docid).
 					InputStream dfis = new FileInputStream(dataFile);
-					Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteDataFile(docid, dfis);
+					Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteDataFile(docid, dfis);
 					dfis.close();
 				} catch (Exception qqq) {
 					// some other problem has occured
@@ -1039,7 +1039,7 @@ public class DataStoreServiceController {
 				// this.setIdentifierChangedInMetacatSerialization(true);
 			}
 		} else if ((location.equals(DataPackageInterface.LOCAL))) {
-			statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(adp.getAccessionNumber());
+			statusInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().status(adp.getAccessionNumber());
 			// existFlag = existInLocal;
 			if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.LOCAL;
@@ -1047,7 +1047,7 @@ public class DataStoreServiceController {
 			}
 		} else if (location.equals(DataPackageInterface.BOTH)) {
 			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(adp.getAccessionNumber());
-			statusInLocal = Morpho.thisStaticInstance.getFileSystemDataStore().status(adp.getAccessionNumber());
+			statusInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().status(adp.getAccessionNumber());
 			// if (existFlag)
 			// {
 			if (statusInMetacat != null && statusInLocal != null
@@ -1157,7 +1157,7 @@ public class DataStoreServiceController {
 			// Log.debug(10,
 			// "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
 			// fsds.saveFile("100.0",sr);
-			File newFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveFile(adp.getAccessionNumber(), sr);
+			File newFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveFile(adp.getAccessionNumber(), sr);
 			if (newFile != null) {
 				adp.setSerializeLocalSuccess(true);
 			} else {
@@ -1167,7 +1167,7 @@ public class DataStoreServiceController {
 		} else if (location.equals(DataPackageInterface.INCOMPLETE)) {
 			String id = adp.getAccessionNumber();
 			Log.debug(30, "Serialize metadata into incomplete dir with docid " + id);
-			File newFile = Morpho.thisStaticInstance.getFileSystemDataStore().saveIncompleteFile(id, sr);
+			File newFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteFile(id, sr);
 			if (newFile != null) {
 				adp.setSerializeLocalSuccess(true);
 			} else {
@@ -1187,7 +1187,7 @@ public class DataStoreServiceController {
 		
 		String status = DataStoreInterface.NONEXIST;
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
-			status = Morpho.thisStaticInstance.getFileSystemDataStore().status(docid);
+			status = Morpho.thisStaticInstance.getLocalDataStoreService().status(docid);
 		} else {
 			status = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
 		}

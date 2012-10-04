@@ -126,7 +126,7 @@ public class ConvertDataCommand implements Command, DataPackageWizardListener
 				if (adp.getLocation().equals(DataPackageInterface.METACAT)) {
 					otherEntityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(otherEntityDocid);
 				} else {
-					otherEntityFile = Morpho.thisStaticInstance.getFileSystemDataStore().openFile(otherEntityDocid);
+					otherEntityFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(otherEntityDocid);
 				}
 			} catch (Exception e) {
 				Log.debug(5, "Cannot locate otherEntity data file: " + otherEntityURL);
