@@ -873,7 +873,7 @@ public void setTopPanel(JPanel jp) {
                 displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
               }
               else if (loc.equals(DataPackageInterface.METACAT)) {
-                displayFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(urlinfo);
+                displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(urlinfo);
               }
               else if (loc.equals("")) {
                 //Log.debug(5, "here");

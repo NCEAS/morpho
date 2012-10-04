@@ -966,7 +966,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
           entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
         }
         else if (loc.equals(DataPackageInterface.METACAT)) {
-          entityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(urlinfo);
+          entityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
         }
         else if (loc.equals("")) {  // just created the package; not yet saved!!!
           try

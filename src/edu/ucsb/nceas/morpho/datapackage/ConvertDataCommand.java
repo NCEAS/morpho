@@ -124,7 +124,7 @@ public class ConvertDataCommand implements Command, DataPackageWizardListener
 			try {
 				// get from metacat only if we have to
 				if (adp.getLocation().equals(DataPackageInterface.METACAT)) {
-					otherEntityFile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(otherEntityDocid);
+					otherEntityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(otherEntityDocid);
 				} else {
 					otherEntityFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(otherEntityDocid);
 				}

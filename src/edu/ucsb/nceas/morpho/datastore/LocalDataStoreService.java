@@ -632,7 +632,7 @@ public class LocalDataStoreService extends DataStore
       {
         try
         {
-          file = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
+          file = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(docid);
         }
         catch(Exception ee)
         {
@@ -712,7 +712,7 @@ public class LocalDataStoreService extends DataStore
       {
         try
         {
-          file = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(docid);
+          file = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(docid);
         }
         catch(Exception ee)
         {

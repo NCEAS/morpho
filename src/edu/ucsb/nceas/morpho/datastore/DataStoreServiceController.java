@@ -78,11 +78,11 @@ public class DataStoreServiceController {
 			version = Morpho.thisStaticInstance.getLocalDataStoreService().getNextRevisionNumber(docid);
 		}
 		if (location.equals(DataPackageInterface.METACAT)) {
-			version = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumber(docid);
+			version = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextRevisionNumber(docid);
 		}
 		if (location.equals(DataPackageInterface.BOTH)) {
 			int localNextRevision = Morpho.thisStaticInstance.getLocalDataStoreService().getNextRevisionNumber(docid);
-			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStore().getNextRevisionNumber(docid);
+			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextRevisionNumber(docid);
 			version = Math.max(localNextRevision, metacatNextRevision);
 		}
 		
@@ -110,7 +110,7 @@ public class DataStoreServiceController {
 		} else { 
 			// must be on metacat only
 			try {
-				File file = Morpho.thisStaticInstance.getMetacatDataStore().openFile(docid);
+				File file = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(docid);
 				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 			} catch (Exception e) {
 				Log.debug(20, "Problem opening file from Metacat!");
@@ -130,7 +130,7 @@ public class DataStoreServiceController {
 			return Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier();
 		}
 		if (location.equals(DataPackageInterface.METACAT)) {
-			return Morpho.thisStaticInstance.getMetacatDataStore().generateIdentifier();
+			return Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier();
 		}
 		return null;
 	}
@@ -163,7 +163,7 @@ public class DataStoreServiceController {
 			LocalQuery.removeFromCache(accnum);
 		}
 		if (metacatLoc) {
-			boolean success = Morpho.thisStaticInstance.getMetacatDataStore().deleteFile(accnum);
+			boolean success = Morpho.thisStaticInstance.getMetacatDataStoreService().deleteFile(accnum);
 			if (!success) {
 				throw new Exception("User couldn't delete the network copy");
 			}
@@ -240,7 +240,7 @@ public class DataStoreServiceController {
 			if (localloc) { // get the file locally and save it
 				openfile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(id);
 			} else if (metacatloc) { // get the file from metacat
-				openfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id);
+				openfile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(id);
 			}
 			FileInputStream fis = new FileInputStream(openfile);
 			BufferedInputStream bfis = new BufferedInputStream(fis);
@@ -543,7 +543,7 @@ public class DataStoreServiceController {
 					dataFile = Morpho.thisStaticInstance
 							.getLocalDataStoreService().openFile(urlinfo);
 				} else if (location.equals(DataPackageInterface.METACAT)) {
-					dataFile = Morpho.thisStaticInstance.getMetacatDataStore()
+					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService()
 							.openFile(urlinfo);
 				}
 			} catch (FileNotFoundException fnf) {
@@ -655,7 +655,7 @@ public class DataStoreServiceController {
 					String conflictLocation = null;
 					// Check to see if id conflict or not
 					if ((dataDestination.equals(DataPackageInterface.METACAT))) {
-						statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
+						statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStoreService().status(docid);
 						Log.debug(30, "docid " + docid
 								+ " status in metacat is " + statusInMetacat);
 						if (statusInMetacat != null
@@ -674,7 +674,7 @@ public class DataStoreServiceController {
 						}
 					} else if (dataDestination.equals(DataPackageInterface.BOTH)) {
 						statusInMetacat = Morpho.thisStaticInstance
-								.getMetacatDataStore().status(docid);
+								.getMetacatDataStoreService().status(docid);
 						statusInLocal = Morpho.thisStaticInstance
 								.getLocalDataStoreService().status(docid);
 						Log.debug(30, "docid " + docid + " status in local is "
@@ -817,7 +817,7 @@ public class DataStoreServiceController {
 				try {
 					// open old file name (if no file change, the old file name
 					// will be as same as docid).
-					dataFile = Morpho.thisStaticInstance.getMetacatDataStore().openDataFile(oldDocid);
+					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(oldDocid);
 					InputStream dfis = new FileInputStream(dataFile);
 					Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(docid, dfis);
 					dfis.close();
@@ -868,7 +868,7 @@ public class DataStoreServiceController {
 		}
 
 		try {
-			Morpho.thisStaticInstance.getMetacatDataStore().newDataFile(docid, dataFile, objectName);
+			Morpho.thisStaticInstance.getMetacatDataStoreService().newDataFile(docid, dataFile, objectName);
 		} catch (Exception e) {
 			// Gets some error from metacat
 			Log.debug(5, "Some problem with saving data files has occurred! "
@@ -1033,7 +1033,7 @@ public class DataStoreServiceController {
 		}
 		// Check to see if id confilct or not
 		if ((location.equals(DataPackageInterface.METACAT))) {
-			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(adp.getAccessionNumber());
+			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStoreService().status(adp.getAccessionNumber());
 			if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.METACAT;
 				// this.setIdentifierChangedInMetacatSerialization(true);
@@ -1046,7 +1046,7 @@ public class DataStoreServiceController {
 				// this.setIdentifierChangedInLocalSerialization(true);
 			}
 		} else if (location.equals(DataPackageInterface.BOTH)) {
-			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStore().status(adp.getAccessionNumber());
+			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStoreService().status(adp.getAccessionNumber());
 			statusInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().status(adp.getAccessionNumber());
 			// if (existFlag)
 			// {
@@ -1121,7 +1121,7 @@ public class DataStoreServiceController {
 				|| (location.equals(DataPackageInterface.BOTH))) {
 			if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.UPDATE)) {
 				try {
-					Morpho.thisStaticInstance.getMetacatDataStore().saveFile(adp.getAccessionNumber(), sr1);
+					Morpho.thisStaticInstance.getMetacatDataStoreService().saveFile(adp.getAccessionNumber(), sr1);
 					adp.setSerializeMetacatSuccess(true);
 				} catch (Exception e) {
 					adp.setSerializeMetacatSuccess(false);
@@ -1134,7 +1134,7 @@ public class DataStoreServiceController {
 				}
 			} else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.NONEXIST)) {
 				try {
-					Morpho.thisStaticInstance.getMetacatDataStore().newFile(adp.getAccessionNumber(), sr1);
+					Morpho.thisStaticInstance.getMetacatDataStoreService().newFile(adp.getAccessionNumber(), sr1);
 					adp.setSerializeMetacatSuccess(true);
 					// setAccessionNumber(temp_an);
 				} catch (Exception e) {
@@ -1189,7 +1189,7 @@ public class DataStoreServiceController {
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
 			status = Morpho.thisStaticInstance.getLocalDataStoreService().status(docid);
 		} else {
-			status = Morpho.thisStaticInstance.getMetacatDataStore().status(docid);
+			status = Morpho.thisStaticInstance.getMetacatDataStoreService().status(docid);
 		}
 		return !status.equals(DataStoreInterface.NONEXIST);
 		

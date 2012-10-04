@@ -257,7 +257,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       {
         try
         {
-          subfile = Morpho.thisStaticInstance.getMetacatDataStore().openFile(id.trim());
+          subfile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(id.trim());
         }
         catch(FileNotFoundException fnfe2)
         {

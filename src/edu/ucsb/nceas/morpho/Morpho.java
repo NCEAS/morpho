@@ -68,14 +68,12 @@ import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStoreService;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -181,7 +179,7 @@ public class Morpho
     private LocalDataStoreService lds = null;
     
     // for interacting with the Metacat services
-    private MetacatDataStore mds = null;
+    private MetacatDataStoreService mds = null;
 
 
     /**
@@ -202,15 +200,14 @@ public class Morpho
     }
 
     /**
-     * Get a reference to the MetacatDataStore
-     * TODO: remove for plugable DataStoreService.
+     * Get a reference to the MetacatDataStoreService
      * @return
      */
-    public MetacatDataStore getMetacatDataStore() {
+    public MetacatDataStoreService getMetacatDataStoreService() {
     	return mds;
     }
     
-    public void setMetacatDataStore(MetacatDataStore mds) {
+    public void setMetacatDataStoreService(MetacatDataStoreService mds) {
     	this.mds = mds;
     }
     
@@ -712,7 +709,7 @@ public class Morpho
             morpho.setLocalDataStoreService(new LocalDataStoreService(morpho));
             
             // create the remote data store
-            morpho.setMetacatDataStore(new MetacatDataStore(morpho));
+            morpho.setMetacatDataStoreService(new MetacatDataStoreService(morpho));
          
             // Get the configuration file information needed by the framework
             morpho.loadConfigurationParameters();
@@ -854,12 +851,12 @@ public class Morpho
     public void setLastID(String scope)
     {
         // look up last remote id
-    	if (Morpho.thisStaticInstance.getMetacatDataStore() == null) {
+    	if (Morpho.thisStaticInstance.getMetacatDataStoreService() == null) {
     		return;
     	}
 
     	//TODO: this should not be done like this, but for now we will still look up Ids from Metacat
-        String lastId = Morpho.thisStaticInstance.getMetacatDataStore().generateIdentifier();
+        String lastId = Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier();
         int id = Integer.parseInt(AccessionNumber.getInstance().getParts(lastId).get(1));
         if (id > 0) {
             int num = id;

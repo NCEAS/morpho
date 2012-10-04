@@ -65,7 +65,7 @@ import edu.ucsb.nceas.morpho.util.Util;
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
  */
-public class MetacatDataStore extends DataStore implements DataStoreInterface
+public class MetacatDataStoreService extends DataStore implements DataStoreInterface
 {
   private Morpho morpho;
   
@@ -93,7 +93,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
   /**
    * Constructor to create this object in conjunction with a ceartain morpho.
    */
-  public MetacatDataStore(Morpho morpho)
+  public MetacatDataStoreService(Morpho morpho)
   {
     super(morpho);
     this.morpho = morpho;
@@ -564,7 +564,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     prop.put("qformat", "xml");
     try
     {
-      queryResult = morpho.getMetacatDataStore().getMetacatInputStream(prop);
+      queryResult = morpho.getMetacatDataStoreService().getMetacatInputStream(prop);
     }
     catch(Exception w)
     {
@@ -1242,7 +1242,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       morpho.setProfile(profile);
       morpho.setPassword(password);
       
-      MetacatDataStore mds = new MetacatDataStore(morpho);
+      MetacatDataStoreService mds = new MetacatDataStoreService(morpho);
       mds.logIn();
       
       // Test metadata (xml) upload

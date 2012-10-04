@@ -74,7 +74,7 @@ public class LoginCommand implements Command
           morpho.setPassword(loginClient.getPassword());
         }
 
-        final boolean connected = morpho.getMetacatDataStore().logIn();
+        final boolean connected = morpho.getMetacatDataStoreService().logIn();
 
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {

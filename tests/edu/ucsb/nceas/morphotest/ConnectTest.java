@@ -129,9 +129,9 @@ public class ConnectTest extends TestCase
    */
   public void testValidLogin()
   {
-    boolean connected = morpho.getMetacatDataStore().logIn();
+    boolean connected = morpho.getMetacatDataStoreService().logIn();
     assertTrue(connected);
-    assertTrue(morpho.getMetacatDataStore().isConnected());
+    assertTrue(morpho.getMetacatDataStoreService().isConnected());
   }
 
   /**
@@ -139,8 +139,8 @@ public class ConnectTest extends TestCase
    */
   public void testLogout()
   {
-    morpho.getMetacatDataStore().logOut();
-    assertTrue(morpho.getMetacatDataStore().isConnected() == false);
+    morpho.getMetacatDataStoreService().logOut();
+    assertTrue(morpho.getMetacatDataStoreService().isConnected() == false);
   }
 
   /**
@@ -149,8 +149,8 @@ public class ConnectTest extends TestCase
   public void testInvalidLogin()
   {
     morpho.setPassword("garbage");
-    boolean connected = morpho.getMetacatDataStore().logIn();
+    boolean connected = morpho.getMetacatDataStoreService().logIn();
     assertTrue(connected == false);
-    assertTrue(morpho.getMetacatDataStore().isConnected() == false);
+    assertTrue(morpho.getMetacatDataStoreService().isConnected() == false);
   }
 }

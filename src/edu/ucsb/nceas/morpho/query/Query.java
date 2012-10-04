@@ -814,7 +814,7 @@ public class Query extends DefaultHandler {
 */
 
       metacatResults = new HeadResultSet(this, DataStoreInterface.NONEXIST, QueryRefreshInterface.NETWWORKCOMPLETE,
-                                     morpho.getMetacatDataStore().queryMetacat(toXml()), morpho);
+                                     morpho.getMetacatDataStoreService().queryMetacat(toXml()), morpho);
 
     }
 
@@ -936,7 +936,7 @@ public class Query extends DefaultHandler {
          // parsing result set
          String localStatus = DataStoreInterface.NONEXIST;
          String metacatStatus = QueryRefreshInterface.NETWWORKCOMPLETE;
-         ResultsetHandler handler = new ResultsetHandler(morpho.getMetacatDataStore().queryMetacat(toXml()),
+         ResultsetHandler handler = new ResultsetHandler(morpho.getMetacatDataStoreService().queryMetacat(toXml()),
                                             dataVector,  morpho, localStatus, metacatStatus);
          // start another thread for parser
          Thread parserThread = new Thread(handler);
