@@ -65,7 +65,7 @@ import edu.ucsb.nceas.morpho.util.Util;
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
  */
-public class MetacatDataStoreService extends DataStore implements DataStoreInterface
+public class MetacatDataStoreService extends DataStoreService implements DataStoreInterface
 {
   private Morpho morpho;
   

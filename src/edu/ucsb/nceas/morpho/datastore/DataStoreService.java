@@ -46,7 +46,7 @@ import edu.ucsb.nceas.morpho.util.Log;
  * creates an abstract class for getting files from any dataStore using the same
  * methods.
  */
-public abstract class DataStore implements DataStoreInterface
+public abstract class DataStoreService implements DataStoreInterface
 {
   protected Morpho morpho;
   private ConfigXML config;
@@ -56,7 +56,7 @@ public abstract class DataStore implements DataStoreInterface
   /**
    * create a new FileSystemDataStore for a Morpho
    */
-  public DataStore(Morpho morpho)
+  public DataStoreService(Morpho morpho)
   {
     this.morpho = morpho;
     config = Morpho.getConfiguration();

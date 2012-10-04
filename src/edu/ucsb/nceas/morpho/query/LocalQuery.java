@@ -27,7 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStore;
+import edu.ucsb.nceas.morpho.datastore.DataStoreService;
 import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -921,7 +921,7 @@ public class LocalQuery
     //in case no incomplete dir in old version profile
     if(incomplete == null || incomplete.trim().equals(""))
     {
-    	incompleteDir = profileDir+ File.separator + DataStore.INCOMPLETEDIR;
+    	incompleteDir = profileDir+ File.separator + DataStoreService.INCOMPLETEDIR;
     }
     else
     {

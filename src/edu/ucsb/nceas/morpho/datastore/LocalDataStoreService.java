@@ -50,7 +50,7 @@ import edu.ucsb.nceas.morpho.util.Log;
  * implements and the DataStoreInterface for accessing files on the local
  * file system.
  */
-public class LocalDataStoreService extends DataStore
+public class LocalDataStoreService extends DataStoreService
                                  implements DataStoreInterface
 {
 	
