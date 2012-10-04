@@ -34,7 +34,7 @@ import java.io.Reader;
  * creates an interface for getting files from any dataStore using the same
  * methods.
  */
-public interface DataStoreInterface
+public interface DataStoreServiceInterface
 {
 	
    // status of given id in metacat:

@@ -51,7 +51,7 @@ import edu.ucsb.nceas.morpho.util.Log;
  * file system.
  */
 public class LocalDataStoreService extends DataStoreService
-                                 implements DataStoreInterface
+                                 implements DataStoreServiceInterface
 {
 	
 	  public static final String TEMP = "temporary";
@@ -178,12 +178,12 @@ public class LocalDataStoreService extends DataStoreService
    */
   public String status(String docid)
   {
-	  String status = DataStoreInterface.NONEXIST;
+	  String status = DataStoreServiceInterface.NONEXIST;
 	  String path = parseId(docid);
       File savefile = new File(getDataDir() + "/" + path); //the path to the file
       if(savefile.exists())
       {
-        status = DataStoreInterface.CONFLICT;
+        status = DataStoreServiceInterface.CONFLICT;
       }
       Log.debug(30, "The docid "+docid +" local status is "+status);
 	  return status;

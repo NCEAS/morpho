@@ -38,7 +38,7 @@ import edu.ucsb.nceas.morpho.util.Log;
  * creates an abstract class for getting files from any dataStore using the same
  * methods.
  */
-public abstract class DataStoreService implements DataStoreInterface
+public abstract class DataStoreService implements DataStoreServiceInterface
 {
   protected Morpho morpho;
   private ConfigXML config;

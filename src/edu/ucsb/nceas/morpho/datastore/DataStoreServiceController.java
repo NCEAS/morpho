@@ -659,7 +659,7 @@ public class DataStoreServiceController {
 						Log.debug(30, "docid " + docid
 								+ " status in metacat is " + statusInMetacat);
 						if (statusInMetacat != null
-								&& statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+								&& statusInMetacat.equals(DataStoreServiceInterface.CONFLICT)) {
 							conflictLocation = DocidConflictHandler.METACAT;
 							existInMetacat = true;
 						}
@@ -668,7 +668,7 @@ public class DataStoreServiceController {
 						Log.debug(30, "docid " + docid + " status in local is "
 								+ statusInLocal);
 						if (statusInLocal != null
-								&& statusInLocal.equals(DataStoreInterface.CONFLICT)) {
+								&& statusInLocal.equals(DataStoreServiceInterface.CONFLICT)) {
 							conflictLocation = DocidConflictHandler.LOCAL;
 							existInLocal = true;
 						}
@@ -682,8 +682,8 @@ public class DataStoreServiceController {
 								+ statusInMetacat);
 						if (statusInMetacat != null
 								&& statusInLocal != null
-								&& statusInLocal.equals(DataStoreInterface.CONFLICT)
-								&& statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+								&& statusInLocal.equals(DataStoreServiceInterface.CONFLICT)
+								&& statusInMetacat.equals(DataStoreServiceInterface.CONFLICT)) {
 							conflictLocation = DocidConflictHandler.LOCAL
 									+ " and " + DocidConflictHandler.METACAT;
 							existInMetacat = true;
@@ -695,7 +695,7 @@ public class DataStoreServiceController {
 							// true);
 						} else if (statusInMetacat != null
 								&& statusInMetacat
-										.equals(DataStoreInterface.CONFLICT)) {
+										.equals(DataStoreServiceInterface.CONFLICT)) {
 							conflictLocation = DocidConflictHandler.METACAT;
 							existInMetacat = true;
 							// existFlag = true;
@@ -703,7 +703,7 @@ public class DataStoreServiceController {
 							// true);
 						} else if (statusInLocal != null
 								&& statusInLocal
-										.equals(DataStoreInterface.CONFLICT)) {
+										.equals(DataStoreServiceInterface.CONFLICT)) {
 							conflictLocation = DocidConflictHandler.LOCAL;
 							existInLocal = true;
 							// existFlag = true;
@@ -1034,14 +1034,14 @@ public class DataStoreServiceController {
 		// Check to see if id confilct or not
 		if ((location.equals(DataPackageInterface.METACAT))) {
 			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStoreService().status(adp.getAccessionNumber());
-			if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+			if (statusInMetacat != null && statusInMetacat.equals(DataStoreServiceInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.METACAT;
 				// this.setIdentifierChangedInMetacatSerialization(true);
 			}
 		} else if ((location.equals(DataPackageInterface.LOCAL))) {
 			statusInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().status(adp.getAccessionNumber());
 			// existFlag = existInLocal;
-			if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT)) {
+			if (statusInLocal != null && statusInLocal.equals(DataStoreServiceInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.LOCAL;
 				// this.setIdentifierChangedInLocalSerialization(true);
 			}
@@ -1051,17 +1051,17 @@ public class DataStoreServiceController {
 			// if (existFlag)
 			// {
 			if (statusInMetacat != null && statusInLocal != null
-					&& statusInLocal.equals(DataStoreInterface.CONFLICT)
-					&& statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+					&& statusInLocal.equals(DataStoreServiceInterface.CONFLICT)
+					&& statusInMetacat.equals(DataStoreServiceInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.LOCAL + " and " + DocidConflictHandler.METACAT;
 				// this.setIdentifierChangedInLocalSerialization(true);
 				// this.setIdentifierChangedInMetacatSerialization(true);
 			} else if (statusInMetacat != null
-					&& statusInMetacat.equals(DataStoreInterface.CONFLICT)) {
+					&& statusInMetacat.equals(DataStoreServiceInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.METACAT;
 				// this.setIdentifierChangedInMetacatSerialization(true);
 			} else if (statusInLocal != null
-					&& statusInLocal.equals(DataStoreInterface.CONFLICT)) {
+					&& statusInLocal.equals(DataStoreServiceInterface.CONFLICT)) {
 				conflictLocation = DocidConflictHandler.LOCAL;
 				// this.setIdentifierChangedInLocalSerialization(true);
 			}
@@ -1090,8 +1090,8 @@ public class DataStoreServiceController {
 				temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
 				// since we changed the revision number, the status of docid
 				// will be changed
-				statusInMetacat = DataStoreInterface.NONEXIST;
-				statusInLocal = DataStoreInterface.NONEXIST;
+				statusInMetacat = DataStoreServiceInterface.NONEXIST;
+				statusInLocal = DataStoreServiceInterface.NONEXIST;
 			} else {
 				// increase revision number
 				int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(adp.getAccessionNumber(), DataPackageInterface.BOTH);
@@ -1100,8 +1100,8 @@ public class DataStoreServiceController {
 				adp.setPackageIDChanged(true);
 				temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
 				Log.debug(30, "The new id (after increase revision number) is " + identifier);
-				statusInMetacat = DataStoreInterface.UPDATE;
-				statusInLocal = DataStoreInterface.UPDATE;
+				statusInMetacat = DataStoreServiceInterface.UPDATE;
+				statusInLocal = DataStoreServiceInterface.UPDATE;
 			}
 		} else if (conflictLocation != null) {
 			Log.debug(30, "==============In existFlag and insert revision 1 branch");
@@ -1110,8 +1110,8 @@ public class DataStoreServiceController {
 			adp.setAccessionNumber(identifier);
 			adp.setPackageIDChanged(true);
 			temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
-			statusInMetacat = DataStoreInterface.NONEXIST;
-			statusInLocal = DataStoreInterface.NONEXIST;
+			statusInMetacat = DataStoreServiceInterface.NONEXIST;
+			statusInLocal = DataStoreServiceInterface.NONEXIST;
 		}
 		// Log.debug(30, temp);
 
@@ -1119,7 +1119,7 @@ public class DataStoreServiceController {
 		StringReader sr1 = new StringReader(temp);
 		if ((location.equals(DataPackageInterface.METACAT))
 				|| (location.equals(DataPackageInterface.BOTH))) {
-			if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.UPDATE)) {
+			if (statusInMetacat != null && statusInMetacat.equals(DataStoreServiceInterface.UPDATE)) {
 				try {
 					Morpho.thisStaticInstance.getMetacatDataStoreService().saveFile(adp.getAccessionNumber(), sr1);
 					adp.setSerializeMetacatSuccess(true);
@@ -1132,7 +1132,7 @@ public class DataStoreServiceController {
 					Log.debug(5, "Problem with saving to metacat in EML200DataPackage!\n"
 									+ e.getMessage());
 				}
-			} else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.NONEXIST)) {
+			} else if (statusInMetacat != null && statusInMetacat.equals(DataStoreServiceInterface.NONEXIST)) {
 				try {
 					Morpho.thisStaticInstance.getMetacatDataStoreService().newFile(adp.getAccessionNumber(), sr1);
 					adp.setSerializeMetacatSuccess(true);
@@ -1185,13 +1185,13 @@ public class DataStoreServiceController {
 	 */
 	public boolean exists(String docid, String location) {
 		
-		String status = DataStoreInterface.NONEXIST;
+		String status = DataStoreServiceInterface.NONEXIST;
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
 			status = Morpho.thisStaticInstance.getLocalDataStoreService().status(docid);
 		} else {
 			status = Morpho.thisStaticInstance.getMetacatDataStoreService().status(docid);
 		}
-		return !status.equals(DataStoreInterface.NONEXIST);
+		return !status.equals(DataStoreServiceInterface.NONEXIST);
 		
 	}
 

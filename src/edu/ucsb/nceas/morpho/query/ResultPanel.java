@@ -49,7 +49,7 @@ import javax.swing.table.TableColumn;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -680,8 +680,8 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    {
      if ((localStatus == null && metacatStatus != null && metacatStatus.equals(QueryRefreshInterface.NETWWORKCOMPLETE)) ||
          (metacatStatus == null && localStatus != null && localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE))||
-         (localStatus != null && localStatus.equals(DataStoreInterface.NONEXIST) && metacatStatus != null && metacatStatus.equals(QueryRefreshInterface.NETWWORKCOMPLETE))||
-         (metacatStatus != null && metacatStatus.equals(DataStoreInterface.NONEXIST) && localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE)))
+         (localStatus != null && localStatus.equals(DataStoreServiceInterface.NONEXIST) && metacatStatus != null && metacatStatus.equals(QueryRefreshInterface.NETWWORKCOMPLETE))||
+         (metacatStatus != null && metacatStatus.equals(DataStoreServiceInterface.NONEXIST) && localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE)))
      {
        return true;
      }

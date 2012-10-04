@@ -65,7 +65,7 @@ import edu.ucsb.nceas.morpho.util.Util;
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
  */
-public class MetacatDataStoreService extends DataStoreService implements DataStoreInterface
+public class MetacatDataStoreService extends DataStoreService implements DataStoreServiceInterface
 {
   private Morpho morpho;
   
@@ -603,7 +603,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
    */
   public String status(String name)
   {
-	String status  = DataStoreInterface.NONEXIST;
+	String status  = DataStoreServiceInterface.NONEXIST;
     String path = parseId(name);
     String dirs = path.substring(0, path.lastIndexOf("/")); 
     File localfile = new File(getCacheDir() + "/" + path); //the path to the file
@@ -612,7 +612,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
     if((localfile.exists())&&(localfile.length()>0))
     { //if the file is cached locally, read it from the hard drive
       Log.debug(30, "MetacatDataStore: cached file exists and docid is used "+name);
-      return DataStoreInterface.CONFLICT;
+      return DataStoreServiceInterface.CONFLICT;
     }
     else
     {    
@@ -657,11 +657,11 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 			    					 " and version from metacat is "+versionFromMetacat);
 			    			if (versionFromName > versionFromMetacat)
 			    			{
-			    				status = DataStoreInterface.UPDATE;
+			    				status = DataStoreServiceInterface.UPDATE;
 			    			}
 			    			else
 			    			{
-			    				status = DataStoreInterface.CONFLICT;
+			    				status = DataStoreServiceInterface.CONFLICT;
 			    			}
 			    		}
 			    		catch(Exception e)
@@ -673,7 +673,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 			    	else
 			    	{
 			    		// if have error tag, this means docid doesn't exist
-			    		status = DataStoreInterface.NONEXIST;
+			    		status = DataStoreServiceInterface.NONEXIST;
 			    	}
 			    }
 		    }
