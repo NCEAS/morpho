@@ -128,21 +128,7 @@ public abstract class DataStoreService implements DataStoreServiceInterface
     path += "/" + id.substring(id.indexOf(separator) + 1, id.length());
     return path;
   }
-  
-  /**
-   * parses the id of a file from the message that metacat returns
-   */
-  protected String parseIdFromMessage(String message)
-  {
-    int docidIndex = message.indexOf("<docid>") + 1;
-    int afterDocidIndex = docidIndex + 6;
-    String docid = message.substring(afterDocidIndex, 
-                                     message.indexOf("<", afterDocidIndex));
-    debug(11, "docid in parseIdFromMessage: " + docid);
-    return docid;
-  }
 
-  
   abstract public File openFile(String name) throws FileNotFoundException, 
                                                     CacheAccessException;
   abstract public File saveFile(String name, Reader file)

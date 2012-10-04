@@ -815,6 +815,17 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
       throw new MetacatUploadException(e.getMessage());
     }
   }
+
+	/**
+	 * parses the id of a file from the message that metacat returns
+	 */
+	private String parseIdFromMessage(String message) {
+		int docidIndex = message.indexOf("<docid>") + 1;
+		int afterDocidIndex = docidIndex + 6;
+		String docid = message.substring(afterDocidIndex, message.indexOf("<", afterDocidIndex));
+		debug(11, "docid in parseIdFromMessage: " + docid);
+		return docid;
+	}
   
   /**
    * Create and save a new file to metacat using the "insert" action.
