@@ -127,7 +127,8 @@ public class IdentifierFileMap {
             " is not in the datastore (directory) "+absoluteObjectDirPath);
       }
       // we can't use file.getName directly since the file can be in a subdirectory
-      String fileName = absoluteFilePath.replaceFirst(absoluteObjectDirPath,"");
+      int index = absoluteFilePath.indexOf(absoluteObjectDirPath);
+      String fileName = absoluteFilePath.substring(absoluteObjectDirPath.length());
       if(fileName.startsWith(File.separator)) {
         if(fileName.length() <= 1) {
           throw new IllegalArgumentException("IdentifierFileMap.setMap - the file "+absoluteFilePath+
