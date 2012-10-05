@@ -36,14 +36,17 @@ import edu.ucsb.nceas.morphotest.MorphoTestCase;
 
 public class IdentifierFileMapTest extends MorphoTestCase {
   
-  private static final String propertyFilePath = "build/mapping.properties";
+  private static final String objectStorePath = "build/tests/testfiles";
   private static final String id1 = "10:0=@=10;0 /10\\0";
-  private static final String id2= "tao.10.1";
-  private static final String filePath1 = "tests/testfiles/eml201-reference-system.xml";
-  private static final String filePath2 = "tests/testfiles/eml201withadditionalMetacat.xml";
+  private static final String id2 = "tao.10.1";
+  private static final String id3 = "tmp.1.1";
+  private static final String filePath1 = "build/tests/testfiles/eml201-reference-system.xml";
+  private static final String filePath2 = "build/tests/testfiles/eml201withadditionalMetacat.xml";
+  private static final String tmpDir = "build/tests/testfiles/tmp";
+  private static final String tmpName ="1.1";
   private File file1 = null;
   private File file2 = null;
-  private static File propertyFile = null;
+  private static File objectStore = null;
   
   /**
    * Constructor to build the test
@@ -52,7 +55,7 @@ public class IdentifierFileMapTest extends MorphoTestCase {
    */
   public IdentifierFileMapTest(String name) {
       super(name);
-      propertyFile = new File(propertyFilePath);
+      objectStore = new File(objectStorePath);
       file1 = new File(filePath1);
       file2 = new File(filePath2);
   }
@@ -65,7 +68,7 @@ public class IdentifierFileMapTest extends MorphoTestCase {
       suite.addTest(new IdentifierFileMapTest("testSet"));
       suite.addTest(new IdentifierFileMapTest("testGet"));
       suite.addTest(new IdentifierFileMapTest("testRemove"));
-      propertyFile.deleteOnExit();
+      
       return suite;
   }
   
@@ -80,10 +83,17 @@ public class IdentifierFileMapTest extends MorphoTestCase {
   /**
    * Test the set method
    */
-  public void testSet() throws Exception {
-   IdentifierFileMap map = new IdentifierFileMap(propertyFile);
+  public void testSet() throws Exception {   
+   IdentifierFileMap map = new IdentifierFileMap(objectStore);
    map.setMap(id1, file1);
    map.setMap(id2, file2);
+   
+   File tmp = new File(tmpDir);
+   tmp.mkdir();
+   File file = new File(tmpDir+"/"+tmpName);
+   file.createNewFile();
+   map.setMap(id3, file);
+   
   }
   
   /**
@@ -91,19 +101,26 @@ public class IdentifierFileMapTest extends MorphoTestCase {
    * @throws Exception
    */
   public void testGet() throws Exception {
-    IdentifierFileMap map = new IdentifierFileMap(propertyFile);
+    IdentifierFileMap map = new IdentifierFileMap(objectStore);
     File fileOne = map.getFile(id1);
+    File file1 = new File(filePath1);
     System.out.println("the fileone path "+fileOne.getPath());
-    assertTrue("The file associated with id "+id1+ " should end with "+filePath1
-        ,fileOne.getPath().endsWith(filePath1));
+    assertTrue("The file associated with id "+id1+ " should be "+filePath1
+        ,fileOne.getPath().equals(file1.getPath()));
     File fileTwo = map.getFile(id2);
-    System.out.print("the filetwo path "+fileTwo.getPath());
-    assertTrue("The file associated with id "+id2+ " should end with "+filePath2
-        ,fileTwo.getPath().endsWith(filePath2));
+    File file2 = new File(filePath2);
+    System.out.println("the filetwo path "+fileTwo.getPath());
+    assertTrue("The file associated with id "+id2+ " should be "+filePath2
+        ,fileTwo.getPath().equals(file2.getPath()));
+    File fileThree = map.getFile(id3);
+    File file3 = new File(tmpDir+"/"+tmpName);
+    System.out.println("the filethree path "+fileThree.getPath());
+    assertTrue("The file associated with id "+id3+ " should end with "+tmpDir+"/"+tmpName
+        ,fileThree.getPath().equals(file3.getPath()));
   }
   
   public void testRemove() throws Exception {
-    IdentifierFileMap map = new IdentifierFileMap(propertyFile);
+    IdentifierFileMap map = new IdentifierFileMap(objectStore);
     boolean reachException = false;
     map.remove(id2);
     try {
@@ -113,13 +130,15 @@ public class IdentifierFileMapTest extends MorphoTestCase {
     }
     assertTrue("id2 should be removed and an exception should be thrown.", reachException);
     reachException = false;
-    IdentifierFileMap map2 = new IdentifierFileMap(propertyFile);
+    IdentifierFileMap map2 = new IdentifierFileMap(objectStore);
     try {
       File fileOne = map2.getFile(id2);
     } catch (IdentifierNotFoundException e) {
       reachException = true;
     }
     assertTrue("id2 should be removed and an exception should be thrown.", reachException);
+    map2.remove(id1);
+    map2.remove(id3);
   }
 
 }

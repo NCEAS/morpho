@@ -44,32 +44,46 @@ import edu.ucsb.nceas.morpho.exception.IdentifierNotFoundException;
 
 /**
  * This class represents a mapping between an identifier and a local file path.
+ * The local file path is the relative path string to the object store directory.
  * The mapping is stored in java property file. This is one-to-one relationship.
  * But morpho can store an object to different place, e.g., cache directory and data directory, 
- * each directory has to have its own mapping property file.
+ * each directory has to have its own mapping property file. The mapping file is placed in the
+ * directory which stores objects and its name is .directory-name.poperties
  * @author tao
  *
  */
 public class IdentifierFileMap {
   private static final String UTF8 = "UTF-8";
+  private static final String PROPERTYFILESUFFIX = ".properties";
   private Properties mappingProperties = null;
   private File mappingPropertyFile = null;
+  private File objectDir = null;
 
   /**
    * Constructor
-   * @param mappingPropertyFile the file stores the mapping property
+   * @param objectDir the directory will store the objects.
    */
-  public IdentifierFileMap(File mappingPropertyFile) throws FileNotFoundException, 
-                     IOException, UnsupportedCharsetException, IllegalCharsetNameException{
-    if(mappingPropertyFile == null ) {
-      throw new IOException("The specified property file for mapping identifier between file name is null");
+  public IdentifierFileMap(File objectDir) throws FileNotFoundException, 
+                     IOException, UnsupportedCharsetException, IllegalCharsetNameException, 
+                     NullPointerException, IllegalArgumentException{
+    if(objectDir == null ) {
+      throw new NullPointerException("IdentifierFileMap.IdentifierFileMap - the specified direcotry to store the objects is null!");
     }
-    this.mappingPropertyFile = mappingPropertyFile;
-    mappingProperties = new Properties();
+    this.objectDir = objectDir;
+    if(!this.objectDir.exists()) {
+      this.objectDir.mkdirs();
+    }
+    if(!this.objectDir.isDirectory()) {
+      throw new IllegalArgumentException("IdentifierFileMap.IdentifierFileMap - the specified object directory should be directory rathe than a file "
+                                         +objectDir.getAbsolutePath());
+      
+    }
+    this.mappingPropertyFile = new File(this.objectDir, File.separator+"."+this.objectDir.getName()+PROPERTYFILESUFFIX);
     
     if(!this.mappingPropertyFile.exists()) {
       this.mappingPropertyFile.createNewFile();
     }
+    mappingProperties = new Properties();
     mappingProperties.load(new InputStreamReader(new FileInputStream(this.mappingPropertyFile), Charset.forName(UTF8)));
   }
   
@@ -83,13 +97,13 @@ public class IdentifierFileMap {
     File file = null;
     String fileName = mappingProperties.getProperty(identifier);
     if(fileName == null) {
-      throw new IdentifierNotFoundException("The identifier "+identifier+" couldn't be found "+
+      throw new IdentifierNotFoundException("IdentifierFileMap.getFile - the identifier "+identifier+" couldn't be found "+
                "in the morpho storage. This maybe is caused by a corrupted or deleted property file " +
                "in /your-home/.morpho directory.");
     } else {
-      file = new File(fileName);
+      file = new File(objectDir,File.separator+fileName);
       if(!file.exists()) {
-        throw new FileNotFoundException("The file "+fileName+" associated with identifier "+identifier+
+        throw new FileNotFoundException("IdentifierFileMap.getFile - the file "+fileName+" associated with identifier "+identifier+
                                         "doesn't exist.");
       }
       
@@ -104,14 +118,29 @@ public class IdentifierFileMap {
    * @param file the file associated the identifier
    */
   public synchronized void setMap(String identifier, File file) throws FileNotFoundException, 
-  IOException, UnsupportedCharsetException, IllegalCharsetNameException, NullPointerException{
+  IOException, UnsupportedCharsetException, IllegalCharsetNameException, NullPointerException,IllegalArgumentException{
     if( identifier != null && file != null ) {
-      mappingProperties.setProperty(identifier, file.getAbsolutePath());
+      String absoluteFilePath = file.getAbsolutePath();
+      String absoluteObjectDirPath = objectDir.getAbsolutePath();
+      if(!absoluteFilePath.startsWith(absoluteObjectDirPath)) {
+        throw new IllegalArgumentException("IdentifierFileMap.setMap - the file "+absoluteFilePath+
+            " is not in the datastore (directory) "+absoluteObjectDirPath);
+      }
+      // we can't use file.getName directly since the file can be in a subdirectory
+      String fileName = absoluteFilePath.replaceFirst(absoluteObjectDirPath,"");
+      if(fileName.startsWith(File.separator)) {
+        if(fileName.length() <= 1) {
+          throw new IllegalArgumentException("IdentifierFileMap.setMap - the file "+absoluteFilePath+
+              " is not in the datastore (directory) "+absoluteObjectDirPath);
+        }
+        fileName = fileName.substring(1);
+      }
+      mappingProperties.setProperty(identifier, fileName);
       mappingProperties.store(new OutputStreamWriter(new FileOutputStream(mappingPropertyFile), Charset.forName(UTF8)), "");
     } else if (identifier == null) {
-      throw new NullPointerException("Can't map the identifier having the null value with a file name");
+      throw new NullPointerException("IdentifierFileMap.setMap - can't map the identifier having the null value with a file name");
     } else if (file == null) {
-      throw new NullPointerException("Can't map the file having the null value with an identifier "+identifier);
+      throw new NullPointerException("IdentifierFileMap.setMap - can't map the file having the null value with an identifier "+identifier);
     }
     
   }
