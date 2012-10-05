@@ -54,6 +54,7 @@ import javax.swing.Timer;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
@@ -130,6 +131,20 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
     Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
     timer.setRepeats(true);
     timer.start();
+  }
+  
+  /**
+   * Retrieve an AbstractDataPackage for the given identifier
+   * @param identifier
+   * @return
+   * @throws FileNotFoundException
+   * @throws CacheAccessException
+   */
+  public AbstractDataPackage read(String identifier) throws FileNotFoundException, CacheAccessException {
+		
+	  File file = openFile(identifier);
+	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+	  return DataPackageFactory.getDataPackage(in); 
   }
   
   /** Create a new connection to metacat */

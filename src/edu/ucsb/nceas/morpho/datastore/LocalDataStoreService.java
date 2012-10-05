@@ -42,6 +42,7 @@ import java.nio.charset.Charset;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -62,6 +63,19 @@ public class LocalDataStoreService extends DataStoreService
   public LocalDataStoreService(Morpho morpho)
   {
     super(morpho);
+  }
+  
+  /**
+   * Get an AbstractDataPackage for the given identifier
+   * @param identifier
+   * @return
+   * @throws FileNotFoundException
+   */
+  public AbstractDataPackage read(String identifier) throws FileNotFoundException {
+		
+	  File file = openFile(identifier);
+	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+	  return DataPackageFactory.getDataPackage(in); 
   }
   
   /**

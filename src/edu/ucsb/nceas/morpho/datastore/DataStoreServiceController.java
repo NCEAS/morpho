@@ -29,7 +29,6 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -94,30 +93,24 @@ public class DataStoreServiceController {
 	 * location
 	 */
 	public AbstractDataPackage read(String docid, String location) {
-		// first use datastore package to get a stream for the metadata
-		// read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
-		// then create the appropriate subclass of AbstractDataPackage and
-		// return it.
+		// get an ADP from the desired source
 
-		Reader in = null;
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
 			try {
-				File file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(docid);
-				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+				return Morpho.thisStaticInstance.getLocalDataStoreService().read(docid);
 			} catch (Exception w) {
 				Log.debug(20, "Problem opening file!");
 			}
 		} else { 
 			// must be on metacat only
 			try {
-				File file = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(docid);
-				in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+				return Morpho.thisStaticInstance.getMetacatDataStoreService().read(docid);
 			} catch (Exception e) {
 				Log.debug(20, "Problem opening file from Metacat!");
 			}
 		}
 		
-		return DataPackageFactory.getDataPackage(in);
+		return null;
 	}
     
     /**
