@@ -94,23 +94,20 @@ public class DataStoreServiceController {
 	 */
 	public AbstractDataPackage read(String docid, String location) {
 		// get an ADP from the desired source
-
-		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
-			try {
-				return Morpho.thisStaticInstance.getLocalDataStoreService().read(docid);
-			} catch (Exception w) {
-				Log.debug(20, "Problem opening file!");
+		AbstractDataPackage adp = null;
+		try {
+			if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
+					adp = Morpho.thisStaticInstance.getLocalDataStoreService().read(docid);
 			}
-		} else { 
-			// must be on metacat only
-			try {
-				return Morpho.thisStaticInstance.getMetacatDataStoreService().read(docid);
-			} catch (Exception e) {
-				Log.debug(20, "Problem opening file from Metacat!");
+			else { 
+				// must be on metacat only
+				adp = Morpho.thisStaticInstance.getMetacatDataStoreService().read(docid);
 			}
+		} catch (Exception e) {
+			Log.debug(20, "Could not read package: " + e.getMessage());
 		}
 		
-		return null;
+		return adp;
 	}
     
     /**
@@ -138,25 +135,18 @@ public class DataStoreServiceController {
 
 	public void delete(AbstractDataPackage adp, String location)
 			throws Exception {
-		boolean metacatLoc = false;
-		boolean localLoc = false;
+
 		String accnum = adp.getAccessionNumber();
 
-		if (location.equals(DataPackageInterface.METACAT) || location.equals(DataPackageInterface.BOTH)) {
-			metacatLoc = true;
-		}
 		if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
-			localLoc = true;
-		}
-		if (localLoc) {
-			boolean localSuccess = Morpho.thisStaticInstance.getLocalDataStoreService().deleteFile(accnum);
+			boolean localSuccess = Morpho.thisStaticInstance.getLocalDataStoreService().delete(adp);
 			if (!localSuccess) {
 				throw new Exception("User couldn't delete the local copy");
 			}
 			LocalQuery.removeFromCache(accnum);
 		}
-		if (metacatLoc) {
-			boolean success = Morpho.thisStaticInstance.getMetacatDataStoreService().deleteFile(accnum);
+		if (location.equals(DataPackageInterface.METACAT) || location.equals(DataPackageInterface.BOTH)) {
+			boolean success = Morpho.thisStaticInstance.getMetacatDataStoreService().delete(adp);
 			if (!success) {
 				throw new Exception("User couldn't delete the network copy");
 			}

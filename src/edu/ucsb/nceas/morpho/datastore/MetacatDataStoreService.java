@@ -140,6 +140,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
    * @throws FileNotFoundException
    * @throws CacheAccessException
    */
+  @Override
   public AbstractDataPackage read(String identifier) throws FileNotFoundException, CacheAccessException {
 		
 	  File file = openFile(identifier);
@@ -893,6 +894,15 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
     } catch (Exception e) {
       throw new MetacatUploadException(e.getMessage());
     }
+  }
+  
+  /**
+   * Delete given ADP from MDS
+   */
+  @Override
+  public boolean delete(AbstractDataPackage adp) {
+	  // TODO: do more delete of data objects?
+	  return this.deleteFile(adp.getAccessionNumber());
   }
   
   /**

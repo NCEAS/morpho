@@ -30,6 +30,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+
 /**
  * creates an interface for getting files from any dataStore using the same
  * methods.
@@ -72,4 +74,8 @@ public interface DataStoreServiceInterface
    * succesfully deleted, false otherwise
    */
   public boolean deleteFile(String name) throws Exception;
+  
+  public boolean delete(AbstractDataPackage adp) throws Exception;
+  
+  public AbstractDataPackage read(String identifier) throws Exception;
 }

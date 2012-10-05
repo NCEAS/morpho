@@ -71,7 +71,8 @@ public class LocalDataStoreService extends DataStoreService
    * @return
    * @throws FileNotFoundException
    */
-  public AbstractDataPackage read(String identifier) throws FileNotFoundException {
+  @Override
+  public AbstractDataPackage read(String identifier) throws Exception {
 		
 	  File file = openFile(identifier);
 	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
@@ -383,6 +384,22 @@ public class LocalDataStoreService extends DataStoreService
 		}
 	}
   
+	/**
+	 * Delete the given ADP from the local store
+	 * @param adp
+	 * @throws FileNotFoundException
+	 */
+	@Override
+	public boolean delete(AbstractDataPackage adp) throws FileNotFoundException {
+		
+		String identifier = adp.getAccessionNumber();
+		
+		// TODO: delete other parts of the ADP
+		return deleteFile(identifier);
+		
+		
+	}
+	
   /**
    * Test method
    */
