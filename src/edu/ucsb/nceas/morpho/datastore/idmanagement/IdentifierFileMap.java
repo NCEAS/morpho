@@ -128,7 +128,7 @@ public class IdentifierFileMap {
       }
       // we can't use file.getName directly since the file can be in a subdirectory
       int index = absoluteFilePath.indexOf(absoluteObjectDirPath);
-      String fileName = absoluteFilePath.substring(absoluteObjectDirPath.length());
+      String fileName = absoluteFilePath.substring(index+absoluteObjectDirPath.length());
       if(fileName.startsWith(File.separator)) {
         if(fileName.length() <= 1) {
           throw new IllegalArgumentException("IdentifierFileMap.setMap - the file "+absoluteFilePath+
