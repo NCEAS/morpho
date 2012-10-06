@@ -24,30 +24,12 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datapackage.Attribute;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-
+import java.awt.BorderLayout;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Vector;
-
-import java.io.File;
-
-import java.awt.BorderLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -55,9 +37,18 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.Attribute;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
  * This page will given user an interface to assign which col is code and which col is definition.
@@ -198,20 +189,10 @@ public class CodeDefinition extends AbstractUIPage {
       boolean text_file = false;
       String format = adp.getPhysicalFormat(entityIdx, 0);
       if(format.indexOf("Text") > -1 || format.indexOf("text") > -1 || format.indexOf("Asci") > -1 || format.indexOf("asci") > -1) {
-    text_file = true;
+    	  text_file = true;
       }
       
-      MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      DataViewContainerPanel resultPane = null;
-      Morpho morpho = null;
-      if(morphoFrame != null) {
-    resultPane = morphoFrame.getDataViewContainerPanel();
-      }
-      if(resultPane != null) {
-    morpho = resultPane.getFramework();
-      }
-
-      File entityFile = CodeDefnPanel.getEntityFile(morpho, adp, entityIdx);
+      File entityFile = DataStoreServiceController.getInstance().getEntityFile(adp, entityIdx);
       if(entityFile == null) return;
       Vector colsToExtract = new Vector();
       for(int ci = 0; ci < attrs.size(); ci++) colsToExtract.add(new Integer(ci));
@@ -220,14 +201,14 @@ public class CodeDefinition extends AbstractUIPage {
       String delimiter = getDelimiterString(field_delimiter);
       boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIdx, 0);
       List data = null;
-      if(text_file) {
-    data = CodeDefnPanel.getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, WizardSettings.MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT);
+      if (text_file) {
+    	  data = CodeDefnPanel.getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, WizardSettings.MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT);
       } else {
-    // not a displayable data; hence just create a single empty row (with the necessary columns) to add to the resultset
-    data = new ArrayList();
-    List row1 = new ArrayList();
-    for(int ci = 0; ci < colsToExtract.size(); ci++) row1.add("**nontext**");
-    data.add(row1);
+	    // not a displayable data; hence just create a single empty row (with the necessary columns) to add to the resultset
+	    data = new ArrayList();
+	    List row1 = new ArrayList();
+	    for(int ci = 0; ci < colsToExtract.size(); ci++) row1.add("**nontext**");
+	    data.add(row1);
       }
       rowData = new Vector();
       TaxonImportPanel.addColumnsToRowData(rowData, data);

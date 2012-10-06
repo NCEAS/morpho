@@ -45,10 +45,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -72,16 +70,14 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomTable;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -238,8 +234,6 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
       return panel;
     }
 
-    Morpho morpho = Morpho.thisStaticInstance;
-
     entityNames = getEntityNames();
     tableNames = new Vector();
     colNames = new Vector();
@@ -255,7 +249,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
       attrNames = getAttributeNames(idx);
 
-      File entityFile = getEntityFile(morpho, adp, idx);
+      File entityFile = DataStoreServiceController.getInstance().getEntityFile(adp, idx);
       if(entityFile == null) {
         continue;
       }
@@ -919,125 +913,6 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     }
 
     return result;
-  }
-
-
-  public static File getEntityFile(Morpho morpho, AbstractDataPackage adp, int entityIndex) {
-		
-		if(morpho == null) return null;
-    File entityFile = null;
-    String inline = adp.getDistributionInlineData(entityIndex, 0,0);
-
-    if (inline.length()>0) {  // there is inline data
-
-      String encMethod = adp.getEncodingMethod(entityIndex, 0);
-      if ((encMethod.indexOf("Base64")>-1)||(encMethod.indexOf("base64")>-1)||
-      (encMethod.indexOf("Base 64")>-1)||(encMethod.indexOf("base 64")>-1)) {
-        // is Base64
-        byte[] decodedData = Base64.decode(inline);
-        ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-        entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(adp.getAccessionNumber(), bais);
-      }
-      else {
-        // is assumed to be text
-        InputStream inlineStream = new ByteArrayInputStream(inline.getBytes(Charset.forName("UTF-8")));
-        entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(adp.getAccessionNumber(), inlineStream);
-      }
-    } else if (adp.getDistributionUrl(entityIndex, 0,0).length()>0) {
-
-      String urlinfo = adp.getDistributionUrl(entityIndex, 0,0);
-      // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
-      // protocol is probably 'ecogrid'; system name is 'knb'
-      // we just want the local id here
-      int indx2 = urlinfo.lastIndexOf("/");
-      if(indx2 == -1) {
-        Log.debug(15, "Distribution URL is not in the right format! So data couldnt be retrieved");
-        return null;
-      }
-      urlinfo = urlinfo.substring(indx2 +1);
-      if (urlinfo.length()==0) {
-        Log.debug(15, "Distribution URL is not in the right format! So data couldnt be retrieved");
-        return null;
-      }
-      // we now have the id
-      try{
-        String loc = adp.getLocation();
-        if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
-          entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
-        }
-        else if (loc.equals(DataPackageInterface.METACAT)) {
-          entityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
-        }
-        else if (loc.equals("")) {  // just created the package; not yet saved!!!
-          try
-          {
-            entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllSources(urlinfo);
-          }
-          catch(Exception eee)
-          {
-            Log.debug(15,"Exception opening datafile after trying all sources!");
-            return null;
-          }
-          
-          /*try{
-            // first try looking in the profile temp dir
-            ConfigXML profile = morpho.getProfile();
-            String separator = profile.get("separator", 0);
-            separator = separator.trim();
-            String temp = new String();
-            temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-            temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-            entityFile = fds.openTempFile(temp);
-          }
-          catch (Exception q1) {
-            
-            // oops - now try locally
-            try{
-              
-              entityFile = fds.openFile(urlinfo);
-            }
-            catch (Exception q2) {
-              try
-              {
-                entityFile = fds.openIncompelteFile(urlinfo);
-              }
-              catch(Exception q)
-              {
-                // now try metacat
-                try{
-                  MetacatDataStore mds = new MetacatDataStore(morpho);
-                  entityFile = mds.openFile(urlinfo);
-                }
-                catch (Exception q3) {
-                  // give up!
-                  Log.debug(15,"Exception opening datafile after trying all sources!");
-                  return null;
-                }
-              }
-              
-            
-            }
-          }*/
-        }
-      }
-      catch (Exception q) {
-        Log.debug(15,"Exception opening file!");
-        q.printStackTrace();
-      }
-    }
-    else if (adp.getDistributionArray(entityIndex, 0)==null) {
-      // case where there is no distribution data in the package
-
-      Log.debug(10, "The selected entity has NO distribution information!");
-      return null;
-    }
-
-    if(entityFile == null) {
-      Log.debug(15, "Unable to get the selected entity's data file!");
-      return null;
-    }
-
-    return entityFile;
   }
 
   public static List getColumnValues(File file, Vector colIndices, int numHeaderLines, String delimiter, boolean ignoreConsequtiveDelimiters, int maxLinesNeeded) {

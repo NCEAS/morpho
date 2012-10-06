@@ -6,6 +6,7 @@ package edu.ucsb.nceas.morpho.datastore;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,6 +35,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
+import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
@@ -958,6 +960,83 @@ public class DataStoreServiceController {
 			}
 		}
 
+	}
+	
+	/**
+	 * Returns File for given entityIndex for the given ADP
+	 * @param adp
+	 * @param entityIndex
+	 * @return
+	 */
+	public File getEntityFile(AbstractDataPackage adp, int entityIndex) {
+
+		File entityFile = null;
+		String inline = adp.getDistributionInlineData(entityIndex, 0, 0);
+
+		if (inline.length() > 0) { // there is inline data
+
+			String encMethod = adp.getEncodingMethod(entityIndex, 0);
+			if ((encMethod.indexOf("Base64") > -1)
+					|| (encMethod.indexOf("base64") > -1)
+					|| (encMethod.indexOf("Base 64") > -1)
+					|| (encMethod.indexOf("base 64") > -1)) {
+				// is Base64
+				byte[] decodedData = Base64.decode(inline);
+				ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
+				entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(adp.getAccessionNumber(), bais);
+			} else {
+				// is assumed to be text
+				InputStream inlineStream = new ByteArrayInputStream(inline.getBytes(Charset.forName("UTF-8")));
+				entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(adp.getAccessionNumber(), inlineStream);
+			}
+		} else if (adp.getDistributionUrl(entityIndex, 0, 0).length() > 0) {
+
+			String urlinfo = adp.getDistributionUrl(entityIndex, 0, 0);
+			// assumed that urlinfo is of the form
+			// 'protocol://systemname/localid/other'
+			// protocol is probably 'ecogrid'; system name is 'knb'
+			// we just want the local id here
+			int indx2 = urlinfo.lastIndexOf("/");
+			if (indx2 == -1) {
+				Log.debug(15, "Distribution URL is not in the right format! So data couldnt be retrieved");
+				return null;
+			}
+			urlinfo = urlinfo.substring(indx2 + 1);
+			if (urlinfo.length() == 0) {
+				Log.debug(15, "Distribution URL is not in the right format! So data couldnt be retrieved");
+				return null;
+			}
+			// we now have the id
+			try {
+				String loc = adp.getLocation();
+				if ((loc.equals(DataPackageInterface.LOCAL)) || (loc.equals(DataPackageInterface.BOTH))) {
+					entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
+				} else if (loc.equals(DataPackageInterface.METACAT)) {
+					entityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
+				} else if (loc.equals("")) { // just created the package; not yet saved!!!
+					try {
+						entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllSources(urlinfo);
+					} catch (Exception eee) {
+						Log.debug(15, "Exception opening datafile after trying all sources!");
+						return null;
+					}
+				}
+			} catch (Exception q) {
+				Log.debug(15, "Exception opening file!");
+				q.printStackTrace();
+			}
+		} else if (adp.getDistributionArray(entityIndex, 0) == null) {
+			// case where there is no distribution data in the package
+			Log.debug(10, "The selected entity has NO distribution information!");
+			return null;
+		}
+
+		if (entityFile == null) {
+			Log.debug(15, "Unable to get the selected entity's data file!");
+			return null;
+		}
+
+		return entityFile;
 	}
 	
 	/**

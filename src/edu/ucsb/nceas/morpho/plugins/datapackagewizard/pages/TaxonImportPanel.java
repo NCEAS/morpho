@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
@@ -53,7 +54,6 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import java.awt.Dimension;
-import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -253,7 +253,6 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		}
 		int[] numHeaderLines = new int[ecnt];
 		String[] delimiter = new String[ecnt];
-		Morpho morpho = resultPane.getFramework();
 		
 		// iterate through the selected columns
 		for (int i = 0; i < cols.length; i++) {
@@ -291,8 +290,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 				int entityIndex = adp.getEntityIndex(tableName);
 				if (entityFiles[entityIndex] == null) {
 
-					entityFiles[entityIndex] = CodeDefnPanel.getEntityFile(
-							morpho, adp, entityIndex);
+					entityFiles[entityIndex] = DataStoreServiceController.getInstance().getEntityFile(adp, entityIndex);
 
 					String numHeaders = adp.getPhysicalNumberHeaderLines(
 							entityIndex, 0);
@@ -514,8 +512,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 
 	List getTextValuesFromAttributes(int entityIndex, Vector textCols) {
 
-		Morpho morpho = resultPane.getFramework();
-		File entityFile = CodeDefnPanel.getEntityFile(morpho, adp, entityIndex);
+		File entityFile = DataStoreServiceController.getInstance().getEntityFile(adp, entityIndex);
 		String numHeaders = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
 		int numHeaderLines = 0;
 		try {
