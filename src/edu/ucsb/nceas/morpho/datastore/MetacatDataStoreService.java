@@ -702,7 +702,19 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
     Log.debug(30, "The docid "+name + " status in metacat is "+status);
 	return status;
 }
-
+  
+  /**
+	 * Does this id exist in Metacat?
+	 * @param identifier
+	 * @return
+	 */
+	public boolean exists(String identifier) {
+		
+		String status = DataStoreServiceInterface.NONEXIST;
+		status = status(identifier);
+		return !status.equals(DataStoreServiceInterface.NONEXIST);
+		
+	}
   
   /**
    * Save an xml metadata file (which already exists) to metacat using the 
@@ -1100,6 +1112,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	 * Generate identifer from Metacat store
 	 * @return
 	 */
+	@Override
 	public String generateIdentifier() {
 		String identifier = null;
 		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);

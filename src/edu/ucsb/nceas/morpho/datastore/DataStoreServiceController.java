@@ -1168,13 +1168,13 @@ public class DataStoreServiceController {
 	 */
 	public boolean exists(String docid, String location) {
 		
-		String status = DataStoreServiceInterface.NONEXIST;
+		boolean exists = false;
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
-			status = Morpho.thisStaticInstance.getLocalDataStoreService().status(docid);
+			exists = Morpho.thisStaticInstance.getLocalDataStoreService().exists(docid);
 		} else {
-			status = Morpho.thisStaticInstance.getMetacatDataStoreService().status(docid);
+			exists = Morpho.thisStaticInstance.getMetacatDataStoreService().exists(docid);
 		}
-		return !status.equals(DataStoreServiceInterface.NONEXIST);
+		return exists;
 		
 	}
 

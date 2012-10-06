@@ -205,6 +205,19 @@ public class LocalDataStoreService extends DataStoreService
   }
   
   /**
+	 * Does this id exist locally
+	 * @param identifier
+	 * @return
+	 */
+	public boolean exists(String identifier) {
+		
+		String status = DataStoreServiceInterface.NONEXIST;
+		status = status(identifier);
+		return !status.equals(DataStoreServiceInterface.NONEXIST);
+		
+	}
+  
+  /**
    * Saves a file with the given name.  if the file does not exist it is created
    * The file is saved according to the name provided.   The file will
    * be saved to the &lt;datadir&gt;/&lt;scope&gt;/ directory 
@@ -508,10 +521,10 @@ public class LocalDataStoreService extends DataStoreService
   }
   
   /**
-	 * returns an id for the given location
-	 * for the current scope
+	 * returns an id for the local store for the current scope
 	 * 
 	 */
+  	@Override
 	public synchronized String generateIdentifier() {
 		int lastid = -1;
 		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);

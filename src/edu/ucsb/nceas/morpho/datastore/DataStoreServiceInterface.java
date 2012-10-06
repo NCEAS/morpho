@@ -78,4 +78,8 @@ public interface DataStoreServiceInterface
   public boolean delete(AbstractDataPackage adp) throws Exception;
   
   public AbstractDataPackage read(String identifier) throws Exception;
+  
+  public String generateIdentifier() throws Exception;
+  
+  public boolean exists(String identifer) throws Exception;
 }
