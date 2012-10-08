@@ -747,14 +747,17 @@ public class Morpho
         }
     }
 
+    /**
+     * This method is for junit tests to create a morpho instance
+     */
     public static void createMorphoInstance() {
       try{
         initializeConfiguration();
         // Create a new instance of our application
         Morpho morpho = new Morpho(config);
         // Load the current profile and log in
-        morpho.loadProfile(morpho);
         thisStaticInstance = morpho;
+        morpho.loadProfile(morpho);     
       } catch (Exception e) {
         Log.debug(10,"error creating Morpho Instance");
       }
