@@ -97,7 +97,7 @@ public class ImportEMLFileCommandTest extends TestCase
      */
     public void testExecute() throws IOException, Exception
     {
-       Morpho.createMorphoInstance();
+       Morpho.createMorphoTestInstance();
        UIController.initialize(Morpho.thisStaticInstance);
        ImportEMLFileCommand importEML = new ImportEMLFileCommand();
        importEML.execute(null);

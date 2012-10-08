@@ -102,7 +102,7 @@ public class  ExportToAnotherMetadataDialogTest extends TestCase
      */
     public void testDialog() throws IOException, Exception
     {
-       Morpho.createMorphoInstance();
+       Morpho.createMorphoTestInstance();
        UIController.initialize(Morpho.thisStaticInstance);
        String docid= "jscientist.7.2";
        String location = "local";

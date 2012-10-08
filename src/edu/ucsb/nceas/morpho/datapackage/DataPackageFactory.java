@@ -364,7 +364,7 @@ public class DataPackageFactory
     Entity entityObject = null;
     Attribute attributeObject = null;
     try{
-      Morpho.createMorphoInstance();
+      Morpho.createMorphoTestInstance();
       adp = DataStoreServiceController.getInstance().read("jscientist.7.1", DataPackageInterface.LOCAL);
 
       // create a simple subtree to use to test coverage insertion

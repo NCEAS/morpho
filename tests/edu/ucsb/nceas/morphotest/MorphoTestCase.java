@@ -38,7 +38,7 @@ public class MorphoTestCase extends TestCase
       //System.out.println("the profile dir is "+profileDirName);
       File profileLocation = new File(profileDirName, currentProfileName+".xml");
       profile = new ConfigXML(profileLocation.getAbsolutePath());*/
-      Morpho.createMorphoInstance();
+      Morpho.createMorphoTestInstance();
       config = Morpho.thisStaticInstance.getConfiguration();
       profile = Morpho.thisStaticInstance.getProfile();
   } catch (Exception ioe) {

@@ -750,7 +750,7 @@ public class Morpho
     /**
      * This method is for junit tests to create a morpho instance
      */
-    public static void createMorphoInstance() {
+    public static void createMorphoTestInstance() {
       try{
         initializeConfiguration();
         // Create a new instance of our application
