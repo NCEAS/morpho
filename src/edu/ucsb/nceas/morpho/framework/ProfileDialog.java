@@ -49,7 +49,10 @@ import javax.swing.*;
  */
 public class ProfileDialog extends JDialog implements StateChangeListener
 {
-
+  public static final String DATADIRELEMENTNAME= "datadir";
+  public static final String CACHEDIRELEMENTNAME = "cachedir";
+  public static final String TEMPDIRELEMENTNAME = "tempdir";
+  public static final String INCOMPLETEDIRELEMENTNAME = "incompletedir" ;
   ConfigXML config;
   Morpho framework = null;
   /** the total number of screens to be processed */
@@ -673,22 +676,22 @@ public class ProfileDialog extends JDialog implements StateChangeListener
           profile.save();
 
           // Create our directories for user data
-          String dataDirName = profile.get("datadir", 0);
+          String dataDirName = profile.get(DATADIRELEMENTNAME, 0);
           String dataPath = profilePath + File.separator + dataDirName;
           File dataDir = new File(dataPath);
           success = dataDir.mkdir();
 
-          String cacheDirName = profile.get("cachedir", 0);
+          String cacheDirName = profile.get(CACHEDIRELEMENTNAME, 0);
           String cachePath = profilePath + File.separator + cacheDirName;
           File cacheDir = new File(cachePath);
           success = cacheDir.mkdir();
 
-          String tempDirName = profile.get("tempdir", 0);
+          String tempDirName = profile.get(TEMPDIRELEMENTNAME, 0);
           String tempPath = profilePath + File.separator + tempDirName;
           File tempDir = new File(tempPath);
           success = tempDir.mkdir();
           
-          String incompleteDirName = profile.get("incompletedir", 0);
+          String incompleteDirName = profile.get(INCOMPLETEDIRELEMENTNAME, 0);
           String incompletePath = profilePath + File.separator + incompleteDirName;
           File incompleteDir = new File(incompletePath);
           success = incompleteDir.mkdir();
