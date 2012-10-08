@@ -32,6 +32,7 @@ import java.io.Reader;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -115,6 +116,24 @@ public abstract class DataStoreService implements DataStoreServiceInterface
 	public void debug(int code, String message) {
 		Log.debug(code, message);
 	}
+	
+	/**
+	 * Get the profile directory for a specified profile
+	 * @return the profile directory path string.
+	 */
+	public static String getProfileDir(ConfigXML profile) {
+	  return ConfigXML.getConfigDirectory()+File.separator+Morpho.getConfiguration().get("profile_directory", 0)+
+	      File.separator+profile.get(ProfileDialog.PROFILENAMEELEMENTNAME, 0);
+	}
+	
+	/**
+   * Get the currently using profile directory
+   * @return the profile directory path string.
+   */
+  public static String getProfileDir() {
+    return ConfigXML.getConfigDirectory()+File.separator+Morpho.getConfiguration().get("profile_directory", 0)+
+        File.separator+Morpho.thisStaticInstance.getProfile().get(ProfileDialog.PROFILENAMEELEMENTNAME, 0);
+  }
   
   /** 
    * Parses a dotted notation id into a file path.  johnson2343.13223 becomes
