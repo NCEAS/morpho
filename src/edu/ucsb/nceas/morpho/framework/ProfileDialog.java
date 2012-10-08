@@ -53,6 +53,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   public static final String CACHEDIRELEMENTNAME = "cachedir";
   public static final String TEMPDIRELEMENTNAME = "tempdir";
   public static final String INCOMPLETEDIRELEMENTNAME = "incompletedir" ;
+  public static final String PROFILENAMEELEMENTNAME = "profilename";
   ConfigXML config;
   Morpho framework = null;
   /** the total number of screens to be processed */
@@ -642,8 +643,8 @@ public class ProfileDialog extends JDialog implements StateChangeListener
           // Store the collected information in the profile
           ConfigXML profile = new ConfigXML(profileFileName);
           boolean success = false;
-          if (! profile.set("profilename", 0, profileName)) {
-            success = profile.insert("profilename", profileName);
+          if (! profile.set(PROFILENAMEELEMENTNAME, 0, profileName)) {
+            success = profile.insert(PROFILENAMEELEMENTNAME, profileName);
           }
           if (! profile.set("username", 0, username)) {
             success = profile.insert("username", username);
