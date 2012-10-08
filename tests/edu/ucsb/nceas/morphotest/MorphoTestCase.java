@@ -19,13 +19,14 @@ import junit.framework.TestSuite;
 public class MorphoTestCase extends TestCase
 {
   
-  protected static Morpho morpho;
+  
   protected static ConfigXML config = null;
-  protected static ConfigXML profile;
+  protected static ConfigXML profile = null;
+
   
   static {
     try {
-      File configDir = new File(ConfigXML.getConfigDirectory());
+     /*File configDir = new File(ConfigXML.getConfigDirectory());
       File configFile = new File(configDir, "config.xml");
       config = new ConfigXML(configFile.getAbsolutePath());
       File currentProfileLocation = new File(configDir, "currentprofile.xml");
@@ -36,9 +37,12 @@ public class MorphoTestCase extends TestCase
       File.separator+currentProfileName;
       //System.out.println("the profile dir is "+profileDirName);
       File profileLocation = new File(profileDirName, currentProfileName+".xml");
-      profile = new ConfigXML(profileLocation.getAbsolutePath());
-  } catch (IOException ioe) {
-    fail("Test failed, couldn't create config."+ioe.getMessage());
+      profile = new ConfigXML(profileLocation.getAbsolutePath());*/
+      Morpho.createMorphoInstance();
+      config = Morpho.thisStaticInstance.getConfiguration();
+      profile = Morpho.thisStaticInstance.getProfile();
+  } catch (Exception ioe) {
+    fail("Test failed, couldn't create morpho instance."+ioe.getMessage());
   }
   }
   /**
