@@ -142,18 +142,23 @@ public class FileSystemDataStore {
       buffOut.flush();
       idFileMap.setMap(identifier, file);
     } finally {
-      if(out != null) {
-        out.close();
-      }
-      if(buffOut != null) {
-        buffOut.close();
+      
+      if(buffData != null) {
+        buffData.close();
       }
       if(data != null ) {
         data.close();
       }
-      if(buffData != null) {
-        buffData.close();
+      
+      if(buffOut != null) {
+        buffOut.close();
       }
+      if(out != null) {
+        out.close();
+      }
+     
+    
+     
            
     }
     
