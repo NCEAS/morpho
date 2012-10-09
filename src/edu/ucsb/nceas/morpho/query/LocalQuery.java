@@ -26,31 +26,40 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreService;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceInterface;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
-import edu.ucsb.nceas.morpho.util.Log;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.sql.Timestamp;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.xml.parsers.DocumentBuilder;
+
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import com.arbortext.catalog.*;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.sql.Timestamp;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import javax.swing.ImageIcon;
+
+import com.arbortext.catalog.Catalog;
+import com.arbortext.catalog.CatalogEntityResolver;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceInterface;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * LocalQuery is a class designed to execute a query defined in
@@ -113,30 +122,6 @@ public class LocalQuery
    */
   private static Hashtable packageTriples;
 
-  /** A reference to the Morpho application */
-  private Morpho morpho = null;
-
-  /** The configuration options object reference from the Morpho framework */
-  private ConfigXML config = null;
-
-  /** The name of the current profile */
-  private String currentProfile;
-
-  /** The profile directory */
-  private String profileDir;
-
-  /** The directory containing all local stored metadata and data */
-  private String datadir;
-
-  /** The directory containing locally stored dtds */
-  private String local_dtd_directory;
-
-  /** The file used by the catalog system for looking up public identifiers */
-  private String xmlcatalogfile;
-
-  /** The separator used in accesion numbers */
-  private String separator;
-
   /** list of field to be returned from query */
   private Vector returnFields;
 
@@ -153,9 +138,6 @@ public class LocalQuery
   private ImageIcon localPackageIcon = null;
   /** The folder icon for representing local storage with data. */
   private ImageIcon localPackageDataIcon = null;
-  
-  /* the directory contains the incomplete documents*/
-  private String incompleteDir;
 
   // create these static caches when class is first loaded
   static {
@@ -182,22 +164,14 @@ public class LocalQuery
       = new ImageIcon(getClass().getResource("metadata-only-small.png"));
     localPackageIcon.setDescription(ImageRenderer.PACKAGETOOLTIP);
 
-    localPackageDataIcon
-      = new ImageIcon(getClass().getResource("metadata+data-small.png"));
+    localPackageDataIcon = new ImageIcon(getClass().getResource("metadata+data-small.png"));
     localPackageDataIcon.setDescription(ImageRenderer.PACKAGEDATATOOLTIP);
-
-
-    this.morpho = morpho;
-    this.config = morpho.getConfiguration();
 
     loadConfigurationParameters();
     
     //use the given doctypes for return
     dt2bReturned = query.getReturnDocList();
 
-    datadir = datadir.trim();
-    xmlcatalogfile = config.getConfigDirectory() + File.separator +
-                              local_dtd_directory.trim()+"/catalog";
   }
 
   
@@ -206,6 +180,7 @@ public class LocalQuery
    */
   public ResultSet execute()
   {
+	  String datadir = Morpho.thisStaticInstance.getLocalDataStoreService().getDataDir();
 	   File xmldir = new File(datadir);
 	   Vector filevector = new Vector();
 	    // get a list of all files to be searched
@@ -219,6 +194,8 @@ public class LocalQuery
    */
   public ResultSet executeInInCompleteDoc()
   {
+	  
+	  String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
 	  File xmldir = new File(incompleteDir);
 	  Vector fileVector = new Vector();
 	  getFiles(xmldir, fileVector);
@@ -256,7 +233,7 @@ public class LocalQuery
         }
       }
       //rs = new ResultSet(savedQuery, "local", rowCollection, morpho);
-      rs = new HeadResultSet(savedQuery, rowCollection, morpho);
+      rs = new HeadResultSet(savedQuery, rowCollection, Morpho.thisStaticInstance);
     }
 
     return rs;
@@ -268,6 +245,7 @@ public class LocalQuery
    */
   private boolean belongToWizard(String packageID, String sourceDir)
   {
+	  String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
     boolean belong = false;
     if(packageID != null && !packageID.trim().equals(""))
     {
@@ -308,12 +286,11 @@ public class LocalQuery
     Node root;
     long starttime, curtime, fm;
     Log.debug(30, "(3.0) Creating DOM parser...");
-    DocumentBuilder parser = morpho.createDomParser();
+    DocumentBuilder parser = Morpho.createDomParser();
     Log.debug(30, "(3.1) DOM parser created...");
     // first set up the catalog system for handling locations of DTDs
     CatalogEntityResolver cer = new CatalogEntityResolver();
-    String catalogPath = //config.getConfigDirectory() + File.separator +
-                                                    config.get("local_catalog_path",0);
+    String catalogPath = Morpho.getConfiguration().get("local_catalog_path",0);
 
     try {
       Catalog myCatalog = new Catalog();
@@ -343,8 +320,11 @@ public class LocalQuery
 //DFH      String docid = currentfile.getParentFile().getName() + separator +
 //DFH                     currentfile.getName();
       File parentFile = new File(currentfile.getParent());
-      String docid = parentFile.getName() + separator + currentfile.getName();
-
+      
+      // TODO: we should not be constructing this ID directly from the file, AC is here for easy removal
+      String docid = parentFile.getName() + "." + currentfile.getName();
+	  Vector<String> idParts = AccessionNumber.getInstance().getParts(docid);
+	  
       // skips subdirectories and docs in doNotParse collection
       if ((currentfile.isFile())&&(!doNotParseCollection.contains(docid))) {
         // checks to see if doc has already been placed in DOM cache
@@ -457,14 +437,16 @@ public class LocalQuery
 
   /** Create a row vector that matches that needed for the ResultSet vector */
   private Vector createRSRow(String docid, String sourceDirectory) {
-    int firstSep = docid.indexOf(separator);
-    String filename = docid.substring(0,firstSep) + File.separator +
-                      docid.substring(firstSep+1, docid.length());
+	  
+	  // TODO: we should not be parsing this directly, but I am using AC as a placeholder for easy removal.
+	  Vector<String> idParts = AccessionNumber.getInstance().getParts(docid);
+	  String filename = idParts.get(0) + File.separator + idParts.get(1) + "." + idParts.get(2);
     File fn = new File(sourceDirectory, filename);
     String fullfilename = fn.getPath();
     String localStatus = QueryRefreshInterface.LOCALCOMPLETE;
     Hashtable domCollection = null;
     Hashtable doctypeCollection = null;
+    String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
     if(sourceDirectory != null && sourceDirectory.equals(incompleteDir))
     {
       domCollection = dom_incomplete_collection;
@@ -564,6 +546,7 @@ public class LocalQuery
       pathstring = "//"+pathstring;
     }
     Hashtable domCollection = null;
+    String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
     if(sourceDir != null && sourceDir.equals(incompleteDir))
     {
       domCollection = dom_incomplete_collection;
@@ -836,6 +819,7 @@ public class LocalQuery
   {
     Vector combined = null;
     Vector currentResults = null;
+    String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
 
     if (qg == null) {
     	return new Vector();
@@ -904,29 +888,10 @@ public class LocalQuery
    */
   private void loadConfigurationParameters()
   {
-    ConfigXML profile = morpho.getProfile();
-    currentProfile = profile.get("profilename", 0);
-    profileDir = config.getConfigDirectory() + File.separator +
-                       config.get("profile_directory", 0) + File.separator +
-                       currentProfile;
-    datadir = profileDir + File.separator + profile.get("datadir", 0);
-    String searchLocalString = profile.get("searchlocal", 0);
-    //searchLocal = (new Boolean(searchLocalString)).booleanValue();
-    returnFields = config.get("returnfield");
-    doctypes2bsearched = config.get("doctype");
-    dt2bReturned = config.get("returndoc");
-    local_dtd_directory = config.get("local_dtd_directory", 0);
-    separator = profile.get("separator", 0);
-    String incomplete = profile.get("incompletedir", 0);
-    //in case no incomplete dir in old version profile
-    if(incomplete == null || incomplete.trim().equals(""))
-    {
-    	incompleteDir = profileDir+ File.separator + DataStoreService.INCOMPLETEDIR;
-    }
-    else
-    {
-    	incompleteDir = profileDir + File.separator + incomplete;
-    }
+    returnFields = Morpho.getConfiguration().get("returnfield");
+    doctypes2bsearched = Morpho.getConfiguration().get("doctype");
+    dt2bReturned = Morpho.getConfiguration().get("returndoc");
+    
   }
 
   /*
