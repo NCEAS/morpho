@@ -216,6 +216,16 @@ public class LocalDataStoreService extends DataStoreService
 		return !status.equals(DataStoreServiceInterface.NONEXIST);
 		
 	}
+	
+	/**
+	 * Performs a local query
+	 * TODO: refactor LocalQuery/Query code to conform to this interface?
+	 */
+	@Override
+	public InputStream query(String query) {
+		
+		return null;
+	}
   
   /**
    * Saves a file with the given name.  if the file does not exist it is created

@@ -568,7 +568,11 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
     }
   }
   
-  /** Send the query to metacat, get back the XML resultset */
+  /** Send the given query to Metacat, get back the XML resultset
+   * @param query the pathquery string for "squery" action
+   * @return the XML resultset for the query
+   */
+  @Override
   public InputStream query(String query)
   {
     Log.debug(30, "(2.1) Executing metacat query...");

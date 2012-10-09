@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.Reader;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
@@ -82,4 +83,7 @@ public interface DataStoreServiceInterface
   public String generateIdentifier() throws Exception;
   
   public boolean exists(String identifer) throws Exception;
+  
+  public InputStream query(String query) throws Exception;
+
 }
