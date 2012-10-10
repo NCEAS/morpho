@@ -792,11 +792,9 @@ public class DataStoreServiceController {
 			// dataFile = fds.openTempFile(temp);
 			dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openTempFile(oldDocid);
 			// open old file name (if no file change, the old file name will be as same as docid).
-			InputStream dfis = new FileInputStream(dataFile);
 			// Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-			Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(docid, dfis);
+			Morpho.thisStaticInstance.getLocalDataStoreService().newDataFile(docid, dataFile, oldDocid);
 			// the temp file has been saved; thus delete
-			dfis.close();
 			// dataFile.delete();
 		} catch (Exception qq) {
 			// try to open incomplete file
@@ -804,20 +802,16 @@ public class DataStoreServiceController {
 				dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openIncompleteFile(oldDocid);
 				// open old file name (if no file change, the old file name will
 				// be as same as docid).
-				InputStream dfis = new FileInputStream(dataFile);
 				// Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-				Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(docid, dfis);
+				Morpho.thisStaticInstance.getLocalDataStoreService().newDataFile(docid, dataFile, oldDocid);
 				// the temp file has been saved; thus delete
-				dfis.close();
 			} catch (Exception e) {
 				// if a datafile is on metacat and one wants to save locally
 				try {
 					// open old file name (if no file change, the old file name
 					// will be as same as docid).
 					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(oldDocid);
-					InputStream dfis = new FileInputStream(dataFile);
-					Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(docid, dfis);
-					dfis.close();
+					Morpho.thisStaticInstance.getLocalDataStoreService().newDataFile(docid, dataFile, oldDocid);
 				} catch (Exception qqq) {
 					// some other problem has occured
 					Log.debug(5, "Some problem with saving local data files has occurred! "

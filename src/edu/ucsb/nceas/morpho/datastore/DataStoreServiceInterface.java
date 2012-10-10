@@ -61,18 +61,39 @@ public interface DataStoreServiceInterface
    * data store.
    */
   public File saveFile(String name, Reader file)
-         throws Exception;
+		throws Exception;
+  
+  
+  /**
+   * Save a data file to the store
+   * @param id
+   * @param file
+   * @param objectName
+   * @throws Exception
+   */
+  public void newDataFile(String id, File file, String objectName) 
+	throws Exception;
   
   /**
    * create a new file with an id of name in the datastore and return a File
    * object that represents it.
    */
   public File newFile(String name, Reader file)
-         throws Exception;
+		throws Exception;
   
   /**
-   * Deletes the file with an id of name.  returns true if the file was 
-   * succesfully deleted, false otherwise
+   * Save a new data file to the store
+   * @param id
+   * @param file
+   * @param objectName
+   * @throws Exception
+   */
+//  public File newDataFile(String id, File file, String objectName) 
+//		throws Exception;
+  
+  /**
+   * Deletes the file with given name.  returns true if the file was 
+   * successfully deleted, false otherwise
    */
   public boolean deleteFile(String name) throws Exception;
   

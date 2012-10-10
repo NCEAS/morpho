@@ -150,9 +150,9 @@ public class LocalDataStoreService extends DataStoreService
 		return file;
 	}
 
-  public File saveDataFile(String name, InputStream file)
+  public void newDataFile(String name, File file, String objectName) throws FileNotFoundException
   {
-    return saveDataFile(name, file, getDataDir());
+    saveDataFile(name, new FileInputStream(file), getDataDir());
   }
   
   public File saveTempDataFile(String name, InputStream file)
@@ -892,8 +892,8 @@ public class LocalDataStoreService extends DataStoreService
 					// now we copy the file into morpho
 					String identifier = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
 					try {
-						InputStream dfis = new FileInputStream(localFile);
-						saveDataFile(identifier, dfis);
+						String objectName = adp.getEntityName(i);
+						newDataFile(identifier, localFile, objectName);
 						// now we can modify the online url in metadata.
 						String url = AbstractDataPackage.ECOGRID + "://knb/" + identifier;
 						adp.setDistributionUrl(i, 0, 0, url);
