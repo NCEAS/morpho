@@ -112,6 +112,17 @@ public class DataStoreServiceController {
 		
 		return adp;
 	}
+	
+	public File openFile(String identifier,String location) throws FileNotFoundException, CacheAccessException {
+		File file = null;
+		// get from metacat only if we have to
+		if (location.equals(DataPackageInterface.METACAT)) {
+			file  = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(identifier);
+		} else {
+			file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
+		}
+		return file;
+	}
     
     /**
 	 * returns the next id for the given location

@@ -499,18 +499,6 @@ public class LocalDataStoreService extends DataStoreService
 
 	}
   
-  
-  /**
-   * Gets a metadata file from all local source. It will looks file in data dir, then in temporary dir, 
-   * finally the incomplete dir
-   * @param doicd
-   * @return
-   */
-  public File getMetadataFileFromAllLocalSources(String docid) throws FileNotFoundException
-  {
-    return getDataFileFromAllLocalSources(docid);
-  }
-  
   /**
 	 * returns an id for the local store for the current scope
 	 * 
