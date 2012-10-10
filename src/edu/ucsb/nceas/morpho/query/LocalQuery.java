@@ -611,99 +611,88 @@ public class LocalQuery
   }
 
    /**
-    * given a directory, return a vector of files it contains
-    * including subdirectories
-    */
-   private Vector<File> getFiles(File directoryFile) {
-	   
-	   Vector<File> vec = new Vector<File>();
-      String[] files = directoryFile.list();
-      if(files != null)
-      {
-        for (int i=0;i<files.length;i++)
-        {
-            String filename = files[i];
-            File currentfile = new File(directoryFile, filename);
-            if (currentfile.isDirectory()) {
-                vec.addAll(getFiles(currentfile));  // recursive call to subdirecctories
-            }
-            if (currentfile.isFile()) {
-                try {
-                    Double d = Double.valueOf(filename);
-                    vec.addElement(currentfile);
-                } catch (NumberFormatException nfe) {
-                    Log.debug(30, "Not loading file with invalid name: " + filename);
-                }
-            }
-        }
-        vec = getLatestVersion(vec);
-      }
-      
-      return vec;
-     
-   }
+	 * given a directory, return a vector of files it contains including
+	 * subdirectories
+	 */
+	private Vector<File> getFiles(File directoryFile) {
+
+		Vector<File> vec = new Vector<File>();
+		String[] files = directoryFile.list();
+		if (files != null) {
+			for (int i = 0; i < files.length; i++) {
+				String filename = files[i];
+				File currentfile = new File(directoryFile, filename);
+				if (currentfile.isDirectory()) {
+					vec.addAll(getFiles(currentfile)); // recursive call to add subdirecctories
+				}
+				if (currentfile.isFile()) {
+					try {
+						Double d = Double.valueOf(filename);
+						vec.addElement(currentfile);
+					} catch (NumberFormatException nfe) {
+						Log.debug(30, "Not loading file with invalid name: "
+								+ filename);
+					}
+				}
+			}
+			vec = getLatestVersion(vec);
+		}
+
+		return vec;
+
+	}
 
   /**
-   *  modify list to only contain latest version as indicated by a trailing
-   *  version number
-   *  This is to reduce the search time by avoiding older versions
-   */
-  private Vector<File> getLatestVersion(Vector<File> vec) {
-	  
-	  Vector<File> returnVector = null;
-    String dot = ".";
-    if(vec != null)
-    {
-    	returnVector = new Vector<File>();
-      Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
-      for(int i=0; i<vec.size();i++)
-      {
-        File file = vec.elementAt(i);
-        if(file != null)
-        {
-          String name1 = file.getAbsolutePath();
-          try
-          {
-            int periodloc = name1.lastIndexOf(dot);
-            String namestart = name1.substring(0,periodloc);
-            if(namestart != null)
-            {
-              String vernum = name1.substring(periodloc+1,name1.length());
-              Integer intVer = new Integer(vernum);
-              if(maxVersions.containsKey(namestart))
-              {
-                Integer currentMax = maxVersions.get(namestart);
-                if(currentMax != null && currentMax.intValue() > intVer.intValue())
-                {
-                  //we already stored a greater version, so skip this one
-                  continue;
-                }
-              }
-              maxVersions.put(namestart, intVer);
-            }
-          }
-          catch(Exception e)
-          {
-            continue;
-          }
-        }
-      }
-      //put maxVersions into the new vector
-      Enumeration<String> enumeration = maxVersions.keys();
-      while (enumeration.hasMoreElements()) {
-          String nameStart = enumeration.nextElement();
-          if(nameStart != null)
-          {
-            Integer version  = maxVersions.get(nameStart);
-            if(version != null)
-            {
-              returnVector.add(new File(nameStart+dot+version.toString()));
-            }
-          }
-      }
-    }
-    return returnVector;
-  }
+	 * modify list to only contain latest version as indicated by a trailing
+	 * version number This is to reduce the search time by avoiding older
+	 * versions
+	 */
+	private Vector<File> getLatestVersion(Vector<File> vec) {
+
+		Vector<File> returnVector = null;
+		String dot = ".";
+		if (vec != null) {
+			returnVector = new Vector<File>();
+			Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
+			for (int i = 0; i < vec.size(); i++) {
+				File file = vec.elementAt(i);
+				if (file != null) {
+					String name1 = file.getAbsolutePath();
+					try {
+						int periodloc = name1.lastIndexOf(dot);
+						String namestart = name1.substring(0, periodloc);
+						if (namestart != null) {
+							String vernum = name1.substring(periodloc + 1, name1.length());
+							Integer intVer = new Integer(vernum);
+							if (maxVersions.containsKey(namestart)) {
+								Integer currentMax = maxVersions.get(namestart);
+								if (currentMax != null && currentMax.intValue() > intVer.intValue()) {
+									// we already stored a greater version, so
+									// skip this one
+									continue;
+								}
+							}
+							maxVersions.put(namestart, intVer);
+						}
+					} catch (Exception e) {
+						continue;
+					}
+				}
+			}
+			// put maxVersions into the new vector
+			Enumeration<String> enumeration = maxVersions.keys();
+			while (enumeration.hasMoreElements()) {
+				String nameStart = enumeration.nextElement();
+				if (nameStart != null) {
+					Integer version = maxVersions.get(nameStart);
+					if (version != null) {
+						returnVector.add(new File(nameStart + dot + version.toString()));
+					}
+				}
+			}
+		}
+		return returnVector;
+	}
 
   /**
    * given a QueryTerm, construct a XPath expression
