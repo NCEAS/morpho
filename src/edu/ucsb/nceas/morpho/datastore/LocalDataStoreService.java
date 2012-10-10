@@ -641,41 +641,6 @@ public class LocalDataStoreService extends DataStoreService
 	  }
   
   /**
-   * Gets metadata file from both local and metacata source
-   * @param docid
-   * @return
-   */
-  public File getMetadataFileFromAllSources(String docid) throws FileNotFoundException
-  {
-    File file = null;  
-    if(docid != null && !docid.equals(""))
-    {
-      try
-      {
-        //try local resrouce
-        file = getMetadataFileFromAllLocalSources(docid);
-      }
-      catch(Exception e)
-      {
-        try
-        {
-          file = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(docid);
-        }
-        catch(Exception ee)
-        {
-          throw new FileNotFoundException("Couldn't find docid "+docid+" in metacat");
-        }
-        
-      }
-    }
-    if(file == null)
-    {
-      throw new FileNotFoundException("Couldn't find docid "+docid+" in morpho file system");
-    }
-    return file;
-  }
-  
-  /**
    * Gets a data file from all local source. It will looks file in data dir, then in temporary dir, 
    * finally the incomplete dir
    * @param doicd
