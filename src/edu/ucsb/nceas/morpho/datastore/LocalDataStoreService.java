@@ -39,12 +39,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -781,6 +786,109 @@ public class LocalDataStoreService extends DataStoreService
     }
     return file;
   }
+  
+  
+  /**
+   * Get a list of all current identifiers for local store
+   * Location can be QueryRefreshInterface.LOCALINCOMPLETEPACKAGE for 
+   * listing current incomplete identifiers
+   * @param location optional incomplete (QueryRefreshInterface.LOCALINCOMPLETEPACKAGE) specifier
+   * @return list of identifiers
+   */
+  public Vector<String> getAllIdentifiers(String location) {
+		if (location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE)) {
+			return getIdentifiers(new File(getIncompleteDir()));
+		} else {
+			return getIdentifiers(new File(getDataDir()));
+		}
+	}
+	
+  /**
+	 * given a directory, return a vector of identifiers (based on files it contains)
+	 * including subdirectories
+	 * @deprecated this should really be in the FileSystemDataStore
+	 */
+	private Vector<String> getIdentifiers(File directoryFile) {
+
+		Vector<String> identifiers = new Vector<String>();
+		String[] files = directoryFile.list();
+		if (files != null) {
+			for (int i = 0; i < files.length; i++) {
+				String filename = files[i];
+				File currentfile = new File(directoryFile, filename);
+				if (currentfile.isDirectory()) {
+					identifiers.addAll(getIdentifiers(currentfile)); // recursive call to add subdirecctories
+				}
+				if (currentfile.isFile()) {
+					try {
+						
+						Double d = Double.valueOf(filename);
+						// add the identifier as parentdir.filename
+						String scope = currentfile.getParentFile().getName();
+						String identifier = scope + "." + filename;
+						identifiers.addElement(identifier);
+					} catch (NumberFormatException nfe) {
+						Log.debug(30, "Not loading file with invalid name: " + filename);
+					}
+				}
+			}
+			identifiers = getLatestVersion(identifiers);
+		}
+
+		return identifiers;
+
+	}
+	
+	 /**
+	 * modify list to only contain latest version as indicated by a trailing
+	 * version number This is to reduce the search time by avoiding older
+	 * versions
+	 * @deprecated please replace me with something better when we have it!
+	 */
+	private Vector<String> getLatestVersion(Vector<String> identifiers) {
+
+		Vector<String> returnVector = null;
+		String dot = ".";
+		if (identifiers != null) {
+			returnVector = new Vector<String>();
+			Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
+			for (int i = 0; i < identifiers.size(); i++) {
+				String identifier = identifiers.elementAt(i);
+				try {
+					Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
+					String docid = idParts.get(0) + dot + idParts.get(1);
+					String revision = idParts.get(2);
+					if (docid != null) {
+						Integer intVer = new Integer(revision);
+						if (maxVersions.containsKey(docid)) {
+							Integer currentMax = maxVersions.get(docid);
+							if (currentMax != null && currentMax.intValue() > intVer.intValue()) {
+								// we already stored a greater version, so
+								// skip this one
+								continue;
+							}
+						}
+						maxVersions.put(docid, intVer);
+					}
+				} catch (Exception e) {
+					continue;
+				}
+				
+			}
+			// put maxVersions into the new vector
+			Enumeration<String> enumeration = maxVersions.keys();
+			while (enumeration.hasMoreElements()) {
+				String docid = enumeration.nextElement();
+				if (docid != null) {
+					Integer version = maxVersions.get(docid);
+					if (version != null) {
+						returnVector.add(docid + dot + version.toString());
+					}
+				}
+			}
+		}
+		return returnVector;
+	}
   
   /**
 	 * Gets next revisons from loca. This method will look at the profile/scope dir and figure

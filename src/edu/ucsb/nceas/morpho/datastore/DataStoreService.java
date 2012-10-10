@@ -77,7 +77,7 @@ public abstract class DataStoreService implements DataStoreServiceInterface
    * Gets the data dir directory
    * @return
    */
-  public String getDataDir() {
+  protected String getDataDir() {
 		ConfigXML profile = morpho.getProfile();
 		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
 				+ config.get("profile_directory", 0) + File.separator
@@ -97,7 +97,7 @@ public abstract class DataStoreService implements DataStoreServiceInterface
 		return cachedir;
 	}
   
-  public String getIncompleteDir() {
+  protected String getIncompleteDir() {
 		String incompletedir = null;
 		ConfigXML profile = morpho.getProfile();
 		String profileDirName = ConfigXML.getConfigDirectory() + File.separator

@@ -53,7 +53,6 @@ import com.arbortext.catalog.Catalog;
 import com.arbortext.catalog.CatalogEntityResolver;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -176,78 +175,76 @@ public class LocalQuery
 
   
   /**
-   * Run the query against the local document store
-   */
-  public ResultSet execute()
-  {
-	  String datadir = Morpho.thisStaticInstance.getLocalDataStoreService().getDataDir();
-	   File xmldir = new File(datadir);
-	    // get a list of all files to be searched
-	   Vector<File> filevector = getFiles(xmldir);
-      return execute(filevector, datadir);
-  }
+	 * Run the query against the local document store
+	 */
+	public ResultSet execute() {
+		// get a list of all local identifiers to be searched
+		Vector<String> identifiers = Morpho.thisStaticInstance.getLocalDataStoreService().getAllIdentifiers(QueryRefreshInterface.LOCALCOMPLETE);
+		return execute(identifiers, QueryRefreshInterface.LOCALCOMPLETE);
+	}
   
   /**
-   * Run the query against local incomplete doc
-   * @return
-   */
-  public ResultSet executeInInCompleteDoc()
-  {
-	  
-	  String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
-	  File xmldir = new File(incompleteDir);
-	  Vector<File> fileVector = getFiles(xmldir);
-	  dom_incomplete_collection = new Hashtable<String, Document>();
-	  doctype_incomplete_collection = new Hashtable<String, String>();
-	  dataPackage_incomplete_collection = new Hashtable<String, Vector<String>>();
-	  return execute(fileVector, incompleteDir);
-  }
+	 * Run the query against local incomplete doc
+	 * 
+	 * @return
+	 */
+	public ResultSet executeInInCompleteDoc() {
+
+		Vector<String> identifiers = Morpho.thisStaticInstance
+				.getLocalDataStoreService().getAllIdentifiers(
+						QueryRefreshInterface.LOCALINCOMPLETEPACKAGE);
+		dom_incomplete_collection = new Hashtable<String, Document>();
+		doctype_incomplete_collection = new Hashtable<String, String>();
+		dataPackage_incomplete_collection = new Hashtable<String, Vector<String>>();
+		return execute(identifiers, QueryRefreshInterface.LOCALINCOMPLETEPACKAGE);
+	}
   
   /*
    * Run the query against the local document store
    */
-  private ResultSet execute(Vector<File> filevector, String fromDataDir)
-  {
-    // first, get a list of all packages that meet the query requirements
-    Vector<String> packageList = executeLocal(this.savedQuery.getQueryGroup(), filevector, fromDataDir);
-    Vector row = null;
-    Vector rowCollection = new Vector();
+  private ResultSet execute(Vector<String> identifiers, String location) {
+		// first, get a list of all packages that meet the query requirements
+		Vector<String> packageList = executeLocal(this.savedQuery.getQueryGroup(), identifiers, location);
+		Vector rowCollection = new Vector();
 
-    // now build a Vector of Vectors (tablemodel)
-    ResultSet rs = null;
-    if (packageList != null) {
-      Enumeration<String> pl = packageList.elements();
-      while (pl.hasMoreElements()) {
-        String packageName = pl.nextElement();
-        //Log.debug(5, "package name is "+packageName);
-        if(!belongToWizard(packageName, fromDataDir))
-        {
-          row = createRSRow(packageName, fromDataDir);
-          rowCollection.addElement(row);
-        }
-        else
-        {
-          Log.debug(30, "The docid "+packageName+" is skipped on LocalQuery.execute since it is a tracing-wizard-change document");
-        }
-      }
-      //rs = new ResultSet(savedQuery, "local", rowCollection, morpho);
-      rs = new HeadResultSet(savedQuery, rowCollection, Morpho.thisStaticInstance);
-    }
+		// now build a Vector of Vectors (tablemodel)
+		ResultSet rs = null;
+		if (packageList != null) {
+			Enumeration<String> pl = packageList.elements();
+			while (pl.hasMoreElements()) {
+				String packageName = pl.nextElement();
+				// Log.debug(5, "package name is "+packageName);
+				if (!belongToWizard(packageName, location)) {
+					Vector row = null;
+					try {
+						row = createRSRow(packageName, location);
+					} catch (FileNotFoundException e) {
+						Log.debug(6, "Error creating resultset row for identifier: " + packageName + ". Error: " + e.getMessage());
+						continue;
+					}
+					rowCollection.addElement(row);
+				} else {
+					Log.debug(30,"The docid "
+									+ packageName
+									+ " is skipped on LocalQuery.execute since it is a tracing-wizard-change document");
+				}
+			}
+			rs = new HeadResultSet(savedQuery, rowCollection, Morpho.thisStaticInstance);
+		}
 
-    return rs;
-  }
+		return rs;
+	}
   
   /*
    * Check if the package id on incomplete dir belongs a wizard (package wizard or entity wizard)
    * It can be a running wizard or idle wizard(user click finish button, but not save)
    */
-  private boolean belongToWizard(String packageID, String sourceDir)
+  private boolean belongToWizard(String packageID, String location)
   {
-	  String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
     boolean belong = false;
     if(packageID != null && !packageID.trim().equals(""))
     {
-      if(sourceDir != null && sourceDir.equals(incompleteDir))
+      if(location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE))
       {
         //check entity wizard (and code import wizard) first
         if(UIController.getInstance().isEntityWizardRunning(packageID) ||UIController.getInstance().isWizardIdle(packageID))
@@ -277,7 +274,7 @@ public class LocalQuery
    *
    * @param xpathExpression the XPath query string
    */
-  private Vector<String> executeXPathQuery(String xpathExpression, Vector<File> filevector, Hashtable<String, Document> domCollection,
+  private Vector<String> executeXPathQuery(String xpathExpression, Vector<String> filevector, Hashtable<String, Document> domCollection,
                                                    Vector<String> doNotParseCollection, Hashtable<String, String> docTypeCollection, 
                                                    Hashtable<String, Vector<String>> dataPackageCollection)
   {
@@ -314,34 +311,32 @@ public class LocalQuery
 
     // iterate over all the files that are in the local xml directory
     for (int i=0;i<filevector.size();i++) {
-      File currentfile = filevector.elementAt(i);
-      String filename = currentfile.getPath();
-//DFH      String docid = currentfile.getParentFile().getName() + separator +
-//DFH                     currentfile.getName();
-      File parentFile = new File(currentfile.getParent());
-      
-      // TODO: we should not be constructing this ID directly from the file, AC is here for easy removal
-      String docid = parentFile.getName() + "." + currentfile.getName();
-	  Vector<String> idParts = AccessionNumber.getInstance().getParts(docid);
+    	String identifier = filevector.elementAt(i);
+    	File currentfile = null;
+		try {
+			currentfile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
+		} catch (FileNotFoundException e) {
+            Log.debug(6,"File not found for " + identifier + ": " + e.getMessage());
+            continue;
+		}
 	  
       // skips subdirectories and docs in doNotParse collection
-      if ((currentfile.isFile())&&(!doNotParseCollection.contains(docid))) {
+      if ((currentfile.isFile())&&(!doNotParseCollection.contains(identifier))) {
         // checks to see if doc has already been placed in DOM cache
         // if so, no need to parse again
         //Log.debug(10,"current id: "+docid);
-        if (domCollection.containsKey(docid)){
-          root = domCollection.get(docid).getDocumentElement();
-          if (docTypeCollection.containsKey(docid)) {
-            currentDoctype = docTypeCollection.get(docid);
+        if (domCollection.containsKey(identifier)){
+          root = domCollection.get(identifier).getDocumentElement();
+          if (docTypeCollection.containsKey(identifier)) {
+            currentDoctype = docTypeCollection.get(identifier);
           }
         } else {
         //  Log.debug(10,"parsing "+docid);
           InputSource in;
           try {
-            in = new InputSource(new FileInputStream(filename));
+            in = new InputSource(new FileInputStream(currentfile));
           } catch (FileNotFoundException fnf) {
-            Log.debug(6,"FileInputStream of " + filename +
-                               " threw: " + fnf.toString());
+            Log.debug(6,"File not found for " + identifier + ": " + fnf.getMessage());
             continue;
           }
           Document current_doc = null;
@@ -351,24 +346,24 @@ public class LocalQuery
             Log.debug(30, "(3.3) Ended parse...");
           } catch(Exception e1) {
             // Either this isn't an XML doc, or its broken, so skip it
-            Log.debug(20,"Parsing error: " + filename);
+            Log.debug(20,"Parsing error: " + identifier);
             Log.debug(20,e1.toString());
-            doNotParseCollection.addElement(docid);
+            doNotParseCollection.addElement(identifier);
             continue;
           }
 
           // Get the documentElement from the parser, which is what
           // the selectNodeList method expects
           root = current_doc.getDocumentElement();
-          domCollection.put(docid,current_doc);
+          domCollection.put(identifier, current_doc);
           String temp = getDocTypeFromDOM(current_doc);
           if (temp==null) temp = root.getNodeName();
-          docTypeCollection.put(docid,temp);
+          docTypeCollection.put(identifier, temp);
           currentDoctype = temp;
         } // end else
         
         if ((dt2bReturned.contains("any")) || (dt2bReturned.contains(currentDoctype))) {
-            addToPackageList(root, docid, dataPackageCollection);
+            addToPackageList(root, identifier, dataPackageCollection);
         }
         
         String rootname = root.getNodeName();
@@ -397,10 +392,10 @@ public class LocalQuery
             if ((nl != null && nl.getLength()>0)||allHits) {
               try {
                 // If this docid is in any packages, record those package ids
-                if (dataPackageCollection.containsKey(docid)) {
-                	String doctype = docTypeCollection.get(docid);
+                if (dataPackageCollection.containsKey(identifier)) {
+                	String doctype = docTypeCollection.get(identifier);
                 	if (dt2bReturned.contains(doctype)) {
-		                  Vector<String> ids = dataPackageCollection.get(docid);
+		                  Vector<String> ids = dataPackageCollection.get(identifier);
 		                  Enumeration<String> q = ids.elements();
 		                  while (q.hasMoreElements()) {
 		                    String id = q.nextElement();
@@ -434,152 +429,148 @@ public class LocalQuery
 
 
 
-  /** Create a row vector that matches that needed for the ResultSet vector */
-  private Vector createRSRow(String docid, String sourceDirectory) {
-	  
-	  // TODO: we should not be parsing this directly, but I am using AC as a placeholder for easy removal.
-	  Vector<String> idParts = AccessionNumber.getInstance().getParts(docid);
-	  String filename = idParts.get(0) + File.separator + idParts.get(1) + "." + idParts.get(2);
-    File fn = new File(sourceDirectory, filename);
-    String fullfilename = fn.getPath();
-    String localStatus = QueryRefreshInterface.LOCALCOMPLETE;
-    Hashtable<String, Document> domCollection = null;
-    Hashtable<String, String> doctypeCollection = null;
-    String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
-    if(sourceDirectory != null && sourceDirectory.equals(incompleteDir))
-    {
-      domCollection = dom_incomplete_collection;
-      doctypeCollection = doctype_incomplete_collection;
-      String traceValue = getValueForPath(IncompleteDocSettings.TRACINGCHANGEPATH, docid, incompleteDir);
-      //Log.debug(5, "traceValue on LocalQuery.createRSRow is "+traceValue);
-      if(traceValue != null && traceValue.equals(IncompleteDocSettings.TRUE))
-      {
-        localStatus = QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE;
-      }
-      else
-      {
-        localStatus = QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE;
-      }
-    }
-    else
-    {
-      domCollection = dom_collection;
-      doctypeCollection = doctype_collection;
-    }
+  /** Create a row vector that matches that needed for the ResultSet vector 
+ * @throws FileNotFoundException */
+	private Vector createRSRow(String docid, String location) throws FileNotFoundException {
 
-    // Get the triples for this package
-    Vector<Hashtable<String, String>> tripleList = packageTriples.get(docid);
+		// get reference to the file, depending on location
+		File file = null;
 
-    // Create the result row
-    Vector rss = new Vector();
+		String localStatus = QueryRefreshInterface.LOCALCOMPLETE;
+		Hashtable<String, Document> domCollection = null;
+		Hashtable<String, String> doctypeCollection = null;
+		if (location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE)) {
+			file = Morpho.thisStaticInstance.getLocalDataStoreService().openIncompleteFile(docid);
+			domCollection = dom_incomplete_collection;
+			doctypeCollection = doctype_incomplete_collection;
+			String traceValue = getValueForPath(IncompleteDocSettings.TRACINGCHANGEPATH, docid, location);
+			// Log.debug(5,
+			// "traceValue on LocalQuery.createRSRow is "+traceValue);
+			if (traceValue != null && traceValue.equals(IncompleteDocSettings.TRUE)) {
+				localStatus = QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE;
+			} else {
+				localStatus = QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE;
+			}
+		} else {
+			file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(docid);
+			domCollection = dom_collection;
+			doctypeCollection = doctype_collection;
+		}
 
-    // Display the right icon for the data package
-    boolean hasData = false;
-    if (tripleList != null) {
-        Enumeration<Hashtable<String, String>> tripleEnum = tripleList.elements();
-        while (tripleEnum.hasMoreElements()) {
-            Hashtable<String, String> currentTriple = tripleEnum.nextElement();
-            if (currentTriple.containsKey("relationship")) {
-                String rel = currentTriple.get("relationship");
-                if (rel.indexOf("isDataFileFor") != -1) {
-                    hasData = true;
-                }
-            }
-        }
-    }
-    // now consider eml2 case where there are no triples
-    String ent = getValueForPath("entityName", docid, sourceDirectory);
-    if (ent.length()>0) hasData = true;
+		// Get the triples for this package
+		Vector<Hashtable<String, String>> tripleList = packageTriples.get(docid);
 
-    if (hasData) {
-        rss.addElement(localPackageDataIcon);
-    } else {
-        rss.addElement(localPackageIcon);
-    }
+		// Create the result row
+		Vector rss = new Vector();
 
-//DFH    for (int i=0;i<returnFields.size();i++) {
-// in order to handle both datapackages with triples and those (e.g. eml2) without
-// a returnField which looks for 'entityName' fields has been included in the
-// query. For some docs this returnField will not be present. Thus, only the first 3
-// of the return fields are added to the ResultSet table. [The 'entityName' returnField
-// MUST be listed AFTER title, surname, and keyword returnFields]
-    for (int i=0;i<3;i++) {
-      String fieldName = (String)returnFields.elementAt(i);
-      rss.addElement(getValueForPath(fieldName,docid, sourceDirectory));
-    }
-    File fl = new File(fullfilename);
-    // Create a time stamp for modified date. So local and metacat will have
-    // same format
-    Timestamp creationDate = new Timestamp(fl.lastModified());
-    String date = creationDate.toString();
-    rss.addElement(date);                                 // create date
-    rss.addElement(date);                                 // update date
-    rss.addElement(docid);                                // docid
-    Document doc = (Document)domCollection.get(docid);
-    String docname = doc.getNodeName();
-    rss.addElement(docname);                              // docname
-    String thisDoctype = (String)doctypeCollection.get(docid);
-    rss.addElement(thisDoctype);                          // doctype
-    //rss.addElement(new Boolean(true));                    // isLocal
-    //rss.addElement(new Boolean(false));                   // isMetacat
-    rss.addElement(localStatus);                    // isLocal
-    rss.addElement(DataStoreServiceInterface.NONEXIST); // isMetacat
-    // Note that this tripleList does not contain the types of the
-    // subject and objects identified inthe triple, so it differs
-    // from the tripleList generated for metacat results
-    if (tripleList != null) {
-        rss.addElement(tripleList);                       // tripleList
-    }
+		// Display the right icon for the data package
+		boolean hasData = false;
+		if (tripleList != null) {
+			Enumeration<Hashtable<String, String>> tripleEnum = tripleList.elements();
+			while (tripleEnum.hasMoreElements()) {
+				Hashtable<String, String> currentTriple = tripleEnum.nextElement();
+				if (currentTriple.containsKey("relationship")) {
+					String rel = currentTriple.get("relationship");
+					if (rel.indexOf("isDataFileFor") != -1) {
+						hasData = true;
+					}
+				}
+			}
+		}
+		// now consider eml2 case where there are no triples
+		String ent = getValueForPath("entityName", docid, location);
+		if (ent.length() > 0) {
+			hasData = true;
+		}
+		if (hasData) {
+			rss.addElement(localPackageDataIcon);
+		} else {
+			rss.addElement(localPackageIcon);
+		}
 
-    return rss;
-  }
+		// DFH for (int i=0;i<returnFields.size();i++) {
+		// in order to handle both datapackages with triples and those (e.g.
+		// eml2) without
+		// a returnField which looks for 'entityName' fields has been included
+		// in the
+		// query. For some docs this returnField will not be present. Thus, only
+		// the first 3
+		// of the return fields are added to the ResultSet table. [The
+		// 'entityName' returnField
+		// MUST be listed AFTER title, surname, and keyword returnFields]
+		for (int i = 0; i < 3; i++) {
+			String fieldName = (String) returnFields.elementAt(i);
+			rss.addElement(getValueForPath(fieldName, docid, location));
+		}
+		// Create a time stamp for modified date. So local and metacat will have
+		// same format
+		Timestamp creationDate = new Timestamp(file.lastModified());
+		String date = creationDate.toString();
+		rss.addElement(date); // create date
+		rss.addElement(date); // update date
+		rss.addElement(docid); // docid
+		Document doc = (Document) domCollection.get(docid);
+		String docname = doc.getNodeName();
+		rss.addElement(docname); // docname
+		String thisDoctype = (String) doctypeCollection.get(docid);
+		rss.addElement(thisDoctype); // doctype
+		// rss.addElement(new Boolean(true)); // isLocal
+		// rss.addElement(new Boolean(false)); // isMetacat
+		rss.addElement(localStatus); // isLocal
+		rss.addElement(DataStoreServiceInterface.NONEXIST); // isMetacat
+		// Note that this tripleList does not contain the types of the
+		// subject and objects identified inthe triple, so it differs
+		// from the tripleList generated for metacat results
+		if (tripleList != null) {
+			rss.addElement(tripleList); // tripleList
+		}
+
+		return rss;
+	}
 
   /**
-   *  utility routine to return the value of a node defined by
-   *  a specified XPath; used to build result set from local
-   *  queries
-   */
-  private String getValueForPath(String pathstring, String filename, String sourceDir) {
-    String val = "";
-    if (!pathstring.startsWith("/")) {
-      pathstring = "//"+pathstring;
-    }
-    Hashtable<String, Document> domCollection = null;
-    String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
-    if(sourceDir != null && sourceDir.equals(incompleteDir))
-    {
-      domCollection = dom_incomplete_collection;
-    }
-    else
-    {
-      domCollection = dom_collection;
-    }
-    Log.debug(40, "filename in getValueForpath is "+filename);
-    try{
-      // assume that the filename file has already been parsed
-      if (domCollection.containsKey(filename)){
-        Node doc = ((Document)domCollection.get(filename)).
-                   getDocumentElement();
-        NodeList nl = null;
-        nl = XPathAPI.selectNodeList(doc, pathstring);
-        if ((nl!=null)&&(nl.getLength()>0)) {
-          // loop over node list is needed if node is repeated; eg key words
-          for (int k=0;k<nl.getLength();k++) {
-            // assume 1st child is text node
-            Node cn = nl.item(k).getFirstChild();
-            if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
-              String temp = cn.getNodeValue().trim();
-              if (val.length()>0) val = "; "+val;
-              val = temp + val;
-            }
-          }
-        }
-      }
-    } catch (Exception e){
-      Log.debug(6,"Error in getValueForPath method");
-    }
-    return val;
-  }
+	 * utility routine to return the value of a node defined by a specified
+	 * XPath; used to build result set from local queries
+	 */
+	private String getValueForPath(String pathstring, String filename, String location) {
+		String val = "";
+		if (!pathstring.startsWith("/")) {
+			pathstring = "//" + pathstring;
+		}
+		Hashtable<String, Document> domCollection = null;
+		if (location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE)) {
+			domCollection = dom_incomplete_collection;
+		} else {
+			domCollection = dom_collection;
+		}
+		Log.debug(40, "filename in getValueForpath is " + filename);
+		try {
+			// assume that the filename file has already been parsed
+			if (domCollection.containsKey(filename)) {
+				Node doc = ((Document) domCollection.get(filename)).getDocumentElement();
+				NodeList nl = null;
+				nl = XPathAPI.selectNodeList(doc, pathstring);
+				if ((nl != null) && (nl.getLength() > 0)) {
+					// loop over node list is needed if node is repeated; eg key
+					// words
+					for (int k = 0; k < nl.getLength(); k++) {
+						// assume 1st child is text node
+						Node cn = nl.item(k).getFirstChild();
+						if ((cn != null) && (cn.getNodeType() == Node.TEXT_NODE)) {
+							String temp = cn.getNodeValue().trim();
+							if (val.length() > 0) {
+								val = "; " + val;
+							}
+							val = temp + val;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.debug(6, "Error in getValueForPath method");
+		}
+		return val;
+	}
 
   /**
    * Given a DOM document node, this method returns the DocType
@@ -609,90 +600,6 @@ public class LocalQuery
     }
     return ret;
   }
-
-   /**
-	 * given a directory, return a vector of files it contains including
-	 * subdirectories
-	 */
-	private Vector<File> getFiles(File directoryFile) {
-
-		Vector<File> vec = new Vector<File>();
-		String[] files = directoryFile.list();
-		if (files != null) {
-			for (int i = 0; i < files.length; i++) {
-				String filename = files[i];
-				File currentfile = new File(directoryFile, filename);
-				if (currentfile.isDirectory()) {
-					vec.addAll(getFiles(currentfile)); // recursive call to add subdirecctories
-				}
-				if (currentfile.isFile()) {
-					try {
-						Double d = Double.valueOf(filename);
-						vec.addElement(currentfile);
-					} catch (NumberFormatException nfe) {
-						Log.debug(30, "Not loading file with invalid name: "
-								+ filename);
-					}
-				}
-			}
-			vec = getLatestVersion(vec);
-		}
-
-		return vec;
-
-	}
-
-  /**
-	 * modify list to only contain latest version as indicated by a trailing
-	 * version number This is to reduce the search time by avoiding older
-	 * versions
-	 */
-	private Vector<File> getLatestVersion(Vector<File> vec) {
-
-		Vector<File> returnVector = null;
-		String dot = ".";
-		if (vec != null) {
-			returnVector = new Vector<File>();
-			Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
-			for (int i = 0; i < vec.size(); i++) {
-				File file = vec.elementAt(i);
-				if (file != null) {
-					String name1 = file.getAbsolutePath();
-					try {
-						int periodloc = name1.lastIndexOf(dot);
-						String namestart = name1.substring(0, periodloc);
-						if (namestart != null) {
-							String vernum = name1.substring(periodloc + 1, name1.length());
-							Integer intVer = new Integer(vernum);
-							if (maxVersions.containsKey(namestart)) {
-								Integer currentMax = maxVersions.get(namestart);
-								if (currentMax != null && currentMax.intValue() > intVer.intValue()) {
-									// we already stored a greater version, so
-									// skip this one
-									continue;
-								}
-							}
-							maxVersions.put(namestart, intVer);
-						}
-					} catch (Exception e) {
-						continue;
-					}
-				}
-			}
-			// put maxVersions into the new vector
-			Enumeration<String> enumeration = maxVersions.keys();
-			while (enumeration.hasMoreElements()) {
-				String nameStart = enumeration.nextElement();
-				if (nameStart != null) {
-					Integer version = maxVersions.get(nameStart);
-					if (version != null) {
-						returnVector.add(new File(nameStart + dot + version.toString()));
-					}
-				}
-			}
-		}
-		return returnVector;
-	}
 
   /**
    * given a QueryTerm, construct a XPath expression
@@ -788,11 +695,10 @@ public class LocalQuery
    *
    * @param qg the QueryGroup containing query parameters
    */
-  private Vector<String> executeLocal(QueryGroup qg, Vector<File> filevector, String sourceDir)
+  private Vector<String> executeLocal(QueryGroup qg, Vector<String> filevector, String location)
   {
     Vector<String> combined = null;
     Vector<String> currentResults = null;
-    String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
 
     if (qg == null) {
     	return new Vector<String>();
@@ -802,7 +708,7 @@ public class LocalQuery
       Object child = children.nextElement();
       if (child instanceof QueryTerm) {
         String xpath = QueryTermToXPath((QueryTerm)child);
-        if(sourceDir != null && sourceDir.equals(incompleteDir))
+        if(location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE))
         {
           currentResults = executeXPathQuery(xpath, filevector, dom_incomplete_collection,
                                   doNotParse_incomplete_collection, doctype_incomplete_collection, dataPackage_incomplete_collection);
@@ -814,7 +720,7 @@ public class LocalQuery
         }
         
       } else {  // QueryGroup
-        currentResults = executeLocal((QueryGroup)child, filevector, sourceDir);
+        currentResults = executeLocal((QueryGroup)child, filevector, location);
       }
 
       if ((currentResults==null) &&
