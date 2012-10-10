@@ -1012,9 +1012,11 @@ public class DataStoreServiceController {
 					entityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
 				} else if (loc.equals("")) { // just created the package; not yet saved!!!
 					try {
-						entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllSources(urlinfo);
+						entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(urlinfo);
 					} catch (Exception eee) {
 						Log.debug(15, "Exception opening datafile after trying all sources!");
+						// try getting it from 
+						entityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
 						return null;
 					}
 				}

@@ -876,9 +876,12 @@ public void setTopPanel(JPanel jp) {
                 displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(urlinfo);
               }
               else if (loc.equals("")) {
-                //Log.debug(5, "here");
-               // just created the package; not yet saved!!!
-                displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllSources(urlinfo);
+            	  // try getting local sources first, then network
+            	  try {
+            		  displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(urlinfo);
+            	  } catch (Exception e) {
+                      displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(urlinfo);
+				}
                 
               }
             }

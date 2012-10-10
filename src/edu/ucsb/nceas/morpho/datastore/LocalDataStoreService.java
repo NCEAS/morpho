@@ -98,18 +98,15 @@ public class LocalDataStoreService extends DataStoreService
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  public File openFile(String name) throws FileNotFoundException
-  {
-    String path = parseId(name);
-    path = getDataDir() + "/" + path;
-    File file = new File(path);
-    if(!file.exists())
-    {
-      throw new FileNotFoundException("file " + path + " does not exist");
-    }
-    
-    return file;
-  }
+  public File openFile(String name) throws FileNotFoundException {
+		String path = parseId(name);
+		path = getDataDir() + "/" + path;
+		File file = new File(path);
+		if (!file.exists()) {
+			throw new FileNotFoundException("file " + path + " does not exist");
+		}
+		return file;
+	}
   
   /**
    * opens a file with the given name from incomplete dir.  the name should be in the form
@@ -127,17 +124,15 @@ public class LocalDataStoreService extends DataStoreService
    * @return
    * @throws FileNotFoundException
    */
-  public File openIncompleteFile(String name) throws FileNotFoundException
-  {
-	   String path = parseId(name);
-	    path = getIncompleteDir() + "/" + path;
-	    File file = new File(path);
-	    if(!file.exists())
-	    {
-	      throw new FileNotFoundException("file " + path + " does not exist");
-	    }	    
-	    return file;
-  }
+  public File openIncompleteFile(String name) throws FileNotFoundException {
+		String path = parseId(name);
+		path = getIncompleteDir() + "/" + path;
+		File file = new File(path);
+		if (!file.exists()) {
+			throw new FileNotFoundException("file " + path + " does not exist");
+		}
+		return file;
+	}
   
   
   public File saveFile(String name, Reader file)
@@ -145,18 +140,15 @@ public class LocalDataStoreService extends DataStoreService
     return saveFile(name, file, getDataDir());
   }
   
-  public File openTempFile(String name) throws FileNotFoundException
-  {
-    Log.debug(21, "opening "+name+" from temp dir - temp: " + getTempDir());
-    String path = parseId(name);
-    File file = new File(getTempDir() + "/" + path);
-    if(!file.exists())
-    {
-      throw new FileNotFoundException("file " + getTempDir() + "/" + name + " does not exist");
-    }
-    
-    return file;
-  }
+  public File openTempFile(String name) throws FileNotFoundException {
+		Log.debug(21, "opening " + name + " from temp dir - temp: " + getTempDir());
+		String path = parseId(name);
+		File file = new File(getTempDir() + "/" + path);
+		if (!file.exists()) {
+			throw new FileNotFoundException("file " + getTempDir() + "/" + name + " does not exist");
+		}
+		return file;
+	}
 
   public File saveDataFile(String name, InputStream file)
   {
@@ -191,24 +183,26 @@ public class LocalDataStoreService extends DataStoreService
     return saveFile(name, file, getIncompleteDir());
   }
  
-  
   /**
-   * Check if the given docid exists in local file system.
-   * @param docid 
-   * @return exists or not
-   */
-  public String status(String docid)
-  {
-	  String status = DataStoreServiceInterface.NONEXIST;
-	  String path = parseId(docid);
-      File savefile = new File(getDataDir() + "/" + path); //the path to the file
-      if(savefile.exists())
-      {
-        status = DataStoreServiceInterface.CONFLICT;
-      }
-      Log.debug(30, "The docid "+docid +" local status is "+status);
-	  return status;
-  }
+	 * Check if the given docid exists in local file system.
+	 * 
+	 * @param docid
+	 * @return exists or not
+	 */
+	public String status(String docid) {
+		String status = DataStoreServiceInterface.NONEXIST;
+		File savefile = null;
+		try {
+			savefile = openFile(docid);
+		} catch (FileNotFoundException e) {
+			// does not exist
+		}
+		if (savefile != null && savefile.exists()) {
+			status = DataStoreServiceInterface.CONFLICT;
+		}
+		Log.debug(30, "The docid " + docid + " local status is " + status);
+		return status;
+	}
   
   /**
 	 * Does this id exist locally
@@ -304,8 +298,6 @@ public class LocalDataStoreService extends DataStoreService
    * returns a File object in the local repository.
    * @param name: the id of the file
    * @param file: the stream to the file
-   * @param publicAccess: flag for unauthenticated read access to the file.
-   * true if anauthenticated users can read the file, false otherwise.
    */
   public File newFile(String name, Reader file)
   {
@@ -318,45 +310,26 @@ public class LocalDataStoreService extends DataStoreService
   }
   
   /**
-   * deletes a file from the local file system. returns true if the file is
-   * successfully deleted, false otherwise.
-   * @param name the name of the file to delete
-   */
-   public boolean deleteFile(String name)
-   {
-     String path = parseId(name);
-     String filePath = getDataDir() + "/" +path;
-     //System.out.println("the deleted file path will be !"+filePath+"!");
-     File delfile = new File(filePath); //the path to the file
-     //System.out.println("the file exists "+delfile.exists());
-     //System.out.println("the applicate read file "+delfile.canRead());
-     //System.out.println("the application write file "+delfile.canWrite());
-     
-     //SecurityManager manager = new SecurityManager();
-     boolean success = false;
-     
-     try
-     {
-    	 //manager.checkRead(filePath);
-    	 //manager.checkWrite(filePath);
-    	 //manager.checkDelete(filePath);
-    	 //Thread.sleep(5000);
-    	 //System.out.println("the canonical path is "+delfile.getCanonicalPath());
-    	 //delfile.close();
-    	 //this is not a good way to call system.gc there. but it works. otherwise
-    	 // delete() wouldn't work on windows xp
-    	 //System.gc();
-    	 success = delfile.delete();
-    	 
-     }
-     catch(Exception e)
-     {
-    	 //System.out.println("got an exception in deleting the local file");
-    	 e.printStackTrace();
-     }
-     System.out.println("the success value is "+success);
-     return success;
-   }
+	 * deletes a file from the local file system. returns true if the file is
+	 * successfully deleted, false otherwise.
+	 * 
+	 * @param name
+	 *            the name of the file to delete
+	 */
+	public boolean deleteFile(String name) {
+		String path = parseId(name);
+		String filePath = getDataDir() + "/" + path;
+		File delfile = new File(filePath); // the path to the file
+
+		boolean success = false;
+		try {
+			success = delfile.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Log.debug(30, "Delete success value is: " + success);
+		return success;
+	}
    
    /**
     * deletes a file from incomplete dir in the local file system. returns true if the file is
@@ -745,41 +718,6 @@ public class LocalDataStoreService extends DataStoreService
        throw new FileNotFoundException("Couldn't find docid "+docid+" in morpho file system");
      }
      return file;
-  }
-  
-  /**
-   * Gets data file from both local and metacata source
-   * @param docid
-   * @return
-   */
-  public File getDataFileFromAllSources(String docid) throws FileNotFoundException
-  {
-    File file = null;  
-    if(docid != null && !docid.equals(""))
-    {
-      try
-      {
-        //try local resrouce
-        file = getDataFileFromAllLocalSources(docid);
-      }
-      catch(Exception e)
-      {
-        try
-        {
-          file = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(docid);
-        }
-        catch(Exception ee)
-        {
-          throw new FileNotFoundException("Couldn't find docid "+docid+" in metacat");
-        }
-        
-      }
-    }
-    if(file == null)
-    {
-      throw new FileNotFoundException("Couldn't find docid "+docid+" in morpho file system");
-    }
-    return file;
   }
   
   
