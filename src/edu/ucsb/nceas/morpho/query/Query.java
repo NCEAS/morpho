@@ -42,14 +42,13 @@ import java.util.Stack;
 import java.util.Vector;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreService;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -73,31 +72,26 @@ public class Query extends DefaultHandler {
   /** Title of this query */
   private String queryTitle;
   /** List of document types to be returned using package back tracing */
-  private Vector returnDocList;
+  private Vector<String> returnDocList;
   /** List of document types to be searched */
-  private Vector filterDocList;
+  private Vector<String> filterDocList;
   /** List of fields to be returned in result set */
-  private Vector returnFieldList;
+  private Vector<String> returnFieldList;
   /** List of users owning documents to be searched */
-  private Vector ownerList;
+  private Vector<String> ownerList;
   /** List of sites/scopes used to constrain search */
-  private Vector siteList;
+  private Vector<String> siteList;
   /** The root query group that contains the recursive query constraints */
   private QueryGroup rootQG = null;
 
   // Query data structures used temporarily during XML parsing
-  private Stack elementStack;
-  private Stack queryStack;
+  private Stack<BasicNode> elementStack;
+  private Stack<QueryGroup> queryStack;
   private String currentValue;
   private String currentPathexpr;
-  private String parserName = null;
-  private String accNumberSeparator = null;
 
   /** A reference to the Morpho application */
   private Morpho morpho = null;
-
-  /** The configuration options object reference from Morpho */
-  private ConfigXML config = null;
 
   /** Flag, true if Metacat searches are performed for this query */
   private boolean searchMetacat = true;
@@ -117,12 +111,11 @@ public class Query extends DefaultHandler {
     this(morpho);
 
     // Initialize temporary variables
-    elementStack = new Stack();
-    queryStack   = new Stack();
+    elementStack = new Stack<BasicNode>();
+    queryStack   = new Stack<QueryGroup>();
 
     // Initialize the parser and read the queryspec
-    XMLReader parser = Morpho.createSaxParser((ContentHandler)this,
-            (ErrorHandler)this);
+    XMLReader parser = Morpho.createSaxParser(this, this);
 
     if (parser == null) {
       Log.debug(1, "SAX parser not instantiated properly.");
@@ -133,8 +126,7 @@ public class Query extends DefaultHandler {
     } catch (IOException ioe) {
       Log.debug(4, "Error reading the query during parsing.");
     } catch (SAXException e) {
-      Log.debug(4, "Error parsing Query (" +
-                      e.getClass().getName() +").");
+      Log.debug(4, "Error parsing Query (" + e.getClass().getName() +").");
       Log.debug(4, e.getMessage());
     }
   }
@@ -160,13 +152,12 @@ public class Query extends DefaultHandler {
   public Query(Morpho morpho)
   {
     // Initialize the members
-    returnDocList = new Vector();
-    filterDocList = new Vector();
-    returnFieldList = new Vector();
-    ownerList = new Vector();
-    siteList = new Vector();
+    returnDocList = new Vector<String>();
+    filterDocList = new Vector<String>();
+    returnFieldList = new Vector<String>();
+    ownerList = new Vector<String>();
+    siteList = new Vector<String>();
     this.morpho = morpho;
-    this.config = morpho.getConfiguration();
 
     loadConfigurationParameters();
   }
@@ -222,7 +213,7 @@ public class Query extends DefaultHandler {
    * Accessor method to return a vector of the return document types as
    * defined in the &lt;returndoctype&gt; tag in the pathquery dtd.
    */
-  public Vector getReturnDocList()
+  public Vector<String> getReturnDocList()
   {
     return this.returnDocList;
   }
@@ -230,7 +221,7 @@ public class Query extends DefaultHandler {
   /**
    * method to set the list of return docs of this query
    */
-  public void setReturnDocList(Vector returnDocList)
+  public void setReturnDocList(Vector<String> returnDocList)
   {
     this.returnDocList = returnDocList;
   }
@@ -239,7 +230,7 @@ public class Query extends DefaultHandler {
    * Accessor method to return a vector of the filter doc types as
    * defined in the &lt;filterdoctype&gt; tag in the pathquery dtd.
    */
-  public Vector getFilterDocList()
+  public Vector<String> getFilterDocList()
   {
     return this.filterDocList;
   }
@@ -247,7 +238,7 @@ public class Query extends DefaultHandler {
   /**
    * method to set the list of filter docs of this query
    */
-  public void setFilterDocList(Vector filterDocList)
+  public void setFilterDocList(Vector<String> filterDocList)
   {
     this.filterDocList = filterDocList;
   }
@@ -256,7 +247,7 @@ public class Query extends DefaultHandler {
    * Accessor method to return a vector of the extended return fields as
    * defined in the &lt;returnfield&gt; tag in the pathquery dtd.
    */
-  public Vector getReturnFieldList()
+  public Vector<String> getReturnFieldList()
   {
     return this.returnFieldList;
   }
@@ -264,7 +255,7 @@ public class Query extends DefaultHandler {
   /**
    * method to set the list of fields to be returned by this query
    */
-  public void setReturnFieldList(Vector returnFieldList)
+  public void setReturnFieldList(Vector<String> returnFieldList)
   {
     this.returnFieldList = returnFieldList;
   }
@@ -273,7 +264,7 @@ public class Query extends DefaultHandler {
    * Accessor method to return a vector of the owner fields as
    * defined in the &lt;owner&gt; tag in the pathquery dtd.
    */
-  public Vector getOwnerList()
+  public Vector<String> getOwnerList()
   {
     return this.ownerList;
   }
@@ -281,7 +272,7 @@ public class Query extends DefaultHandler {
   /**
    * method to set the list of owners used to constrain this query
    */
-  public void setOwnerList(Vector ownerList)
+  public void setOwnerList(Vector<String> ownerList)
   {
     this.ownerList = ownerList;
   }
@@ -290,7 +281,7 @@ public class Query extends DefaultHandler {
    * Accessor method to return a vector of the site fields as
    * defined in the &lt;site&gt; tag in the pathquery dtd.
    */
-  public Vector getSiteList()
+  public Vector<String> getSiteList()
   {
     return this.siteList;
   }
@@ -298,7 +289,7 @@ public class Query extends DefaultHandler {
   /**
    * method to set the list of sites used to constrain this query
    */
-  public void setSiteList(Vector siteList)
+  public void setSiteList(Vector<String> siteList)
   {
     this.siteList = siteList;
   }
@@ -384,7 +375,7 @@ public class Query extends DefaultHandler {
         Log.debug(30, "Created root query group.");
         rootQG = currentGroup;
       } else {
-        QueryGroup parentGroup = (QueryGroup)queryStack.peek();
+        QueryGroup parentGroup = queryStack.peek();
         parentGroup.addChild(currentGroup);
       }
       queryStack.push(currentGroup);
@@ -398,7 +389,7 @@ public class Query extends DefaultHandler {
    */
   public void endElement (String uri, String localName,
                           String qName) throws SAXException {
-    BasicNode leaving = (BasicNode)elementStack.pop();
+    BasicNode leaving = elementStack.pop();
     if (leaving.getTagName().equals("queryterm")) {
       boolean isCaseSensitive = (new Boolean(
               leaving.getAttribute("casesensitive"))).booleanValue();
@@ -411,12 +402,12 @@ public class Query extends DefaultHandler {
                       leaving.getAttribute("searchmode"),currentValue,
                       currentPathexpr);
       }
-      QueryGroup currentGroup = (QueryGroup)queryStack.peek();
+      QueryGroup currentGroup = queryStack.peek();
       currentGroup.addChild(currentTerm);
       currentValue = null;
       currentPathexpr = null;
     } else if (leaving.getTagName().equals("querygroup")) {
-      QueryGroup leavingGroup = (QueryGroup)queryStack.pop();
+      QueryGroup leavingGroup = queryStack.pop();
     }
   }
 
@@ -428,7 +419,7 @@ public class Query extends DefaultHandler {
   public void characters(char ch[], int start, int length) {
 
     String inputString = new String(ch, start, length);
-    BasicNode currentNode = (BasicNode)elementStack.peek();
+    BasicNode currentNode = elementStack.peek();
     String currentTag = currentNode.getTagName();
     if (currentTag.equals("meta_file_id")) {
       meta_file_id = inputString;
@@ -496,45 +487,45 @@ public class Query extends DefaultHandler {
 
     // Add XML for the return doctype list
     if (!returnDocList.isEmpty()) {
-      Enumeration en = returnDocList.elements();
+      Enumeration<String> en = returnDocList.elements();
       while (en.hasMoreElements()) {
-        String currentDoctype = (String)en.nextElement();
+        String currentDoctype = en.nextElement();
         self.append("  <returndoctype>"+currentDoctype+"</returndoctype>\n");
       }
     }
 
     // Add XML for the filter doctype list
     if (!filterDocList.isEmpty()) {
-      Enumeration en = filterDocList.elements();
+      Enumeration<String> en = filterDocList.elements();
       while (en.hasMoreElements()) {
-        String currentDoctype = (String)en.nextElement();
+        String currentDoctype = en.nextElement();
         self.append("  <filterdoctype>"+currentDoctype+"</filterdoctype>\n");
       }
     }
 
     // Add XML for the return field list
     if (!returnFieldList.isEmpty()) {
-      Enumeration en = returnFieldList.elements();
+      Enumeration<String> en = returnFieldList.elements();
       while (en.hasMoreElements()) {
-        String current = (String)en.nextElement();
+        String current = en.nextElement();
         self.append("  <returnfield>"+current+"</returnfield>\n");
       }
     }
 
     // Add XML for the owner list
     if (!ownerList.isEmpty()) {
-      Enumeration en = ownerList.elements();
+      Enumeration<String> en = ownerList.elements();
       while (en.hasMoreElements()) {
-        String current = (String)en.nextElement();
+        String current = en.nextElement();
         self.append("  <owner>"+current+"</owner>\n");
       }
     }
 
     // Add XML for the site list
     if (!siteList.isEmpty()) {
-      Enumeration en = siteList.elements();
+      Enumeration<String> en = siteList.elements();
       while (en.hasMoreElements()) {
-        String current = (String)en.nextElement();
+        String current = en.nextElement();
         self.append("  <site>"+current+"</site>\n");
       }
     }
@@ -576,30 +567,6 @@ public class Query extends DefaultHandler {
     ResultSet metacatResults = null;
     if (searchMetacat) {
       Log.debug(30, "(2) Executing metacat query...");
-
-
-// write the query result xml to a file for debugging
-// remove the '/*' to enable
-// take a look at the result
-/*
-      try{
-        InputStreamReader isr = new InputStreamReader(queryMetacat());
-        File resfile = new File("resultFile");
-        FileWriter fw = new FileWriter(resfile);
-        int res = isr.read();
-        while (res>-1) {
-          fw.write(res);
-          res = isr.read();
-        }
-        fw.close();
-        isr.close();
-      }
-      catch (Exception www) {
-        Log.debug(1, "problem writing query result to file!");
-      }
-// end looking at result
-*/
-
       metacatResults = new HeadResultSet(this, DataStoreServiceInterface.NONEXIST, QueryRefreshInterface.NETWWORKCOMPLETE,
                                      morpho.getMetacatDataStoreService().query(toXml()), morpho);
 
@@ -675,8 +642,7 @@ public class Query extends DefaultHandler {
          {
            Log.debug(30, "(2) Executing both local and metacat query...");
            // search local first
-            HeadResultSet localResult = doLocalSearchDisplay(
-                                                   resultDisplayPanel, morpho);
+            HeadResultSet localResult = doLocalSearchDisplay(resultDisplayPanel, morpho);
             doMetacatSearchDisplay(resultDisplayPanel, morpho, localResult);
 
          }//else
@@ -696,8 +662,7 @@ public class Query extends DefaultHandler {
        {
          if (showSearchNumber)
          {
-           resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
-                                   + " data sets found");
+           resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount() + " data sets found");
          }
          //enable mouse listener in result panel
          resultDisplayPanel.setEnableMouseListener(true);
@@ -803,10 +768,7 @@ public class Query extends DefaultHandler {
   public void save() throws IOException
   {
     ConfigXML profile = morpho.getProfile();
-    String queriesDirName = config.getConfigDirectory() + File.separator +
-                            config.get("profile_directory", 0) +
-                            File.separator +
-                            profile.get("profilename", 0) +
+    String queriesDirName = DataStoreService.getProfileDir() + 
                             File.separator +
                             profile.get("queriesdir", 0);
     File queriesDir = new File(queriesDirName);
@@ -826,8 +788,6 @@ public class Query extends DefaultHandler {
   private void loadConfigurationParameters()
   {
     ConfigXML profile = morpho.getProfile();
-    parserName = config.get("saxparser", 0);
-    accNumberSeparator = profile.get("separator", 0);
     String searchMetacatString = profile.get("searchmetacat", 0);
     searchMetacat = (new Boolean(searchMetacatString)).booleanValue();
     String searchLocalString = profile.get("searchlocal", 0);

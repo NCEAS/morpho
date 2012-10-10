@@ -188,10 +188,10 @@ public class ConfigXML
    * @param key 'key' is element name.
    * @return Returns a Vector of strings because may have repeated elements
    */
-  public Vector get(String key)
+  public Vector<String> get(String key)
   {
     NodeList nl = doc.getElementsByTagName(key);
-    Vector result = new Vector();
+    Vector<String> result = new Vector<String>();
     if (nl.getLength() < 1)
     {
       return result;

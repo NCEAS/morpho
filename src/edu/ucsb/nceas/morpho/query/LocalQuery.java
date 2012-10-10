@@ -79,8 +79,8 @@ public class LocalQuery
    * when xml parsing fails, so system doesn't bother to try
    * parsing again
    */
-  private static Vector doNotParse_collection = new Vector();
-  private static Vector doNotParse_incomplete_collection = new Vector();
+  private static Vector<String> doNotParse_collection = new Vector<String>();
+  private static Vector<String> doNotParse_incomplete_collection = new Vector<String>();
 
   /**
    * hash table with dom objects from previously scanned local XML
@@ -88,9 +88,9 @@ public class LocalQuery
    * every time an XPath search is carried out. key is filename which should
    * match document id.
    */
-  public static Hashtable dom_collection;
+  public static Hashtable<String, Document> dom_collection;
   //storing the  dom tree from in incomplete dir
-  private Hashtable dom_incomplete_collection = new Hashtable();
+  private Hashtable<String, Document> dom_incomplete_collection = new Hashtable<String, Document>();
 
   /**
    * The query on which this LocalQuery is based.
@@ -101,16 +101,16 @@ public class LocalQuery
    * hash table which contains doctype information about each of
    * the locally stored XML documents
    */
-  private static Hashtable doctype_collection;
-  private Hashtable doctype_incomplete_collection = new Hashtable();
+  private static Hashtable<String, String> doctype_collection;
+  private Hashtable<String, String> doctype_incomplete_collection = new Hashtable<String, String>();
   
 
   /**
    * hash table with docids as key and a Vector of package IDs
    * as the values
    */
-  private static Hashtable dataPackage_collection;
-  private  Hashtable dataPackage_incomplete_collection = new Hashtable();
+  private static Hashtable<String, Vector<String>> dataPackage_collection;
+  private  Hashtable<String, Vector<String>> dataPackage_incomplete_collection = new Hashtable<String, Vector<String>>();
  
 
   /**
@@ -120,16 +120,16 @@ public class LocalQuery
    * the vector of triples contains a Hash for each table, with the keys
    * 'subject', 'relationship', and 'object'
    */
-  private static Hashtable packageTriples;
+  private static Hashtable<String, Vector<Hashtable<String, String>>> packageTriples;
 
   /** list of field to be returned from query */
-  private Vector returnFields;
+  private Vector<String> returnFields;
 
   /** list of doctypes to be searched */
-  private Vector doctypes2bsearched;
+  private Vector<String> doctypes2bsearched;
 
   /** list of doctypes to be returned */
-  private Vector dt2bReturned;
+  private Vector<String> dt2bReturned;
 
   /** Doctype of document currently being queried */
   private String currentDoctype;
@@ -141,13 +141,13 @@ public class LocalQuery
 
   // create these static caches when class is first loaded
   static {
-    dom_collection = new Hashtable();
+    dom_collection = new Hashtable<String, Document>();
     //dom_incomplete_collection = new Hashtable();
-    doctype_collection = new Hashtable();
+    doctype_collection = new Hashtable<String, String>();
     //doctype_incomplete_collection = new Hashtable();
-    dataPackage_collection = new Hashtable();
+    dataPackage_collection = new Hashtable<String, Vector<String>>();
     //dataPackage_incomplete_collection = new Hashtable();
-    packageTriples = new Hashtable();
+    packageTriples = new Hashtable<String, Vector<Hashtable<String, String>>>();
   }
 
   /**
@@ -182,7 +182,7 @@ public class LocalQuery
   {
 	  String datadir = Morpho.thisStaticInstance.getLocalDataStoreService().getDataDir();
 	   File xmldir = new File(datadir);
-	   Vector filevector = new Vector();
+	   Vector<File> filevector = new Vector<File>();
 	    // get a list of all files to be searched
 	    getFiles(xmldir, filevector);
       return execute(filevector, datadir);
@@ -197,30 +197,30 @@ public class LocalQuery
 	  
 	  String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
 	  File xmldir = new File(incompleteDir);
-	  Vector fileVector = new Vector();
+	  Vector<File> fileVector = new Vector<File>();
 	  getFiles(xmldir, fileVector);
-	  dom_incomplete_collection = new Hashtable();
-	  doctype_incomplete_collection = new Hashtable();
-	  dataPackage_incomplete_collection = new Hashtable();
+	  dom_incomplete_collection = new Hashtable<String, Document>();
+	  doctype_incomplete_collection = new Hashtable<String, String>();
+	  dataPackage_incomplete_collection = new Hashtable<String, Vector<String>>();
 	  return execute(fileVector, incompleteDir);
   }
   
   /*
    * Run the query against the local document store
    */
-  private ResultSet execute(Vector filevector, String fromDataDir)
+  private ResultSet execute(Vector<File> filevector, String fromDataDir)
   {
     // first, get a list of all packages that meet the query requirements
-    Vector packageList = executeLocal(this.savedQuery.getQueryGroup(), filevector, fromDataDir);
+    Vector<String> packageList = executeLocal(this.savedQuery.getQueryGroup(), filevector, fromDataDir);
     Vector row = null;
     Vector rowCollection = new Vector();
 
     // now build a Vector of Vectors (tablemodel)
     ResultSet rs = null;
     if (packageList != null) {
-      Enumeration pl = packageList.elements();
+      Enumeration<String> pl = packageList.elements();
       while (pl.hasMoreElements()) {
-        String packageName = (String)pl.nextElement();
+        String packageName = pl.nextElement();
         //Log.debug(5, "package name is "+packageName);
         if(!belongToWizard(packageName, fromDataDir))
         {
@@ -279,10 +279,11 @@ public class LocalQuery
    *
    * @param xpathExpression the XPath query string
    */
-  private Vector executeXPathQuery(String xpathExpression, Vector filevector, Hashtable domCollection,
-                                                   Vector doNotParseCollection, Hashtable docTypeCollection, Hashtable dataPackageCollection)
+  private Vector<String> executeXPathQuery(String xpathExpression, Vector<File> filevector, Hashtable<String, Document> domCollection,
+                                                   Vector<String> doNotParseCollection, Hashtable<String, String> docTypeCollection, 
+                                                   Hashtable<String, Vector<String>> dataPackageCollection)
   {
-    Vector package_IDs = new Vector();
+    Vector<String> package_IDs = new Vector<String>();
     Node root;
     long starttime, curtime, fm;
     Log.debug(30, "(3.0) Creating DOM parser...");
@@ -315,7 +316,7 @@ public class LocalQuery
 
     // iterate over all the files that are in the local xml directory
     for (int i=0;i<filevector.size();i++) {
-      File currentfile = (File)filevector.elementAt(i);
+      File currentfile = filevector.elementAt(i);
       String filename = currentfile.getPath();
 //DFH      String docid = currentfile.getParentFile().getName() + separator +
 //DFH                     currentfile.getName();
@@ -331,9 +332,9 @@ public class LocalQuery
         // if so, no need to parse again
         //Log.debug(10,"current id: "+docid);
         if (domCollection.containsKey(docid)){
-          root = ((Document)domCollection.get(docid)).getDocumentElement();
+          root = domCollection.get(docid).getDocumentElement();
           if (docTypeCollection.containsKey(docid)) {
-            currentDoctype = ((String)docTypeCollection.get(docid));
+            currentDoctype = docTypeCollection.get(docid);
           }
         } else {
         //  Log.debug(10,"parsing "+docid);
@@ -399,12 +400,12 @@ public class LocalQuery
               try {
                 // If this docid is in any packages, record those package ids
                 if (dataPackageCollection.containsKey(docid)) {
-                	String doctype = (String) docTypeCollection.get(docid);
+                	String doctype = docTypeCollection.get(docid);
                 	if (dt2bReturned.contains(doctype)) {
-		                  Vector ids = (Vector)dataPackageCollection.get(docid);
-		                  Enumeration q = ids.elements();
+		                  Vector<String> ids = dataPackageCollection.get(docid);
+		                  Enumeration<String> q = ids.elements();
 		                  while (q.hasMoreElements()) {
-		                    Object id = q.nextElement();
+		                    String id = q.nextElement();
 		                    // don't repeat elements
 		                    if (!package_IDs.contains(id)) {
 		                      package_IDs.addElement(id);
@@ -444,8 +445,8 @@ public class LocalQuery
     File fn = new File(sourceDirectory, filename);
     String fullfilename = fn.getPath();
     String localStatus = QueryRefreshInterface.LOCALCOMPLETE;
-    Hashtable domCollection = null;
-    Hashtable doctypeCollection = null;
+    Hashtable<String, Document> domCollection = null;
+    Hashtable<String, String> doctypeCollection = null;
     String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
     if(sourceDirectory != null && sourceDirectory.equals(incompleteDir))
     {
@@ -469,7 +470,7 @@ public class LocalQuery
     }
 
     // Get the triples for this package
-    Vector tripleList = (Vector)packageTriples.get(docid);
+    Vector<Hashtable<String, String>> tripleList = packageTriples.get(docid);
 
     // Create the result row
     Vector rss = new Vector();
@@ -477,11 +478,11 @@ public class LocalQuery
     // Display the right icon for the data package
     boolean hasData = false;
     if (tripleList != null) {
-        Enumeration tripleEnum = tripleList.elements();
+        Enumeration<Hashtable<String, String>> tripleEnum = tripleList.elements();
         while (tripleEnum.hasMoreElements()) {
-            Hashtable currentTriple = (Hashtable)tripleEnum.nextElement();
+            Hashtable<String, String> currentTriple = tripleEnum.nextElement();
             if (currentTriple.containsKey("relationship")) {
-                String rel = (String)currentTriple.get("relationship");
+                String rel = currentTriple.get("relationship");
                 if (rel.indexOf("isDataFileFor") != -1) {
                     hasData = true;
                 }
@@ -545,7 +546,7 @@ public class LocalQuery
     if (!pathstring.startsWith("/")) {
       pathstring = "//"+pathstring;
     }
-    Hashtable domCollection = null;
+    Hashtable<String, Document> domCollection = null;
     String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
     if(sourceDir != null && sourceDir.equals(incompleteDir))
     {
@@ -615,7 +616,7 @@ public class LocalQuery
     * given a directory, return a vector of files it contains
     * including subdirectories
     */
-   private void getFiles(File directoryFile, Vector vec) {
+   private void getFiles(File directoryFile, Vector<File> vec) {
       String[] files = directoryFile.list();
       if(files != null)
       {
@@ -645,7 +646,7 @@ public class LocalQuery
    *  version number
    *  This is to reduce the search time by avoiding older versions
    */
-  private void getLatestVersion(Vector vec) {
+  private void getLatestVersion(Vector<File> vec) {
       
     String dot = ".";
     if(vec != null)
@@ -653,7 +654,7 @@ public class LocalQuery
       Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
       for(int i=0; i<vec.size();i++)
       {
-        File file = (File)(vec.elementAt(i));
+        File file = vec.elementAt(i);
         if(file != null)
         {
           String name1 = file.getAbsolutePath();
@@ -684,10 +685,10 @@ public class LocalQuery
         }
       }
       //put maxVersions into the new vector
-      Enumeration enumeration = maxVersions.keys();
+      Enumeration<String> enumeration = maxVersions.keys();
       vec.removeAllElements();
       while (enumeration.hasMoreElements()) {
-          String nameStart = (String)enumeration.nextElement();
+          String nameStart = enumeration.nextElement();
           if(nameStart != null)
           {
             Integer version  = maxVersions.get(nameStart);
@@ -698,27 +699,6 @@ public class LocalQuery
           }
       }
     }
-    /*Vector newvec = new Vector();
-    for (int j=0;j<vec.size();j++) {
-      File file = (File)vec.elementAt(j);
-      String name = file.getName();
-      newvec.addElement(name);
-    }
-    // now string ids are in newvec
-    int cnt = 0;
-    for (int k=0;k<newvec.size();k++) {
-      String name1 = (String)(newvec.elementAt(k));
-      int periodloc = name1.lastIndexOf(".");
-      String namestart = name1.substring(0,periodloc);
-      String vernum = name1.substring(periodloc+1,name1.length());
-      Integer Intver = new Integer(vernum);
-      int iver = Intver.intValue();
-      String newstr = namestart+"."+(iver+1);
-      if (newvec.contains(newstr)) {
-        vec.removeElementAt(k - cnt);
-        cnt++;
-      }
-    }*/
   }
 
   /**
@@ -815,14 +795,14 @@ public class LocalQuery
    *
    * @param qg the QueryGroup containing query parameters
    */
-  private Vector executeLocal(QueryGroup qg, Vector filevector, String sourceDir)
+  private Vector<String> executeLocal(QueryGroup qg, Vector<File> filevector, String sourceDir)
   {
-    Vector combined = null;
-    Vector currentResults = null;
+    Vector<String> combined = null;
+    Vector<String> currentResults = null;
     String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
 
     if (qg == null) {
-    	return new Vector();
+    	return new Vector<String>();
     }
     Enumeration children = qg.getChildren();
     while (children.hasMoreElements()) {
@@ -854,12 +834,12 @@ public class LocalQuery
       // add these results to previous ones
       if (qg.getOperator().equalsIgnoreCase("intersect")) {
         if (combined == null) {
-          combined = (Vector)currentResults.clone(); // 1st time
+          combined = (Vector<String>)currentResults.clone(); // 1st time
         } else {
-          Vector original = (Vector)combined.clone();
-          combined = new Vector();
+          Vector<String> original = (Vector<String>)combined.clone();
+          combined = new Vector<String>();
           for (int i = 0; i < currentResults.size(); i++) {
-            Object obj = currentResults.elementAt(i);
+            String obj = currentResults.elementAt(i);
             if (original.contains(obj)) {
               combined.addElement(obj);
             } else {
@@ -868,11 +848,11 @@ public class LocalQuery
         }
       } else if (qg.getOperator().equalsIgnoreCase("union")) {
         if (combined==null) {
-          combined = (Vector)currentResults.clone(); // 1st time
+          combined = (Vector<String>)currentResults.clone(); // 1st time
         } else {
-          Enumeration q = currentResults.elements();
+          Enumeration<String> q = currentResults.elements();
           while(q.hasMoreElements()) {
-            String temp = (String)q.nextElement();
+            String temp = q.nextElement();
             if (!combined.contains(temp)) {
               combined.addElement(temp);
             }
@@ -936,7 +916,7 @@ public class LocalQuery
  /**
   * build hashtable of package elements called by buildPackageList
   */
-  private void addToPackageList(Node docNode, String packageDocid, Hashtable dataPackageCollection) {
+  private void addToPackageList(Node docNode, String packageDocid, Hashtable<String, Vector<String>> dataPackageCollection) {
     String subject = "";
     String relationship = "";
     String object = "";
@@ -945,7 +925,7 @@ public class LocalQuery
     String xpathExpression = "//triple";
 
     // Initialize a new list of triples for this package
-    Vector tripleList = new Vector();
+    Vector<Hashtable<String, String>> tripleList = new Vector<Hashtable<String, String>>();
 
     try{
       nl = XPathAPI.selectNodeList(docNode, xpathExpression);
@@ -959,7 +939,7 @@ public class LocalQuery
       for (int m=0;m<nl.getLength();m++) {
 
         // Create a hash to contain the triple information in this triple
-        Hashtable triple = new Hashtable();
+        Hashtable<String, String> triple = new Hashtable<String, String>();
 
         // Look for the subject, object, and relationship nodes
         NodeList nlchildren = (nl.item(m)).getChildNodes();
@@ -994,7 +974,7 @@ public class LocalQuery
           // already in collection
           // don't do anything
         } else {  // new
-          Vector vec = new Vector();
+          Vector<String> vec = new Vector<String>();
           vec.addElement(packageDocid);
           dataPackageCollection.put(packageDocid, vec);
         }
@@ -1002,10 +982,10 @@ public class LocalQuery
         // add subject to the collection
         if (dataPackageCollection.containsKey(subject)) {
           // already in collection
-          Vector curvec = (Vector)dataPackageCollection.get(subject);
+          Vector<String> curvec = dataPackageCollection.get(subject);
           curvec.addElement(packageDocid);
         } else {  // new
-          Vector vec = new Vector();
+          Vector<String> vec = new Vector<String>();
           vec.addElement(packageDocid);
           dataPackageCollection.put(subject, vec);
         }
@@ -1013,10 +993,10 @@ public class LocalQuery
         // add object to the collection
         if (dataPackageCollection.containsKey(object)) {
           // already in collection
-          Vector curvec = (Vector)dataPackageCollection.get(object);
+          Vector<String> curvec = dataPackageCollection.get(object);
           curvec.addElement(packageDocid);
         } else {  // new
-          Vector vec = new Vector();
+          Vector<String> vec = new Vector<String>();
           vec.addElement(packageDocid);
           dataPackageCollection.put(object, vec);
         }
@@ -1029,7 +1009,7 @@ public class LocalQuery
       // already in collection
       // don't do anything
     } else {  // new
-      Vector vec = new Vector();
+      Vector<String> vec = new Vector<String>();
       vec.addElement(packageDocid);
       dataPackageCollection.put(packageDocid, vec);
     }
