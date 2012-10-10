@@ -54,7 +54,7 @@ import edu.ucsb.nceas.morpho.exception.IdentifierNotFoundException;
  */
 public class IdentifierFileMap {
   private static final String UTF8 = "UTF-8";
-  private static final String PROPERTYFILESUFFIX = ".properties";
+  public static final String PROPERTYFILESUFFIX = ".properties";
   private Properties mappingProperties = null;
   private File mappingPropertyFile = null;
   private File objectDir = null;
@@ -78,7 +78,7 @@ public class IdentifierFileMap {
                                          +objectDir.getAbsolutePath());
       
     }
-    this.mappingPropertyFile = new File(this.objectDir, File.separator + "." + this.objectDir.getName() + PROPERTYFILESUFFIX);
+    this.mappingPropertyFile = new File(this.objectDir, File.separator + IdentifierManager.DOT + this.objectDir.getName() + PROPERTYFILESUFFIX);
     
     if(!this.mappingPropertyFile.exists()) {
       this.mappingPropertyFile.createNewFile();
