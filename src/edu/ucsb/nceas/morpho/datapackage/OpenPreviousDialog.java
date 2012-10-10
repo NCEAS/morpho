@@ -130,6 +130,7 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 
 	void OpenButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+		// TODO: use the actual ID value, not the index in a list
       int selnum = PrevPackageList.getSelectedIndex();
       if (selnum<0) return;
       String temp = packageName + IdentifierManager.DOT + (selnum + 1);

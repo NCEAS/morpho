@@ -877,32 +877,28 @@ public class DataStoreServiceController {
 		String originalIdentifier = null;
 		if (identifier != null) {
 			originalIdentifier = identifier;
-			// get revision number
-			int lastperiod = identifier.lastIndexOf(IdentifierManager.DOT);
-			if (lastperiod > -1) {
-				version = identifier.substring(lastperiod + 1, identifier.length());
-				scope = identifier.substring(0, lastperiod);
-				Log.debug(55, "scope: " + scope + "---version: " + version);
-			}
+			// get revision number and scope
+			Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
+			version = idParts.get(2);
+			scope = idParts.get(0);
+			Log.debug(55, "scope: " + scope + "---version: " + version);
+			
 			try {
 				revision = (new Integer(version).intValue());
 				if (revision == 1) {
 					update = false;
 				}
 			} catch (Exception e) {
-				Log.debug(5, "Couldn't find the revison in docid " + identifier
-						+ " since " + e.getMessage());
+				Log.debug(5, "Couldn't find the revison in docid " + identifier + " since " + e.getMessage());
 			}
 
 			// if it is update, we need give user options to choose: increase
 			// docid or revision number
 			if (update) {
-				DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(
-						identifier, conflictLocation);
+				DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, conflictLocation);
 				String choice = docidIncreaseDialog.showDialog();
 				// Log.debug(5, "choice is "+choice);
-				if (choice != null
-						&& choice.equals(DocidConflictHandler.INCREASEID)) {
+				if (choice != null && choice.equals(DocidConflictHandler.INCREASEID)) {
 					update = false;
 				} else {
 					update = true;

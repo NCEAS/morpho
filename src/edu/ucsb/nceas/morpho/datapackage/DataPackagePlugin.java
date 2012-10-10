@@ -1010,8 +1010,7 @@ public class DataPackagePlugin
 
     // figure out whether there may be multiple versions, based on identifier
     // TODO: do not use identifier to determine this
-    int lastDot = identifier.lastIndexOf(IdentifierManager.DOT);
-    String verNum = identifier.substring(lastDot+1,identifier.length());
+    String verNum = AccessionNumber.getInstance().getParts(identifier).get(2);
     if (verNum.equals("1")) {
       monitor.notifyStateChange(
                  new StateChangeEvent(
@@ -1149,8 +1148,7 @@ public class DataPackagePlugin
 
     // figure out whether there may be multiple versions, based on identifier
     String identifier = adp.getAccessionNumber();
-    int lastDot = identifier.lastIndexOf(IdentifierManager.DOT);
-    String verNum = identifier.substring(lastDot+1,identifier.length());
+    String verNum = AccessionNumber.getInstance().getParts(identifier).get(2);
     if (verNum.equals("1")) {
       monitor.notifyStateChange(
                  new StateChangeEvent(
@@ -1269,8 +1267,7 @@ public class DataPackagePlugin
 
     // figure out whether there may be multiple versions, based on identifier
     String identifier = adp.getAccessionNumber();
-    int lastDot = identifier.lastIndexOf(IdentifierManager.DOT);
-    String verNum = identifier.substring(lastDot+1,identifier.length());
+    String verNum = AccessionNumber.getInstance().getParts(identifier).get(2);
     if (verNum.equals("1")) {
       monitor.notifyStateChange(
                  new StateChangeEvent(
@@ -1697,7 +1694,7 @@ public class DataPackagePlugin
         Log.debug(30, "file name in DataPkcagPlugin. parser() "+ name);
         String path = file.getParent();
         Log.debug(30, "file path in DataPkcagPlugin. parser() "+ path);
-        int position = name.lastIndexOf(IdentifierManager.DOT);
+        int position = name.lastIndexOf(".");
         if(position != -1)
         {
           fileName = path+File.separator+name.substring(0, position);

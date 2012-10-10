@@ -579,16 +579,8 @@ public class LocalDataStoreService extends DataStoreService
 	 */
 	private int getLastDocid(String scope) {
 		int docid = 0;
-		int maxDocid = 0;
-		String currentProfile = morpho.getProfile().get("profilename", 0);
-		ConfigXML config = Morpho.getConfiguration();
-		String profileDir = ConfigXML.getConfigDirectory() + File.separator
-				+ config.get("profile_directory", 0) + File.separator
-				+ currentProfile;
-		String datadir = profileDir + File.separator
-				+ morpho.getProfile().get("datadir", 0) + File.separator
-				+ scope;
-		datadir = datadir.trim();
+		int maxDocid = 0;		
+		String datadir = getDataDir();
 		Log.debug(30, "the data dir is ===== " + datadir);
 		File directoryFile = new File(datadir);
 		File[] files = directoryFile.listFiles();
