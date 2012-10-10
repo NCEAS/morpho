@@ -284,10 +284,9 @@ public class PersistentVector
   /*
    * write a text file from the pv
    */
-  public void writeObjects(String filename) {
-    File f = new File(filename);
+  public void writeObjects(File file) {
     try{
-      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
+      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8")));
       CSVWriter csvWriter = new CSVWriter(out, getDelimiterString().charAt(0));
       
       // write header lines if they exist
@@ -492,7 +491,7 @@ public class PersistentVector
 	  String s1 = (String)pv.elementAt(100);
 	  System.out.println(s1);
 	  pv.insertElementAt("DFH DFH DFH",3);
-	  pv.writeObjects("C:/VisualCafe/Projects/PersistentVector/test1.txt");
+	  pv.writeObjects(new File("C:/VisualCafe/Projects/PersistentVector/test1.txt"));
 	}
     
 }

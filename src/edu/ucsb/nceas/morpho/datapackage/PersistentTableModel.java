@@ -106,10 +106,6 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     this.field_delimiter = s.trim();
   }
     
-  public void saveAsFile(String fileName) {
-    pv.writeObjects(fileName);
-  }
-    
   public String getColumnName(int col) {
     String colName = (String)colNames.elementAt(col);
     return colName;

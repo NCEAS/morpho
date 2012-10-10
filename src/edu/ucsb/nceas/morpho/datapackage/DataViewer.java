@@ -1358,10 +1358,11 @@ public class DataViewer extends javax.swing.JPanel
 			}
 			dataFileId = id;  // update to new value
 			//System.out.println("reset the dataFileId "+dataFileId);
-			String tempfilename = parseId(id);
-			ptm.getPersistentVector().writeObjects(tempdir + "/" + tempfilename);
+			
+			// use null for the input stream since we write to the file in the next step
+			File newDataFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(id, null);
+			ptm.getPersistentVector().writeObjects(newDataFile);
 
-			File newDataFile = new File(tempdir + "/" + tempfilename);
 			long newDataFileLength = newDataFile.length();
 
 			int rowcnt = ptm.getRowCount();
@@ -1391,7 +1392,6 @@ public class DataViewer extends javax.swing.JPanel
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 
-		MorphoFrame thisFrame = null;
 		saveCurrentTable(true);
 		// Log.debug(1,"Data File Number of Records: "+adp.getEntityNumRecords(entityIndex));
 		// Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
@@ -1415,24 +1415,6 @@ public class DataViewer extends javax.swing.JPanel
 
 		}
 	}
-
-  /**
-   * Parses a dotted notation id into a file path.  johnson2343.13223 becomes
-   * johnson2343/13223.  Revision numbers are left on the end so
-   * johnson2343.13223.2 becomes johnson2343/13223.2
-   */
-  private String parseId(String id)
-  {
-    String path = new String();
-    path = id.substring(0, id.indexOf("."));
-    // now create a directory in the temp dir if it does not exist
-    File pathFile = new File(tempdir + "/" + path);
-    if (!pathFile.exists()) {
-      pathFile.mkdir();
-    }
-    path += "/" + id.substring(id.indexOf(separator) + 1, id.length());
-    return path;
-  }
 
 
   /**
