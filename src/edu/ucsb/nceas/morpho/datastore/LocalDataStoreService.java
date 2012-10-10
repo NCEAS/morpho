@@ -406,7 +406,7 @@ public class LocalDataStoreService extends DataStoreService
 				if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
 					String docid = AbstractDataPackage.getUrlInfo(URLinfo);
 					Log.debug(30, "handle data file  with index " + i + "" + docid);
-					Morpho.thisStaticInstance.getLocalDataStoreService().deleteInCompleteFile(docid);
+					deleteInCompleteFile(docid);
 				}
 			}
 		}
@@ -1084,7 +1084,7 @@ public class LocalDataStoreService extends DataStoreService
 					String identifier = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
 					try {
 						InputStream dfis = new FileInputStream(localFile);
-						Morpho.thisStaticInstance.getLocalDataStoreService().saveDataFile(identifier, dfis);
+						saveDataFile(identifier, dfis);
 						// now we can modify the online url in metadata.
 						String url = AbstractDataPackage.ECOGRID + "://knb/" + identifier;
 						adp.setDistributionUrl(i, 0, 0, url);
