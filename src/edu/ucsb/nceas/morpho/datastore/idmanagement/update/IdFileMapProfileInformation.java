@@ -132,4 +132,12 @@ public class IdFileMapProfileInformation {
   public Vector<File> getObjectDirectories() {
     return objectDirectories;
   }
+  
+  /**
+   * Get the specified profile.
+   * @return the profile.
+   */
+  public ConfigXML getProfile() {
+    return profile;
+  }
 }
