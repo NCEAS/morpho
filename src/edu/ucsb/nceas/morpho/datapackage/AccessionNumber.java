@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 
 /**
  * Class that implements Accession Number utility functions for morpho
@@ -122,7 +123,7 @@ public class AccessionNumber
   public int getNumberOfPrevVersions(String docId)
   {
       int prevVersions = 0;
-      int iii = docId.lastIndexOf(".");
+      int iii = docId.lastIndexOf(IdentifierManager.DOT);
       String ver = docId.substring(iii+1,docId.length());
       prevVersions = (new Integer(ver)).intValue();
       prevVersions = prevVersions - 1;

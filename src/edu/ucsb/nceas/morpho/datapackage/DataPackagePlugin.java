@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -934,7 +935,7 @@ public class DataPackagePlugin
   {
     AbstractDataPackage adp = null;
     Log.debug(11, "DataPackage: Got service request to open: " +
-                    identifier + " from " + location + ".");
+                    identifier + " from " + location);
     if(location == null || ( !location.equals(DataPackageInterface.METACAT) &&
         !location.equals(DataPackageInterface.LOCAL) && !location.equals(DataPackageInterface.BOTH)))
     {
@@ -1008,7 +1009,8 @@ public class DataPackagePlugin
     }
 
     // figure out whether there may be multiple versions, based on identifier
-    int lastDot = identifier.lastIndexOf(".");
+    // TODO: do not use identifier to determine this
+    int lastDot = identifier.lastIndexOf(IdentifierManager.DOT);
     String verNum = identifier.substring(lastDot+1,identifier.length());
     if (verNum.equals("1")) {
       monitor.notifyStateChange(
@@ -1147,7 +1149,7 @@ public class DataPackagePlugin
 
     // figure out whether there may be multiple versions, based on identifier
     String identifier = adp.getAccessionNumber();
-    int lastDot = identifier.lastIndexOf(".");
+    int lastDot = identifier.lastIndexOf(IdentifierManager.DOT);
     String verNum = identifier.substring(lastDot+1,identifier.length());
     if (verNum.equals("1")) {
       monitor.notifyStateChange(
@@ -1267,7 +1269,7 @@ public class DataPackagePlugin
 
     // figure out whether there may be multiple versions, based on identifier
     String identifier = adp.getAccessionNumber();
-    int lastDot = identifier.lastIndexOf(".");
+    int lastDot = identifier.lastIndexOf(IdentifierManager.DOT);
     String verNum = identifier.substring(lastDot+1,identifier.length());
     if (verNum.equals("1")) {
       monitor.notifyStateChange(
@@ -1672,7 +1674,6 @@ public class DataPackagePlugin
     private String fileName = null;
     private String extension = "";
     private File file = null;
-    private static final String DOT = ".";
     
     /**
      * Constructor will parse the file name
@@ -1696,7 +1697,7 @@ public class DataPackagePlugin
         Log.debug(30, "file name in DataPkcagPlugin. parser() "+ name);
         String path = file.getParent();
         Log.debug(30, "file path in DataPkcagPlugin. parser() "+ path);
-        int position = name.lastIndexOf(DOT);
+        int position = name.lastIndexOf(IdentifierManager.DOT);
         if(position != -1)
         {
           fileName = path+File.separator+name.substring(0, position);

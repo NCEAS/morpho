@@ -37,6 +37,7 @@ import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -147,7 +148,7 @@ public class OpenByIdDialog extends JDialog {
 				String syntheticId = id + ".1";
 				int nextRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(syntheticId, location);
 				int revision = nextRevision - 1;
-				id = id + "." + revision;
+				id = id + IdentifierManager.DOT + revision;
 				AccessionNumber.getInstance().getParts(id);
 			} catch (Exception e2) {
 				Log.debug(5, Language.getInstance().getMessage("InvalidId"));

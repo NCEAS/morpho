@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -877,7 +878,7 @@ public class DataStoreServiceController {
 		if (identifier != null) {
 			originalIdentifier = identifier;
 			// get revision number
-			int lastperiod = identifier.lastIndexOf(".");
+			int lastperiod = identifier.lastIndexOf(IdentifierManager.DOT);
 			if (lastperiod > -1) {
 				version = identifier.substring(lastperiod + 1, identifier.length());
 				scope = identifier.substring(0, lastperiod);
@@ -914,7 +915,7 @@ public class DataStoreServiceController {
 			} else {
 				int newRevision = 
 					DataStoreServiceController.getInstance().getNextRevisionNumber(identifier, DataPackageInterface.BOTH);
-				identifier = scope + "." + newRevision;
+				identifier = scope + IdentifierManager.DOT + newRevision;
 			}
 			// store the new id and original id into a map.
 			// So when morpho know the new id when it serialize
@@ -1081,7 +1082,7 @@ public class DataStoreServiceController {
 		String identifier = adp.getAccessionNumber();
 		Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
 		// get docid without revision
-		String docidNoRev = idParts.get(0) + "." + idParts.get(1);
+		String docidNoRev = idParts.get(0) + IdentifierManager.DOT + idParts.get(1);
 		// get revision
 		String version = idParts.get(2);
 		// boolean existsFlag = mds.exists(temp2+".1");
@@ -1157,7 +1158,7 @@ public class DataStoreServiceController {
 			} else {
 				// increase revision number
 				int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(adp.getAccessionNumber(), DataPackageInterface.BOTH);
-				identifier = docidNoRev + "." + newRevision;
+				identifier = docidNoRev + IdentifierManager.DOT + newRevision;
 				adp.setAccessionNumber(identifier);
 				adp.setPackageIDChanged(true);
 				temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());

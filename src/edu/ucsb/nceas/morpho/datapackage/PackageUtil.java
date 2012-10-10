@@ -60,6 +60,7 @@ import com.arbortext.catalog.CatalogEntityResolver;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
@@ -148,7 +149,7 @@ public class PackageUtil
     String parent = file.getParent();
     int lastsep = parent.lastIndexOf(File.separator);
     parent = parent.substring(lastsep+1);
-    fileName = parent+"."+fileName;
+    fileName = parent + IdentifierManager.DOT + fileName;
     if (LocalQuery.dom_collection.containsKey(fileName)) {
       return ((Document)LocalQuery.dom_collection.get(fileName));
     }

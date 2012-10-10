@@ -26,38 +26,29 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.util.*;
-
-import java.io.*;
-
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.Collections;
 
-import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.ImageIcon;
+import javax.swing.table.AbstractTableModel;
 
-import org.w3c.dom.*;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.helpers.DefaultHandler;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SortableJTable;
 
 /**
  * A ResultSet encapsulates the list of results returned from either a
@@ -550,8 +541,8 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     {
       Vector rowVector = (Vector)resultsVector.elementAt(i);
       String currentDocid = (String)rowVector.elementAt(DOCIDINDEX);
-      String docidWithoutRev = Util.getDocIDWithoutRev(currentDocid);
-      int rev = Util.getRevisionNumber(currentDocid);
+      String docidWithoutRev = AccessionNumber.getInstance().getIdNoRev(currentDocid);
+      int rev = Integer.parseInt(AccessionNumber.getInstance().getParts(currentDocid).get(2));
       if(docidWithoutRev != null && rev != -1)
       {
         DocInfo currentDocInfo = new DocInfo(docidWithoutRev, rev, i);
@@ -572,9 +563,9 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     while (ee.hasMoreElements()) 
     {
       Vector row = (Vector)ee.nextElement();
-      String currentDocid = (String)row.elementAt(DOCIDINDEX);
-      String newDocidWithoutRev = Util.getDocIDWithoutRev(currentDocid);
-      int newRev = Util.getRevisionNumber(currentDocid);
+      String currentDocid = (String)row.elementAt(DOCIDINDEX);   
+      String newDocidWithoutRev = AccessionNumber.getInstance().getIdNoRev(currentDocid);
+      int newRev = Integer.parseInt(AccessionNumber.getInstance().getParts(currentDocid).get(2));
       if(newDocidWithoutRev != null && newRev != -1)
       {
         if (incompleteDocidMap.containsKey(newDocidWithoutRev)) 

@@ -34,6 +34,7 @@ import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -131,7 +132,7 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 	{
       int selnum = PrevPackageList.getSelectedIndex();
       if (selnum<0) return;
-      String temp = packageName + "." + (selnum + 1);
+      String temp = packageName + IdentifierManager.DOT + (selnum + 1);
 
       DataPackageInterface dataPackage;
       try 

@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.Reader;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -152,7 +153,7 @@ public abstract class DataStoreService implements DataStoreServiceInterface
   protected String parseId(String id) 
   {
     String path = new String();
-    path = id.substring(0, id.indexOf("."));
+    path = id.substring(0, id.indexOf(IdentifierManager.DOT));
     path += "/" + id.substring(id.indexOf(separator) + 1, id.length());
     return path;
   }

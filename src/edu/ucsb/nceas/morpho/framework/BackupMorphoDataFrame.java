@@ -79,7 +79,6 @@ public class BackupMorphoDataFrame extends JFrame
 	private final static String DOTMORPHOBACKUP = "dotMorphoBackup-";
 	private final static String GZIP = "gz";
 	private final static String TAR   = "tar";
-	private final static String DOT  = ".";
 
 	/**
 	 * Default Constructor
@@ -172,13 +171,13 @@ public class BackupMorphoDataFrame extends JFrame
 		        if (backup)
 		        {
 		        	//check the bakup file of this version eixisting or not
-		        	File targetFile = new File(ConfigXML.getConfigDirectory()+File.separator+DOTMORPHOBACKUP+Morpho.VERSION+DOT+TAR+DOT+GZIP);
+		        	File targetFile = new File(ConfigXML.getConfigDirectory()+File.separator+DOTMORPHOBACKUP+Morpho.VERSION+"."+TAR+"."+GZIP);
 		        	if(!targetFile.exists())
 		        	{
 		        		//load the gui
 		        		loadGUI();
 		        		// generte a tar file under the parent dir of .morpho - home dir
-		        		File tarFile = new File(System.getProperty("user.home")+File.separator+DOTMORPHOBACKUP+Morpho.VERSION+DOT+TAR);
+		        		File tarFile = new File(System.getProperty("user.home")+File.separator+DOTMORPHOBACKUP+Morpho.VERSION+"."+TAR);
 		        		FileOutputStream tarOutput = new FileOutputStream(tarFile);
 		        		TarArchive tarArchive = new TarArchive(tarOutput);
 		        		//list the .morpho dir (configure dir) and put everything exception previous backup file into tar

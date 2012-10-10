@@ -47,6 +47,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -468,60 +469,62 @@ public class LocalDataStoreService extends DataStoreService
   }
   
  /**
-  *  A variant of saveFile designed for use with Data Files.
-  *  This avoids the writing of files to Strings that is in saveFile
-  *  and allows for very large data files. (i.e. no file is put entirely
-  *  in memory) This version uses an InputStream rather than a Reader to
-  *  avoid problems with binary file corruption
-  */
-  private File saveDataFile(String name, InputStream file, String rootDir)
-  {
-    BufferedInputStream bfile = null;
-    BufferedOutputStream bos = null;
-    try
-    {
-      String path = parseId(name);
-      String dirs = path.substring(0, path.lastIndexOf("/"));
-      File savefile = new File(rootDir + "/" + path); //the path to the file
-      File savedir = new File(rootDir + "/" + dirs); //the dir part of the path
-      if(!savefile.exists())
-      {//if the file isn't there create it.
-        try
-        {
-          savedir.mkdirs(); //create any directories
-        }
-        catch(Exception ee)
-        {
-          ee.printStackTrace();
-        }
-      }
-      
-      bfile = new BufferedInputStream(file);
-      bos = new BufferedOutputStream(new FileOutputStream(savefile));
-      int d = bfile.read();
-      while(d != -1)
-      {
-        bos.write(d); //write out everything in the reader
-        d = bfile.read();
-      }
-      bos.flush();
-      bos.close();
-      bfile.close();
-      return savefile;
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-      return null;
-    }
-    finally {
-      try{
-        if (bfile!=null) bfile.close();
-        if (bos!=null) bos.close();
-      }
-      catch (Exception r) {}
-    }
-  }
+	 * A variant of saveFile designed for use with Data Files. This avoids the
+	 * writing of files to Strings that is in saveFile and allows for very large
+	 * data files. (i.e. no file is put entirely in memory) This version uses an
+	 * InputStream rather than a Reader to avoid problems with binary file
+	 * corruption
+	 */
+	private File saveDataFile(String name, InputStream is, String rootDir) {
+		BufferedInputStream bfile = null;
+		BufferedOutputStream bos = null;
+		File savefile = null;
+		try {
+			String path = parseId(name);
+			String dirs = path.substring(0, path.lastIndexOf("/"));
+			savefile = new File(rootDir + "/" + path); // the path to the file
+			File savedir = new File(rootDir + "/" + dirs); // the dir part of the path
+			// if the file isn't there create it.
+			if (!savefile.exists()) {
+				try {
+					// create any directories
+					savedir.mkdirs(); 
+				} catch (Exception ee) {
+					ee.printStackTrace();
+				}
+			}
+
+			// only write bytes if we were given them
+			if (is != null) {
+
+				bfile = new BufferedInputStream(is);
+				bos = new BufferedOutputStream(new FileOutputStream(savefile));
+				int d = bfile.read();
+				while (d != -1) {
+					bos.write(d); // write out everything in the reader
+					d = bfile.read();
+				}
+				bos.flush();
+				bos.close();
+				bfile.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if (bfile != null)
+					bfile.close();
+				if (bos != null)
+					bos.close();
+			} catch (Exception r) {
+				r.printStackTrace();
+				return null;
+			}
+		}
+		return savefile;
+
+	}
   
   
   /**
@@ -596,7 +599,7 @@ public class LocalDataStoreService extends DataStoreService
 					String fileName = currentfile.getName();
 					Log.debug(50, "the file name in dir is " + fileName);
 					if (fileName != null) {
-						fileName = fileName.substring(0, fileName.indexOf("."));
+						fileName = fileName.substring(0, fileName.indexOf(IdentifierManager.DOT));
 						Log.debug(50, "the file name after removing revision in dir is " + fileName);
 						try {
 							docid = new Integer(fileName).intValue();
@@ -825,7 +828,7 @@ public class LocalDataStoreService extends DataStoreService
 						Double d = Double.valueOf(filename);
 						// add the identifier as parentdir.filename
 						String scope = currentfile.getParentFile().getName();
-						String identifier = scope + "." + filename;
+						String identifier = scope + IdentifierManager.DOT + filename;
 						identifiers.addElement(identifier);
 					} catch (NumberFormatException nfe) {
 						Log.debug(30, "Not loading file with invalid name: " + filename);
@@ -848,7 +851,6 @@ public class LocalDataStoreService extends DataStoreService
 	private Vector<String> getLatestVersion(Vector<String> identifiers) {
 
 		Vector<String> returnVector = null;
-		String dot = ".";
 		if (identifiers != null) {
 			returnVector = new Vector<String>();
 			Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
@@ -856,7 +858,7 @@ public class LocalDataStoreService extends DataStoreService
 				String identifier = identifiers.elementAt(i);
 				try {
 					Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
-					String docid = idParts.get(0) + dot + idParts.get(1);
+					String docid = idParts.get(0) + IdentifierManager.DOT + idParts.get(1);
 					String revision = idParts.get(2);
 					if (docid != null) {
 						Integer intVer = new Integer(revision);
@@ -882,7 +884,7 @@ public class LocalDataStoreService extends DataStoreService
 				if (docid != null) {
 					Integer version = maxVersions.get(docid);
 					if (version != null) {
-						returnVector.add(docid + dot + version.toString());
+						returnVector.add(docid + IdentifierManager.DOT + version.toString());
 					}
 				}
 			}
@@ -907,13 +909,13 @@ public class LocalDataStoreService extends DataStoreService
 		// intialize filesystem datastore if it is null
 		dataDir = getDataDir();
 		
-		String targetDocid = getDocIdPart(identifier);
+		Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
+		String targetDocid = idParts.get(1) + IdentifierManager.DOT + idParts.get(2);
 		Log.debug(30, "the data dir is "+dataDir);
 		if (dataDir != null && targetDocid != null)
 		{
 			//Gets scope name
-			String scope = null;
-			scope = getIdScope(identifier);
+			String scope = idParts.get(0);
 			Log.debug(30, "the scope from id is "+scope);
 			File scopeFiles = new File(dataDir+File.separator+scope);
 			if (scopeFiles.isDirectory())
@@ -932,7 +934,7 @@ public class LocalDataStoreService extends DataStoreService
 							String name = file.getName();
 							if (name != null)
 							{
-								int index = name.lastIndexOf(".");
+								int index = name.lastIndexOf(IdentifierManager.DOT);
 								if (index != -1)
 								{
 								   String docid = name.substring(0,index);
@@ -972,83 +974,7 @@ public class LocalDataStoreService extends DataStoreService
 		Log.debug(30, "The next version for docid " + identifier + " in local file system is "+version);
 		return version;
 	}
-	  
-	  /*
-	   *  Gets the scope of given id. For example, it will return jones if the docid is jones.1.1.
-	   *  It will return the substring from 0 to the second last .
-	   *  null will be returned if no scope found.
-	   * @return the scope of this id
-	   */
-	  private static String getIdScope(String id)
-	  {
-		  String scope = null;
-		  if (id != null)
-		  {
-			  int index =id.lastIndexOf(".");
-			  if (index != -1)
-			  {
-			      scope = id.substring(0, index);
-			      if (scope != null)
-			      {
-			    	  index = scope.lastIndexOf(".");
-			    	  if (index != -1)
-			    	  {
-			    		  scope = scope.substring(0,index);
-			    	  }
-			    	  else
-			    	  {
-			    		  scope = null;
-			    	  }
-			      }
-			  }
-		  }
-		  return scope;
-	  }
-	
-	/*
-	 * Get docid part of an identifier. For example, it will return 30 if package id is jones.30.1
-	 * It will return the substring from the second last dot to the last dot.
-	 * null will return if no docid part found
-	 */
-	private static String getDocIdPart(String identifier)
-	{
-	  String docid = null;
-	  //String identifier = null;
-	  /*if (initialId != null)
-	  {
-	      identifier = initialId;
-		  
-	  }
-	  else
-	  {
-		  identifier = getPackageId();
-	  }*/
-	  Log.debug(30, "The identifier which need be got docid part is "+identifier);
-	  if (identifier != null)
-	  {
-		  int index =identifier.lastIndexOf(".");
-		  if (index != -1)
-		  {
-		      docid = identifier.substring(0, index);
-		      if (docid != null)
-		      {
-		    	  index = docid.lastIndexOf(".");
-		    	  if (index != -1 )
-		    	  {
-		    		  docid = docid.substring(index+1);
-		    		  
-		    	  }
-		    	  else
-		    	  {
-		    		  docid = null;
-		    	  }
-		      }
-		  }
-	  }
-	  Log.debug(30, "the docid part is "+docid);
-	  return docid;
-	}
-	
+	 
 	/**
 	 * Serialize data into morpho locally when user imports an external EML file
 	 * to morpho. This method will be called in ImportEMLFileCommand. This

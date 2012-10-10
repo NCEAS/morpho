@@ -55,6 +55,7 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
@@ -665,7 +666,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 			    		// we consider this id doesn't exist
 			    		int index1 = result.indexOf(";");
 			    		String versionStr = result.substring(0, index1);
-			    		index1 = name.lastIndexOf(".");
+			    		index1 = name.lastIndexOf(IdentifierManager.DOT);
 			    		String versionStrFromName = name.substring(index1+1);
 			    		Log.debug(30, "version from name is "+versionStrFromName +
 		    					 " and version from metacat is "+versionStr);
@@ -1094,8 +1095,8 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 				result = temp.substring(ind1 + 7, ind2);
 				if (!result.equals("null")) {
 					// now remove the version and scope parts of the id
-					result = result.substring(0, result.lastIndexOf("."));
-					result = result.substring(result.indexOf(".") + 1, result.length());
+					result = result.substring(0, result.lastIndexOf(IdentifierManager.DOT));
+					result = result.substring(result.indexOf(IdentifierManager.DOT) + 1, result.length());
 					try {
 						// double check that it is a number
 						metacatId = (new Integer(result).intValue());

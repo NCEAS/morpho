@@ -176,71 +176,7 @@ public class HeadResultSet extends ResultSet
   public void mergeWithMetacatResults(Vector metacatVector)
   {
     mergeWithCompleteDocResultVectors(metacatVector);
-    //consolidateResults();
   }
-  
- 
-
-
-  /*
-   * Consolidate the results Vector to produce a new Vector with only the
-   * most recent revision of each document in the Vector. Warning: this
-   * implementation doesn't preserve sort order of the results
-   */
-  /*private void consolidateResults()
-  {
-    int numHeaders = getColumnCount();
-    Hashtable maxRevHash = new Hashtable();
-    Hashtable maxRevRow = new Hashtable();
-
-    for (int i=0; i<resultsVector.size(); i++) {
-      // Get the row, and its docid, parse out the rev #
-      Vector rowVector = null;
-      String docid = null;
-      String family = null;
-      String rev = null;
-      Integer currentRev = null;
-      Integer maxRev = null;
-      try
-      {
-
-        rowVector = (Vector)resultsVector.elementAt(i);
-        docid = (String)rowVector.elementAt(DOCIDINDEX);
-        family = docid.substring(0, docid.lastIndexOf("."));
-        rev = docid.substring(docid.lastIndexOf(".")+1);
-        currentRev = new Integer(rev);
-        maxRev = (Integer)maxRevHash.get(family);
-      }
-      catch (Exception e)
-      {}
-      int currentRevint = 0;
-      int maxRevint = 0;
-      if (currentRev!=null) {
-        currentRevint = currentRev.intValue();
-      }
-      if (maxRev!=null) {
-        maxRevint = maxRev.intValue();
-      }
-
-      // save the highest rev
-//DFH      if (maxRev == null || (currentRev.compareTo(maxRev) > 0)) {
-      if ((maxRev == null || (currentRevint>maxRevint)) && family != null) {
-        // Store the familyid + current rev in a hash
-        maxRevHash.put(family, currentRev);
-        // Store the familyid + row for the current highest rev in a hash
-        maxRevRow.put(family, rowVector);
-      }
-    }
-
-    // Create the new consolidated vector of rows
-//DFH    headResultsVector = new Vector(maxRevRow.values());
-      headResultsVector = new Vector();
-      Enumeration enumeration = maxRevRow.elements();
-      while (enumeration.hasMoreElements()) {
-          headResultsVector.addElement(enumeration.nextElement());
-      }
-
-  }*/
 
    /**
    * Method implements from SortTableModel. To make sure a col can be sort
@@ -250,7 +186,6 @@ public class HeadResultSet extends ResultSet
    */
   public void sortTableByColumn(int col, String order)
   {
-    //sortVector(headResultsVector, col, order);
     sortVector(resultsVector, col, order);
   }//sortColumn
 }

@@ -46,6 +46,7 @@ import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -188,7 +189,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
   private String appendFileNameNumber(String fileName, int number)
   {
     int index = -1;
-    String dot = ".";
     String extension = null;
     String prefix = null;
     if (fileName == null || fileName.equals(""))
@@ -197,7 +197,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       return fileName;
     }
     int size = fileName.length();
-    index = fileName.lastIndexOf(dot);
+    index = fileName.lastIndexOf(IdentifierManager.DOT);
 
     if (index == -1)
     {
@@ -209,7 +209,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
     {
       extension = fileName.substring(index+1, size);
       prefix = fileName.substring(0, index);
-      fileName = prefix + number + dot + extension;
+      fileName = prefix + number + IdentifierManager.DOT + extension;
       return fileName;
     }
   }
