@@ -75,6 +75,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   JTextField scopeField = new JTextField();
   JList orgList = null;
   public static final String CORRECTIONEMLPROFILEPATH = "eml201corrected";
+  public static final String IDFILEMAPUPDATEDPATH = "idfileMapUpdated";
   
   public static final String[] ILLEGAL_SCOPE_CHARACTERS = 
 	  new String[] {" ", "&", "#", ",", ".", "+", "-", "(", ")"};

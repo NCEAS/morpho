@@ -43,7 +43,6 @@ import edu.ucsb.nceas.morpho.framework.ProfileDialog;
  *
  */
 public class IdFileMapProfileInformation {
-  public static final String IDFILEMAPUPDATED = "idFileMapUpdated";
   private ConfigXML profile = null;
   private boolean updated = false;
   private Vector<File> objectDirectories = new Vector<File>();
@@ -66,7 +65,7 @@ public class IdFileMapProfileInformation {
   private void parse() {
     if(profile != null)
     {
-      String updatedElementValue = profile.get(IDFILEMAPUPDATED, 0);
+      String updatedElementValue = profile.get(ProfileDialog.IDFILEMAPUPDATEDPATH, 0);
       if (updatedElementValue != null)
       {
           updated = (new Boolean(updatedElementValue)).booleanValue();

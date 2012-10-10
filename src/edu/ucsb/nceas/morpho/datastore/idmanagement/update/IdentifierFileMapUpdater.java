@@ -96,14 +96,6 @@ public class IdentifierFileMapUpdater {
     for(IdFileMapProfileInformation info : profileInformationList) {
       try {
         String profileDir = DataStoreService.getProfileDir(info.getProfile());
-        /*String profileDirName = (new File(profileDir)).getName();
-        File map = new File(profileDir, File.separator+IdentifierManager.DOT+profileDirName+IdentifierFileMap.PROPERTYFILESUFFIX);
-        if(!map.exists()) {
-          boolean success = map.createNewFile();
-          if(!success) {
-            throw new IOException("IdentifierFileMap.update - couldn't create the file "+ map.getAbsolutePath());
-          }
-        }*/
         IdentifierFileMap map = new IdentifierFileMap(new File(profileDir));
         Vector<File> objectDirs = info.getObjectDirectories();
         if(objectDirs != null) {
@@ -142,6 +134,11 @@ public class IdentifierFileMapUpdater {
           
           
         }
+       
+        //need to remove the path from the file first
+        info.getProfile().removeNode(ProfileDialog.IDFILEMAPUPDATEDPATH, 0);
+        info.getProfile().insert(ProfileDialog.IDFILEMAPUPDATEDPATH, "true");
+        info.getProfile().save();
       } catch (Exception e) {
         //The reason we catch the generic exception is we don't want the failure on
         //one profile disrupt the entire updating 
