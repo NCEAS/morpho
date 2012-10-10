@@ -44,6 +44,7 @@ public class DataStoreServiceTest extends MorphoTestCase {
       suite.addTest(new DataStoreServiceTest("initialize"));
       suite.addTest(new DataStoreServiceTest("testGetProflieDir"));
       suite.addTest(new DataStoreServiceTest("testGetCurrentProfileDir"));
+      suite.addTest(new DataStoreServiceTest("testGetProfileParentDir"));
       return suite;
   }
   
@@ -81,5 +82,15 @@ public class DataStoreServiceTest extends MorphoTestCase {
     System.out.println("The profile directory is "+path);
     assertTrue("The current pofile path should be "+"/Users/tao/.morpho/profiles/tao", 
                         path.equals("/Users/tao/.morpho/profiles/tao"));
+  }
+  
+  /**
+   * Test the getProfileDir() method
+   */
+  public void testGetProfileParentDir() {
+    String path =DataStoreService.getProfilesParentDir(); 
+    System.out.println("The profile directory is "+path);
+    assertTrue("The current pofile path should be "+"/Users/tao/.morpho/profiles", 
+                        path.equals("/Users/tao/.morpho/profiles"));
   }
 }
