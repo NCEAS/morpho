@@ -182,9 +182,8 @@ public class LocalQuery
   {
 	  String datadir = Morpho.thisStaticInstance.getLocalDataStoreService().getDataDir();
 	   File xmldir = new File(datadir);
-	   Vector<File> filevector = new Vector<File>();
 	    // get a list of all files to be searched
-	    getFiles(xmldir, filevector);
+	   Vector<File> filevector = getFiles(xmldir);
       return execute(filevector, datadir);
   }
   
@@ -197,8 +196,7 @@ public class LocalQuery
 	  
 	  String incompleteDir = Morpho.thisStaticInstance.getLocalDataStoreService().getIncompleteDir();
 	  File xmldir = new File(incompleteDir);
-	  Vector<File> fileVector = new Vector<File>();
-	  getFiles(xmldir, fileVector);
+	  Vector<File> fileVector = getFiles(xmldir);
 	  dom_incomplete_collection = new Hashtable<String, Document>();
 	  doctype_incomplete_collection = new Hashtable<String, String>();
 	  dataPackage_incomplete_collection = new Hashtable<String, Vector<String>>();
@@ -616,7 +614,9 @@ public class LocalQuery
     * given a directory, return a vector of files it contains
     * including subdirectories
     */
-   private void getFiles(File directoryFile, Vector<File> vec) {
+   private Vector<File> getFiles(File directoryFile) {
+	   
+	   Vector<File> vec = new Vector<File>();
       String[] files = directoryFile.list();
       if(files != null)
       {
@@ -625,7 +625,7 @@ public class LocalQuery
             String filename = files[i];
             File currentfile = new File(directoryFile, filename);
             if (currentfile.isDirectory()) {
-                getFiles(currentfile,vec);  // recursive call to subdirecctories
+                vec.addAll(getFiles(currentfile));  // recursive call to subdirecctories
             }
             if (currentfile.isFile()) {
                 try {
@@ -636,8 +636,10 @@ public class LocalQuery
                 }
             }
         }
-        getLatestVersion(vec);
+        vec = getLatestVersion(vec);
       }
+      
+      return vec;
      
    }
 
@@ -646,11 +648,13 @@ public class LocalQuery
    *  version number
    *  This is to reduce the search time by avoiding older versions
    */
-  private void getLatestVersion(Vector<File> vec) {
-      
+  private Vector<File> getLatestVersion(Vector<File> vec) {
+	  
+	  Vector<File> returnVector = null;
     String dot = ".";
     if(vec != null)
     {
+    	returnVector = new Vector<File>();
       Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
       for(int i=0; i<vec.size();i++)
       {
@@ -686,7 +690,6 @@ public class LocalQuery
       }
       //put maxVersions into the new vector
       Enumeration<String> enumeration = maxVersions.keys();
-      vec.removeAllElements();
       while (enumeration.hasMoreElements()) {
           String nameStart = enumeration.nextElement();
           if(nameStart != null)
@@ -694,11 +697,12 @@ public class LocalQuery
             Integer version  = maxVersions.get(nameStart);
             if(version != null)
             {
-              vec.add(new File(nameStart+dot+version.toString()));
+              returnVector.add(new File(nameStart+dot+version.toString()));
             }
           }
       }
     }
+    return returnVector;
   }
 
   /**
