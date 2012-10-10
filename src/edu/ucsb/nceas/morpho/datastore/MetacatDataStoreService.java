@@ -54,6 +54,7 @@ import javax.swing.Timer;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -614,99 +615,88 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
   
   
   /**
-   * Gets the id(with revision) status on Metacat: 
-   * CONFLICT: docid exist, but revision is less than the one in metacat
-   * UPDATE: docid exist, but revision is greater than the on in metacat
-   * NONEXIST: docid not exist all no all.
-   *
-   * @param name: the docid of the metacat file in &lt;scope&gt;.&lt;number&gt;
-   * or &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
-   */
-  public String status(String name)
-  {
-	String status  = DataStoreServiceInterface.NONEXIST;
-    String path = parseId(name);
-    String dirs = path.substring(0, path.lastIndexOf("/")); 
-    File localfile = new File(getCacheDir() + "/" + path); //the path to the file
-    File localdir = new File(getCacheDir() + "/" + dirs); //the dir part of the path
-    
-    if((localfile.exists())&&(localfile.length()>0))
-    { //if the file is cached locally, read it from the hard drive
-      Log.debug(30, "MetacatDataStore: cached file exists and docid is used "+name);
-      return DataStoreServiceInterface.CONFLICT;
-    }
-    else
-    {    
-    	 // if the filelength is zero, delete it
-	      if (localfile.length()==0) 
-	      {
-	        localfile.delete();
-	      }
-         //    Gets metacat url from configuration
-		if (Morpho.thisStaticInstance != null && getNetworkStatus())
-		{
-			String result = null;
-		    Properties lastVersionProp = new Properties();
-		    lastVersionProp.put("action", "getrevisionanddoctype");
-		   
-		    lastVersionProp.put("docid", name);
-		    connectionBusy = true;
-		    try
-		    {
-			    result = getMetacatString(lastVersionProp);
-			    connectionBusy = false;
-			    Log.debug(30, "the result is ============= "+result);
-			    // Get version
-			    if (result != null)
-			    {
-			    	int index = result.indexOf("<error>");
-			    	if (index == -1)
-			    	{
-			    		// if have this id, but metacat version is less than the version in name,
-			    		// we consider this id doesn't exist
-			    		int index1 = result.indexOf(";");
-			    		String versionStr = result.substring(0, index1);
-			    		index1 = name.lastIndexOf(IdentifierManager.DOT);
-			    		String versionStrFromName = name.substring(index1+1);
-			    		Log.debug(30, "version from name is "+versionStrFromName +
-		    					 " and version from metacat is "+versionStr);
-			    		try
-			    		{
-			    			int  versionFromMetacat = (new Integer(versionStr)).intValue();
-			    			int versionFromName = (new Integer(versionStrFromName)).intValue();
-			    			Log.debug(30, "version from name is "+versionFromName +
-			    					 " and version from metacat is "+versionFromMetacat);
-			    			if (versionFromName > versionFromMetacat)
-			    			{
-			    				status = DataStoreServiceInterface.UPDATE;
-			    			}
-			    			else
-			    			{
-			    				status = DataStoreServiceInterface.CONFLICT;
-			    			}
-			    		}
-			    		catch(Exception e)
-			    		{
-			    			Log.debug(20, "Couldn't transfer version string "+versionStr +" into integer");
-			    		}
-			    		
-			    	}
-			    	else
-			    	{
-			    		// if have error tag, this means docid doesn't exist
-			    		status = DataStoreServiceInterface.NONEXIST;
-			    	}
-			    }
-		    }
-		    catch(Exception e)
-		    {
-		    	connectionBusy = false;	    
-		   }
+	 * Gets the status for id (with revision) on Metacat: 
+	 * CONFLICT: docid exists, but revision is less than the one in Metacat 
+	 * UPDATE: docid exists, but revision is greater than the one in Metacat 
+	 * NONEXIST: docid does not exist in Metacat
+	 * 
+	 * @param docid
+	 *            : the docid of the metacat file in
+	 *            &lt;scope&gt;.&lt;number&gt; or
+	 *            &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
+	 */
+	public String status(String docid) {
+		String status = DataStoreServiceInterface.NONEXIST;
+		File localfile = null;
+		
+		try {
+			localfile = openFile(docid);
+		} catch (Exception e1) {
+			return status;
+		} 
+		
+		// if the file is cached locally, read it from the hard drive
+		if (localfile != null && localfile.exists() && (localfile.length() > 0)) { 
+			Log.debug(30, "MetacatDataStore: cached file exists and docid is used " + docid);
+			return DataStoreServiceInterface.CONFLICT;
+		} else {
+			
+			// Gets metacat url from configuration
+			if (Morpho.thisStaticInstance != null && getNetworkStatus()) {
+				String result = null;
+				Properties lastVersionProp = new Properties();
+				lastVersionProp.put("action", "getrevisionanddoctype");
+
+				lastVersionProp.put("docid", docid);
+				connectionBusy = true;
+				try {
+					result = getMetacatString(lastVersionProp);
+					connectionBusy = false;
+					Log.debug(30, "the result is ============= " + result);
+					// Get version
+					if (result != null) {
+						int index = result.indexOf("<error>");
+						if (index == -1) {
+							// if have this id, but metacat version is less than
+							// the version in name,
+							// we consider this id doesn't exist
+							int index1 = result.indexOf(";");
+							String versionStr = result.substring(0, index1);
+							// the revision from the given docid
+							String versionStrFromName = AccessionNumber.getInstance().getParts(docid).get(2);
+							Log.debug(30, "version from name is "
+									+ versionStrFromName
+									+ " and version from metacat is "
+									+ versionStr);
+							try {
+								int versionFromMetacat = (new Integer(versionStr)).intValue();
+								int versionFromName = (new Integer(versionStrFromName)).intValue();
+								Log.debug(30, "version from name is "
+										+ versionFromName
+										+ " and version from metacat is "
+										+ versionFromMetacat);
+								if (versionFromName > versionFromMetacat) {
+									status = DataStoreServiceInterface.UPDATE;
+								} else {
+									status = DataStoreServiceInterface.CONFLICT;
+								}
+							} catch (Exception e) {
+								Log.debug(20, "Couldn't transfer version string " + versionStr + " into integer");
+							}
+
+						} else {
+							// if have error tag, this means docid doesn't exist
+							status = DataStoreServiceInterface.NONEXIST;
+						}
+					}
+				} catch (Exception e) {
+					connectionBusy = false;
+				}
+			}
 		}
-    }
-    Log.debug(30, "The docid "+name + " status in metacat is "+status);
-	return status;
-}
+		Log.debug(30, "The docid " + docid + " status in metacat is " + status);
+		return status;
+	}
   
   /**
 	 * Does this id exist in Metacat?
