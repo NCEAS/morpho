@@ -122,7 +122,7 @@ public abstract class DataStoreService implements DataStoreServiceInterface
 	 * @return the profile directory path string.
 	 */
 	public static String getProfileDir(ConfigXML profile) {
-	  return ConfigXML.getConfigDirectory()+File.separator+Morpho.getConfiguration().get("profile_directory", 0)+
+	  return getProfilesParentDir()+
 	      File.separator+profile.get(ProfileDialog.PROFILENAMEELEMENTNAME, 0);
 	}
 	
@@ -131,8 +131,17 @@ public abstract class DataStoreService implements DataStoreServiceInterface
    * @return the profile directory path string.
    */
   public static String getProfileDir() {
-    return ConfigXML.getConfigDirectory()+File.separator+Morpho.getConfiguration().get("profile_directory", 0)+
-        File.separator+Morpho.thisStaticInstance.getProfile().get(ProfileDialog.PROFILENAMEELEMENTNAME, 0);
+    return getProfilesParentDir() + File.separator+
+        Morpho.thisStaticInstance.getProfile().get(ProfileDialog.PROFILENAMEELEMENTNAME, 0);
+  }
+  
+  
+  /**
+   * Get the the directory which contains all profiles directories
+   * @return the path of directory which contains all profiles directories
+   */
+  public static String getProfilesParentDir() {
+    return ConfigXML.getConfigDirectory()+File.separator+Morpho.getConfiguration().get("profile_directory", 0);
   }
   
   /** 
