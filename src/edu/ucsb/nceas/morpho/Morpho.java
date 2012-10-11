@@ -75,6 +75,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
+import edu.ucsb.nceas.morpho.framework.IdFileMapUpdaterFrame;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.MorphoGuideCommand;
@@ -717,6 +718,10 @@ public class Morpho
             // Correct the invalid eml 201 documents
             CorrectEML201DocsFrame correctFrame = new CorrectEML201DocsFrame(morpho);
             correctFrame.doCorrection();
+            
+            // Create id-filename map for the morpho 1.x object directories
+            IdFileMapUpdaterFrame updateFrame = new IdFileMapUpdaterFrame();
+            updateFrame.run();
             
             // Set up the Service Controller
             ServiceController services = ServiceController.getInstance();
