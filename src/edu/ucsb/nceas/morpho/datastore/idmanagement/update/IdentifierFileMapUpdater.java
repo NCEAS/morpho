@@ -89,18 +89,18 @@ public class IdentifierFileMapUpdater {
   }
   
   /**
-   * Create the id-filename map for the existing morpho 1.* profile. If the morpho
+   * Create the id-filename map for the existing morpho 1.* profile directories. If the morpho
    * has been updated, this method will do nothing.
    */
   public void update() {
     for(IdFileMapProfileInformation info : profileInformationList) {
       try {
-        String profileDir = DataStoreService.getProfileDir(info.getProfile());
-        IdentifierFileMap map = new IdentifierFileMap(new File(profileDir));
         Vector<File> objectDirs = info.getObjectDirectories();
         if(objectDirs != null) {
           
             for(File dir : objectDirs) {
+                IdentifierFileMap map = new IdentifierFileMap(dir);
+
               try {
                 File[] scopeDirs = dir.listFiles();
                 if(scopeDirs != null) {
