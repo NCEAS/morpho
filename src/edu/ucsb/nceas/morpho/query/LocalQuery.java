@@ -37,6 +37,7 @@ import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -179,7 +180,7 @@ public class LocalQuery
 	 */
 	public ResultSet execute() {
 		// get a list of all local identifiers to be searched
-		Vector<String> identifiers = Morpho.thisStaticInstance.getLocalDataStoreService().getAllIdentifiers(QueryRefreshInterface.LOCALCOMPLETE);
+		List<String> identifiers = Morpho.thisStaticInstance.getLocalDataStoreService().getAllIdentifiers(QueryRefreshInterface.LOCALCOMPLETE);
 		return execute(identifiers, QueryRefreshInterface.LOCALCOMPLETE);
 	}
   
@@ -190,7 +191,7 @@ public class LocalQuery
 	 */
 	public ResultSet executeInInCompleteDoc() {
 
-		Vector<String> identifiers = Morpho.thisStaticInstance
+		List<String> identifiers = Morpho.thisStaticInstance
 				.getLocalDataStoreService().getAllIdentifiers(
 						QueryRefreshInterface.LOCALINCOMPLETEPACKAGE);
 		dom_incomplete_collection = new Hashtable<String, Document>();
@@ -202,7 +203,7 @@ public class LocalQuery
   /*
    * Run the query against the local document store
    */
-  private ResultSet execute(Vector<String> identifiers, String location) {
+  private ResultSet execute(List<String> identifiers, String location) {
 		// first, get a list of all packages that meet the query requirements
 		Vector<String> packageList = executeLocal(this.savedQuery.getQueryGroup(), identifiers, location);
 		Vector rowCollection = new Vector();
@@ -274,9 +275,9 @@ public class LocalQuery
    *
    * @param xpathExpression the XPath query string
    */
-  private Vector<String> executeXPathQuery(String xpathExpression, Vector<String> filevector, Hashtable<String, Document> domCollection,
+  private Vector<String> executeXPathQuery(String xpathExpression, List<String> filevector, Hashtable<String, Document> domCollection,
                                                    Vector<String> doNotParseCollection, Hashtable<String, String> docTypeCollection, 
-                                                   Hashtable<String, Vector<String>> dataPackageCollection)
+                                                   Hashtable<String, Vector<String>> dataPackageCollection, String location)
   {
     Vector<String> package_IDs = new Vector<String>();
     Node root;
@@ -311,10 +312,14 @@ public class LocalQuery
 
     // iterate over all the files that are in the local xml directory
     for (int i=0;i<filevector.size();i++) {
-    	String identifier = filevector.elementAt(i);
+    	String identifier = filevector.get(i);
     	File currentfile = null;
 		try {
-			currentfile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
+	        if (location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE)) {
+	        	currentfile = Morpho.thisStaticInstance.getLocalDataStoreService().openIncompleteFile(identifier);
+	        } else {
+	        	currentfile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
+	        }
 		} catch (FileNotFoundException e) {
             Log.debug(6,"File not found for " + identifier + ": " + e.getMessage());
             continue;
@@ -695,7 +700,7 @@ public class LocalQuery
    *
    * @param qg the QueryGroup containing query parameters
    */
-  private Vector<String> executeLocal(QueryGroup qg, Vector<String> filevector, String location)
+  private Vector<String> executeLocal(QueryGroup qg, List<String> filevector, String location)
   {
     Vector<String> combined = null;
     Vector<String> currentResults = null;
@@ -711,12 +716,12 @@ public class LocalQuery
         if(location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE))
         {
           currentResults = executeXPathQuery(xpath, filevector, dom_incomplete_collection,
-                                  doNotParse_incomplete_collection, doctype_incomplete_collection, dataPackage_incomplete_collection);
+                                  doNotParse_incomplete_collection, doctype_incomplete_collection, dataPackage_incomplete_collection, location);
         }
         else
         {
           currentResults = executeXPathQuery(xpath, filevector,dom_collection,
-                   doNotParse_collection, doctype_collection, dataPackage_collection);
+                   doNotParse_collection, doctype_collection, dataPackage_collection, location);
         }
         
       } else {  // QueryGroup

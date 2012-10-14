@@ -33,10 +33,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
 import edu.ucsb.nceas.morpho.exception.IdentifierNotFoundException;
@@ -50,13 +51,33 @@ import edu.ucsb.nceas.morpho.exception.IdentifierNotFoundException;
  */
 public class FileSystemDataStore {
   private static final String MORPHO = "Morpho-";
-  private String directory = null;
   private IdentifierFileMap idFileMap = null;
   private File storeDirectory = null;
   
+  /**
+   * For managing multiple data stores on a per-profile basis
+   */
+  private static Map<String, FileSystemDataStore> dataStores = new HashMap<String, FileSystemDataStore>();
   
   /**
-   * Constructor.
+   * Returns an instance of FSDS for the given directory
+   * If one has already been instantiated, we use that one, otherewise
+   * a new FSDS is created for the given directory
+   * @param directory
+   * @return
+   * @throws Exception
+   */
+  public static FileSystemDataStore getInstance(String directory) throws Exception {
+	  FileSystemDataStore fsds = dataStores.get(directory);
+	  if (fsds == null) {
+		  fsds = new FileSystemDataStore(directory);
+		  dataStores.put(directory, fsds);
+	  }
+	  return fsds;
+  }
+  
+  /**
+   * Private constructor to encourage centralized instance management
    * @param directory - the file path of the data store.
    * @throws FileNotFoundException
    * @throws IOException
@@ -65,13 +86,13 @@ public class FileSystemDataStore {
    * @throws NullPointerException
    * @throws IllegalArgumentException
    */
-  public FileSystemDataStore(String directory) throws FileNotFoundException, 
+  private FileSystemDataStore(String directory) throws FileNotFoundException, 
                     IOException, UnsupportedCharsetException, IllegalCharsetNameException, 
                     NullPointerException, IllegalArgumentException {
    init(directory);
   }
   
-  /*
+  /**
    * Initialize the IdentifierFileMap object
    */
   private void init(String directory) throws FileNotFoundException, 
@@ -80,8 +101,7 @@ public class FileSystemDataStore {
     if(directory == null || directory.trim().equals("")) {
       throw new NullPointerException("FileSystemDataStore.init - the specified file path for the store shouldn't be null or blank.");
     }
-    this.directory = directory;
-    this.storeDirectory = new File(this.directory);
+    this.storeDirectory = new File(directory);
     if(!this.storeDirectory.exists()) {
       boolean success = this.storeDirectory.mkdirs();
       if(!success) {
@@ -96,19 +116,30 @@ public class FileSystemDataStore {
     idFileMap = new IdentifierFileMap(this.storeDirectory);
   }
   
+  /**
+   * Retrieve the list of all managed identifiers for the store
+   * This is a pass-through method for the backing id-file map
+   * @return the list of identifiers for the managed files
+   */
+  public List<String> getIdentifiers() {
+	  return idFileMap.getIdentifiers();
+  }
   
   /**
-   * Get the OutputStream object for a specified identifier.
+   * Get the File object for a specified identifier.
+   * NOTE: original design used InputStream as the return, but Morpho uses File objects extensively
+   * (We can consider going back to InputStream if we have time)
    * @param identifier - the specified identifier.
    * @return the source of the data associated with the identifier
    * @throws IdentifierNotFoundException
    * @throws FileNotFoundException
    */
-  public InputStream get(String identifier) 
+  public File get(String identifier) 
                   throws IdentifierNotFoundException, FileNotFoundException {
-    return new FileInputStream(idFileMap.getFile(identifier));
+    //return new FileInputStream(idFileMap.getFile(identifier));
+    return idFileMap.getFile(identifier);
+
   }
-  
   
   /**
    * Store an InputStream object (data) into the store with the specified identifier.
@@ -167,7 +198,7 @@ public class FileSystemDataStore {
     
   }
   
-  /*
+  /**
    * Generate a unique file name for the identifier.
    */
   private File generateFile(String identifier) throws IOException {
@@ -183,10 +214,12 @@ public class FileSystemDataStore {
    * @return the file path as a String object
    */
   public String getDirectory() {
-    return this.directory;
+    return this.storeDirectory.getAbsolutePath();
   }
   
   /**
+   * @deprecated it is safer to create a new instance of the data store 
+   * rather than change the location that it is managing. Please see the getInstance(dir) method
    * Change the file path of the data store
    * @param directory - the file path of the data store
    * @throws FileNotFoundException

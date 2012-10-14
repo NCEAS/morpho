@@ -810,7 +810,7 @@ public class DataStoreServiceController {
 				try {
 					// open old file name (if no file change, the old file name
 					// will be as same as docid).
-					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(oldDocid);
+					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(oldDocid);
 					Morpho.thisStaticInstance.getLocalDataStoreService().newDataFile(docid, dataFile, oldDocid);
 				} catch (Exception qqq) {
 					// some other problem has occured
@@ -1182,12 +1182,12 @@ public class DataStoreServiceController {
 		// Log.debug(30, temp);
 
 		// save doc to metacat
-		StringReader sr1 = new StringReader(temp);
+		InputStream stringInput = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
 		if ((location.equals(DataPackageInterface.METACAT))
 				|| (location.equals(DataPackageInterface.BOTH))) {
 			if (statusInMetacat != null && statusInMetacat.equals(DataStoreServiceInterface.UPDATE)) {
 				try {
-					Morpho.thisStaticInstance.getMetacatDataStoreService().saveFile(adp.getAccessionNumber(), sr1);
+					Morpho.thisStaticInstance.getMetacatDataStoreService().saveFile(adp.getAccessionNumber(), stringInput);
 					adp.setSerializeMetacatSuccess(true);
 				} catch (Exception e) {
 					adp.setSerializeMetacatSuccess(false);
@@ -1200,7 +1200,7 @@ public class DataStoreServiceController {
 				}
 			} else if (statusInMetacat != null && statusInMetacat.equals(DataStoreServiceInterface.NONEXIST)) {
 				try {
-					Morpho.thisStaticInstance.getMetacatDataStoreService().newFile(adp.getAccessionNumber(), sr1);
+					Morpho.thisStaticInstance.getMetacatDataStoreService().newFile(adp.getAccessionNumber(), stringInput);
 					adp.setSerializeMetacatSuccess(true);
 					// setAccessionNumber(temp_an);
 				} catch (Exception e) {
@@ -1217,13 +1217,13 @@ public class DataStoreServiceController {
 		}
 
 		// save doc to local file system
-		StringReader sr = new StringReader(temp);
+		InputStream stringStream = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
 		if ((location.equals(DataPackageInterface.LOCAL))
 				|| (location.equals(DataPackageInterface.BOTH))) {
 			// Log.debug(10,
 			// "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
 			// fsds.saveFile("100.0",sr);
-			File newFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveFile(adp.getAccessionNumber(), sr);
+			File newFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveFile(adp.getAccessionNumber(), stringStream);
 			if (newFile != null) {
 				adp.setSerializeLocalSuccess(true);
 			} else {
@@ -1233,7 +1233,7 @@ public class DataStoreServiceController {
 		} else if (location.equals(DataPackageInterface.INCOMPLETE)) {
 			String id = adp.getAccessionNumber();
 			Log.debug(30, "Serialize metadata into incomplete dir with docid " + id);
-			File newFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteFile(id, sr);
+			File newFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteFile(id, stringStream);
 			if (newFile != null) {
 				adp.setSerializeLocalSuccess(true);
 			} else {

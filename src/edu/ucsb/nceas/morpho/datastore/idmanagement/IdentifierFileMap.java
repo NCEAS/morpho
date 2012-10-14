@@ -37,6 +37,8 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import edu.ucsb.nceas.morpho.exception.IdentifierNotFoundException;
@@ -110,6 +112,15 @@ public class IdentifierFileMap {
     }
     return file;
     
+  }
+  
+  /**
+   * Return all the identifiers managed by this id-file map
+   * @return
+   */
+  public List<String> getIdentifiers() {
+	  List<String> identifiers = Arrays.asList(mappingProperties.keySet().toArray(new String[0]));
+	  return identifiers;
   }
   
   /**

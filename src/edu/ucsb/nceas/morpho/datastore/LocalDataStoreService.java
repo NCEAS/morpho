@@ -26,21 +26,16 @@
 
 package edu.ucsb.nceas.morpho.datastore;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.Morpho;
@@ -60,9 +55,10 @@ import edu.ucsb.nceas.morpho.util.Log;
 public class LocalDataStoreService extends DataStoreService
                                  implements DataStoreServiceInterface
 {
+	public final static String INCOMPLETEDIR = "incomplete";
+	public static final String TEMP = "temporary";
+	private static final String TEMPIDNAME = "lastTempId";
 	
-	  public static final String TEMP = "temporary";
-	  private static final String TEMPIDNAME = "lastTempId";
   /**
    * create a new FileSystemDataStore for a Morpho
    */
@@ -70,6 +66,30 @@ public class LocalDataStoreService extends DataStoreService
   {
     super(morpho);
   }
+  
+	/**
+	 * Gets the data dir directory
+	 * 
+	 * @return
+	 */
+	private String getDataDir() {
+		ConfigXML profile = morpho.getProfile();
+		String datadir = getProfileDir(profile) + File.separator + profile.get("datadir", 0);
+		return datadir;
+	}
+	
+	private String getIncompleteDir() {
+		String incompletedir = null;
+		ConfigXML profile = morpho.getProfile();
+		String incomplete = profile.get("incompletedir", 0);
+		// in case no incomplete dir in old version profile
+		if (incomplete == null || incomplete.trim().equals("")) {
+			incomplete = INCOMPLETEDIR;
+		}
+		incompletedir = getProfileDir(profile) + File.separator + incomplete;
+		return incompletedir;
+	}
+	
   
   /**
    * Get an AbstractDataPackage for the given identifier
@@ -82,28 +102,23 @@ public class LocalDataStoreService extends DataStoreService
 		
 	  File file = openFile(identifier);
 	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
-	  return DataPackageFactory.getDataPackage(in); 
+	  AbstractDataPackage adp = DataPackageFactory.getDataPackage(in);
+	  adp.setLocation(DataPackageInterface.LOCAL);
+	  return adp; 
   }
   
   /**
-   * opens a file with the given name.  the name should be in the form
-   * scope.accnum where the scope is unique to this machine.  The file will
-   * be opened from the &lt;datadir&gt;/&lt;scope&gt;/ directory 
-   * where the filename is the accnum.
-   * Example: 
-   *    name=johnson2343.13223
-   *    datadir=data
-   *    complete path=/usr/local/morpho/profiles/johnson/data/johnson2343/13223
-   * Any characters after the first separator are assumed to be part of the 
-   * accession number.  Hence the id johnson2343.13223.5 would produce 
-   * the file johnson2343/13223.5
+   * opens a data or metadata file with the given identifier. 
    */
-  public File openFile(String name) throws FileNotFoundException {
-		String path = parseId(name);
-		path = getDataDir() + "/" + path;
-		File file = new File(path);
-		if (!file.exists()) {
-			throw new FileNotFoundException("file " + path + " does not exist");
+  public File openFile(String identifier) throws FileNotFoundException {
+		
+		File file = null;
+		try {
+			file = FileSystemDataStore.getInstance(getDataDir()).get(identifier);
+		} catch (Exception e) {
+			FileNotFoundException fnfe = new FileNotFoundException(e.getMessage());
+			fnfe.initCause(e);
+			throw fnfe;
 		}
 		return file;
 	}
@@ -135,10 +150,9 @@ public class LocalDataStoreService extends DataStoreService
 	}
   
   
-  public File saveFile(String name, Reader file)
-  {
-    return saveFile(name, file, getDataDir());
-  }
+	public File saveFile(String name, InputStream inputStream) {
+		return saveFile(name, inputStream, getDataDir());
+	}
   
   public File openTempFile(String name) throws FileNotFoundException {
 		Log.debug(21, "opening " + name + " from temp dir - temp: " + getTempDir());
@@ -152,12 +166,12 @@ public class LocalDataStoreService extends DataStoreService
 
   public void newDataFile(String name, File file, String objectName) throws FileNotFoundException
   {
-    saveDataFile(name, new FileInputStream(file), getDataDir());
+    saveFile(name, new FileInputStream(file), getDataDir());
   }
   
   public File saveTempDataFile(String name, InputStream file)
   {
-    return saveDataFile(name, file, getTempDir());
+    return saveFile(name, file, getTempDir());
   }
   
   /**
@@ -169,19 +183,19 @@ public class LocalDataStoreService extends DataStoreService
 		  
   public File saveIncompleteDataFile(String name, InputStream file)
   {
-    return saveDataFile(name, file, getIncompleteDir());
+    return saveFile(name, file, getIncompleteDir());
   }
   
   /**
-   * Save a reader into a file in incomplete dir with a given name
-   * @param name  name of the file
-   * @param file  source of the file
-   * @return
-   */
-  public File saveIncompleteFile(String name, Reader file)
-  {
-    return saveFile(name, file, getIncompleteDir());
-  }
+	 * Save a stream into a file in incomplete dir with a given name
+	 * 
+	 * @param name the identifier for the object
+	 * @param inputStream source of the content
+	 * @return the File representing the content
+	 */
+	public File saveIncompleteFile(String name, InputStream inputStream) {
+		return saveFile(name, inputStream, getIncompleteDir());
+	}
  
   /**
 	 * Check if the given docid exists in local file system.
@@ -240,73 +254,32 @@ public class LocalDataStoreService extends DataStoreService
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  private File saveFile(String name, Reader file, String rootDir)
-  {
-	BufferedWriter bwriter = null; 
-	BufferedReader bsr = null;
-    try
-    {
-      String path = parseId(name);
-      String dirs = path.substring(0, path.lastIndexOf("/"));
-      File savefile = new File(rootDir + "/" + path); //the path to the file
-      File savedir = new File(rootDir + "/" + dirs); //the dir part of the path
-      if(!savefile.exists())
-      {//if the file isn't there create it.
-        try
-        {
-          savedir.mkdirs(); //create any directories
-        }
-        catch(Exception ee)
-        {
-          ee.printStackTrace();
-        }
-      }
-      bsr = new BufferedReader(file);
-      bwriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(savefile), Charset.forName("UTF-8")));
-      
-      int d = bsr.read();
-      while(d != -1)
-      {
-        bwriter.write(d); //write out everything in the reader
-        d = bsr.read();
-      }
-      bsr.close();
-      bwriter.flush();
-      bwriter.close();
-      return savefile;
-    }
-    catch(Exception e)
-    {
-      if (bwriter != null)
-      {
-    	  try
-    	  {
-    		if (bsr != null) bsr.close();
-    	    if (bwriter != null) bwriter.close();
-    	  }
-    	  catch(Exception ie)
-    	  {
-    		  ie.printStackTrace();
-    	  }
-      }
-      e.printStackTrace();
-      return null;
-    }
-  }
+  private File saveFile(String name, InputStream inputStream, String rootDir) {
+
+		File file = null;
+		try {
+			FileSystemDataStore.getInstance(rootDir).set(name, inputStream);
+			file = FileSystemDataStore.getInstance(rootDir).get(name);
+		} catch (Exception e) {
+			Log.debug(6, e.getMessage());
+		}
+		return file;
+
+	}
   
   /**
    * returns a File object in the local repository.
    * @param name: the id of the file
    * @param file: the stream to the file
    */
-  public File newFile(String name, Reader file)
+  public File newFile(String name, InputStream inputStream)
   {
-    return saveFile(name, file, getDataDir());
+    return saveFile(name, inputStream, getDataDir());
   }
   
   
   public File newDataFile(String name, InputStream is) {
-    return saveDataFile(name, is, getDataDir());
+    return saveFile(name, is, getDataDir());
   }
   
   /**
@@ -317,13 +290,10 @@ public class LocalDataStoreService extends DataStoreService
 	 *            the name of the file to delete
 	 */
 	public boolean deleteFile(String name) {
-		String path = parseId(name);
-		String filePath = getDataDir() + "/" + path;
-		File delfile = new File(filePath); // the path to the file
-
 		boolean success = false;
 		try {
-			success = delfile.delete();
+			FileSystemDataStore.getInstance(getDataDir()).set(name, null);
+			success = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -402,102 +372,6 @@ public class LocalDataStoreService extends DataStoreService
 		
 	}
 	
-  /**
-   * Test method
-   */
-  public static void main(String[] args)
-  {
-    String filename = args[0];
-    String filename2 = args[1];
-    String action = args[2];
-    if(action.equals("test"))
-    {
-      try
-      {
-        Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
-        LocalDataStoreService fsds = new LocalDataStoreService(morpho);
-        File newfile = fsds.openFile(filename);
-        fsds.saveFile(filename2, new InputStreamReader(new FileInputStream(newfile), Charset.forName("UTF-8")));
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-    else if(action.equals("save"))
-    {
-      try
-      {
-        Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
-        LocalDataStoreService fsds = new LocalDataStoreService(morpho);
-        File newfile = new File(filename);
-        fsds.saveFile(filename2, new InputStreamReader(new FileInputStream(newfile), Charset.forName("UTF-8")));
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-    Log.debug(20, "done");
-  }
-  
- /**
-	 * A variant of saveFile designed for use with Data Files. This avoids the
-	 * writing of files to Strings that is in saveFile and allows for very large
-	 * data files. (i.e. no file is put entirely in memory) This version uses an
-	 * InputStream rather than a Reader to avoid problems with binary file
-	 * corruption
-	 */
-	private File saveDataFile(String name, InputStream is, String rootDir) {
-		BufferedInputStream bfile = null;
-		BufferedOutputStream bos = null;
-		File savefile = null;
-		try {
-			String path = parseId(name);
-			String dirs = path.substring(0, path.lastIndexOf("/"));
-			savefile = new File(rootDir + "/" + path); // the path to the file
-			File savedir = new File(rootDir + "/" + dirs); // the dir part of the path
-			// if the file isn't there create it.
-			if (!savefile.exists()) {
-				try {
-					// create any directories
-					savedir.mkdirs(); 
-				} catch (Exception ee) {
-					ee.printStackTrace();
-				}
-			}
-
-			// only write bytes if we were given them
-			if (is != null) {
-
-				bfile = new BufferedInputStream(is);
-				bos = new BufferedOutputStream(new FileOutputStream(savefile));
-				int d = bfile.read();
-				while (d != -1) {
-					bos.write(d); // write out everything in the reader
-					d = bfile.read();
-				}
-				bos.flush();
-				bos.close();
-				bfile.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			try {
-				if (bfile != null)
-					bfile.close();
-				if (bos != null)
-					bos.close();
-			} catch (Exception r) {
-				r.printStackTrace();
-				return null;
-			}
-		}
-		return savefile;
-
-	}
   
   /**
 	 * returns an id for the local store for the current scope
@@ -675,70 +549,49 @@ public class LocalDataStoreService extends DataStoreService
   
   
   /**
-   * Get a list of all current identifiers for local store
-   * Location can be QueryRefreshInterface.LOCALINCOMPLETEPACKAGE for 
-   * listing current incomplete identifiers
-   * @param location optional incomplete (QueryRefreshInterface.LOCALINCOMPLETEPACKAGE) specifier
-   * @return list of identifiers
-   */
-  public Vector<String> getAllIdentifiers(String location) {
-		if (location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE)) {
-			return getIdentifiers(new File(getIncompleteDir()));
-		} else {
-			return getIdentifiers(new File(getDataDir()));
+	 * Get a list of all current identifiers for local store Location can be
+	 * QueryRefreshInterface.LOCALINCOMPLETEPACKAGE for listing current
+	 * incomplete identifiers
+	 * 
+	 * @param location
+	 *            optional incomplete
+	 *            (QueryRefreshInterface.LOCALINCOMPLETEPACKAGE) specifier
+	 * @return list of identifiers
+	 */
+	public List<String> getAllIdentifiers(String location) {
+		List<String> identifiers = null;
+		try {
+			if (location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE)) {
+				identifiers = FileSystemDataStore.getInstance(getIncompleteDir()).getIdentifiers();
+			} else {
+				identifiers = FileSystemDataStore.getInstance(getDataDir()).getIdentifiers();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.debug(6, e.getMessage());
+			return null;
 		}
+		// only get the latest revision
+		identifiers = getLatestVersion(identifiers);
+		return identifiers;
 	}
 	
-  /**
-	 * given a directory, return a vector of identifiers (based on files it contains)
-	 * including subdirectories
-	 * @deprecated this should really be in the FileSystemDataStore
-	 */
-	private Vector<String> getIdentifiers(File directoryFile) {
-
-		Vector<String> identifiers = new Vector<String>();
-		String[] files = directoryFile.list();
-		if (files != null) {
-			for (int i = 0; i < files.length; i++) {
-				String filename = files[i];
-				File currentfile = new File(directoryFile, filename);
-				if (currentfile.isDirectory()) {
-					identifiers.addAll(getIdentifiers(currentfile)); // recursive call to add subdirecctories
-				}
-				if (currentfile.isFile()) {
-					try {
-						
-						Double d = Double.valueOf(filename);
-						// add the identifier as parentdir.filename
-						String scope = currentfile.getParentFile().getName();
-						String identifier = scope + IdentifierManager.DOT + filename;
-						identifiers.addElement(identifier);
-					} catch (NumberFormatException nfe) {
-						Log.debug(30, "Not loading file with invalid name: " + filename);
-					}
-				}
-			}
-			identifiers = getLatestVersion(identifiers);
-		}
-
-		return identifiers;
-
-	}
+  
 	
 	 /**
 	 * modify list to only contain latest version as indicated by a trailing
 	 * version number This is to reduce the search time by avoiding older
 	 * versions
-	 * @deprecated please replace me with something better when we have it!
+	 * @deprecated replace with revision manager when we have it
 	 */
-	private Vector<String> getLatestVersion(Vector<String> identifiers) {
+	private List<String> getLatestVersion(List<String> identifiers) {
 
 		Vector<String> returnVector = null;
 		if (identifiers != null) {
 			returnVector = new Vector<String>();
 			Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
 			for (int i = 0; i < identifiers.size(); i++) {
-				String identifier = identifiers.elementAt(i);
+				String identifier = identifiers.get(i);
 				try {
 					Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
 					String docid = idParts.get(0) + IdentifierManager.DOT + idParts.get(1);
@@ -908,4 +761,43 @@ public class LocalDataStoreService extends DataStoreService
 			}
 		}
 	}
+	
+	/**
+	   * Test method
+	   */
+	  public static void main(String[] args)
+	  {
+	    String filename = args[0];
+	    String filename2 = args[1];
+	    String action = args[2];
+	    if(action.equals("test"))
+	    {
+	      try
+	      {
+	        Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
+	        LocalDataStoreService fsds = new LocalDataStoreService(morpho);
+	        File newfile = fsds.openFile(filename);
+	        fsds.saveFile(filename2, new FileInputStream(newfile));
+	      }
+	      catch(Exception e)
+	      {
+	        e.printStackTrace();
+	      }
+	    }
+	    else if(action.equals("save"))
+	    {
+	      try
+	      {
+	        Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
+	        LocalDataStoreService fsds = new LocalDataStoreService(morpho);
+	        File newfile = new File(filename);
+	        fsds.saveFile(filename2, new FileInputStream(newfile));
+	      }
+	      catch(Exception e)
+	      {
+	        e.printStackTrace();
+	      }
+	    }
+	    Log.debug(20, "done");
+	  }
 }

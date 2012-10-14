@@ -60,7 +60,7 @@ public interface DataStoreServiceInterface
    * is true, then an unauthenticated user may read the document from the 
    * data store.
    */
-  public File saveFile(String name, Reader file)
+  public File saveFile(String name, InputStream inputStream)
 		throws Exception;
   
   
@@ -78,7 +78,7 @@ public interface DataStoreServiceInterface
    * create a new file with an id of name in the datastore and return a File
    * object that represents it.
    */
-  public File newFile(String name, Reader file)
+  public File newFile(String name, InputStream inputStream)
 		throws Exception;
   
   /**

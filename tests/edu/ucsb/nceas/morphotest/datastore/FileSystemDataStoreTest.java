@@ -85,7 +85,7 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
    * @throws Exception
    */
   public void testSet() throws Exception {
-    FileSystemDataStore fileStore = new FileSystemDataStore(objectStorePath1);
+    FileSystemDataStore fileStore = FileSystemDataStore.getInstance(objectStorePath1);
     fileStore.set(id1, new FileInputStream(new File(filePath1)));
     fileStore.set(id2, new FileInputStream(new File(filePath2)));
     assertTrue("FileSystemDataStore.testSet - the directory should be "+objectStorePath1+ 
@@ -102,8 +102,9 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
    * @throws Exception
    */
   public void testGet() throws Exception {
-    FileSystemDataStore fileStore = new FileSystemDataStore(objectStorePath1);
-    InputStream in = fileStore.get(id1);
+    FileSystemDataStore fileStore = FileSystemDataStore.getInstance(objectStorePath1);
+    File inFile = fileStore.get(id1);
+    InputStream in = new FileInputStream(inFile);
     File f1 = File.createTempFile("test", null);
     FileOutputStream output = new FileOutputStream(f1);
     byte[] array = new byte[8*1024];
@@ -118,14 +119,17 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
     fileStore.setDirectory(objectStorePath2);
     boolean inException = false;
     try {
-      InputStream input = fileStore.get(id2);
+        File inputFile = fileStore.get(id2);
+    	InputStream input = new FileInputStream(inputFile);
     } catch(IdentifierNotFoundException e) {
       inException = true;
     }
     assertTrue("FileSystemDataStore.testGet - we shouldn't find the id "+id2+
         " in the store since the store location has been changed.", inException);
     
-    InputStream in2 = fileStore.get(id4);
+    File in2File = fileStore.get(id4);
+    InputStream in2 = new FileInputStream(in2File);
+
     File f2 = File.createTempFile("test", null);
     FileOutputStream output2 = new FileOutputStream(f2);
     byte[] array2 = new byte[8*1024];

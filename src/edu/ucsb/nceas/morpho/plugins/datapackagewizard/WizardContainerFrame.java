@@ -34,8 +34,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1404,8 +1407,8 @@ public class WizardContainerFrame
    */
   private void autoSavingPackageInCompleteDir(String docid, String xml)
   {
-	  StringReader reader = new StringReader(xml);
-	  Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteFile(docid, reader);
+	  InputStream stringStream = new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8")));
+	  Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteFile(docid, stringStream);
   }
   
   /*

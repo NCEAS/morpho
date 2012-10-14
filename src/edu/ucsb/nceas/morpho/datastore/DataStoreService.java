@@ -27,14 +27,11 @@
 package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.Reader;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
-import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * creates an abstract class for getting files from any dataStore using the same
@@ -43,9 +40,8 @@ import edu.ucsb.nceas.morpho.util.Log;
 public abstract class DataStoreService implements DataStoreServiceInterface
 {
   protected Morpho morpho;
-  private ConfigXML config;
+  protected ConfigXML config;
   protected String separator;
-  public final static String INCOMPLETEDIR = "incomplete";
   
   /**
    * create a new FileSystemDataStore for a Morpho
@@ -65,57 +61,8 @@ public abstract class DataStoreService implements DataStoreServiceInterface
    */
   protected String getTempDir() {
 		ConfigXML profile = morpho.getProfile();
-		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
-				+ config.get("profile_directory", 0) + File.separator
-				+ profile.get("profilename", 0);
-		String tempdir = profileDirName + File.separator
-				+ profile.get("tempdir", 0);
-
+		String tempdir = getProfileDir(profile) + File.separator + profile.get("tempdir", 0);
 		return tempdir;
-	}
-  
-  /**
-   * Gets the data dir directory
-   * @return
-   */
-  protected String getDataDir() {
-		ConfigXML profile = morpho.getProfile();
-		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
-				+ config.get("profile_directory", 0) + File.separator
-				+ profile.get("profilename", 0);
-		String datadir = profileDirName + File.separator
-				+ profile.get("datadir", 0);
-		return datadir;
-	}
-  
-  protected String getCacheDir() {
-		ConfigXML profile = morpho.getProfile();
-		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
-				+ config.get("profile_directory", 0) + File.separator
-				+ profile.get("profilename", 0);
-		String cachedir = profileDirName + File.separator
-				+ profile.get("cachedir", 0);
-		return cachedir;
-	}
-  
-  protected String getIncompleteDir() {
-		String incompletedir = null;
-		ConfigXML profile = morpho.getProfile();
-		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
-				+ config.get("profile_directory", 0) + File.separator
-				+ profile.get("profilename", 0);
-		String incomplete = profile.get("incompletedir", 0);
-		// in case no incomplete dir in old version profile
-		if (incomplete == null || incomplete.trim().equals("")) {
-			incompletedir = profileDirName + File.separator + INCOMPLETEDIR;
-		} else {
-			incompletedir = profileDirName + File.separator + incomplete;
-		}
-		return incompletedir;
-	}
-
-	public void debug(int code, String message) {
-		Log.debug(code, message);
 	}
 	
 	/**
@@ -158,11 +105,4 @@ public abstract class DataStoreService implements DataStoreServiceInterface
     return path;
   }
 
-  abstract public File openFile(String name) throws FileNotFoundException, 
-                                                    CacheAccessException;
-  abstract public File saveFile(String name, Reader file)
-           throws Exception;
-  abstract public File newFile(String name, Reader file)
-           throws Exception;
-  abstract public boolean deleteFile(String name) throws Exception;
 }

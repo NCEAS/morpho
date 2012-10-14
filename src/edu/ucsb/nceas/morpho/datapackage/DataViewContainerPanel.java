@@ -873,14 +873,14 @@ public void setTopPanel(JPanel jp) {
                 displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
               }
               else if (loc.equals(DataPackageInterface.METACAT)) {
-                displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(urlinfo);
+                displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
               }
               else if (loc.equals("")) {
             	  // try getting local sources first, then network
             	  try {
             		  displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(urlinfo);
             	  } catch (Exception e) {
-                      displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openDataFile(urlinfo);
+                      displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
 				}
                 
               }

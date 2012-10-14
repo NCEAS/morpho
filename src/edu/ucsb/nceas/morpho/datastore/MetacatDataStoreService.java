@@ -28,10 +28,7 @@ package edu.ucsb.nceas.morpho.datastore;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,10 +36,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -59,6 +54,7 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -135,6 +131,16 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
     timer.start();
   }
   
+  private String getCacheDir() {
+		ConfigXML profile = morpho.getProfile();
+		String profileDirName = ConfigXML.getConfigDirectory() + File.separator
+				+ config.get("profile_directory", 0) + File.separator
+				+ profile.get("profilename", 0);
+		String cachedir = profileDirName + File.separator
+				+ profile.get("cachedir", 0);
+		return cachedir;
+	}
+  
   /**
    * Retrieve an AbstractDataPackage for the given identifier
    * @param identifier
@@ -147,7 +153,9 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		
 	  File file = openFile(identifier);
 	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
-	  return DataPackageFactory.getDataPackage(in); 
+	  AbstractDataPackage adp = DataPackageFactory.getDataPackage(in);
+	  adp.setLocation(DataPackageInterface.METACAT);
+	  return adp;
   }
   
   /** Create a new connection to metacat */
@@ -295,280 +303,101 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
   }
   
   /**
-   * Opens a file from Metacat and returns a File object that represents the
-   * metacat file.  If the file does not exist in the local cache, or is
-   * outdated in the local cache, this method adds the new file to the cache
-   * for later access.
-   * @param name: the docid of the metacat file in &lt;scope&gt;.&lt;number&gt;
-   * or &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
-   */
-  public File openFile(String name) throws FileNotFoundException, 
-                                           CacheAccessException
-  {
-    String path = parseId(name);
-    String dirs = path.substring(0, path.lastIndexOf("/"));
-    StringBuffer response = new StringBuffer();
-    FileOutputStream fos;
-    Reader reader;
-    
-    File localfile = new File(getCacheDir() + "/" + path); //the path to the file
-    File localdir = new File(getCacheDir() + "/" + dirs); //the dir part of the path
-    
-    if((localfile.exists())&&(localfile.length()>0))
-    { //if the file is cached locally, read it from the hard drive
-      Log.debug(11, "MetacatDataStore: getting cached file");
-      return localfile;
-    }
-    else
-    { // if the filelength is zero, delete it
-      if (localfile.length()==0) {
-        localfile.delete();
-      }
-      
-      //if the file is not cached, get it from metacat and cache it.
-      //-get file from metacat
-      //-write file to cache directory
-      //-reread file to check for errors
-      //-throw exception if file is an error and delete file
-      //-return the file pointer if the file is not an error
-      
-      Log.debug(11,"MetacatDataStore: getting file from Metacat");
-      Properties props = new Properties();
-      props.put("action", "read");
-      props.put("docid", name);
-      props.put("qformat", "xml");
-      
-      try
-      {
-        localdir.mkdirs(); //create any directories
-      }
-      catch(Exception ee)
-      {
-        ee.printStackTrace();
-      }
-      
-      try
-      {
-        fos = new FileOutputStream(localfile);
-        BufferedOutputStream bfos = new BufferedOutputStream(fos);
-        InputStream metacatInput = getMetacatInputStream(props);
-        
-        // set here because previous line call to getMetacatInputStream will set
-        // to false
-        connectionBusy = true;
+	 * Opens a file from Metacat and returns a File object that represents the
+	 * metacat file. If the file does not exist in the local cache, or is
+	 * outdated in the local cache, this method adds the new file to the cache
+	 * for later access.
+	 * 
+	 * @param name
+	 *            : the docid of the metacat file in
+	 *            &lt;scope&gt;.&lt;number&gt; or
+	 *            &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
+	 */
+	public File openFile(String name) throws FileNotFoundException,
+			CacheAccessException {
+		
+		File localfile = null;
+		try {
+			localfile = FileSystemDataStore.getInstance(getCacheDir()).get(name);
+		} catch (Exception e) {
+			CacheAccessException cae = new CacheAccessException(e.getMessage());
+			cae.initCause(e);
+			throw cae;
+		}
 
-        BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
-        int c = bmetacatInputStream.read();
-        while(c != -1)
-        {
-          /* the following checks for values of 'c' >127 and <32 are driven by the
-             fact that metacat can return xml documents with special characters in this 
-             range which cause parsing problems. This code 'filters' the values into xml
-             character references ('&#xxxx;'). This is only appropriate for XML streams.
-             Binary data should be called using the 'openDataFile' method.
-          */
-          if (c>127) {
-            bfos.write('&');
-            bfos.write('#');
-            int h = c/100;
-            int t = (c-h*100)/10;
-            int o = c-h*100-t*10;
-            bfos.write(Character.forDigit(h,10));
-            bfos.write(Character.forDigit(t,10));
-            bfos.write(Character.forDigit(o,10));
-            bfos.write(';');   
-            Log.debug(40, "char > 127!");
-          }
-          else if (c<32) {
-            if ((c==9)||(c==10)||(c==13)) {
-              bfos.write(c);
-            }
-          }
-          else {
-            bfos.write(c);
-          }
-          c = bmetacatInputStream.read();
-        }
-        bfos.flush();
-        bfos.close();
-        
-        // just look for error in first 1000 bytes - DFH
-        int cnt = 0;
-        reader = new InputStreamReader(new FileInputStream(localfile), Charset.forName("UTF-8"));
-        BufferedReader breader = new BufferedReader(reader);
-        c = breader.read();
-        while((c != -1)&&(cnt<1000))
-        {
-          cnt++;  
-          response.append((char)c);
-          c = breader.read();
-        }
-        String responseStr = response.toString();
-        if(responseStr.indexOf("<error>") != -1)
-        {//metacat reported some error
-          bfos.close();
-          breader.close();
-          bmetacatInputStream.close();
-          metacatInput.close();
-          if(!localfile.delete())
-          {
-            throw new CacheAccessException("A cached file could not be " + 
-                                  "deleted.  Please check your access " +
-                                  "permissions on the cache directory." +
-                                  "Failing to delete cached files can " +
-                                  "result in erroneous operation of morpho." +
-                                  "You may want to manually clear your cache " +
-                                  "now.");
-          }
-          throw new FileNotFoundException(name + " does not exist on your " +
-                                          "current Metacat system: ");
-        }
-        
-        bfos.close();
-        breader.close();
-        bmetacatInputStream.close();
-        metacatInput.close();
-        connectionBusy = false;
-        return localfile;
-      }
-      catch (FileNotFoundException mde) {
-        throw mde;
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
-        connectionBusy = false;
-        return null;
-      }
-    }
-  }
+		// check for local file and return it if we have it
+		if (localfile != null && localfile.exists() && localfile.length() > 0) { 
+			Log.debug(11, "MetacatDataStore: getting cached file");
+			return localfile;
+		} else {
+			// if the file is not cached, get it from metacat and cache it.
+			// -get file from metacat
+			// -write file to cache directory
+			// -reread file to check for errors
+			// -throw exception if file is an error and delete file
+			// -return the file pointer if the file is not an error
 
-  /**
-   * Opens a file from Metacat and returns a File object that represents the
-   * metacat file.  If the file does not exist in the local cache, or is
-   * outdated in the local cache, this method adds the new file to the cache
-   * for later access.
-   *
-   * differs from 'openFile' in that no filtering is done on special characters
-   * This is needed for binary data files.
-   *
-   * @param name: the docid of the metacat file in &lt;scope&gt;.&lt;number&gt;
-   * or &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
-   */
-  public File openDataFile(String name) throws FileNotFoundException, 
-                                           CacheAccessException
-  {
-    String path = parseId(name);
-    String dirs = path.substring(0, path.lastIndexOf("/"));
-    StringBuffer response = new StringBuffer();
-    FileOutputStream fos;
-    Reader reader;
-    
-    File localfile = new File(getCacheDir() + "/" + path); //the path to the file
-    File localdir = new File(getCacheDir() + "/" + dirs); //the dir part of the path
-    
-    if((localfile.exists())&&(localfile.length()>0))
-    { //if the file is cached locally, read it from the hard drive
-      Log.debug(11, "MetacatDataStore: getting cached file");
-      return localfile;
-    }
-    else
-    { // if the filelength is zero, delete it
-      if (localfile.length()==0) {
-        localfile.delete();
-      }
-      
-      //if the file is not cached, get it from metacat and cache it.
-      //-get file from metacat
-      //-write file to cache directory
-      //-reread file to check for errors
-      //-throw exception if file is an error and delete file
-      //-return the file pointer if the file is not an error
-      
-      Log.debug(11,"MetacatDataStore: getting file from Metacat");
-      Properties props = new Properties();
-      props.put("action", "read");
-      props.put("docid", name);
-      props.put("qformat", "xml");
-      
-      try
-      {
-        localdir.mkdirs(); //create any directories
-      }
-      catch(Exception ee)
-      {
-        ee.printStackTrace();
-      }
-      
-      try
-      {
-        fos = new FileOutputStream(localfile);
-        BufferedOutputStream bfos = new BufferedOutputStream(fos);
-        InputStream metacatInput = getMetacatInputStream(props);
-        // set here because previous line call to getMetacatInputStream will set
-        // to false
-        connectionBusy = true;
+			Log.debug(11, "MetacatDataStore: getting file from Metacat");
+			Properties props = new Properties();
+			props.put("action", "read");
+			props.put("docid", name);
+			props.put("qformat", "xml");
 
-        BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
-        int c = bmetacatInputStream.read();
-        while(c != -1)
-        {
-          bfos.write(c);
-          c = bmetacatInputStream.read();
-        }
-        bfos.flush();
-        bfos.close();
-        
-        // just look for error in first 1000 bytes - DFH
-        int cnt = 0;
-        reader = new InputStreamReader(new FileInputStream(localfile), Charset.forName("UTF-8"));
-        BufferedReader breader = new BufferedReader(reader);
-        c = breader.read();
-        while((c != -1)&&(cnt<1000))
-        {
-          cnt++;  
-          response.append((char)c);
-          c = breader.read();
-        }
-        String responseStr = response.toString();
-        if(responseStr.indexOf("<error>") != -1)
-        {//metacat reported some error
-          bfos.close();
-          breader.close();
-          bmetacatInputStream.close();
-          metacatInput.close();
-          if(!localfile.delete())
-          {
-            throw new CacheAccessException("A cached file could not be " + 
-                                  "deleted.  Please check your access " +
-                                  "permissions on the cache directory." +
-                                  "Failing to delete cached files can " +
-                                  "result in erroneous operation of morpho." +
-                                  "You may want to manually clear your cache " +
-                                  "now.");
-          }
-          throw new FileNotFoundException(name + " does not exist on your " +
-                                          "current Metacat system: ");
-        }
-        
-        bfos.close();
-        breader.close();
-        bmetacatInputStream.close();
-        metacatInput.close();
-        connectionBusy = false;
-        return localfile;
-      }
-      catch (FileNotFoundException mde) {
-        throw mde;
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
-        connectionBusy = false;
-        return null;
-      }
-    }
-  }
+			// get the response from metacat
+			InputStream metacatInput = getMetacatInputStream(props);
+
+			// save to local cache
+			try {
+				FileSystemDataStore.getInstance(getCacheDir()).set(name, metacatInput);
+				localfile = FileSystemDataStore.getInstance(getCacheDir()).get(name);
+			} catch (Exception e) {
+				CacheAccessException cae = new CacheAccessException(e.getMessage());
+				cae.initCause(e);
+				throw cae;
+			}
+			
+			// get back from local cache
+			try {
+				localfile = FileSystemDataStore.getInstance(getCacheDir()).get(name);
+			} catch (Exception e) {
+				FileNotFoundException fnfe = new FileNotFoundException(e.getMessage());
+				fnfe.initCause(e);
+				throw fnfe;
+			}
+			
+			// just look for error in first 1000 bytes - DFH
+			StringBuffer response = new StringBuffer();
+			int cnt = 0;
+			BufferedReader breader = new BufferedReader(new InputStreamReader(new FileInputStream(localfile),Charset.forName("UTF-8")));
+			try {
+				int c = breader.read();
+				while ((c != -1) && (cnt < 1000)) {
+					cnt++;
+					response.append((char) c);
+					c = breader.read();
+				}
+				String responseStr = response.toString();
+				
+				if (responseStr.indexOf("<error>") != -1) {
+					
+					// metacat reported some error, so remove the file
+					FileSystemDataStore.getInstance(getCacheDir()).set(name, null);
+					
+					localfile = null;
+				}
+				
+				breader.close();
+			} catch (Exception e) {
+				throw new FileNotFoundException(name
+						+ " does not exist on your "
+						+ "current Metacat system:  " + e.getMessage());
+			}
+			
+			return localfile;
+
+			
+		}
+	}
   
   /** Send the given query to Metacat, get back the XML resultset
    * @param query the pathquery string for "squery" action
@@ -720,124 +549,129 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
    * @param file: the file to save
    * @param publicAccess: true if the file can be read by unauthenticated
    * users, false otherwise.
+ * @throws CacheAccessException 
    */
-  public File saveFile(String name, Reader file) 
-              throws MetacatUploadException
+  public File saveFile(String name, InputStream inputStream) 
+              throws MetacatUploadException, CacheAccessException
   {
-    return saveFile(name, file, "update", true);
+    return saveFile(name, inputStream, "update");
   }
   
  
   
   /**
-   * Save an xml metadata file to metacat.  This method is for xml metadata 
-   * documents only do not use this method to upload binary data files.
-   * @param name: the docid
-   * @param file: the file to save
-   * @param publicAccess: true if the file can be read by unauthenssh ticated
-   * users, false otherwise.
-   * @param action: the action (update or insert) to perform
-   */
-  private File saveFile(String name, Reader file, 
-                        String action, boolean checkforaccessfile) 
-                       throws MetacatUploadException
-  { //-attempt to write file to metacat
-    //-if successfull, write file to cache, return pointer to that file
-    //-if not successfull, throw exception, display metacat error.
-    String access = "no";
-    StringBuffer messageBuf = new StringBuffer();
+	 * Save an xml metadata file to metacat. This method is for xml metadata
+	 * documents only do not use this method to upload binary data files.
+	 * 
+	 * @param name the docid
+	 * @param file the data to save
+	 * @param publicAccess
+	 *            : true if the file can be read by unauthenssh ticated users,
+	 *            false otherwise.
+	 * @param action
+	 *            : the action (update or insert) to perform
+	 * @throws CacheAccessException 
+	 */
+	private File saveFile(String name, InputStream inputStream, String action) 
+		throws MetacatUploadException, CacheAccessException { // -
+																		
+		// -if successfull, write file to cache, return pointer to that file
+		// -if not successfull, throw exception, display metacat error.
+		String access = "no";
+		StringBuffer messageBuf = new StringBuffer();
 
-    BufferedReader bfile = new BufferedReader(file);
-    try
-    {
-      //save a temp file so that the id can be put in the file.
-      StringWriter sw = new StringWriter();
-      File tempfile = new File(getTempDir() + "/metacat.noid");
-      Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempfile), Charset.forName("UTF-8")));
-      BufferedWriter bfw = new BufferedWriter(fw);
-      int c = bfile.read();
-      while(c != -1)
-      {
-        bfw.write(c); //write out everything in the reader
-        sw.write(c);
-        c = bfile.read();
-      }
-      bfw.flush();
-      bfw.close();
-      bfile.close();
-      String filetext = sw.toString();
-      
-      Log.debug(30, "filelength is:"+filetext.length());
-      if (filetext.length()==0) return null;
-      
-      Properties prop = new Properties();
-      prop.put("action", action);
-      prop.put("public", access);  //This is the old way of controlling access
-      prop.put("doctext", filetext);
-      prop.put("docid", name);
-      Log.debug(11, "sending docid: " + name + " to metacat");
-      Log.debug(11, "action: " + action);
-      Log.debug(11, "public access: " + access);
-      //Log.debug(11, "file: " + fileText.toString());
-      
-      InputStream metacatInput = null;
-      metacatInput = getMetacatInputStream(prop, true);
-      // set here because previous line call to getMetacatInputStream will set
-      // to false
-      connectionBusy = true;
-      
-      InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
-      BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
-      
-      int d = bmetacatInputReader.read();
-      while(d != -1)
-      {
-        messageBuf.append((char)d);
-        d = bmetacatInputReader.read();
-      }
-      
-      String message = messageBuf.toString();
-      Log.debug(11, "message from server: " + message);
-      
-      if(message.indexOf("<error>") != -1)
-      {//there was an error
-        bmetacatInputReader.close();
-        metacatInput.close();
-        throw new MetacatUploadException(message);
-      }
-      else if(message.indexOf("<success>") != -1)
-      {//the operation worked
-       //write the file to the cache and return the file object
-        String docid = parseIdFromMessage(message);
-        try
-        {
-          bmetacatInputReader.close();
-          metacatInput.close();
-          connectionBusy = false;
-          return openFile(docid);
-        }
-        catch(Exception ee)
-        {
-          bmetacatInputReader.close();
-          metacatInput.close();
-          ee.printStackTrace();
-          connectionBusy = false;
-          return null;
-        }
-      }
-      else
-      {//something weird happened.
-        connectionBusy = false;
-        throw new Exception("unexpected error in edu.ucsb.nceas.morpho." +
-                            ".datastore.MetacatDataStore.saveFile(): " + message);
-      } 
-    }
-    catch(Exception e)
-    {
-      connectionBusy = false;
-      throw new MetacatUploadException(e.getMessage());
-    }
-  }
+		try {
+			FileSystemDataStore.getInstance(getTempDir()).set(name, inputStream);
+		} catch (Exception e) {
+			throw new CacheAccessException(e.getMessage());
+		}
+		File tempfile = null;
+		try {
+			tempfile = FileSystemDataStore.getInstance(getTempDir()).get(name);
+		} catch (Exception e) {
+			throw new CacheAccessException(e.getMessage());
+		}
+
+		// get content as a string
+		try {
+			BufferedReader bfile = new BufferedReader(new InputStreamReader(
+					new FileInputStream(tempfile), Charset.forName("UTF-8")));
+			StringWriter sw = new StringWriter();
+			int c = bfile.read();
+			while (c != -1) {
+				sw.write(c);
+				c = bfile.read();
+			}
+			bfile.close();
+			String filetext = sw.toString();
+
+			Log.debug(30, "filelength is:" + filetext.length());
+			if (filetext.length() == 0)
+				return null;
+
+			Properties prop = new Properties();
+			prop.put("action", action);
+			prop.put("public", access); // This is the old way of controlling access
+			prop.put("doctext", filetext);
+			prop.put("docid", name);
+			Log.debug(11, "sending docid: " + name + " to metacat");
+			Log.debug(11, "action: " + action);
+			Log.debug(11, "public access: " + access);
+			// Log.debug(11, "file: " + fileText.toString());
+
+			InputStream metacatInput = null;
+			metacatInput = getMetacatInputStream(prop, true);
+			// set here because previous line call to getMetacatInputStream will
+			// set
+			// to false
+			connectionBusy = true;
+
+			InputStreamReader metacatInputReader = new InputStreamReader(
+					metacatInput);
+			BufferedReader bmetacatInputReader = new BufferedReader(
+					metacatInputReader);
+
+			int d = bmetacatInputReader.read();
+			while (d != -1) {
+				messageBuf.append((char) d);
+				d = bmetacatInputReader.read();
+			}
+
+			String message = messageBuf.toString();
+			Log.debug(11, "message from server: " + message);
+
+			if (message.indexOf("<error>") != -1) {// there was an error
+				bmetacatInputReader.close();
+				metacatInput.close();
+				throw new MetacatUploadException(message);
+			} else if (message.indexOf("<success>") != -1) {// the operation
+															// worked
+				// write the file to the cache and return the file object
+				String docid = parseIdFromMessage(message);
+				try {
+					bmetacatInputReader.close();
+					metacatInput.close();
+					connectionBusy = false;
+					return openFile(docid);
+				} catch (Exception ee) {
+					bmetacatInputReader.close();
+					metacatInput.close();
+					ee.printStackTrace();
+					connectionBusy = false;
+					return null;
+				}
+			} else {// something weird happened.
+				connectionBusy = false;
+				throw new Exception(
+						"unexpected error in edu.ucsb.nceas.morpho."
+								+ ".datastore.MetacatDataStore.saveFile(): "
+								+ message);
+			}
+		} catch (Exception e) {
+			connectionBusy = false;
+			throw new MetacatUploadException(e.getMessage());
+		}
+	}
 
 	/**
 	 * parses the id of a file from the message that metacat returns
@@ -846,7 +680,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		int docidIndex = message.indexOf("<docid>") + 1;
 		int afterDocidIndex = docidIndex + 6;
 		String docid = message.substring(afterDocidIndex, message.indexOf("<", afterDocidIndex));
-		debug(11, "docid in parseIdFromMessage: " + docid);
+		Log.debug(11, "docid in parseIdFromMessage: " + docid);
 		return docid;
 	}
   
@@ -854,10 +688,11 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
    * Create and save a new file to metacat using the "insert" action.
    * @param name: the id of the new file
    * @param file: the stream to the file to write to metacat
+ * @throws CacheAccessException 
    */
-  public File newFile(String name, Reader file) throws MetacatUploadException
+  public File newFile(String name, InputStream inputStream) throws MetacatUploadException, CacheAccessException
   {
-    return saveFile(name, file, "insert", true);
+    return saveFile(name, inputStream, "insert");
   }
    
   /**
