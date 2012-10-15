@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.ecoinformatics</groupId>
+    <artifactId>morpho</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <name>morpho</name>
+    <packaging>jar</packaging>
+    <url>http://maven.apache.org</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <d1_libclient_version>1.1.0-SNAPSHOT</d1_libclient_version>
+        <d1_common_java_version>1.1.0-SNAPSHOT</d1_common_java_version>
+    </properties>
+    <repositories>
+        
+        <repository>
+			<id>dataone.org</id>
+			<url>http://dev-testing.dataone.org/maven</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+    </repositories>
+    <dependencies>
+		<dependency>
+			<groupId>org.dataone</groupId>
+			<artifactId>d1_libclient_java</artifactId>
+			<version>${d1_libclient_version}</version>
+			<type>jar</type>
+		</dependency>
+    </dependencies>
+    <scm>
+      <url>https://repository.dataone.org/software/cicore</url>
+      <connection>scm:svn:https://repository.dataone.org/software/cicore</connection>
+      <developerConnection>scm:svn:https://repository.dataone.org/software/cicore</developerConnection>
+      <tag>HEAD</tag>
+    </scm>
+</project>

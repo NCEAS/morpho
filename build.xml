@@ -13,10 +13,10 @@
   *
   * usage: ant [compile|jar|install|jdoc]
 -->
-<project name="morpho" default="install" basedir=".">
+<project name="morpho" default="install" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 	<!-- include basedir so that this ant project can be imported by other's -->
 	<dirname property="morpho.basedir" file="${ant.file.morpho}"/>
-   <target name="init">
+   <target name="init" unless="init.called">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
       <property name="release" value="2.0.0"/>
@@ -205,7 +205,7 @@
       <property name="wsdl.url.nbii" value="http://nbii-thesaurus.ornl.gov/ws/services/SKOSThesaurusService?wsdl" />
 
       <!-- for easier classpath management (so many axis jars!)-->
-      <path id="classpath">
+      <path id="base.classpath">
    			<fileset dir="${libdir}">
    				<include name="*.jar" />
    			</fileset>
@@ -221,10 +221,10 @@
    			</fileset>
 		</path>
 
-		<taskdef resource="axis-tasks.properties" classpathref="classpath"/>
+		<taskdef resource="axis-tasks.properties" classpathref="base.classpath"/>
    		
    		<!-- set up the latex task -->
-   		<taskdef name="latex" classname="de.dokutransdata.antlatex.LaTeX" classpathref="classpath" />
+   		<taskdef name="latex" classname="de.dokutransdata.antlatex.LaTeX" classpathref="base.classpath" />
 	   
 		<!-- set up svn -->
         <property name="svnant.lib" value="${morpho.basedir}/lib" />
@@ -241,6 +241,27 @@
         </path>
         <taskdef resource="svntask.properties"
             classpathref="svn-classpath" />
+   	
+	<!-- If you drop the maven-ant-tasks in ~/.ant/lib, you don't need these two bits. -->
+	<taskdef uri="antlib:org.apache.maven.artifact.ant"
+       resource="org/apache/maven/artifact/ant/antlib.xml"
+       classpathref="base.classpath" />
+
+   	<!-- Resolve maven dependencies -->
+	<artifact:pom id="morphoPom" file="pom.xml" />
+	<artifact:dependencies filesetId="dependency.fileset" pomrefid="morphoPom" usescope="runtime"/>
+	<artifact:dependencies pathId="dependency.classpath" pomrefid="morphoPom"/>
+   	
+    <property name="libdir.mvn" value="${libdir}/maven" />
+   	
+   	<!-- combine base and dependencies for the classpath -->
+   	<path id="classpath">
+   		<path refid="base.classpath" />	
+   		<path refid="dependency.classpath" />	
+	</path>
+   	
+    <property name="init.called" value="true" />
+
    </target>
 	
 
@@ -280,8 +301,18 @@
       </copy>
        -->
    </target>
-	
-	
+  
+	<target name="resolveD1" depends="init" description="retrieve DataONE dependencies with maven">
+		<echo>Moving Maven dependencies (${dependency.fileset}) to ${libdir.mvn} </echo>
+		<!-- Clear out mvn dir -->
+		<delete dir="${libdir.mvn}"></delete>
+		<!-- Copy all dependencies to the correct location. -->
+		<copy todir="${libdir.mvn}">
+			<fileset refid="dependency.fileset" />
+			<!-- This mapper strips off all leading directory information -->
+			<mapper type="flatten" />
+		</copy>
+	</target>
 
    <target name="emldoc" depends="prepare">
      <!-- checkout eml moduel -->
@@ -548,13 +579,18 @@
 	<target name="prepare-lib" depends="prepare">
 		<copy todir="${build.lib}" filtering="no">
 		        <fileset dir="${libdir}" 
-		        	excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
+		        	excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz,maven/**"/>
 		</copy>
 		<copy todir="${build.lib}" filtering="no">
 		        <fileset dir="${libdir}" 
-		        	includes="*.jar"/>
+		        	includes="*.jar" excludes="maven-ant-tasks*.jar"/>
 			<fileset dir="${libdir}/axis" 
 					 includes="*.jar"/>
+		</copy>
+		<copy todir="${build.lib}" filtering="no">
+			<fileset refid="dependency.fileset" />
+			<!-- This mapper strips off all leading directory information -->
+			<mapper type="flatten" />
 		</copy>
 		<copy file="${morpho.basedir}/CONTRIBUTORS.txt" todir="${build.lib}" filtering="no" />
 	</target>
