@@ -41,8 +41,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.arbortext.catalog.CatalogEntityResolver;
-
 import edu.ucsb.nceas.morpho.Morpho;
 
 /** 
@@ -58,28 +56,18 @@ public class TripleParser extends DefaultHandler
   
   public TripleParser(Reader xml)
   {
-    doInit(xml, null);
+    doInit(xml);
   }
   
-  public TripleParser(Reader xml, CatalogEntityResolver cer)
+  private void doInit(Reader xml)
   {
-    doInit(xml, cer);
-  }
-  
-  private void doInit(Reader xml, CatalogEntityResolver cer)
-  {
-    XMLReader parser = Morpho.createSaxParser((ContentHandler)this, 
-            (ErrorHandler)this);
+    XMLReader parser = Morpho.createSaxParser((ContentHandler) this,  (ErrorHandler)this);
     if (parser == null) 
     {
       System.err.println("SAX parser not instantiated properly.");
     }
     try 
     {
-      if(cer != null)
-      {
-        parser.setEntityResolver(cer);
-      }
       parser.parse(new InputSource(xml));
     } 
     catch (SAXException e) 
