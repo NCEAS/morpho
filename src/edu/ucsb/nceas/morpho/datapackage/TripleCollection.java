@@ -26,26 +26,11 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.util.Log;
-
-import javax.xml.parsers.DocumentBuilder;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-
-import com.arbortext.catalog.*;
-
-import java.util.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.Vector;
 
 /**
  * This class implements a collection of triples which make up all of the
@@ -53,8 +38,7 @@ import java.nio.charset.Charset;
  */
 public class TripleCollection
 {
-  private Vector triples = new Vector();
-  private Morpho morpho = null;
+  private Vector<Triple> triples = new Vector<Triple>();
   /**
    * Default Constructor
    */
@@ -62,75 +46,6 @@ public class TripleCollection
   {
     
   }
-  
-  /**
-   * parses an xml document and pulls any triples out of it.
-   */
-   public TripleCollection(File triplesFile, Morpho morpho)
-   {
-       this.morpho = morpho;
-     Document doc;
-     try
-     {
-       ConfigXML config = morpho.getConfiguration();
-       String catalogPath = //config.getConfigDirectory() + File.separator +
-                                        config.get("local_catalog_path", 0);
-       doc = PackageUtil.getDoc(triplesFile, catalogPath);
-     }
-     catch(Exception e)
-     {
-       Log.debug(0, "error parsing " + triplesFile.getPath() + " : " +
-                         e.getMessage());
-       e.printStackTrace();
-       return;
-     }
-     
-     String triplePath = "//triple";
-     NodeList tripleList = null;
-     try
-     {
-       tripleList = XPathAPI.selectNodeList(doc, triplePath);
-     }
-     catch(Exception e)
-     {
-       Log.debug(0, "Error parsing triples in " + 
-                                "TripleCollection.TripleCollection: " +
-                                e.getMessage());
-       e.printStackTrace();
-     }
-     
-     for(int i=0; i<tripleList.getLength(); i++)
-     {
-       Node triple = tripleList.item(i);
-       NodeList children = triple.getChildNodes();
-       String sub = null;
-       String rel = null;
-       String obj = null;
-       if(children.getLength() > 2)
-       {
-         for(int j=0; j<children.getLength(); j++)
-         {
-           Node childNode = children.item(j);
-           String nodename = childNode.getNodeName().trim().toUpperCase();
-           if(nodename.equals("SUBJECT"))
-           {
-             sub = childNode.getFirstChild().getNodeValue();
-           }
-           else if(nodename.equals("OBJECT"))
-           {
-             obj = childNode.getFirstChild().getNodeValue();
-           }
-           else if(nodename.equals("RELATIONSHIP"))
-           {
-             rel = childNode.getFirstChild().getNodeValue();
-           }
-         }
-         
-         Triple t = new Triple(sub, rel, obj);
-         triples.addElement(t);
-       }
-     }
-   }
   
   /**
    * Copy constructor.  instantiate this object from the given TripleCollection
@@ -148,23 +63,15 @@ public class TripleCollection
     TripleParser tp = new TripleParser(xml);
     this.triples = tp.getTriples().getCollection();
   }
-  
-  /**
-   * read an xml file, build the collection from any triples in the xml file.
-   */
-  public TripleCollection(Reader xml, CatalogEntityResolver cer)
-  {
-    TripleParser tp = new TripleParser(xml, cer);
-    this.triples = tp.getTriples().getCollection();
-  }
+
   
   /**
    * create a collection of triples from a vector of Triple objects.
    */
-  public TripleCollection(Vector triples)
+  public TripleCollection(Vector<Triple> triples)
   {
 //    this.triples = new Vector(triples);   //DFH
-    this.triples = (Vector)triples.clone();
+    this.triples = (Vector<Triple>)triples.clone();
   }
   
   /**
@@ -203,12 +110,12 @@ public class TripleCollection
   /**
    * returns a vector of triples with the given subject
    */
-  public Vector getCollectionBySubject(String subject)
+  public Vector<Triple> getCollectionBySubject(String subject)
   {
-    Vector trips = new Vector();
+    Vector<Triple> trips = new Vector<Triple>();
     for(int i=0; i<triples.size(); i++)
     {
-      Triple trip = new Triple((Triple)triples.elementAt(i));
+      Triple trip = new Triple(triples.elementAt(i));
       if(trip.getSubject().equals(subject))
       {
         trips.addElement(trip);
@@ -220,12 +127,12 @@ public class TripleCollection
   /**
    * returns a vector of triples with the given relationship
    */
-  public Vector getCollectionByRelationship(String relationship)
+  public Vector<Triple> getCollectionByRelationship(String relationship)
   {
-    Vector trips = new Vector();
+    Vector<Triple> trips = new Vector<Triple>();
     for(int i=0; i<triples.size(); i++)
     {
-      Triple trip = new Triple((Triple)triples.elementAt(i));
+      Triple trip = new Triple(triples.elementAt(i));
       if(trip.getRelationship().equals(relationship))
       {
         trips.addElement(trip);
@@ -237,12 +144,12 @@ public class TripleCollection
   /**
    * returns a vector of triples with the given object
    */
-  public Vector getCollectionByObject(String object)
+  public Vector<Triple> getCollectionByObject(String object)
   {
-    Vector trips = new Vector();
+    Vector<Triple> trips = new Vector<Triple>();
     for(int i=0; i<triples.size(); i++)
     {
-      Triple trip = new Triple((Triple)triples.elementAt(i));
+      Triple trip = new Triple(triples.elementAt(i));
       if(trip.getObject().equals(object))
       {
         trips.addElement(trip);
@@ -254,7 +161,7 @@ public class TripleCollection
   /**
    * return a vector of Triple objects that represent this collection.
    */
-  public Vector getCollection()
+  public Vector<Triple> getCollection()
   {
     return this.triples;
   }
@@ -300,25 +207,6 @@ public class TripleCollection
     }
     
     return sb.toString();
-  }
-  
-  public NodeList getNodeList()
-  {
-    DocumentBuilder parser = Morpho.createDomParser();
-    InputSource in;
-    in = new InputSource(new StringReader(toXML("triples")));
-    Document doc = null;
-    try
-    {
-      doc = parser.parse(in);
-    }
-    catch(Exception e1)
-    {
-      System.err.println("triples: parse threw: " + 
-                         e1.toString());
-      //e1.printStackTrace();
-    }
-    return doc.getElementsByTagName("triple");
   }
   
   /**

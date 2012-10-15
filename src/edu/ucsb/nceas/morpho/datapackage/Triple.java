@@ -26,8 +26,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.util.Log;
-import java.util.*;
+import java.util.Vector;
 
 /**
  * This class implements one triple which defines one relationship inside
@@ -122,9 +121,9 @@ public class Triple
   /**
    * return this triple as a vector of strings
    */
-  public Vector getTriple()
+  public Vector<String> getTriple()
   {
-    Vector triple = new Vector();
+    Vector<String> triple = new Vector<String>();
     triple.addElement(this.subject);
     triple.addElement(this.relationship);
     triple.addElement(this.object);
