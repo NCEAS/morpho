@@ -57,6 +57,7 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * A Class that represents a structured query, and can be
@@ -115,7 +116,7 @@ public class Query extends DefaultHandler {
     queryStack   = new Stack<QueryGroup>();
 
     // Initialize the parser and read the queryspec
-    XMLReader parser = Morpho.createSaxParser(this, this);
+    XMLReader parser = XMLUtilities.createSaxParser(this, this);
 
     if (parser == null) {
       Log.debug(1, "SAX parser not instantiated properly.");

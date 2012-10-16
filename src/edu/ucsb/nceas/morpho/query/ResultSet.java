@@ -49,6 +49,7 @@ import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * A ResultSet encapsulates the list of results returned from either a
@@ -204,7 +205,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     try {
       // Get an instance of the parser
       ResultsetHandler handler = new ResultsetHandler(morpho, localStatus, metacatStatus);
-      parser = Morpho.createSaxParser(handler, null);
+      parser = XMLUtilities.createSaxParser(handler, null);
       Log.debug(30, "(2.43) Creating result set ...");
       // Set the ContentHandler to this instance
       parser.parse(new InputSource(new InputStreamReader(resultsXMLStream)));

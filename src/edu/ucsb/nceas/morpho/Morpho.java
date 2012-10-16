@@ -57,12 +57,6 @@ import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.XMLReader;
 
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
@@ -766,56 +760,6 @@ public class Morpho
       } catch (Exception e) {
         Log.debug(10,"error creating Morpho Instance");
       }
-    }
-
-    /**
-     * Set up a SAX parser for reading an XML document
-     *
-     * @param contentHandler  object to be used for parsing the content
-     * @param errorHandler    object to be used for handling errors
-     * @return                a SAX XMLReader object for parsing
-     * @deprecated use the utilities project version of this 
-     */
-    public static XMLReader createSaxParser(ContentHandler contentHandler,
-            ErrorHandler errorHandler)
-    {
-        XMLReader parser = null;
-
-        // Set up the SAX document handlers for parsing
-        try {
-
-            // Get an instance of the parser
-            SAXParserFactory spfactory = SAXParserFactory.newInstance();
-            SAXParser saxp = spfactory.newSAXParser();
-            parser = saxp.getXMLReader();
-
-            if (parser != null) {
-                parser.setFeature("http://xml.org/sax/features/namespaces",
-                    true);
-                Log.debug(30, "Parser created is: " +
-                        parser.getClass().getName());
-            } else {
-                Log.debug(9, "Unable to create SAX parser!");
-            }
-
-            // Set the ContentHandler to the provided object
-            if (null != contentHandler) {
-                parser.setContentHandler(contentHandler);
-            } else {
-                Log.debug(3,
-                        "No content handler for SAX parser!");
-            }
-
-            // Set the error Handler to the provided object
-            if (null != errorHandler) {
-                parser.setErrorHandler(errorHandler);
-            }
-        } catch (Exception e) {
-            Log.debug(1, "Failed to create SAX parser:\n" +
-                    e.toString());
-        }
-
-        return parser;
     }
 
     /**
