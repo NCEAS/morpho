@@ -32,6 +32,47 @@
 			<artifactId>d1_libclient_java</artifactId>
 			<version>${d1_libclient_version}</version>
 			<type>jar</type>
+			<scope>runtime</scope>			
+			<!-- exclude extraneous artifacts (jars) -->
+			<exclusions>
+		        <exclusion>
+		          <groupId>org.jibx</groupId>
+		          <artifactId>jibx-tools</artifactId>
+		        </exclusion>
+		        <exclusion>
+		          <groupId>org.jibx</groupId>
+		          <artifactId>jibx-schema</artifactId>
+		        </exclusion>
+		        <exclusion>
+		          <groupId>org.jibx</groupId>
+		          <artifactId>jibx-extras</artifactId>
+		        </exclusion>
+		        <exclusion>
+		          <groupId>org.jibx</groupId>
+		          <artifactId>jibx-bind</artifactId>
+		        </exclusion>
+		        <exclusion>
+		        	<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+		        </exclusion>
+		        <exclusion>
+		        	<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+		        </exclusion>
+		        <exclusion>
+		        	<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+		        </exclusion>
+		        <exclusion>
+		        	<groupId>org.jibx</groupId>
+					<artifactId>maven-jibx-plugin</artifactId>
+		        </exclusion>
+		        <!-- TODO: is this required? -->
+		        <exclusion>
+		        	<groupId>jcs</groupId>
+					<artifactId>jcs</artifactId>
+		        </exclusion>
+			</exclusions>
 		</dependency>
     </dependencies>
     <scm>
