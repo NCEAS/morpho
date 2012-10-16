@@ -42,8 +42,20 @@ import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import edu.ucsb.nceas.morpho.datastore.DataStoreService;
 
 /**
- * This class represents an object which manage the revision history for a data store in
- * a profile. 
+ * This class represents an object which manage the revision history for a data store service in
+ * a profile. The object will be serialized in the file - 
+ * .morpho/profiles/profile-name/given-prefix-revision.properties
+ * The file is a xml and it looks like:
+ * <?xml version="1.0" encoding="UTF-8" ?>
+ * <revisions>
+ *  <identifier value="pid.1.2">
+ *   <obsoletes>pid.1.1</obsoletes>
+ *   <obsoletedBy>pid.1.3</obsoletedBy>
+ *  </identifier>
+ *  <identifier value="pid.2.2">
+ *    <obsoletes>pid.2.1</obsoletes>
+ *  </identifier>
+ * </revisions>
  * @author tao
  *
  */
@@ -58,7 +70,7 @@ public class RevisionManager {
   public static final String SLASH = "/";
   public static final String AT = "@";
   
-  private static final String SUFFIX = ".revision.properties";
+  private static final String SUFFIX = "-revisions.properties";
   private static final boolean AUTOSAVE = true;
   
   private Map<String, String> obsoletes = null;
@@ -104,6 +116,8 @@ public class RevisionManager {
     configuration = new XMLConfiguration(configurationFile);
     configuration.setExpressionEngine(new XPathExpressionEngine());
     configuration.setAutoSave(AUTOSAVE);
+    configuration.setDelimiterParsingDisabled(true);
+    configuration.setAttributeSplittingDisabled(true);
     
     obsoletes = new HashMap<String, String>();
     obsoletedBy = new HashMap<String, String> ();
@@ -198,8 +212,15 @@ public class RevisionManager {
    * @param newId - the new identifier which obsoletes the old one.
    * @param oldId - the old identifier which will be obsoleted by the new one.
    */
-  public void setObsoletes(String newId, String oldId) {
+  public void setObsoletes(String newId, String oldId) throws IllegalArgumentException {
+    if(newId == null || newId.trim().equals("")) {
+      throw new IllegalArgumentException("RevisionManager.setObsoletes - the first parameter of this method can't be null or blank.");
+    }
+    if( oldId == null || oldId.trim().equals("")) {
+      throw new IllegalArgumentException("RevisionManager.setObsoletes - the second parameter of this method can't be null or blank.");
+    }
     obsoletes.put(newId, oldId);
+    modifyConfiguration(newId, OBSOLETES, oldId);
   }
   
   
@@ -209,7 +230,56 @@ public class RevisionManager {
    * @param newId - the new identifier which obsoletes the old one.
    */
   public void setObsoletedBy(String oldId, String newId) {
+    if(newId == null || newId.trim().equals("")) {
+      throw new IllegalArgumentException("RevisionManager.setObsoletes - the second parameter of this method can't be null or blank.");
+    }
+    if( oldId == null || oldId.trim().equals("")) {
+      throw new IllegalArgumentException("RevisionManager.setObsoletes - the first parameter of this method can't be null or blank.");
+    }
     obsoletedBy.put(oldId, newId);
+    modifyConfiguration(oldId, OBSOLETEDBY, newId);
+  }
+  
+  
+  /**
+   * Modify the configuration file
+   * @param targetId - the subject id the action (obsoletes or obsoletedBy)
+   * @param action - obsoletes or obsoletedBy
+   * @param id - id impose the action
+   */
+  private synchronized void modifyConfiguration(String targetId, String action, String id ) {
+    if(configuration != null) {
+      try {
+        //The xpath  IDENTIFIER+"["+AT+VALUE+"='"+targetId+"']" doesn't work for getList().
+        //we have to give up
+        //List<Object> targetIdList = configuration.getList(IDENTIFIER+"["+AT+VALUE+"='"+targetId+"']");
+        //System.out.println("the target identifier size is === "+targetIdList.size());
+        List<Object> identifierList = configuration.getList(IDENTIFIER+SLASH+AT+VALUE);
+        boolean targetIdExisted = identifierList.contains(targetId);
+        //System.out.println("the identifier existing in the configuration is "+targetIdExisted);
+        if(!targetIdExisted) {
+          //no record existing for the id, so add one
+          configuration.addProperty(" "+IDENTIFIER+AT+VALUE, targetId);
+          configuration.addProperty(IDENTIFIER+"["+AT+VALUE+"='"+targetId+"']"+" "+action, id);
+        } else {
+          //if more than one target id were found, something is wrong. but we only handle the first one
+          List<Object> elementList = configuration.getList("("+IDENTIFIER+"["+AT+VALUE+"='"+targetId+"']"+")[1]"+SLASH+action);
+          //System.out.println("the element list size is "+elementList.size());
+          if(elementList == null || elementList.size() == 0) {
+            //add the new element
+            configuration.addProperty("("+IDENTIFIER+"["+AT+VALUE+"='"+targetId+"']"+")[1]"+" "+action, id);
+          } else {
+            // there is existing element for the action, just reset the value. In future, we may throw this to an exception
+            configuration.setProperty("("+IDENTIFIER+"["+AT+VALUE+"='"+targetId+"']"+")[1]"+SLASH+action, id);
+          }
+        }
+        
+      } finally {
+        //System.out.println("reload is called");
+        configuration.reload();
+      }
+
+    }
   }
 
 }
