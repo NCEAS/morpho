@@ -55,7 +55,7 @@ import edu.ucsb.nceas.morpho.exception.IdentifierNotFoundException;
  *
  */
 public class IdentifierFileMap {
-  private static final String UTF8 = "UTF-8";
+  public static final String UTF8 = "UTF-8";
   public static final String PROPERTYFILESUFFIX = ".properties";
   private Properties mappingProperties = null;
   private File mappingPropertyFile = null;
