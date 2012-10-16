@@ -774,6 +774,7 @@ public class Morpho
      * @param contentHandler  object to be used for parsing the content
      * @param errorHandler    object to be used for handling errors
      * @return                a SAX XMLReader object for parsing
+     * @deprecated use the utilities project version of this 
      */
     public static XMLReader createSaxParser(ContentHandler contentHandler,
             ErrorHandler errorHandler)

@@ -26,12 +26,9 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
@@ -45,11 +42,11 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.triple.Triple;
+import edu.ucsb.nceas.utilities.triple.TripleCollection;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
