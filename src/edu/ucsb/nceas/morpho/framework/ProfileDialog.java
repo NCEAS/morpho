@@ -54,6 +54,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   public static final String TEMPDIRELEMENTNAME = "tempdir";
   public static final String INCOMPLETEDIRELEMENTNAME = "incompletedir" ;
   public static final String PROFILENAMEELEMENTNAME = "profilename";
+  public static final String QUERIESDIRELEMENTNAME = "queriesdir";
   ConfigXML config;
   Morpho framework = null;
   /** the total number of screens to be processed */
@@ -75,7 +76,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   JTextField scopeField = new JTextField();
   JList orgList = null;
   public static final String CORRECTIONEMLPROFILEPATH = "eml201corrected";
-  public static final String IDFILEMAPUPDATEDPATH = "idfileMapUpdated";
+  public static final String IDFILEMAPUPDATEDPATH = "identifierUpdated";
   
   public static final String[] ILLEGAL_SCOPE_CHARACTERS = 
 	  new String[] {" ", "&", "#", ",", ".", "+", "-", "(", ")"};
