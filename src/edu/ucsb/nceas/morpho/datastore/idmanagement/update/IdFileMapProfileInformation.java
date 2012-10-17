@@ -45,7 +45,8 @@ import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 public class IdFileMapProfileInformation {
   private ConfigXML profile = null;
   private boolean updated = false;
-  private Vector<File> objectDirectories = new Vector<File>();
+  private Vector<File> idFileMappingDirectories = new Vector<File>();
+  private Vector<File> revisionDirectories = new Vector<File>();
   
   /**
    * Constructor. It will parse the profile and get the information.
@@ -78,13 +79,16 @@ public class IdFileMapProfileInformation {
       
       if(!updated) {
         Vector list = profile.getValuesForPath(ProfileDialog.DATADIRELEMENTNAME);
-        handleDirectoryList(list);
+        handleDirectoryList(list, idFileMappingDirectories);
+        handleDirectoryList(list, revisionDirectories);
         list = profile.getValuesForPath(ProfileDialog.CACHEDIRELEMENTNAME);
-        handleDirectoryList(list);
+        handleDirectoryList(list, idFileMappingDirectories);
         list = profile.getValuesForPath(ProfileDialog.INCOMPLETEDIRELEMENTNAME);
-        handleDirectoryList(list);
+        handleDirectoryList(list, idFileMappingDirectories);
+        handleDirectoryList(list, revisionDirectories);
         list = profile.getValuesForPath(ProfileDialog.TEMPDIRELEMENTNAME);
-        handleDirectoryList(list);
+        handleDirectoryList(list, idFileMappingDirectories);
+        handleDirectoryList(list, revisionDirectories);
       }
     }
   }
@@ -94,7 +98,7 @@ public class IdFileMapProfileInformation {
    * put it into the objectDirectories. If the directory is a relative path, append it to the
    * profile directory and put it into the objetDirectories.
    */
-  private void handleDirectoryList(Vector list) {
+  private void handleDirectoryList(Vector list, Vector<File> targetDirectories) {
     if(list != null) {
       for(int i=0; i<list.size(); i++) {
         String dir = (String)list.elementAt(i);
@@ -107,7 +111,7 @@ public class IdFileMapProfileInformation {
           //we only handle existing directory
           if(fileDir.exists() && fileDir.isDirectory()) {
            
-            objectDirectories.add(fileDir);
+            targetDirectories.add(fileDir);
             
           }
         }
@@ -125,11 +129,19 @@ public class IdFileMapProfileInformation {
   
   
   /**
-   * Get the list of the object directories which should be updated
+   * Get the list of the object directories which should be updated for the id-file mapping.
    * @return the list of object directories 
    */
-  public Vector<File> getObjectDirectories() {
-    return objectDirectories;
+  public Vector<File> getIdFileMappingDirectories() {
+    return idFileMappingDirectories;
+  }
+  
+  /**
+   * Get the list of directories which should be updated for the revisions history.
+   * @return the list of directories which will be updated for the revision history.
+   */
+  public Vector<File> getRevisionDirectories() {
+    return revisionDirectories;
   }
   
   /**

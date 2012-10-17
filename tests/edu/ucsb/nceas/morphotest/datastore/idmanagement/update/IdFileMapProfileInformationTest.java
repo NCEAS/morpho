@@ -45,9 +45,14 @@ public class IdFileMapProfileInformationTest extends MorphoTestCase {
   public void testGetStatusAndDirectories() {
     IdFileMapProfileInformation info = new IdFileMapProfileInformation(profile);
     System.out.println("The profile being added the id-file mapping is "+info.getUpdatedStatus());
-    Vector<File> list = info.getObjectDirectories();
+    Vector<File> list = info.getIdFileMappingDirectories();
     for(File file : list) {
-      System.out.println("The directories needs to be updated are "+file.getAbsolutePath());
+      System.out.println("The directories needs to be updated for id-file mapping are "+file.getAbsolutePath());
+    }
+    
+    Vector<File> revisionList = info.getRevisionDirectories();
+    for(File file : revisionList) {
+      System.out.println("The directories needs to be updated for revisions are "+file.getAbsolutePath());
     }
   }
 

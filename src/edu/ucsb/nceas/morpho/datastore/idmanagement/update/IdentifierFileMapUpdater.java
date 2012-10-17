@@ -95,7 +95,7 @@ public class IdentifierFileMapUpdater {
   public void update() {
     for(IdFileMapProfileInformation info : profileInformationList) {
       try {
-        Vector<File> objectDirs = info.getObjectDirectories();
+        Vector<File> objectDirs = info.getIdFileMappingDirectories();
         if(objectDirs != null) {
           
             for(File dir : objectDirs) {
