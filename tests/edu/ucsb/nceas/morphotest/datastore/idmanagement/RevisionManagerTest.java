@@ -31,6 +31,7 @@ import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.ucsb.nceas.morpho.datastore.DataStoreService;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
@@ -72,7 +73,7 @@ public class RevisionManagerTest extends MorphoTestCase {
   
  
   public void testScatch() throws Exception {
-    RevisionManager manager = new RevisionManager(PREFIX);
+    RevisionManager manager = new RevisionManager(DataStoreService.getProfileDir(),PREFIX);
     manager.setObsoletedBy("tao.1.1", "tao.1.2");
     manager.setObsoletedBy("tao.1.2", "tao.1.3");
     manager.setObsoletes("tao.1.2", "tao.1.1");

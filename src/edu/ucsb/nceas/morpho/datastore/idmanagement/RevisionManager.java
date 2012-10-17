@@ -77,6 +77,7 @@ public class RevisionManager {
   private Map<String, String> obsoletedBy = null;
   private String filePrefix = null;
   private XMLConfiguration configuration = null;
+  private File profileDir = null;
   
   
   
@@ -84,12 +85,17 @@ public class RevisionManager {
    * Constructor.
    * @param filePrefix - the prefix will be used for the file which stores the revision history.
    */
-  public RevisionManager(String filePrefix) throws IllegalArgumentException, IOException, ConfigurationException{
+  public RevisionManager(String profileDir, String filePrefix) throws IllegalArgumentException, IOException, ConfigurationException{
     if(filePrefix == null || filePrefix.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.RevisionManager - A null or empty string"+
                                           " can't be used as a prefix for the file which stores the revision information.");
     }
     this.filePrefix = filePrefix;
+    this.profileDir = new File(profileDir);
+    if(!this.profileDir.exists() || !this.profileDir.isDirectory()) {
+      throw new IllegalArgumentException("RevisionManager.RevisionManager - the profile directory in the parameter should point "+
+                                        "to an existed directory. However, the "+profileDir+" either doesn't exist or is not a directory");
+    }
     init();
   }
   
@@ -97,7 +103,7 @@ public class RevisionManager {
    * Initialize the configuration from the file.
    */
   private void init() throws IOException, ConfigurationException {
-    String profileDir = DataStoreService.getProfileDir();
+    //String profileDir = DataStoreService.getProfileDir();
     File configurationFile = new File(profileDir, File.separator+filePrefix+SUFFIX);
     //initial a xml properties file
     if(!configurationFile.exists()) {
@@ -129,8 +135,8 @@ public class RevisionManager {
         if(obsoletesIds != null) {
           for(Object obsoletesId : obsoletesIds) {
             String obsoletesIdentifier = (String) obsoletesId;
-            System.out.println("the identifier is "+identifier);
-            System.out.println("the obsoletes id is "+obsoletesIdentifier);
+            //System.out.println("the identifier is "+identifier);
+            //System.out.println("the obsoletes id is "+obsoletesIdentifier);
             setObsoletes(identifier, obsoletesIdentifier);
           }
         }
@@ -139,8 +145,8 @@ public class RevisionManager {
         if(obsoletedByIds != null) {
           for(Object obsoletedById : obsoletedByIds) {
             String obsoletedByIdentifier = (String) obsoletedById;
-            System.out.println("the identifier is "+identifier);
-            System.out.println("the obsoletedBy id is "+obsoletedByIdentifier);
+            //System.out.println("the identifier is "+identifier);
+            //System.out.println("the obsoletedBy id is "+obsoletedByIdentifier);
             setObsoletedBy(identifier, obsoletedByIdentifier);
           }
         }
@@ -157,14 +163,20 @@ public class RevisionManager {
     List<String> revisions = new Vector<String>();
     revisions.add(identifier);
     String obsoletesId = getObsoletes(identifier);
+    //System.out.println("the obsoletes id is "+obsoletesId);
     while(obsoletesId != null) {
+      //System.out.println("the obsoletes id is "+obsoletesId);
       revisions.add(obsoletesId);
+      //System.out.println("add the id - "+obsoletesId);
       obsoletesId = getObsoletes(obsoletesId);
     }
     
     String obsoletedById = getObsoletedBy(identifier);
+    //System.out.println("the obsoletedby id is "+obsoletesId);
     while (obsoletedById != null) {
+      //System.out.println("the obsoletedby id is "+obsoletesId);
       revisions.add(0,obsoletedById);
+      //System.out.println("add the obsoletedby id "+obsoletesId);
       obsoletedById = getObsoletedBy(obsoletedById);   
     }
     return revisions;
