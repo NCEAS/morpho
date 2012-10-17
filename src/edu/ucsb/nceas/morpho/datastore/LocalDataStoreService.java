@@ -26,9 +26,11 @@
 
 package edu.ucsb.nceas.morpho.datastore;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -46,6 +48,7 @@ import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.query.Query;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -88,6 +91,12 @@ public class LocalDataStoreService extends DataStoreService
 		}
 		incompletedir = getProfileDir(profile) + File.separator + incomplete;
 		return incompletedir;
+	}
+	
+	private String getQueriesDir() {
+		ConfigXML profile = morpho.getProfile();
+		String dir = getProfileDir(profile) + File.separator + profile.get("queriesdir", 0);
+		return dir;
 	}
 	
   
@@ -152,6 +161,51 @@ public class LocalDataStoreService extends DataStoreService
   
 	public File saveFile(String name, InputStream inputStream) {
 		return saveFile(name, inputStream, getDataDir());
+	}
+	
+	  /**
+	 * Save an XML serialized version of the query in the profile directory
+	 */
+	public void saveQuery(Query query) throws IOException {
+
+		String id = query.getIdentifier();
+		try {
+			InputStream inputStream = new ByteArrayInputStream(query.toXml().getBytes("UTF-8"));
+			FileSystemDataStore.getInstance(getQueriesDir()).set(id, inputStream);
+		} catch (Exception e) {
+			IOException ioe = new IOException(e.getMessage());
+			ioe.initCause(e);
+			throw ioe;
+		}
+	}
+
+	/**
+	 * returns a listing of all the saved query identifiers
+	 * @return
+	 */
+	public List<String> getQueryIdentifiers() {
+		List<String> identifiers = null;
+		try {
+			identifiers = FileSystemDataStore.getInstance(getQueriesDir()).getIdentifiers();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.debug(6, e.getMessage());
+			return null;
+		}
+		return identifiers;
+	}
+	
+  public File openQueryFile(String identifier) throws FileNotFoundException {
+
+		File file = null;
+		try {
+			file = FileSystemDataStore.getInstance(getQueriesDir()).get(identifier);
+		} catch (Exception e) {
+			FileNotFoundException fnfe = new FileNotFoundException(e.getMessage());
+			fnfe.initCause(e);
+			throw fnfe;
+		}
+		return file;
 	}
   
   public File openTempFile(String name) throws FileNotFoundException {

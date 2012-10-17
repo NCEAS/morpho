@@ -762,27 +762,6 @@ public class Query extends DefaultHandler {
     return localResults;
  }
 
-
-  /**
-   * Save an XML serialized version of the query in the profile directory
-   */
-  public void save() throws IOException
-  {
-    ConfigXML profile = morpho.getProfile();
-    String queriesDirName = DataStoreService.getProfileDir() + 
-                            File.separator +
-                            profile.get("queriesdir", 0);
-    File queriesDir = new File(queriesDirName);
-    if (!queriesDir.exists()) {
-      queriesDir.mkdirs();
-    }
-    File queryFile = new File(queriesDir, getIdentifier());
-//DFH    boolean isNew = queryFile.createNewFile();
-    Writer output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(queryFile), Charset.forName("UTF-8")));
-    output.write(this.toXml());
-    output.close();
-  }
-
   /**
    * Load the configuration parameters that we need
    */

@@ -37,18 +37,15 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.Action;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -63,7 +60,7 @@ public class SaveQueryCommand implements Command
   private Morpho morpho = null;
   
   /** A static hash listing all of the search menu query Actions by id */
-  private static Hashtable savedQueriesList = null;
+  private static Hashtable<String, GUIAction> savedQueriesList = null;
   
   /** A reference to the MorphoFrame */
   private MorphoFrame morphoFrame = null;
@@ -115,7 +112,7 @@ public class SaveQueryCommand implements Command
       try 
       {
         Log.debug(10, "Saving query to disk...");
-        query.save();
+        Morpho.thisStaticInstance.getLocalDataStoreService().saveQuery(query);
         Log.debug(10, "Adding query to menu...");
         addQueryToMenu(query);
         morphoFrame.setBusy(false);
@@ -137,7 +134,7 @@ public class SaveQueryCommand implements Command
     int index = STARTINDEXFORSAVEDQUERY;// Start index for saved query in search menu
     // See if the query list is null, and initialize it if so
     if (savedQueriesList == null) {
-      savedQueriesList = new Hashtable();
+      savedQueriesList = new Hashtable<String, GUIAction>();
     }
 
     // Add a menu item in the UIController to execute this query, but only
@@ -192,62 +189,37 @@ public class SaveQueryCommand implements Command
     Log.debug(20, "Loading saved queries...");
     // See if the query list is null, and initialize it if so
     if (savedQueriesList == null) {
-      savedQueriesList = new Hashtable();
+      savedQueriesList = new Hashtable<String, GUIAction>();
     }
 
     // Make sure the list is empty (because this may be called when the
     // profile is being switched)
     if (!savedQueriesList.isEmpty()) {
       UIController controller = UIController.getInstance();
-      Enumeration queryActions = savedQueriesList.elements();
+      Enumeration<GUIAction> queryActions = savedQueriesList.elements();
       while (queryActions.hasMoreElements()) {
-          GUIAction action = (GUIAction)queryActions.nextElement();
+          GUIAction action = queryActions.nextElement();
           controller.removeGuiAction(action);
       }
-      savedQueriesList = new Hashtable();
+      savedQueriesList = new Hashtable<String, GUIAction>();
     }
 
-    // Look in the profile queries directory and load any pathquery docs
-    ConfigXML config = myMorpho.getConfiguration();
-    ConfigXML profile = myMorpho.getProfile();
-    String queriesDirName = config.getConfigDirectory() + File.separator +
-                            config.get("profile_directory", 0) +
-                            File.separator +
-                            profile.get("profilename", 0) +
-                            File.separator +
-                            profile.get("queriesdir", 0);
-   
-    File queriesDir = new File(queriesDirName);
-    if (queriesDir.exists()) {
-      File[] queriesList = listFiles(queriesDir);
-      for (int n=0; n < queriesList.length; n++) {
-        File queryFile = queriesList[n];
-        if (queryFile.isFile()) {
-          try {
-            Reader xml = new InputStreamReader(new FileInputStream(queryFile), Charset.forName("UTF-8"));
-            Query newQuery = new Query(xml, myMorpho);
-            addQueryToMenu(newQuery);
-          } catch (FileNotFoundException fnf) {
-            Log.debug(9, "Poof. The query disappeared.");
-          }
-        }
+    // Look for saved queries and load any pathquery docs
+      List<String> queries = Morpho.thisStaticInstance.getLocalDataStoreService().getQueryIdentifiers();
+      for (String queryId: queries) {
+    	  try {
+	        File queryFile = Morpho.thisStaticInstance.getLocalDataStoreService().openQueryFile(queryId);
+	        Reader xml = new InputStreamReader(new FileInputStream(queryFile), Charset.forName("UTF-8"));
+	        Query newQuery = new Query(xml, myMorpho);
+	        addQueryToMenu(newQuery);
+	      } catch (FileNotFoundException fnf) {
+	        Log.debug(9, "Poof. The query disappeared.");
+	      }
       }
-    }
+    
     Log.debug(20, "Finished loading saved queries.");
   }
   
-  /** List the file in a dir */
-  private static File[] listFiles(File dir) 
-  {
-    String[] fileStrings = dir.list();
-    int len = fileStrings.length;
-    File[] list = new File[len];
-    for (int i=0; i<len; i++) 
-    {
-        list[i] = new File(dir, fileStrings[i]);    
-    }
-    return list;
-  }
   /**
    * could also have undo functionality; disabled for now
    */ 
