@@ -49,13 +49,13 @@ import edu.ucsb.nceas.morpho.util.Log;
  *
  */
 public class IdentifierFileMapUpdater {
-  private Vector<IdFileMapProfileInformation> profileInformationList = null;
+  private Vector<ProfileInformation> profileInformationList = null;
   /**
    * Constructor
    */
   public IdentifierFileMapUpdater()
   {
-    profileInformationList = new Vector<IdFileMapProfileInformation> ();
+    profileInformationList = new Vector<ProfileInformation> ();
   }
   
   /**
@@ -76,7 +76,7 @@ public class IdentifierFileMapUpdater {
         ConfigXML profile = getProfile(profileName);
         if (profile != null)
         {
-         IdFileMapProfileInformation information = new IdFileMapProfileInformation(profile);
+         ProfileInformation information = new ProfileInformation(profile);
          if(information.getUpdatedStatus() == false) {
            need = true;
            profileInformationList.add(information);
@@ -93,7 +93,7 @@ public class IdentifierFileMapUpdater {
    * has been updated, this method will do nothing.
    */
   public void update() {
-    for(IdFileMapProfileInformation info : profileInformationList) {
+    for(ProfileInformation info : profileInformationList) {
       try {
         Vector<File> objectDirs = info.getIdFileMappingDirectories();
         if(objectDirs != null) {
