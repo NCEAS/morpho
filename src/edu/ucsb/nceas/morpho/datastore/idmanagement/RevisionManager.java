@@ -69,8 +69,7 @@ public class RevisionManager {
   public static final String OBSOLETEDBY = "obsoletedBy";
   public static final String SLASH = "/";
   public static final String AT = "@";
-  
-  private static final String SUFFIX = "-revisions.properties";
+  public static final String SUFFIX = "-revisions.properties";
   private static final boolean AUTOSAVE = true;
   
   private Map<String, String> obsoletes = null;
