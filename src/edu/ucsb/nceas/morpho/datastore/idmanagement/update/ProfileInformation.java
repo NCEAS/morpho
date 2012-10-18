@@ -45,8 +45,8 @@ import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 public class ProfileInformation {
   private ConfigXML profile = null;
   private boolean updated = false;
-  private Vector<File> idFileMappingDirectories = new Vector<File>();
-  private Vector<File> revisionDirectories = new Vector<File>();
+  private Vector<ObjectDirectory> idFileMappingDirectories = new Vector<ObjectDirectory>();
+  private Vector<ObjectDirectory> revisionDirectories = new Vector<ObjectDirectory>();
   
   /**
    * Constructor. It will parse the profile and get the information.
@@ -79,16 +79,20 @@ public class ProfileInformation {
       
       if(!updated) {
         Vector list = profile.getValuesForPath(ProfileDialog.DATADIRELEMENTNAME);
-        handleDirectoryList(list, idFileMappingDirectories);
-        handleDirectoryList(list, revisionDirectories);
+        handleDirectoryList(list, idFileMappingDirectories, false);
+        handleDirectoryList(list, revisionDirectories, false);
+        //revision updating doesn't need to handle cache directory
         list = profile.getValuesForPath(ProfileDialog.CACHEDIRELEMENTNAME);
-        handleDirectoryList(list, idFileMappingDirectories);
+        handleDirectoryList(list, idFileMappingDirectories, false);
         list = profile.getValuesForPath(ProfileDialog.INCOMPLETEDIRELEMENTNAME);
-        handleDirectoryList(list, idFileMappingDirectories);
-        handleDirectoryList(list, revisionDirectories);
+        handleDirectoryList(list, idFileMappingDirectories, false);
+        handleDirectoryList(list, revisionDirectories,false);
         list = profile.getValuesForPath(ProfileDialog.TEMPDIRELEMENTNAME);
-        handleDirectoryList(list, idFileMappingDirectories);
-        handleDirectoryList(list, revisionDirectories);
+        handleDirectoryList(list, idFileMappingDirectories, false);
+        handleDirectoryList(list, revisionDirectories, false);
+        //revision updating doesn't need to handle query directory
+        list = profile.getValuesForPath(ProfileDialog.QUERIESDIRELEMENTNAME);
+        handleDirectoryList(list, idFileMappingDirectories, true);
       }
     }
   }
@@ -98,7 +102,7 @@ public class ProfileInformation {
    * put it into the objectDirectories. If the directory is a relative path, append it to the
    * profile directory and put it into the objetDirectories.
    */
-  private void handleDirectoryList(Vector list, Vector<File> targetDirectories) {
+  private void handleDirectoryList(Vector list, Vector<ObjectDirectory> targetDirectories, boolean isQueryDir) {
     if(list != null) {
       for(int i=0; i<list.size(); i++) {
         String dir = (String)list.elementAt(i);
@@ -110,8 +114,10 @@ public class ProfileInformation {
           } 
           //we only handle existing directory
           if(fileDir.exists() && fileDir.isDirectory()) {
-           
-            targetDirectories.add(fileDir);
+            ObjectDirectory directory = new ObjectDirectory();
+            directory.setDirectory(fileDir);
+            directory.setQueryDirectory(isQueryDir);
+            targetDirectories.add(directory);
             
           }
         }
@@ -132,7 +138,7 @@ public class ProfileInformation {
    * Get the list of the object directories which should be updated for the id-file mapping.
    * @return the list of object directories 
    */
-  public Vector<File> getIdFileMappingDirectories() {
+  public Vector<ObjectDirectory> getIdFileMappingDirectories() {
     return idFileMappingDirectories;
   }
   
@@ -140,7 +146,7 @@ public class ProfileInformation {
    * Get the list of directories which should be updated for the revisions history.
    * @return the list of directories which will be updated for the revision history.
    */
-  public Vector<File> getRevisionDirectories() {
+  public Vector<ObjectDirectory> getRevisionDirectories() {
     return revisionDirectories;
   }
   

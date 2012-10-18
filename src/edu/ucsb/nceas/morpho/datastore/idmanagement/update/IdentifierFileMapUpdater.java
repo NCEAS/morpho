@@ -95,40 +95,52 @@ public class IdentifierFileMapUpdater {
   public void update() {
     for(ProfileInformation info : profileInformationList) {
       try {
-        Vector<File> objectDirs = info.getIdFileMappingDirectories();
+        Vector<ObjectDirectory> objectDirs = info.getIdFileMappingDirectories();
         if(objectDirs != null) {
           
-            for(File dir : objectDirs) {
-                IdentifierFileMap map = new IdentifierFileMap(dir);
-
+            for(ObjectDirectory objectDir : objectDirs) {
+              File dir = objectDir.getDirectory();
+              boolean isQueryDir = objectDir.isQueryDirectory();            
               try {
-                File[] scopeDirs = dir.listFiles();
-                if(scopeDirs != null) {
-                  for(int i=0; i<scopeDirs.length; i++) {
-                    File scopeDir = scopeDirs[i];
-                    try {
-                      
+                IdentifierFileMap map = new IdentifierFileMap(dir);
+                //for non-query directory, we will look up the files under the scope directories which are the child directories of this directory
+                //for query directory, we will look up the files directory under the query directory
+                if (!isQueryDir) {
+                  File[] scopeDirs = dir.listFiles();
+                  if(scopeDirs != null) {
+                    for(int i=0; i<scopeDirs.length; i++) {
+                      File scopeDir = scopeDirs[i];
+                      //only look up the files under the scope dir
                       if(scopeDir.isDirectory()) {
-                        File[] fileList = scopeDir.listFiles();
-                        if(fileList != null) {
-                          for(int j=0; j<fileList.length; j++) {
-                            File file = fileList[j];
-                            String id = scopeDir.getName()+IdentifierManager.DOT+file.getName();
-                            map.setMap(id, file);
+                          File[] fileList = scopeDir.listFiles();
+                          if(fileList != null) {
+                            for(int j=0; j<fileList.length; j++) {
+                              File file = fileList[j];
+                              String id = scopeDir.getName()+IdentifierManager.DOT+file.getName();
+                              map.setMap(id, file);
+                            }
                           }
-                        }
                       }
-                    }catch (Exception e) {
-                      Log.debug(11,"IdentifierFileMapUpdater.update - the generating of the id-filename map for the director "+
-                          scopeDir.getAbsolutePath() +" failed:\n"+e.getMessage()+
-                          "\nYou may ask morpho-dev@ecoinformatics.org for the help.");
+                    }
+                  }             
+                } else {
+                  File[] queryFiles = dir.listFiles();
+                  if(queryFiles != null) {
+                    for(File queryFile : queryFiles) {
+                      if(queryFile != null && queryFile.exists() && queryFile.isFile() && !queryFile.isHidden()) {
+                          String id = queryFile.getName();
+                          map.setMap(id, queryFile);
+                      }
+                     
                     }
                   }
                 }
+               
               } catch (Exception e) {
                 Log.debug(11,"IdentifierFileMapUpdater.update - the generating of the id-filename map for the director "+
                     dir.getAbsolutePath() +" failed:\n"+e.getMessage()+
                     "\nYou may ask morpho-dev@ecoinformatics.org for the help.");
+                throw e;
               }
             }
           

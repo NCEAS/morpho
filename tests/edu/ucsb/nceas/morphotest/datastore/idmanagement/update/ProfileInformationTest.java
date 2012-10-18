@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.update.ObjectDirectory;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.update.ProfileInformation;
 import edu.ucsb.nceas.morphotest.MorphoTestCase;
 
@@ -45,14 +46,14 @@ public class ProfileInformationTest extends MorphoTestCase {
   public void testGetStatusAndDirectories() {
     ProfileInformation info = new ProfileInformation(profile);
     System.out.println("The profile being added the id-file mapping is "+info.getUpdatedStatus());
-    Vector<File> list = info.getIdFileMappingDirectories();
-    for(File file : list) {
-      System.out.println("The directories needs to be updated for id-file mapping are "+file.getAbsolutePath());
+    Vector<ObjectDirectory> list = info.getIdFileMappingDirectories();
+    for(ObjectDirectory file : list) {
+      System.out.println("The directories needs to be updated for id-file mapping are "+file.getDirectory().getAbsolutePath());
     }
     
-    Vector<File> revisionList = info.getRevisionDirectories();
-    for(File file : revisionList) {
-      System.out.println("The directories needs to be updated for revisions are "+file.getAbsolutePath());
+    Vector<ObjectDirectory> revisionList = info.getRevisionDirectories();
+    for(ObjectDirectory file : revisionList) {
+      System.out.println("The directories needs to be updated for revisions are "+file.getDirectory().getAbsolutePath());
     }
   }
 
