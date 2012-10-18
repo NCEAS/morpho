@@ -148,12 +148,15 @@ public class LocalDataStoreService extends DataStoreService
    * @return
    * @throws FileNotFoundException
    */
-  public File openIncompleteFile(String name) throws FileNotFoundException {
-		String path = parseId(name);
-		path = getIncompleteDir() + "/" + path;
-		File file = new File(path);
-		if (!file.exists()) {
-			throw new FileNotFoundException("file " + path + " does not exist");
+  public File openIncompleteFile(String identifier) throws FileNotFoundException {
+	  Log.debug(21, "opening " + identifier + " from incomplete dir - temp: " + getIncompleteDir());
+		File file = null;
+		try {
+			file = FileSystemDataStore.getInstance(getIncompleteDir()).get(identifier);
+		} catch (Exception e) {
+			FileNotFoundException fnfe = new FileNotFoundException(e.getMessage());
+			fnfe.initCause(e);
+			throw fnfe;
 		}
 		return file;
 	}
@@ -208,12 +211,15 @@ public class LocalDataStoreService extends DataStoreService
 		return file;
 	}
   
-  public File openTempFile(String name) throws FileNotFoundException {
-		Log.debug(21, "opening " + name + " from temp dir - temp: " + getTempDir());
-		String path = parseId(name);
-		File file = new File(getTempDir() + "/" + path);
-		if (!file.exists()) {
-			throw new FileNotFoundException("file " + getTempDir() + "/" + name + " does not exist");
+  public File openTempFile(String identifier) throws FileNotFoundException {
+		Log.debug(21, "opening " + identifier + " from temp dir - temp: " + getTempDir());
+		File file = null;
+		try {
+			file = FileSystemDataStore.getInstance(getTempDir()).get(identifier);
+		} catch (Exception e) {
+			FileNotFoundException fnfe = new FileNotFoundException(e.getMessage());
+			fnfe.initCause(e);
+			throw fnfe;
 		}
 		return file;
 	}
@@ -360,19 +366,18 @@ public class LocalDataStoreService extends DataStoreService
     * successfully deleted, false otherwise.
     * @param name the name of the file to delete
     */
-    public boolean deleteInCompleteFile(String name) {
-		String path = parseId(name);
-		String filePath = getIncompleteDir() + "/" + path;
-		File delfile = new File(filePath); // the path to the file
+    public boolean deleteInCompleteFile(String identifier) {
+		
 
 		boolean success = false;
 		try {
-			success = delfile.delete();
+			FileSystemDataStore.getInstance(getIncompleteDir()).set(identifier, null);
+			success = true;
 		} catch (Exception e) {
 			//System.out.println("got an exception in deleting the local file");
 			e.printStackTrace();
 		}
-		Log.debug(30, "the success value for deleting incomplete file " + name + " is " + success);
+		Log.debug(30, "the success value for deleting incomplete file " + identifier + " is " + success);
 		return success;
 	}
     

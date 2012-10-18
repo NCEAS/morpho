@@ -29,7 +29,6 @@ package edu.ucsb.nceas.morpho.datastore;
 import java.io.File;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 
@@ -41,7 +40,6 @@ public abstract class DataStoreService implements DataStoreServiceInterface
 {
   protected Morpho morpho;
   protected ConfigXML config;
-  protected String separator;
   
   /**
    * create a new FileSystemDataStore for a Morpho
@@ -50,9 +48,7 @@ public abstract class DataStoreService implements DataStoreServiceInterface
   {
     this.morpho = morpho;
     config = Morpho.getConfiguration();
-    ConfigXML profile = morpho.getProfile();
-    separator = profile.get("separator", 0);
-    separator = separator.trim();
+
   }
   
   /**
@@ -92,17 +88,5 @@ public abstract class DataStoreService implements DataStoreServiceInterface
     return ConfigXML.getConfigDirectory()+File.separator+Morpho.getConfiguration().get("profile_directory", 0);
   }
   
-  /** 
-   * Parses a dotted notation id into a file path.  johnson2343.13223 becomes
-   * johnson2343/13223.  Revision numbers are left on the end so
-   * johnson2343.13223.2 becomes johnson2343/13223.2
-   */
-  protected String parseId(String id) 
-  {
-    String path = new String();
-    path = id.substring(0, id.indexOf(IdentifierManager.DOT));
-    path += "/" + id.substring(id.indexOf(separator) + 1, id.length());
-    return path;
-  }
 
 }
