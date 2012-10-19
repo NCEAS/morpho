@@ -157,7 +157,7 @@ public class IdentifierFileMapUpdater {
             }
            
           } catch (Exception e) {
-            String error = "IdentifierFileMapUpdater.update - the generating of the id-filename map for the director "+
+            String error = "IdentifierFileMapUpdater.update - the generating of the id-filename mapping property for the directory "+
                 dir.getAbsolutePath() +" failed:\n"+e.getMessage()+
                 "\nYou may ask morpho-dev@ecoinformatics.org for the help.";
             Log.debug(11, error);
