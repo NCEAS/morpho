@@ -447,7 +447,7 @@ public class LocalDataStoreService extends DataStoreService
 			lastid++;
 		}
 
-		// scope.docid
+		// scope.docid.1
 		String identifier = scope + separator + lastid + separator + 1;
 
 		// set to the next in local for he next time we call this
@@ -457,8 +457,7 @@ public class LocalDataStoreService extends DataStoreService
 			identifier = null;
 		} else {
 			Morpho.thisStaticInstance.getProfile().save();
-			Log.debug(30, "the next id is " + identifier + ".1");
-			identifier = identifier + ".1";
+			Log.debug(30, "the next id is " + identifier);
 		}
 		Log.debug(30, "generated  local identifier: " + identifier);
 
