@@ -88,7 +88,7 @@ public class LocalQuery
    * every time an XPath search is carried out. key is filename which should
    * match document id.
    */
-  public static Hashtable<String, Document> dom_collection;
+  private static Hashtable<String, Document> dom_collection;
   //storing the  dom tree from in incomplete dir
   private Hashtable<String, Document> dom_incomplete_collection = new Hashtable<String, Document>();
 

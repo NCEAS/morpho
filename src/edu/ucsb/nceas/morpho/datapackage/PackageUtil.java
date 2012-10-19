@@ -48,9 +48,7 @@ import com.arbortext.catalog.Catalog;
 import com.arbortext.catalog.CatalogEntityResolver;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.query.LocalQuery;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -125,14 +123,6 @@ public class PackageUtil
                                                                Exception
   {
     long start_time = System.currentTimeMillis();
-    String fileName = file.getName();
-    String parent = file.getParent();
-    int lastsep = parent.lastIndexOf(File.separator);
-    parent = parent.substring(lastsep+1);
-    fileName = parent + IdentifierManager.DOT + fileName;
-    if (LocalQuery.dom_collection.containsKey(fileName)) {
-      return ((Document)LocalQuery.dom_collection.get(fileName));
-    }
             
     DocumentBuilder parser = Morpho.createDomParser();
     Document doc;
