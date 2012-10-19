@@ -116,7 +116,7 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
         try {
           revision = (new Integer(revisionStr)).intValue();
           Vector<Integer> revisionList = revisionsKeeper.get(prefix);
-          if(revisionList != null) {
+          if(revisionList == null) {
             revisionList = new Vector<Integer> ();
             revisionList.add(new Integer(revision));
             revisionsKeeper.put(prefix, revisionList);
