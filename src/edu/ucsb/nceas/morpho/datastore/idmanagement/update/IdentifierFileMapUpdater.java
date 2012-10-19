@@ -95,73 +95,99 @@ public class IdentifierFileMapUpdater {
   public void update() {
     for(ProfileInformation info : profileInformationList) {
       try {
-        Vector<ObjectDirectory> objectDirs = info.getIdFileMappingDirectories();
-        if(objectDirs != null) {
-          
-            for(ObjectDirectory objectDir : objectDirs) {
-              File dir = objectDir.getDirectory();
-              boolean isQueryDir = objectDir.isQueryDirectory();            
-              try {
-                IdentifierFileMap map = new IdentifierFileMap(dir);
-                //for non-query directory, we will look up the files under the scope directories which are the child directories of this directory
-                //for query directory, we will look up the files directory under the query directory
-                if (!isQueryDir) {
-                  File[] scopeDirs = dir.listFiles();
-                  if(scopeDirs != null) {
-                    for(int i=0; i<scopeDirs.length; i++) {
-                      File scopeDir = scopeDirs[i];
-                      //only look up the files under the scope dir
-                      if(scopeDir.isDirectory()) {
-                          File[] fileList = scopeDir.listFiles();
-                          if(fileList != null) {
-                            for(int j=0; j<fileList.length; j++) {
-                              File file = fileList[j];
-                              String id = scopeDir.getName()+IdentifierManager.DOT+file.getName();
-                              map.setMap(id, file);
-                            }
-                          }
-                      }
-                    }
-                  }             
-                } else {
-                  File[] queryFiles = dir.listFiles();
-                  if(queryFiles != null) {
-                    for(File queryFile : queryFiles) {
-                      if(queryFile != null && queryFile.exists() && queryFile.isFile() && !queryFile.isHidden()) {
-                          String id = queryFile.getName();
-                          map.setMap(id, queryFile);
-                      }
-                     
-                    }
-                  }
-                }
-               
-              } catch (Exception e) {
-                Log.debug(11,"IdentifierFileMapUpdater.update - the generating of the id-filename map for the director "+
-                    dir.getAbsolutePath() +" failed:\n"+e.getMessage()+
-                    "\nYou may ask morpho-dev@ecoinformatics.org for the help.");
-                throw e;
-              }
-            }
-          
-          
-        }
-       
-        //need to remove the path from the file first
-        info.getProfile().removeNode(ProfileDialog.IDFILEMAPUPDATEDPATH, 0);
-        info.getProfile().insert(ProfileDialog.IDFILEMAPUPDATEDPATH, "true");
-        info.getProfile().save();
+       update(info);
+       addFlagToProfile(info);
       } catch (Exception e) {
         //The reason we catch the generic exception is we don't want the failure on
         //one profile disrupt the entire updating 
-        Log.debug(8,"IdentifierFileMapUpdater.update - the generating of the id-filename map for profile "+
-                  info.getProfile().get(ProfileDialog.PROFILENAMEELEMENTNAME, 0) +" failed:\n"+e.getMessage()+
-                  "\nYou may ask morpho-dev@ecoinformatics.org for the help.");
+        Log.debug(8,e.getMessage());
+        removeFlagFromProfile(info);
         continue;
       }
       
     }
     
+  }
+  
+  
+  /**
+   * Update one profile for id-file mapping.
+   * @param info - the profile which will be updated.
+   * @throws Exception
+   */
+  protected void update(ProfileInformation info) throws Exception{
+    Vector<ObjectDirectory> objectDirs = info.getIdFileMappingDirectories();
+    if(objectDirs != null) {  
+        for(ObjectDirectory objectDir : objectDirs) {
+          File dir = objectDir.getDirectory();
+          boolean isQueryDir = objectDir.isQueryDirectory();            
+          try {
+            IdentifierFileMap map = new IdentifierFileMap(dir);
+            //for non-query directory, we will look up the files under the scope directories which are the child directories of this directory
+            //for query directory, we will look up the files directory under the query directory
+            if (!isQueryDir) {
+              File[] scopeDirs = dir.listFiles();
+              if(scopeDirs != null) {
+                for(int i=0; i<scopeDirs.length; i++) {
+                  File scopeDir = scopeDirs[i];
+                  //only look up the files under the scope dir
+                  if(scopeDir.isDirectory()) {
+                      File[] fileList = scopeDir.listFiles();
+                      if(fileList != null) {
+                        for(int j=0; j<fileList.length; j++) {
+                          File file = fileList[j];
+                          String id = scopeDir.getName()+IdentifierManager.DOT+file.getName();
+                          map.setMap(id, file);
+                        }
+                      }
+                  }
+                }
+              }             
+            } else {
+              File[] queryFiles = dir.listFiles();
+              if(queryFiles != null) {
+                for(File queryFile : queryFiles) {
+                  if(queryFile != null && queryFile.exists() && queryFile.isFile() && !queryFile.isHidden()) {
+                      String id = queryFile.getName();
+                      map.setMap(id, queryFile);
+                  }
+                 
+                }
+              }
+            }
+           
+          } catch (Exception e) {
+            String error = "IdentifierFileMapUpdater.update - the generating of the id-filename map for the director "+
+                dir.getAbsolutePath() +" failed:\n"+e.getMessage()+
+                "\nYou may ask morpho-dev@ecoinformatics.org for the help.";
+            Log.debug(11, error);
+            throw new Exception(error);
+          }
+        }
+      
+      
+    }
+  }
+  
+  /**
+   * Add a tag to indicate the update has been done to specified profile.
+   * @param info - the profile will be modified.
+   */
+  private void addFlagToProfile(ProfileInformation info) {
+      //need to remove the path from the file first
+      info.getProfile().removeNode(ProfileDialog.IDFILEMAPUPDATEDPATH, 0);
+      info.getProfile().insert(ProfileDialog.IDFILEMAPUPDATEDPATH, "true");
+      info.getProfile().save();
+   
+  }
+  
+  /**
+   * Remove the tag to indicate the update has been done to specified profile.
+   * @param info
+   */
+  private void removeFlagFromProfile(ProfileInformation info) {
+    info.getProfile().removeNode(ProfileDialog.IDFILEMAPUPDATEDPATH, 0);
+    info.getProfile().save();
   }
   
   /*
