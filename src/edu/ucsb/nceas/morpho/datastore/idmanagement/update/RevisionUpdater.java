@@ -80,7 +80,7 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
                         for(int j=0; j<fileList.length; j++) {
                           File file = fileList[j];
                           String name = file.getName();
-                          getRevison(name);
+                          getRevison(scopeDir.getName(), name);
                         }
                       }
                   }
@@ -105,12 +105,12 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
    * If the file name doesn't match the pattern - prefix.number, it will be skipped.
    * @param fileName - the name will be parsed.
    */
-  private void getRevison(String fileName) {
+  private void getRevison(String scopeName, String fileName) {
     if(fileName != null) {
       int index = fileName.lastIndexOf(IdentifierManager.DOT);
       //dot should exist and couldn't be the last character in the file name
       if(index != -1 && (index+1) < fileName.length()) {
-        String prefix = fileName.substring(0, index+1);
+        String prefix = scopeName+IdentifierManager.DOT+fileName.substring(0, index+1);
         String revisionStr = fileName.substring(index+1);
         int revision =-1;
         try {
