@@ -38,10 +38,11 @@ import javax.swing.JProgressBar;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.update.IdentifierFileMapUpdater;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.update.RevisionUpdater;
 import edu.ucsb.nceas.utilities.Log;
 
 public class IdFileMapUpdaterFrame extends JFrame{
-  private static final String TITLE = "Generating the identifier-fileName mapping.";
+  private static final String TITLE = "Generating the identifier-fileName mapping and the revision properties.";
   private static final String NEEDUPDATEPATH = "updateIdFileMap";
   
   /**
@@ -60,21 +61,33 @@ public class IdFileMapUpdaterFrame extends JFrame{
     try {
       runUpdate = (new Boolean(runUpdateFromConfig)).booleanValue();
     } catch (Exception e) {
-      Log.debug(11, "IdFileMapUpdaterFrame.update - the value for the path "+NEEDUPDATEPATH+" is "+runUpdateFromConfig+
+      if(this != null) {
+        this.dispose();
+      }
+      Log.debug(11, "IdentifierUpdaterFrame.update - the value for the path "+NEEDUPDATEPATH+" is "+runUpdateFromConfig+
       ". However, it should be either \"true\" or \"false\".");
     }
     //System.out.println("the configure value is "+runUpdate);
     if(runUpdate) {
-      IdentifierFileMapUpdater updater = new IdentifierFileMapUpdater();
-      boolean needUpdate = updater.needUpdate();
-      //System.out.println("the profile value is "+needUpdate);
-      if(needUpdate) {
-        loadGUI();
-        updater.update();
+      try {
+        IdentifierFileMapUpdater updater = new IdentifierFileMapUpdater();
+        RevisionUpdater revisionUpdater = new RevisionUpdater();
+        boolean needUpdate = updater.needUpdate();
+        //System.out.println("the profile value is "+needUpdate);
+        if(needUpdate) {
+          revisionUpdater.setProfileInformationList(updater.getProfileInformationList());
+          loadGUI();
+          updater.update();
+          revisionUpdater.update();
+          
+        }
+        
+      } finally {
         if(this != null) {
           this.dispose();
         }
       }
+      
     }
     
   }
@@ -93,7 +106,7 @@ public class IdFileMapUpdaterFrame extends JFrame{
        getContentPane().add(Box.createVerticalStrut(8));
        javax.swing.JLabel loadingLabel = new javax.swing.JLabel();
        loadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-       loadingLabel.setText("Generating the id-file mapping. It may take a while...");
+       loadingLabel.setText("Generating the id-file mapping and revision properties. It may take a while...");
        //loadingLabel.setForeground(java.awt.Color.red);
        loadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
        getContentPane().add(loadingLabel);

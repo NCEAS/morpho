@@ -170,6 +170,23 @@ public class IdentifierFileMapUpdater {
   }
   
   /**
+   * Get the ProfileInformation object.
+   * @return the profileInformation object.
+   */
+  public Vector<ProfileInformation> getProfileInformationList() {
+    return profileInformationList;
+  }
+
+  /**
+   * Set the ProfileInformation object.
+   * @param profileInformationList - the object will be set.
+   */
+  public void setProfileInformationList(
+      Vector<ProfileInformation> profileInformationList) {
+    this.profileInformationList = profileInformationList;
+  }
+
+  /**
    * Add a tag to indicate the update has been done to specified profile.
    * @param info - the profile will be modified.
    */
