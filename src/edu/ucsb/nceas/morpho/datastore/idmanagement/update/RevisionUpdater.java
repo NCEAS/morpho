@@ -35,6 +35,7 @@ import java.util.Vector;
 import edu.ucsb.nceas.morpho.datastore.DataStoreService;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
 
 
@@ -47,7 +48,7 @@ import edu.ucsb.nceas.morpho.util.Log;
  *
  */
 public class RevisionUpdater extends IdentifierFileMapUpdater {
-  private static final String REVISIONFILEPREFIX = "local-store-service";
+  //private static final String REVISIONFILEPREFIX = "local-store-service";
   
   private Hashtable<String, Vector<Integer>> revisionsKeeper = new Hashtable<String, Vector<Integer>>();
   
@@ -61,7 +62,7 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
     Vector<ObjectDirectory> objectDirs = info.getRevisionDirectories();
     if(objectDirs != null) {  
       String profileDir = DataStoreService.getProfileDir(info.getProfile());
-      RevisionManager manager = RevisionManager.getInstance(profileDir, REVISIONFILEPREFIX);
+      RevisionManager manager = RevisionManager.getInstance(profileDir, DataPackageInterface.LOCAL);
       for(ObjectDirectory objectDir : objectDirs) {
         File dir = objectDir.getDirectory();
         boolean isQueryDir = objectDir.isQueryDirectory();            
