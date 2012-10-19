@@ -32,7 +32,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -42,7 +41,6 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.triple.Triple;
@@ -67,42 +65,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       // TODO: maybe want to implement (not sarcasm)
       Log.debug(15, "Loading from XML is not supported by EML2Beta6DataPackage");
 
-  }
-
-    /*
-   * Method to get the map between data docid to data file name (oringinal)
-   */
-  private Hashtable getMapBetweenDataIdAndDataFileName()
-  {
-    Hashtable map = new Hashtable();
-    Vector triplesV = triples.getCollection();
-    int i = 1;
-    String dataFileName = null;
-    for(int j=0; j<triplesV.size(); j++)
-    {
-      Triple triple = (Triple)triplesV.elementAt(j);
-      String relationship = triple.getRelationship();
-      String subject = triple.getSubject();
-      if(relationship.indexOf("isDataFileFor") != -1)
-      {
-        //get the name of the data file.
-        int lparenindex = relationship.indexOf("(");
-        dataFileName = relationship.substring(lparenindex + 1,
-                                                     relationship.length() - 1);
-        dataFileName = trimFullPathFromFileName(dataFileName);
-        if (dataFileName != null)
-        {
-          // check file name if conflic
-          if (map.containsValue(dataFileName))
-          {
-            dataFileName =appendFileNameNumber(dataFileName, i);
-            i++;
-          }//if
-          map.put(subject, dataFileName);
-        }//if
-      }//if
-    }//for
-    return map;
   }
   
   /**
@@ -177,38 +139,6 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
     }
     // If already no path, just return fileName
     return onlyFileName;
-  }
-
-
-  /*
-   * A method to append file name a number, not in extension
-   */
-  private String appendFileNameNumber(String fileName, int number)
-  {
-    int index = -1;
-    String extension = null;
-    String prefix = null;
-    if (fileName == null || fileName.equals(""))
-    {
-      fileName = ""+number;
-      return fileName;
-    }
-    int size = fileName.length();
-    index = fileName.lastIndexOf(IdentifierManager.DOT);
-
-    if (index == -1)
-    {
-      // no extension
-      fileName = fileName+number;
-      return fileName;
-    }
-    else
-    {
-      extension = fileName.substring(index+1, size);
-      prefix = fileName.substring(0, index);
-      fileName = prefix + number + IdentifierManager.DOT + extension;
-      return fileName;
-    }
   }
 
 

@@ -27,24 +27,21 @@
 package edu.ucsb.nceas.morpho.query;
 
 
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
 /**
  * Class to handle open a previous version package command
@@ -68,7 +65,7 @@ public class OpenPreviousVersionCommand implements Command
    /** packageName, docid without version */
    String packageName = null;
    /** version number */
-   int version = -1;
+   List<String> versions = null;
    /** DataPackage in network */
    //boolean metacatLoc = false;
    /** DataPackage in local */
@@ -128,7 +125,7 @@ public class OpenPreviousVersionCommand implements Command
     if (resultPane != null)
     {
       packageName = resultPane.getPackageName();
-      version = resultPane.getPreviousVersions();
+      versions = resultPane.getPreviousVersions();
       //metacatLoc = resultPane.getMetacatLocation();
       String localStatus = resultPane.getLocalStatus();
       if(localStatus != null && (localStatus.equals(DataPackageInterface.LOCAL) ||
@@ -149,13 +146,13 @@ public class OpenPreviousVersionCommand implements Command
       //Try a data pakcage frame
       String docId = dataPackage.getDocIdFromMorphoFrame(morphoFrame);
       localLoc = DataStoreServiceController.getInstance().exists(docId, DataPackageInterface.LOCAL);
-      packageName = AccessionNumber.getInstance().getIdNoRev(docId);
-      version = AccessionNumber.getInstance().getNumberOfPrevVersions(docId);
+      packageName = docId; // just use the given id as title
+      versions = Morpho.thisStaticInstance.getLocalDataStoreService().getAllRevisions(docId);
       
     }
     
     // Make sure selected a id, and there is local pacakge
-    if ( packageName != null && !packageName.equals("") && version != -1)
+    if ( packageName != null && !packageName.equals("") && versions != null)
     {
         // If it is dialog, destroied it 
         if ( dialog != null)
@@ -165,7 +162,7 @@ public class OpenPreviousVersionCommand implements Command
           dialog = null;
         }
         doOpenPreviousVersion
-                          (packageName, version, morpho, localLoc, morphoFrame);
+                          (packageName, versions, morpho, localLoc, morphoFrame);
     }
     
   }//execute
@@ -174,7 +171,7 @@ public class OpenPreviousVersionCommand implements Command
    * Using SwingWorket class to delete a local package
    *
    */
- private void doOpenPreviousVersion(final String name, final int vers,
+ private void doOpenPreviousVersion(final String name, final List<String> identifiers,
           final Morpho myMorpho, final boolean inLocal, final MorphoFrame frame) 
  {
   final SwingWorker worker = new SwingWorker() 
@@ -187,8 +184,7 @@ public class OpenPreviousVersionCommand implements Command
           }
        
           // create dialog for openning previous version
-          dataPackage.createOpenPreviousVersionDialog
-                                                (name, vers, myMorpho,inLocal);
+          dataPackage.createOpenPreviousVersionDialog(name, identifiers, myMorpho,inLocal);
           return null;  
           
         }

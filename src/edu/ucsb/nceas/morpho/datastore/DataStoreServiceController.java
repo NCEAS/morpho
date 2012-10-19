@@ -16,10 +16,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -89,6 +89,30 @@ public class DataStoreServiceController {
 		}
 		
 		return version;
+	}
+	
+	/**
+	 * Gets next revision for this doc for the given location
+	 * @param docid the partial identifier (no rev)
+	 * @param location of the doc
+	 * @return  the next revision number
+	 */
+	public List<String> getAllRevisions(String docid, String location)
+	{
+		
+		List<String> versions = null;
+		if (location.equals(DataPackageInterface.LOCAL)) {
+			versions  = Morpho.thisStaticInstance.getLocalDataStoreService().getAllRevisions(docid);
+		}
+		if (location.equals(DataPackageInterface.METACAT)) {
+			versions = Morpho.thisStaticInstance.getMetacatDataStoreService().getAllRevisions(docid);
+		}
+		if (location.equals(DataPackageInterface.BOTH)) {
+			versions  = Morpho.thisStaticInstance.getLocalDataStoreService().getAllRevisions(docid);
+			//versions = Morpho.thisStaticInstance.getMetacatDataStoreService().getAllRevisions(docid);
+		}
+		
+		return versions;
 	}
 	
 	/**
@@ -1083,20 +1107,14 @@ public class DataStoreServiceController {
 		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
-		Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
-		// get docid without revision
-		String docidNoRev = idParts.get(0) + IdentifierManager.DOT + idParts.get(1);
-		// get revision
-		String version = idParts.get(2);
-		// boolean existsFlag = mds.exists(temp2+".1");
+		
 
-		boolean isRevisionOne = false;
-		if (version != null) {
-			isRevisionOne = version.equals("1");
-		} else {
-			Log.debug(5,"No revision number assigned to docid. Couldn't save it");
-			return;
+		List<String> existingRevisions = getAllRevisions(identifier, location);
+		boolean isRevisionOne = true;
+		if (existingRevisions != null && existingRevisions.size() > 1) {
+			isRevisionOne = false;
 		}
+		
 		// Check to see if id confilct or not
 		if ((location.equals(DataPackageInterface.METACAT))) {
 			statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStoreService().status(adp.getAccessionNumber());
@@ -1159,8 +1177,11 @@ public class DataStoreServiceController {
 				statusInMetacat = DataStoreServiceInterface.NONEXIST;
 				statusInLocal = DataStoreServiceInterface.NONEXIST;
 			} else {
+				// TODO: replace this with opaque ID handling
 				// increase revision number
 				int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(adp.getAccessionNumber(), DataPackageInterface.BOTH);
+				// get docid without revision
+				String docidNoRev = AccessionNumber.getInstance().getIdNoRev(identifier);
 				identifier = docidNoRev + IdentifierManager.DOT + newRevision;
 				adp.setAccessionNumber(identifier);
 				adp.setPackageIDChanged(true);

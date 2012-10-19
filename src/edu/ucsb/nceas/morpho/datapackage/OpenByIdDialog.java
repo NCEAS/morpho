@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -37,7 +38,6 @@ import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -136,24 +136,23 @@ public class OpenByIdDialog extends JDialog {
 			return;
 		}
 		
-		// check that the id is formatted correctly
-		try {
-			AccessionNumber.getInstance().getParts(id);
-		} catch (Exception e) {
-			// try to look up the last revision
+		// check if the ID exists as given
+		boolean exists = DataStoreServiceController.getInstance().exists(id, location);
+		if (!exists) {
 			Log.debug(30, "Looking up latest revision");
-			// check it again
-			try {
-				// append a fake revision to use these methods
-				String syntheticId = id + ".1";
-				int nextRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(syntheticId, location);
-				int revision = nextRevision - 1;
-				id = id + IdentifierManager.DOT + revision;
-				AccessionNumber.getInstance().getParts(id);
-			} catch (Exception e2) {
-				Log.debug(5, Language.getInstance().getMessage("InvalidId"));
-				return;
+			// TODO: how can we really look up revisions if we don't have a match for the [partial] id?
+			List<String> revisions = DataStoreServiceController.getInstance().getAllRevisions(id, location);
+			if (revisions != null && !revisions.isEmpty()) {
+				// use the most recent revision
+				id = revisions.get(revisions.size()-1);
 			}
+		}
+		
+		// try again now that it is the latest revision
+		exists = DataStoreServiceController.getInstance().exists(id, location);
+		if (!exists) {
+			Log.debug(5, Language.getInstance().getMessage("InvalidId"));
+			return;
 		}
 
 		// open it

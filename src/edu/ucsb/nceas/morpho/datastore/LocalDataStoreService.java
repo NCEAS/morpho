@@ -35,8 +35,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -45,6 +43,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -638,50 +637,29 @@ public class LocalDataStoreService extends DataStoreService
   
 	
 	 /**
-	 * modify list to only contain latest version as indicated by a trailing
-	 * version number This is to reduce the search time by avoiding older
-	 * versions
-	 * @deprecated replace with revision manager when we have it
+	 * modify list to only contain latest version as reported by 
+	 * the RevisionManager
 	 */
 	private List<String> getLatestVersion(List<String> identifiers) {
 
 		Vector<String> returnVector = null;
+		RevisionManager revisionManager = null;
+		try {
+			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.LOCAL);
+		} catch (Exception e) {
+			Log.debug(6, "Could not create RevisionManager: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+
 		if (identifiers != null) {
 			returnVector = new Vector<String>();
-			Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
 			for (int i = 0; i < identifiers.size(); i++) {
 				String identifier = identifiers.get(i);
-				try {
-					Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
-					String docid = idParts.get(0) + IdentifierManager.DOT + idParts.get(1);
-					String revision = idParts.get(2);
-					if (docid != null) {
-						Integer intVer = new Integer(revision);
-						if (maxVersions.containsKey(docid)) {
-							Integer currentMax = maxVersions.get(docid);
-							if (currentMax != null && currentMax.intValue() > intVer.intValue()) {
-								// we already stored a greater version, so
-								// skip this one
-								continue;
-							}
-						}
-						maxVersions.put(docid, intVer);
-					}
-				} catch (Exception e) {
-					continue;
-				}
-				
-			}
-			// put maxVersions into the new vector
-			Enumeration<String> enumeration = maxVersions.keys();
-			while (enumeration.hasMoreElements()) {
-				String docid = enumeration.nextElement();
-				if (docid != null) {
-					Integer version = maxVersions.get(docid);
-					if (version != null) {
-						returnVector.add(docid + IdentifierManager.DOT + version.toString());
-					}
-				}
+				String obsoletedBy = revisionManager.getObsoletedBy(identifier);
+				if (obsoletedBy == null) {
+					returnVector.add(identifier);
+				}	
 			}
 		}
 		return returnVector;
@@ -768,6 +746,24 @@ public class LocalDataStoreService extends DataStoreService
 		}
 		Log.debug(30, "The next version for docid " + identifier + " in local file system is "+version);
 		return version;
+	}
+	
+	/**
+	 * Get all revisions for a given identifier. The identifier can be be first, last or anywhere else in the 
+	 * revision history.
+	 * @param identifier
+	 * @return list of all versions of the given identifier (in order) with the earliest revision first
+	 */
+	public List<String> getAllRevisions(String identifier) {
+		RevisionManager revisionManager = null;
+		try {
+			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.LOCAL);
+		} catch (Exception e) {
+			Log.debug(6, "Could not find local revisions for: " + identifier);
+			e.printStackTrace();
+			return null;
+		}
+		return revisionManager.getAllRevisions(identifier);
 	}
 	 
 	/**

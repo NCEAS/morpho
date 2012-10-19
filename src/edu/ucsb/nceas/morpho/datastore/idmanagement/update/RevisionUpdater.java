@@ -61,7 +61,7 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
     Vector<ObjectDirectory> objectDirs = info.getRevisionDirectories();
     if(objectDirs != null) {  
       String profileDir = DataStoreService.getProfileDir(info.getProfile());
-      RevisionManager manager = new RevisionManager(profileDir, REVISIONFILEPREFIX);
+      RevisionManager manager = RevisionManager.getInstance(profileDir, REVISIONFILEPREFIX);
       for(ObjectDirectory objectDir : objectDirs) {
         File dir = objectDir.getDirectory();
         boolean isQueryDir = objectDir.isQueryDirectory();            

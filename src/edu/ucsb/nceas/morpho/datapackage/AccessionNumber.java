@@ -114,20 +114,5 @@ public class AccessionNumber
       String sep = (String)idVec.elementAt(3);
       return scope + sep + id;
   }
-  
-  /**
-   * @deprecated included in AccessionNumber class for easier removal
-   * Given a docid, caculate the number of its previous versions
-   * @param docId,  docId need to caculate previouse version
-   */
-  public int getNumberOfPrevVersions(String docId)
-  {
-      int prevVersions = 0;
-      int iii = docId.lastIndexOf(IdentifierManager.DOT);
-      String ver = docId.substring(iii+1,docId.length());
-      prevVersions = (new Integer(ver)).intValue();
-      prevVersions = prevVersions - 1;
-      return prevVersions;
-  }
 
 }

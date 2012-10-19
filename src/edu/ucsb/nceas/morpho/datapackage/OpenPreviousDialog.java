@@ -30,11 +30,10 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.util.Vector;
+import java.util.List;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -80,16 +79,12 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 		this((Frame)null);
 	}
 
-	public OpenPreviousDialog(String sTitle, int numVersions, Morpho morpho, boolean local)
+	public OpenPreviousDialog(String sTitle, List<String> identifiers, Morpho morpho, boolean local)
 	{
 		this();
 		setTitle(sTitle);
 		this.packageName = sTitle;
-		Vector data = new Vector();
-		for (int num=0;num<numVersions;num++) {
-		  data.addElement("Revision "+(num+1));    
-		}
-		PrevPackageList.setListData(data);
+		PrevPackageList.setListData(identifiers.toArray(new String[0]));
 		this.morpho = morpho;
 		this.localLoc = local;
 	}
@@ -110,10 +105,8 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 	//}}
 
 
-	class SymAction implements java.awt.event.ActionListener
-	{
-		public void actionPerformed(java.awt.event.ActionEvent event)
-		{
+	class SymAction implements java.awt.event.ActionListener {
+		public void actionPerformed(java.awt.event.ActionEvent event) {
 			Object object = event.getSource();
 			if (object == CancelButton)
 				CancelButton_actionPerformed(event);
@@ -122,41 +115,34 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 		}
 	}
 
-	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
-	{
+	void CancelButton_actionPerformed(java.awt.event.ActionEvent event) {
 		this.setVisible(false);
-	  this.dispose();		 
+		this.dispose();
 	}
 
-	void OpenButton_actionPerformed(java.awt.event.ActionEvent event)
-	{
-		// TODO: use the actual ID value, not the index in a list
-      int selnum = PrevPackageList.getSelectedIndex();
-      if (selnum<0) return;
-      String temp = packageName + IdentifierManager.DOT + (selnum + 1);
+	void OpenButton_actionPerformed(java.awt.event.ActionEvent event) {
+		// get the ID value, not the index in a list
+		String selectedIdentifier = (String) PrevPackageList.getSelectedValue();
+		if (selectedIdentifier == null)
+			return;
 
-      DataPackageInterface dataPackage;
-      try 
-      {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-        dataPackage = (DataPackageInterface)provider;
-      } 
-      catch (ServiceNotHandledException snhe) 
-      {
-        Log.debug(6, snhe.getMessage());
-        return;
-      }
-      String location = "";
-      if (localLoc) {
-    	  location = DataPackageInterface.LOCAL;
-      }
-      else {
-        location = DataPackageInterface.METACAT;
-      }
-      dataPackage.openDataPackage(location, temp, null, null, null);
+		DataPackageInterface dataPackage;
+		try {
+			ServiceController services = ServiceController.getInstance();
+			ServiceProvider provider = services.getServiceProvider(DataPackageInterface.class);
+			dataPackage = (DataPackageInterface) provider;
+		} catch (ServiceNotHandledException snhe) {
+			Log.debug(6, snhe.getMessage());
+			return;
+		}
+		String location = "";
+		if (localLoc) {
+			location = DataPackageInterface.LOCAL;
+		} else {
+			location = DataPackageInterface.METACAT;
+		}
+		dataPackage.openDataPackage(location, selectedIdentifier, null, null, null);
 		this.setVisible(false);
-	  this.dispose();		 
+		this.dispose();
 	}
 }

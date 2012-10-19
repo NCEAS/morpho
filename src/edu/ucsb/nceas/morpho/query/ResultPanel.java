@@ -34,6 +34,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -48,7 +49,6 @@ import javax.swing.table.TableColumn;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.GUIAction;
@@ -117,7 +117,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   int threadCount = 0;
   int selectedRow = -1;
 
-  private int vers = -1;
+  private List<String> vers = null;
   private String packageName = "";
 
   //this variable to indicate disable the mouse listener in streaming search
@@ -499,7 +499,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   /**
    * Get the version number. This method is for OpenPrevisouVrsionCommand
    */
-  public int getPreviousVersions()
+  public List<String> getPreviousVersions()
   {
     return vers;
   }
@@ -749,9 +749,9 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         localStatus = (String) rowV.elementAt(ResultSet.ISLOCALINDEX);
         //metacatLoc = ( (Boolean) rowV.elementAt(10)).booleanValue();
         metacatStatus = (String) rowV.elementAt(ResultSet.ISMETACATINDEX);
-        packageName = AccessionNumber.getInstance().getIdNoRev(selectedId);
+        packageName = selectedId; // just use the identifier for the name
         Log.debug(30, "the package name is: " + packageName);
-        vers = AccessionNumber.getInstance().getNumberOfPrevVersions(selectedId);
+        vers = Morpho.thisStaticInstance.getLocalDataStoreService().getAllRevisions(selectedId);
         Log.debug(30, "the number of previous version is: " + vers);
         doctype = (String) rowV.elementAt(8);
         // Fire state change event only in morpho frame
@@ -799,7 +799,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
                 
           }
 
-          if (vers > 0) {
+          if (vers != null && vers.size() > 1) {
             // mutipleversion package
             //Log.debug(5, "enable open previous");
             monitor.notifyStateChange(
@@ -837,7 +837,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     {
       if(e.isPopupTrigger() || trigger)
       {
-        if (vers>0) {
+        if (vers != null && vers.size() > 1) {
           openPreviousVersion.setEnabled(true);
         }
         else {

@@ -76,7 +76,7 @@ public class RevisionManagerTest extends MorphoTestCase {
    * @throws Exception
    */
   public void testScatch() throws Exception {
-    RevisionManager manager = new RevisionManager(DataStoreService.getProfileDir(),PREFIX);
+    RevisionManager manager = RevisionManager.getInstance(DataStoreService.getProfileDir(),PREFIX);
     manager.setObsoletedBy("tao.1.1", "tao.1.2");
     manager.setObsoletedBy("tao.1.2", "tao.1.3");
     manager.setObsoletes("tao.1.2", "tao.1.1");
@@ -176,7 +176,7 @@ public class RevisionManagerTest extends MorphoTestCase {
    * @throws Exception
    */
   public void testExistedConfigurationFile() throws Exception {
-    RevisionManager manager = new RevisionManager(DataStoreService.getProfileDir(),PREFIX);
+    RevisionManager manager = RevisionManager.getInstance(DataStoreService.getProfileDir(),PREFIX);
     manager.setObsoletedBy("tao.3.1", "tao.3.2");
     manager.setObsoletedBy("tao.3.2", "tao.3.3");
     manager.setObsoletes("tao.3.2", "tao.3.1");

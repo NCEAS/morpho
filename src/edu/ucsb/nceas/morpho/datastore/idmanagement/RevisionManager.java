@@ -78,13 +78,26 @@ public class RevisionManager {
   private XMLConfiguration configuration = null;
   private File profileDir = null;
   
+  /**
+   * Manage created instances of managers
+   */
+  private static Map<String, RevisionManager> managers = new HashMap<String, RevisionManager>();
   
+  public static RevisionManager getInstance(String profileDir, String prefix) throws IllegalArgumentException, ConfigurationException, IOException {
+	  String key = profileDir + prefix;
+	  RevisionManager manager = managers.get(key);
+	  if (manager == null) {
+		  manager = new RevisionManager(profileDir, prefix);
+		  managers.put(key, manager);
+	  }
+	  return manager;
+  }
   
   /**
    * Constructor.
    * @param filePrefix - the prefix will be used for the file which stores the revision history.
    */
-  public RevisionManager(String profileDir, String filePrefix) throws IllegalArgumentException, IOException, ConfigurationException{
+  private RevisionManager(String profileDir, String filePrefix) throws IllegalArgumentException, IOException, ConfigurationException{
     if(filePrefix == null || filePrefix.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.RevisionManager - A null or empty string"+
                                           " can't be used as a prefix for the file which stores the revision information.");

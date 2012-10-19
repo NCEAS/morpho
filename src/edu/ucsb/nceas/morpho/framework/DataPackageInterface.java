@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 
 import java.io.File;
 import java.io.Reader;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -191,7 +192,7 @@ public interface DataPackageInterface
    * @param morpho the morpho file
    * @param local the package is local or not
    */
-  public void createOpenPreviousVersionDialog(String title, int numOfVersion,
+  public void createOpenPreviousVersionDialog(String title, List<String>identifiers,
                                               Morpho morpho, boolean local);
 
 

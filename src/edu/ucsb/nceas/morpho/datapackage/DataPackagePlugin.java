@@ -52,6 +52,7 @@ import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
+import java.util.List;
 import java.util.Vector;
 
 import java.awt.Component;
@@ -1447,12 +1448,11 @@ public class DataPackagePlugin
    * @param morpho the morpho file
    * @param local the package is local or not
    */
-  public void createOpenPreviousVersionDialog(String title, int numOfVersion,
+  public void createOpenPreviousVersionDialog(String title, List<String> identifiers,
                                               Morpho morpho, boolean local)
   {
     // Create a new open previous version dialog
-    OpenPreviousDialog open = new OpenPreviousDialog(title, numOfVersion,
-                                                      morpho, local);
+    OpenPreviousDialog open = new OpenPreviousDialog(title, identifiers, morpho, local);
     // Set open dialog show
     open.setVisible(true);
   }

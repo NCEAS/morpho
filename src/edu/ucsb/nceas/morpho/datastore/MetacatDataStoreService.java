@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.Timer;
@@ -52,6 +53,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -216,6 +218,24 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		}
 		Log.debug(30, "Next version for doicd " +identifier+" in metacat is "+version);
 		return version;
+	}
+	
+	/**
+	 * Get all revisions for a given identifier. The identifier can be be first, last or anywhere else in the 
+	 * revision history.
+	 * @param identifier
+	 * @return list of all versions of the given identifier (in order) with the earliest revision first
+	 */
+	public List<String> getAllRevisions(String identifier) {
+		RevisionManager revisionManager = null;
+		try {
+			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.METACAT);
+		} catch (Exception e) {
+			Log.debug(6, "Could not find remote revisions for: " + identifier);
+			e.printStackTrace();
+			return null;
+		}
+		return revisionManager.getAllRevisions(identifier);
 	}
   
   /**
