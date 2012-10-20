@@ -69,7 +69,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
-import edu.ucsb.nceas.morpho.framework.IdFileMapUpdaterFrame;
+import edu.ucsb.nceas.morpho.framework.IdentifierUpdaterFrame;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.MorphoGuideCommand;
@@ -714,7 +714,7 @@ public class Morpho
             correctFrame.doCorrection();
             
             // Create id-filename map for the morpho 1.x object directories
-            IdFileMapUpdaterFrame updateFrame = new IdFileMapUpdaterFrame();
+            IdentifierUpdaterFrame updateFrame = new IdentifierUpdaterFrame();
             updateFrame.run();
             
             // Set up the Service Controller
