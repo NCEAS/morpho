@@ -88,6 +88,9 @@ public class IdentifierUpdaterFrame extends JFrame{
           }
           
         }
+      } catch(FileNotFoundException e) {
+        Log.debug(1, "Morpho couldn't start up because the identifier updateing failed :\n"+e.getMessage());
+        throw e;
         
       } finally {
         if(this != null) {
