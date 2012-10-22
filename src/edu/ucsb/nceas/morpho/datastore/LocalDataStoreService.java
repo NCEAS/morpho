@@ -754,15 +754,23 @@ public class LocalDataStoreService extends DataStoreService
 	 * @return list of all versions of the given identifier (in order) with the earliest revision first
 	 */
 	public List<String> getAllRevisions(String identifier) {
+		return getRevisionManager().getAllRevisions(identifier);
+	}
+	
+	/**
+	 * Get the RevisionManager
+	 * @return the RevisionManager being used
+	 */
+	public RevisionManager getRevisionManager() {
 		RevisionManager revisionManager = null;
 		try {
 			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.LOCAL);
 		} catch (Exception e) {
-			Log.debug(6, "Could not find local revisions for: " + identifier);
+			Log.debug(6, "Could not get RevisionManager: " + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
-		return revisionManager.getAllRevisions(identifier);
+		return revisionManager;
 	}
 	 
 	/**
