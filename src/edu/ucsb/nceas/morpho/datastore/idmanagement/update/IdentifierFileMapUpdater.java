@@ -92,7 +92,8 @@ public class IdentifierFileMapUpdater {
    * Create the id-filename map for the existing morpho 1.* profile directories. If the morpho
    * has been updated, this method will do nothing.
    */
-  public void update() {
+  public boolean update() {
+    boolean success = true;
     for(ProfileInformation info : profileInformationList) {
       try {
        update(info);
@@ -102,11 +103,12 @@ public class IdentifierFileMapUpdater {
         //one profile disrupt the entire updating 
         Log.debug(8,e.getMessage());
         removeFlagFromProfile(info);
+        success = false;
         continue;
       }
       
     }
-    
+    return success;
   }
   
   

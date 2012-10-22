@@ -55,7 +55,7 @@ public class IdentifierUpdaterFrame extends JFrame{
   /**
    * Do the update job
    */
-  public void run() throws FileNotFoundException {
+  public void run() throws FileNotFoundException, Exception {
     String runUpdateFromConfig = Morpho.thisStaticInstance.getConfiguration().get(NEEDUPDATEPATH, 0);
     boolean runUpdate = false;
     try {
@@ -68,6 +68,8 @@ public class IdentifierUpdaterFrame extends JFrame{
       ". However, it should be either \"true\" or \"false\".");
     }
     //System.out.println("the configure value is "+runUpdate);
+    boolean idFileMapSuccess = false;
+    boolean revisionSuccess = false;
     if(runUpdate) {
       try {
         IdentifierFileMapUpdater updater = new IdentifierFileMapUpdater();
@@ -77,8 +79,13 @@ public class IdentifierUpdaterFrame extends JFrame{
         if(needUpdate) {
           revisionUpdater.setProfileInformationList(updater.getProfileInformationList());
           loadGUI();
-          updater.update();
-          revisionUpdater.update();
+          idFileMapSuccess = updater.update();
+          revisionSuccess = revisionUpdater.update();
+          if(!idFileMapSuccess || !revisionSuccess) {
+            String message = "Morpho couldn't start up because the identifier updating failed.";
+            Log.debug(1, message);
+            throw new Exception(message);
+          }
           
         }
         
