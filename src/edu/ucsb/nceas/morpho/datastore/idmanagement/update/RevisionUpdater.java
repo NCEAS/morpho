@@ -122,7 +122,11 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
             revisionList.add(new Integer(revision));
             revisionsKeeper.put(prefix, revisionList);
           } else {
-            revisionList.add(new Integer(revision));
+            Integer revisionInterger = new Integer(revision);
+            if(!revisionList.contains(revisionInterger)) {
+              revisionList.add(revisionInterger);
+            }
+            
           }          
         } catch (NumberFormatException e){
           Log.debug(20, "RevisionUpdate.getRevision - file "+fileName+ " doesn't match our pattern for the file name prefix.number."+
@@ -167,5 +171,6 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
       }
     }
   }
+
 
 }
