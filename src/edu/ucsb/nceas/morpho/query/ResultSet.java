@@ -43,7 +43,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
@@ -542,20 +541,18 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     {
       Vector rowVector = (Vector)resultsVector.elementAt(i);
       String currentDocid = (String)rowVector.elementAt(DOCIDINDEX);
-      String docidWithoutRev = AccessionNumber.getInstance().getIdNoRev(currentDocid);
-      int rev = Integer.parseInt(AccessionNumber.getInstance().getParts(currentDocid).get(2));
-      if(docidWithoutRev != null && rev != -1)
+      if (currentDocid != null)
       {
-        DocInfo currentDocInfo = new DocInfo(docidWithoutRev, rev, i);
+        DocInfo currentDocInfo = new DocInfo(currentDocid, i);
         String localStatus = (String)rowVector.elementAt(ISLOCALINDEX);
         if(localStatus != null && (localStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE)||
             localStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE)))
         {
-          incompleteDocidMap.put(docidWithoutRev, currentDocInfo);
+          incompleteDocidMap.put(currentDocid, currentDocInfo);
         }
         else
         {
-          completeDocidMap.put(docidWithoutRev, currentDocInfo);
+          completeDocidMap.put(currentDocid, currentDocInfo);
         }
       }    
     }
@@ -565,28 +562,28 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     {
       Vector row = (Vector)ee.nextElement();
       String currentDocid = (String)row.elementAt(DOCIDINDEX);   
-      String newDocidWithoutRev = AccessionNumber.getInstance().getIdNoRev(currentDocid);
-      int newRev = Integer.parseInt(AccessionNumber.getInstance().getParts(currentDocid).get(2));
-      if(newDocidWithoutRev != null && newRev != -1)
+      if (currentDocid != null)
       {
-        if (incompleteDocidMap.containsKey(newDocidWithoutRev)) 
+        if (incompleteDocidMap.containsKey(currentDocid)) 
         {
          //merge a complete documents vector to a incomplete documents vector
-          DocInfo info = incompleteDocidMap.get(newDocidWithoutRev);
-          int existRev = info.getRev();
-          if(existRev >= newRev)
-          {
-            Log.debug(30, "ResultSet.mergeWithCompleteDocResult - the exist revision "+existRev+
-                           " of docid "+ newDocidWithoutRev+" is greater than or equals the complete doc revision  "+newRev+
-                           ". So the complete document will be hidden on the search result");
+          DocInfo info = incompleteDocidMap.get(currentDocid);
+          String existIdentifier = info.getDocid();
+          String latestIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getLatestRevision(existIdentifier);
+          
+          if (existIdentifier.equals(latestIdentifier)) {
+          
+            Log.debug(30, "ResultSet.mergeWithCompleteDocResult - the exist revision "+existIdentifier+
+                           " of docid "+ currentDocid+" is greater than or equals the complete doc revision. " +
+                           "So the complete document will be hidden on the search result");
           }
           else
           {
             //check if the docid is in complete docid map too. If it doesn, merge it.
-            if(completeDocidMap.containsKey(newDocidWithoutRev))
+            if (completeDocidMap.containsKey(currentDocid))
             {
-              DocInfo completeInfo = completeDocidMap.get(newDocidWithoutRev);
-              mergeLocalAndNetworkCompleteDoc(completeInfo, newRev, row);
+              DocInfo completeInfo = completeDocidMap.get(currentDocid);
+              mergeLocalAndNetworkCompleteDoc(completeInfo, currentDocid, row);
             }
             else
             {
@@ -596,11 +593,11 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
           }
           
         } 
-        else if(completeDocidMap.containsKey(newDocidWithoutRev))
+        else if(completeDocidMap.containsKey(currentDocid))
         {
           //merge two complete documents vector
-          DocInfo info = completeDocidMap.get(newDocidWithoutRev);
-          mergeLocalAndNetworkCompleteDoc(info, newRev, row);      
+          DocInfo info = completeDocidMap.get(currentDocid);
+          mergeLocalAndNetworkCompleteDoc(info, currentDocid, row);      
         }          
         else 
         {
@@ -615,41 +612,32 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   
   
   /*
-   * merge local and newwork complete doc base on the revision
-   */
-  private void mergeLocalAndNetworkCompleteDoc(DocInfo info, int newRev, Vector newRow)
-  {
-    if(info != null)
-    {
-      //merge two complete documents vector
-      int existRev = info.getRev();
-      if(existRev >newRev)
-      {
-        //do nothing
-      }
-      else if(existRev < newRev)
-      {
-        int rowIndex = info.getRowNumber();
-        Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
-        replaceResultRowValue(originalRow, newRow);
-      }
-      else
-      {
-        // existRev == newRev
-        int rowIndex = info.getRowNumber();
-        Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
-        originalRow.setElementAt(QueryRefreshInterface.LOCALCOMPLETE, ISLOCALINDEX);
-        originalRow.setElementAt(QueryRefreshInterface.NETWWORKCOMPLETE, ISMETACATINDEX);
-      }
-    }
-    else 
-    {
-      //Log.debug(5, "add directly2");
-      //a totally new record, just add it.
-      resultsVector.addElement(newRow);
-    }
-   
-  }
+	 * merge local and network complete doc base on the revision history
+	 */
+	private void mergeLocalAndNetworkCompleteDoc(DocInfo info, String newIdentifier, Vector newRow) {
+		if (info != null) {
+			// merge two complete documents vector
+			String existingIdentifier = info.getDocid();
+			String latestIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getLatestRevision(existingIdentifier);
+			if (existingIdentifier.equals(latestIdentifier)) {
+				// do nothing
+			} else if (newIdentifier.equals(latestIdentifier)) {
+				int rowIndex = info.getRowNumber();
+				Vector originalRow = (Vector) resultsVector.elementAt(rowIndex);
+				replaceResultRowValue(originalRow, newRow);
+			} else {
+				// existRev == newRev
+				int rowIndex = info.getRowNumber();
+				Vector originalRow = (Vector) resultsVector.elementAt(rowIndex);
+				originalRow.setElementAt(QueryRefreshInterface.LOCALCOMPLETE, ISLOCALINDEX);
+				originalRow.setElementAt( QueryRefreshInterface.NETWWORKCOMPLETE, ISMETACATINDEX);
+			}
+		} else {
+			// Log.debug(5, "add directly2");
+			// a totally new record, just add it.
+			resultsVector.addElement(newRow);
+		}
+	}
   
   
   /*
@@ -735,8 +723,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
    */
   private class DocInfo
   {
-    private String docidWithoutRev = null;
-    private int rev = -1;
+    private String docid = null;
     private int rowNumber = -1;
     
     /**
@@ -745,29 +732,19 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
      * @param rev
      * @param rowNumber
      */
-    public DocInfo(String docidWithoutRev, int rev, int rowNumber)
+    public DocInfo(String identifier, int rowNumber)
     {
-      this.docidWithoutRev =docidWithoutRev;
-      this.rev = rev;
+      this.docid = identifier;
       this.rowNumber = rowNumber;
     }
     
     /**
-     * Gets the docid without rev
+     * Gets the docid
      * @return
      */
-    public String getDocidWithoutRev()
+    public String getDocid()
     {
-      return this.docidWithoutRev;
-    }
-    
-    /**
-     * Gets the revision
-     * @return
-     */
-    public int getRev()
-    {
-      return this.rev;
+      return this.docid;
     }
     
     /**
