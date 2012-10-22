@@ -243,8 +243,11 @@ public class RevisionManager {
     if( oldId == null || oldId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the second parameter of this method can't be null or blank.");
     }
-    obsoletes.put(newId, oldId);
-    modifyConfiguration(newId, OBSOLETES, oldId);
+    if(!newId.equals(oldId)) {
+      obsoletes.put(newId, oldId);
+      modifyConfiguration(newId, OBSOLETES, oldId);
+    }
+    
   }
   
   
@@ -260,8 +263,11 @@ public class RevisionManager {
     if( oldId == null || oldId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the first parameter of this method can't be null or blank.");
     }
-    obsoletedBy.put(oldId, newId);
-    modifyConfiguration(oldId, OBSOLETEDBY, newId);
+    if(!oldId.equals(newId)) {
+      obsoletedBy.put(oldId, newId);
+      modifyConfiguration(oldId, OBSOLETEDBY, newId);
+    }
+   
   }
   
   
