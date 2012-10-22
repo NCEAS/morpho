@@ -29,7 +29,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -1009,10 +1008,9 @@ public class DataPackagePlugin
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
     }
 
-    // figure out whether there may be multiple versions, based on identifier
-    // TODO: do not use identifier to determine this
-    String verNum = AccessionNumber.getInstance().getParts(identifier).get(2);
-    if (verNum.equals("1")) {
+    // figure out whether there may be multiple versions
+    List<String> revisions = DataStoreServiceController.getInstance().getAllRevisions(identifier, adp.getLocation());
+    if (revisions != null && revisions.size() > 1) {
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
@@ -1147,10 +1145,11 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
 
-    // figure out whether there may be multiple versions, based on identifier
+    // figure out whether there may be multiple versions of this package
     String identifier = adp.getAccessionNumber();
-    String verNum = AccessionNumber.getInstance().getParts(identifier).get(2);
-    if (verNum.equals("1")) {
+    List<String> revisions = DataStoreServiceController.getInstance().getAllRevisions(identifier, adp.getLocation());
+    
+    if (revisions != null && revisions.size() > 1) {
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
@@ -1266,10 +1265,10 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
 
-    // figure out whether there may be multiple versions, based on identifier
+    // figure out whether there may be multiple versions of this package
     String identifier = adp.getAccessionNumber();
-    String verNum = AccessionNumber.getInstance().getParts(identifier).get(2);
-    if (verNum.equals("1")) {
+    List<String> revisions = DataStoreServiceController.getInstance().getAllRevisions(identifier, adp.getLocation());
+    if (revisions != null && revisions.size() > 1) {
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
