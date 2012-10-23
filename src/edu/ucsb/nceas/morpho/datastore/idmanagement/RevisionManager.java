@@ -168,6 +168,8 @@ public class RevisionManager {
   
   /**
    * Get the list of all revisions for the specified identifier. The list is in descending order.
+   * If the list only includes the given identifier, it means there are no other revisions; doesn't 
+   * mean the identifier exists in the data store.
    * @param identifier - the specified identifier.
    * @return the list of all revision which includes the given version.
    */
@@ -236,7 +238,7 @@ public class RevisionManager {
    * @param newId - the new identifier which obsoletes the old one.
    * @param oldId - the old identifier which will be obsoleted by the new one.
    */
-  public void setObsoletes(String newId, String oldId) throws IllegalArgumentException {
+  public synchronized void setObsoletes(String newId, String oldId) throws IllegalArgumentException {
     if(newId == null || newId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the first parameter of this method can't be null or blank.");
     }
@@ -256,7 +258,7 @@ public class RevisionManager {
    * @param oldId - the old identifier which will be obsoleted.
    * @param newId - the new identifier which obsoletes the old one.
    */
-  public void setObsoletedBy(String oldId, String newId) {
+  public synchronized void setObsoletedBy(String oldId, String newId) throws IllegalArgumentException {
     if(newId == null || newId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the second parameter of this method can't be null or blank.");
     }
@@ -309,6 +311,50 @@ public class RevisionManager {
         configuration.reload();
       }
 
+    }
+  }
+  
+  /**
+   * Delete the specified identifier from the revision file
+   * @param identifier - the identifier will be deleted
+   */
+  public synchronized void delete(String identifier) {
+    
+    if(identifier != null && !identifier.trim().equals("")) {
+      String cleanXPath = IDENTIFIER+"["+AT+VALUE+"='"+identifier+"']";
+      //System.out.println("the identifier "+identifier);
+      //System.out.println("obsoleted by "+obsoletedBy);
+      //System.out.println("obsoletes "+obsoletes);
+      String obsoletesId = getObsoletes(identifier);
+      //System.out.println("obsoletes id "+obsoletesId);
+      String obsoletedById = getObsoletedBy(identifier);
+      //System.out.println("obsoleted by id "+obsoletedById);
+      if(obsoletesId == null && obsoletedById != null) {
+        obsoletedBy.remove(identifier);
+        obsoletes.remove(obsoletedById);
+        configuration.clearTree(cleanXPath);
+        configuration.clearProperty(IDENTIFIER+"["+AT+VALUE+"='"+obsoletedById+"']"+SLASH+OBSOLETES);
+       
+      } else if (obsoletesId != null && obsoletedById == null) {
+       
+        obsoletes.remove(identifier);
+        obsoletedBy.remove(obsoletesId);
+        configuration.clearTree(cleanXPath);
+        configuration.clearProperty(IDENTIFIER+"["+AT+VALUE+"='"+obsoletesId+"']"+SLASH+OBSOLETEDBY);
+      } else if ( obsoletesId != null && obsoletedById != null) {
+        
+        obsoletes.remove(identifier);
+        obsoletes.remove(obsoletedById);
+        obsoletedBy.remove(identifier);
+        obsoletedBy.remove(obsoletesId);
+        configuration.clearTree(cleanXPath);
+        setObsoletedBy(obsoletesId, obsoletedById);
+        setObsoletes(obsoletedById, obsoletesId);
+        //obsoletes.put(obsoletedById,obsoletesId);
+        //obsoletedBy.put(obsoletesId, obsoletedById);
+        //System.out.println("obsoleted by "+obsoletedBy);
+        //System.out.println("obsoletes "+obsoletes);
+      }
     }
   }
 

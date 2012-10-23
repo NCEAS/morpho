@@ -58,7 +58,9 @@ public class RevisionManagerTest extends MorphoTestCase {
       suite.addTest(new RevisionManagerTest("initialize"));
       suite.addTest(new RevisionManagerTest("testScatch"));
       suite.addTest(new RevisionManagerTest("testExistedConfigurationFile"));
-      
+      suite.addTest(new RevisionManagerTest("testDelete"));
+      File configurationFile = new File(DataStoreService.getProfileDir(), PREFIX+RevisionManager.SUFFIX);
+      configurationFile.deleteOnExit();
       return suite;
   }
   
@@ -264,8 +266,72 @@ public class RevisionManagerTest extends MorphoTestCase {
     assertTrue("The obsoletedBy for tao.2.2 should be tao.2.3.", obsoletedBy3.equals("tao.2.3"));
     String obsoletes3 = manager.getObsoletes("tao.2.2");
     assertTrue("The obsoletes for tao.2.2 should be tao.2.1.", obsoletes3.equals("tao.2.1"));
-    File configurationFile = new File(DataStoreService.getProfileDir(), PREFIX+RevisionManager.SUFFIX);
-    configurationFile.deleteOnExit();
+    
   }
 
+  public void testDelete() throws Exception {
+    RevisionManager manager = RevisionManager.getInstance(DataStoreService.getProfileDir(),PREFIX);
+    String id = "tao.2.1";
+    manager.delete(id);
+    assertTrue("Since tao.2.1 was deleted, its obsoletes id should be null", manager.getObsoletes(id) == null);
+    assertTrue("Since tao.2.1 was deleted, its obsoletedby id should be null", manager.getObsoletedBy(id) == null);
+    System.out.println(""+manager.getObsoletes("tao.2.2"));
+    assertTrue("Since tao.2.1 was deleted, obsoletes id for tao.2.2 should be null", manager.getObsoletes("tao.2.2") == null);
+    List<String> versions = manager.getAllRevisions(id);
+    assertTrue("Since tao.2.1 was deleted, its all revision should only be itslef", versions.get(0).equals(id));
+    versions = manager.getAllRevisions("tao.2.4");
+    assertTrue("Since tao.2.1 was deleted, all revision for the tao.2.4 should have size 3", versions.size() ==3);
+ 
+    
+    id = "tao.1.4";
+    manager.delete(id);
+    assertTrue("Since tao.1.4 was deleted, its obsoletes id should be null", manager.getObsoletes(id) == null);
+    assertTrue("Since tao.1.4 was deleted, its obsoletedby id should be null", manager.getObsoletedBy(id) == null);
+    assertTrue("Since tao.1.4 was deleted, tao.1.3 obsoletedby id should be null", manager.getObsoletedBy("tao.1.3") == null);
+    versions = manager.getAllRevisions(id);
+    assertTrue("Since tao.1.4 was deleted, its all revision should only be itslef", versions.get(0).equals(id));
+    versions = manager.getAllRevisions("tao.1.3");
+    assertTrue("Since tao.1.4 was deleted, all revision for the tao.1.3 should have size 3", versions.size() ==3);
+    
+    id = "tao.3.2";
+    manager.delete(id);
+    assertTrue("Since tao.3.2 was deleted, its obsoletes id should be null", manager.getObsoletes(id) == null);
+    assertTrue("Since tao.3.2 was deleted, its obsoletedby id should be null", manager.getObsoletedBy(id) == null);
+    assertTrue("Since tao.3.2 was deleted, obsoletes id for tao.3.3 should be tao.3.1", manager.getObsoletes("tao.3.3").equals("tao.3.1"));
+    assertTrue("Since tao.3.2 was deleted, obsoleted bt id for tao.3.1 should be tao.3.3", manager.getObsoletedBy("tao.3.1").equals("tao.3.3"));
+    versions = manager.getAllRevisions(id);
+    assertTrue("Since tao.3.2 was deleted, its all revision should only be itslef", versions.get(0).equals(id));
+    versions = manager.getAllRevisions("tao.3.4");
+    assertTrue("Since tao.3.2 was deleted, all revision for the tao.3.4 should have size 3", versions.size() ==3);
+    
+    id = "tao.3.3";
+    manager.delete(id);
+    assertTrue("Since tao.3.3 was deleted, its obsoletes id should be null", manager.getObsoletes(id) == null);
+    assertTrue("Since tao.3.3 was deleted, its obsoletedby id should be null", manager.getObsoletedBy(id) == null);
+    assertTrue("Since tao.3.3 was deleted, obsoletes id for tao.3.4 should be tao.3.1", manager.getObsoletes("tao.3.4").equals("tao.3.1"));
+    assertTrue("Since tao.3.3 was deleted, obsoleted bt id for tao.3.1 should be tao.3.4 ", manager.getObsoletedBy("tao.3.1").equals("tao.3.4"));
+    versions = manager.getAllRevisions(id);
+    assertTrue("Since tao.3.3  was deleted, its all revision should only be itslef", versions.get(0).equals(id));
+    versions = manager.getAllRevisions("tao.3.4");
+    assertTrue("Since tao.3.3 was deleted, all revision for the tao.3.4 should have size 2", versions.size() ==2);
+    
+    id = "tao.3.1";
+    manager.delete(id);
+    assertTrue("Since tao.3.1 was deleted, its obsoletes id should be null", manager.getObsoletes(id) == null);
+    assertTrue("Since tao.3.1 was deleted, its obsoletedby id should be null", manager.getObsoletedBy(id) == null);
+    assertTrue("Since tao.3.1 was deleted, obsoletes id for tao.3.4 should be null", manager.getObsoletes("tao.3.4")== null);
+    assertTrue("Since tao.3.1 was deleted, obsoleted bt id for tao.3.4 should be null", manager.getObsoletedBy("tao.3.4")== null);
+    versions = manager.getAllRevisions(id);
+    assertTrue("Since tao.3.3  was deleted, its all revision should only be itslef", versions.get(0).equals(id));
+    
+    id = "tao.3.4";
+    manager.delete(id);
+    assertTrue("Since tao.3.4 was deleted, its obsoletes id should be null", manager.getObsoletes(id) == null);
+    assertTrue("Since tao.3.4 was deleted, its obsoletedby id should be null", manager.getObsoletedBy(id) == null);
+    versions = manager.getAllRevisions(id);
+    assertTrue("Since tao.3.3  was deleted, its all revision should only be itslef", versions.get(0).equals(id));
+    
+    id ="tao.100.1";
+    manager.delete(id);
+  }
 }
