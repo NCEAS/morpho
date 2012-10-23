@@ -29,7 +29,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 
 /**
  * Class that implements Accession Number utility functions for morpho
@@ -47,36 +46,6 @@ public class AccessionNumber
 	  }
 	  return instance;
   }
-  
-  /**
-	 * Parses id and increments revision number
-	 * 
-	 * @param id the id to parse and increment revision
-	 */
-	public String incRev(String id) {
-		String sep = Morpho.thisStaticInstance.getProfile().get("separator", 0);
-		int count = 0;
-		for (int i = 0; i < id.length(); i++) {
-			if (id.charAt(i) == sep.trim().charAt(0)) {
-				count++;
-			}
-		}
-
-		// no rev was given, so we use 1
-		if (count == 1) {
-			return id + sep + "1";
-		}
-
-		// we have all three parts and can parse  them
-		Vector<String> idParts = getParts(id);
-		
-		String revNumStr = idParts.get(2);
-		Integer revNum = new Integer(revNumStr);
-		int rev = revNum.intValue();
-		rev++;
-		return idParts.get(0) + sep + idParts.get(1) + sep + rev;
-	}
-
   
   /**
    * Returns a vector with all components of the accession number.  The vector

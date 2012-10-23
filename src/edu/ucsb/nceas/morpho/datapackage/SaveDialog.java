@@ -300,8 +300,8 @@ public class SaveDialog extends JDialog {
 					String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.BOTH);
 					adp.setAccessionNumber(nextid);
 				} else {
-					String newid = AccessionNumber.getInstance().incRev(id);
-					adp.setAccessionNumber(newid);
+					String nextid = DataStoreServiceController.getInstance().getNextIdentifier(id, DataPackageInterface.BOTH);
+					adp.setAccessionNumber(nextid);
 				}
 			} catch (Exception www) {
 				// no valid accession number; thus create one

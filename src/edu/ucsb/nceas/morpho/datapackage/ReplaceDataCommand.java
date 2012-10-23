@@ -191,7 +191,7 @@ public class ReplaceDataCommand implements Command {
 	    if (currentId  == null) {
 	    	currentId = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
 	    } else {
-	    	currentId = AccessionNumber.getInstance().incRev(currentId);
+	    	currentId = DataStoreServiceController.getInstance().getNextIdentifier(currentId, DataPackageInterface.LOCAL);
 	    }
 	    try {
 	    	Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(currentId, new FileInputStream(f));
