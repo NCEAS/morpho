@@ -44,6 +44,7 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 
 import javax.swing.Timer;
 
@@ -180,7 +181,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	 * return the max version of metacat. So we should increase 1 to get next version number.
 	 * If couldn't connect metacat or metacat doesn't have this docid, 1 will be returned.
 	 */
-	public int getNextRevisionNumber(String identifier)
+	public String getNextRevisionNumber(String identifier)
 	{
 		int version = AbstractDataPackage.ORIGINAL_REVISION;
 		String semiColon = ";";
@@ -217,7 +218,10 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		    
 		}
 		Log.debug(30, "Next version for doicd " +identifier+" in metacat is "+version);
-		return version;
+		Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
+
+		String nextIdentifier = idParts.get(0) + IdentifierManager.DOT + idParts.get(1) + IdentifierManager.DOT +  version;
+		return nextIdentifier;
 	}
 	
 	/**

@@ -31,7 +31,6 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -68,27 +67,28 @@ public class DataStoreServiceController {
 	}
 	
 	/**
-	 * Gets next revision for this doc for the given location
-	 * @param docid the partial identifier (no rev)
+	 * Gets next revision for this identifier for the given location
+	 * @param identifier the current revision of the identifier
 	 * @param location of the doc
-	 * @return  the next revision number
+	 * @return the identifier for the next revision at the given location
 	 */
-	public int getNextRevisionNumber(String docid, String location)
+	public String getNextIdentifier(String docid, String location)
 	{
-		int version = AbstractDataPackage.ORIGINAL_REVISION;
+		String nextIdentifier = null;
 		if (location.equals(DataPackageInterface.LOCAL)) {
-			version = Morpho.thisStaticInstance.getLocalDataStoreService().getNextRevisionNumber(docid);
+			nextIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
 		}
 		if (location.equals(DataPackageInterface.METACAT)) {
-			version = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextRevisionNumber(docid);
+			nextIdentifier = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextRevisionNumber(docid);
 		}
 		if (location.equals(DataPackageInterface.BOTH)) {
-			int localNextRevision = Morpho.thisStaticInstance.getLocalDataStoreService().getNextRevisionNumber(docid);
-			int metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextRevisionNumber(docid);
-			version = Math.max(localNextRevision, metacatNextRevision);
+			String localNextRevision = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
+			String metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextRevisionNumber(docid);
+			// TODO: reconcile them?
+			nextIdentifier = localNextRevision;
 		}
 		
-		return version;
+		return nextIdentifier;
 	}
 	
 	/**
@@ -938,9 +938,8 @@ public class DataStoreServiceController {
 			if (!update) {
 				identifier = DataStoreServiceController.getInstance().generateIdentifier(conflictLocation);
 			} else {
-				int newRevision = 
-					DataStoreServiceController.getInstance().getNextRevisionNumber(identifier, DataPackageInterface.BOTH);
-				identifier = scope + IdentifierManager.DOT + newRevision;
+				identifier = 
+					DataStoreServiceController.getInstance().getNextIdentifier(identifier, DataPackageInterface.BOTH);
 			}
 			// store the new id and original id into a map.
 			// So when morpho know the new id when it serialize
@@ -1177,12 +1176,8 @@ public class DataStoreServiceController {
 				statusInMetacat = DataStoreServiceInterface.NONEXIST;
 				statusInLocal = DataStoreServiceInterface.NONEXIST;
 			} else {
-				// TODO: replace this with opaque ID handling
-				// increase revision number
-				int newRevision = DataStoreServiceController.getInstance().getNextRevisionNumber(adp.getAccessionNumber(), DataPackageInterface.BOTH);
-				// get docid without revision
-				String docidNoRev = AccessionNumber.getInstance().getIdNoRev(identifier);
-				identifier = docidNoRev + IdentifierManager.DOT + newRevision;
+				// get next revision
+				identifier = DataStoreServiceController.getInstance().getNextIdentifier(adp.getAccessionNumber(), DataPackageInterface.BOTH);
 				adp.setAccessionNumber(identifier);
 				adp.setPackageIDChanged(true);
 				temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());

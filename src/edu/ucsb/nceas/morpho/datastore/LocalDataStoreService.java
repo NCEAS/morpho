@@ -665,86 +665,31 @@ public class LocalDataStoreService extends DataStoreService
 	}
   
   /**
-	 * Gets next revisons from loca. This method will look at the profile/scope dir and figure
-	 * it out the maximum revision. This number will be  increase 1 to get the next revision number.
-	 * If local file system doesn't have this docid, 1 will be returned
+	 * Gets next revisions from local. This method will look at the profile/scope
+	 * dir and figure it out the maximum revision. This number will be increase
+	 * 1 to get the next revision number. If local file system doesn't have this
+	 * docid, 1 will be returned
 	 */
-	public int getNextRevisionNumber(String identifier)
-	{
+	public String getNextIdentifier(String identifier) {
+		// default
 		int version = AbstractDataPackage.ORIGINAL_REVISION;
-		String dataDir = null;
-		if (identifier == null)
-		{
-			return version;
-		}
-		//Get Data dir
-		// intialize filesystem datastore if it is null
-		dataDir = getDataDir();
+		String latestIdentifier = getRevisionManager().getLatestRevision(identifier);
+		Vector<String> idParts = AccessionNumber.getInstance().getParts(latestIdentifier);
 		
-		Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
-		String targetDocid = idParts.get(1) + IdentifierManager.DOT + idParts.get(2);
-		Log.debug(30, "the data dir is "+dataDir);
-		if (dataDir != null && targetDocid != null)
-		{
-			//Gets scope name
-			String scope = idParts.get(0);
-			Log.debug(30, "the scope from id is "+scope);
-			File scopeFiles = new File(dataDir+File.separator+scope);
-			if (scopeFiles.isDirectory())
-			{
-				File[] list = scopeFiles.listFiles();
-				//Finds docid and revision part. The file name in above list will look 
-				//like 56.1. We will go through all files and find the maximum revision of
-				//same docid
-				if (list != null)
-				{
-					for (int i=0; i<list.length; i++)
-					{
-						File file = list[i];
-						if (file != null)
-						{
-							String name = file.getName();
-							if (name != null)
-							{
-								int index = name.lastIndexOf(IdentifierManager.DOT);
-								if (index != -1)
-								{
-								   String docid = name.substring(0,index);
-								   if (docid != null && docid.equals(targetDocid))
-								   {
-									   String versionStr = name.substring(index+1);
-									   if (versionStr != null)
-									   {
-										   try
-										   {
-											   int newVersion = (new Integer(versionStr)).intValue();
-											   if (newVersion > version)
-											   {
-												   version = newVersion;
-											   }
-										   }
-										   catch(Exception e)
-										   {
-											   Log.debug(30, "couldn't find the version part in file name "+name);
-										   }
-									   }
-								   }
-								}
-							}
-							
-						}
-					}
-				}
-				
-			}
+		try {
+			version = Integer.parseInt(idParts.get(2));
+		} catch (Exception e) {
+			Log.debug(6, "Could not find revision from identifier: " + identifier);
+			e.printStackTrace();
 		}
-		//if we found a maximum revsion, we should increase 1 to get the next revsion
-		if (version != AbstractDataPackage.ORIGINAL_REVISION)
-		{
+
+		// if we found a maximum revision, we should increase 1 to get the next revision
+		if (version != AbstractDataPackage.ORIGINAL_REVISION) {
 			version++;
 		}
-		Log.debug(30, "The next version for docid " + identifier + " in local file system is "+version);
-		return version;
+		Log.debug(30, "The next version for docid " + identifier + " in local file system is " + version);
+		String nextIdentifier = idParts.get(0) + IdentifierManager.DOT + idParts.get(1) + IdentifierManager.DOT +  version;
+		return nextIdentifier;
 	}
 	
 	/**
