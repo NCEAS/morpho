@@ -216,9 +216,13 @@ public class IdentifierFileMapUpdater {
   {
     ConfigXML profile = null;   
     String profileDir = DataStoreService.getProfilesParentDir();
-    String newProfilePath = profileDir + File.separator +
-                      profileName + File.separator + profileName + ".xml";
-    profile = new ConfigXML(newProfilePath); 
+    File oneProfileDir = new File(profileDir + File.separator + profileName );
+    if(oneProfileDir.isDirectory()) {
+      String newProfilePath = profileDir + File.separator +
+          profileName + File.separator + profileName + ".xml";
+      profile = new ConfigXML(newProfilePath); 
+    }
+   
     return profile;
   }
 
