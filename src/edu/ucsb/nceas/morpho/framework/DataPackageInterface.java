@@ -48,6 +48,11 @@ public interface DataPackageInterface
    * used to signify that this package is located on a metacat server
    */
   public static final String METACAT  = "metacat";
+  
+  /**
+   * used to signify that this package is located on the dataone network.
+   */
+  public static final String DATAONE = "dataone";
   /**
    * used to signify that this package is located locally
    */

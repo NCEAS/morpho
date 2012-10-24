@@ -98,7 +98,7 @@ public class SavePackageCopyCommand implements Command
     }
 
     String location = adp.getLocation();
-    String oldid = adp.getPackageId();
+    String oldid = adp.getMetadataId();
 
     String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
     adp.setAccessionNumber(nextid);

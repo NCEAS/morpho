@@ -81,7 +81,7 @@ public class PrintCommand implements Command
 		String htmlDoc = "<html><head><h2>Error displaying the requested Document</h2></head></html>";
 		String ID = "";
     try{
-        ID = adp.getPackageId();
+        ID = adp.getMetadataId();
         if ((ID==null)||(ID.equals(""))) ID = "tempid";
 				resultReader = null;
 				Document doc = adp.openAsDom(ID);

@@ -1336,7 +1336,7 @@ public class DataPackagePlugin
 	// check
     AbstractDataPackage newadp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
     if (newadp != null) {
-         return newadp.getPackageId();
+         return newadp.getMetadataId();
     }
     else {
     	return null;
@@ -1364,7 +1364,7 @@ public class DataPackagePlugin
 		AbstractDataPackage newadp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
 
 		if (newadp != null) {
-			return newadp.getPackageId();
+			return newadp.getMetadataId();
 		} else {
 			return null;
 		}
@@ -1467,7 +1467,7 @@ public class DataPackagePlugin
   {
     String docid = null;
     AbstractDataPackage adp = getAbstractDataPackageFromMorphoFrame(morphoFrame);
-    docid = adp.getPackageId();
+    docid = adp.getMetadataId();
     Log.debug(50, "docid is: "+ docid);
     return docid;
   }

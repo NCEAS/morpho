@@ -456,7 +456,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // code from here to 'end_setup' comment sets up the display for the
       // entity metadata
 //DFH      String id = getEntityIDForThisEntityName(item);
-      String id = adp.getPackageId();
+      String id = adp.getMetadataId();
         if ((id==null)||(id.equals(""))) id = "tempid";
 
 //      String location = dp.getLocation();
@@ -582,7 +582,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         vertSplit.setDividerLocation(1.0);
       }
       try{
-        String tempid = adp.getPackageId();
+        String tempid = adp.getMetadataId();
         if ((tempid==null)||(tempid.equals(""))) tempid = "tempid";
         mdcomponent = md.getDisplayComponent( tempid, adp,
                                               new MetaViewListener(vertSplit));

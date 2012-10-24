@@ -873,7 +873,7 @@ public class UIController
     if (panel != null)adp = panel.getAbstractDataPackage();
 
     Document thisdoc = adp.getMetadataNode().getOwnerDocument();
-    String id = adp.getPackageId();
+    String id = adp.getMetadataId();
     String location = adp.getLocation();
 
     editor.openEditor(thisdoc, id, location, panel,

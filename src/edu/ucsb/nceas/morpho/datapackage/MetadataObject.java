@@ -45,6 +45,7 @@ import java.util.*;
 import org.xml.sax.InputSource;
 
 import org.apache.xpath.XPathAPI;
+import org.dataone.client.DataPackage;
 
 import java.util.Vector;
 import java.util.Hashtable;
@@ -56,7 +57,7 @@ import edu.ucsb.nceas.utilities.*;
 /**
  * class that represents a data package.
  */
-public class MetadataObject
+public class MetadataObject extends DataPackage
 {
   /**
    * Document node of the in-memory DOM structure

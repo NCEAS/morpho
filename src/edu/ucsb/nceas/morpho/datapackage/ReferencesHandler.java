@@ -335,7 +335,7 @@ public class ReferencesHandler {
                                            false);
     }
     externalRefsPage.setReferenceSelectionEvent(event);
-    externalRefsPage.setCurrentDataPackageID(dataPkg.getPackageId());
+    externalRefsPage.setCurrentDataPackageID(dataPkg.getMetadataId());
     externalRefsPage.setDisplayName(this.displayName);
     externalRefsDialog.setVisible(true);
     //...and get corresponding node from external datapackage
