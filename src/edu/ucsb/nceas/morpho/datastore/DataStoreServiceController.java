@@ -899,26 +899,20 @@ public class DataStoreServiceController {
 	 * revision.
 	 */
 	private String handleDataIdConfiction(AbstractDataPackage adp, String identifier, String conflictLocation) {
-		String version = null;
-		int revision = -1;
-		String scope = null;
 		boolean update = true;
 		String originalIdentifier = null;
 		if (identifier != null) {
 			originalIdentifier = identifier;
-			// get revision number and scope
-			Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
-			version = idParts.get(2);
-			scope = idParts.get(0);
-			Log.debug(55, "scope: " + scope + "---version: " + version);
 			
 			try {
-				revision = (new Integer(version).intValue());
-				if (revision == 1) {
+				// TODO: which location? DataPackageInterface.BOTH?
+				List<String> allRevisions = getAllRevisions(originalIdentifier, conflictLocation);
+				// we only have this one revision
+				if (allRevisions == null ||  allRevisions.size() == 1) {
 					update = false;
 				}
 			} catch (Exception e) {
-				Log.debug(5, "Couldn't find the revison in docid " + identifier + " since " + e.getMessage());
+				Log.debug(5, "Couldn't find the revisons for " + identifier + ": " + e.getMessage());
 			}
 
 			// if it is update, we need give user options to choose: increase
