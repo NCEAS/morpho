@@ -51,8 +51,8 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
   private static final String id2 = "tao.222";
   private static final String id3 = "jing.123";
   private static final String id4 = "jing.321";
-  private static final String filePath1 = "build/tests/testfiles/eml201-reference-system.xml";
-  private static final String filePath2 = "build/tests/testfiles/eml201withadditionalMetacat.xml";
+  private static final String filePath1 = "tests/testfiles/eml201-reference-system.xml";
+  private static final String filePath2 = "tests/testfiles/eml201withadditionalMetacat.xml";
   /**
    * Create a suite of tests to be run together
    */
@@ -89,14 +89,14 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
     fileStore.set(id1, new FileInputStream(new File(filePath1)));
     fileStore.set(id2, new FileInputStream(new File(filePath2)));
     assertTrue("FileSystemDataStore.testSet - the directory should be "+objectStorePath1+ 
-        " rather than "+fileStore.getDirectory(), objectStorePath1.equals(fileStore.getDirectory()));
+        " rather than "+fileStore.getDirectory(), fileStore.getDirectory().endsWith(objectStorePath1));
 
     // switch to different directory
     fileStore = FileSystemDataStore.getInstance(objectStorePath2);
     fileStore.set(id3, new FileInputStream(new File(filePath1)));
     fileStore.set(id4, new FileInputStream(new File(filePath2)));
     assertTrue("FileSystemDataStore.testSet - the directory should be "+objectStorePath2+ 
-        " rather than "+fileStore.getDirectory(), objectStorePath2.equals(fileStore.getDirectory()));
+        " rather than "+fileStore.getDirectory(), fileStore.getDirectory().endsWith(objectStorePath2));
   }
   
   /**
