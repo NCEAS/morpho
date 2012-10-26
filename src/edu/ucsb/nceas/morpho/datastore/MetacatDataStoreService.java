@@ -566,6 +566,18 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		return !status.equals(DataStoreServiceInterface.NONEXIST);
 		
 	}
+	
+	 /**
+   * Save the MorphoDataPackage object into the local data store.
+   * @param mdp - the object will be saved
+   * @return the identifier of saved object
+   * TODO: need to implement it.
+   */
+  @Override
+  public String save(MorphoDataPackage mdp) throws Exception {
+    String identifier = null;
+    return identifier;
+  }
   
   /**
    * Save an xml metadata file (which already exists) to metacat using the 

@@ -96,6 +96,8 @@ public interface DataStoreServiceInterface
    */
   public boolean deleteFile(String name) throws Exception;
   
+  public String save(MorphoDataPackage mdp) throws Exception;
+  
   public boolean delete(MorphoDataPackage mdp) throws Exception;
   
   public MorphoDataPackage read(String identifier) throws Exception;

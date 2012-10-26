@@ -294,6 +294,18 @@ public class LocalDataStoreService extends DataStoreService
 	}
 	
 	/**
+	 * Save the MorphoDataPackage object into the local data store.
+	 * @param mdp - the object will be saved
+	 * @return the identifier of saved object
+	 * TODO: need to implement it.
+	 */
+	@Override
+	public String save(MorphoDataPackage mdp) throws Exception {
+	  String identifier = null;
+	  return identifier;
+	}
+	
+	/**
 	 * Performs a local query
 	 * TODO: refactor LocalQuery/Query code to conform to this interface?
 	 */
