@@ -148,7 +148,7 @@ public class FileSystemDataStore {
    * @throws FileNotFoundException
    * @throws IOException
    */
-  public void set(String identifier, InputStream data) throws FileNotFoundException, IOException, NullPointerException{
+  public synchronized void set(String identifier, InputStream data) throws FileNotFoundException, IOException, NullPointerException{
     if(identifier == null ) {
       throw new NullPointerException("FileSystemDataStrore.set - the specified identifier shouldn't be null.");
     }
@@ -217,22 +217,24 @@ public class FileSystemDataStore {
     return this.storeDirectory.getAbsolutePath();
   }
   
+ 
   /**
-   * @deprecated it is safer to create a new instance of the data store 
-   * rather than change the location that it is managing. Please see the getInstance(dir) method
-   * Change the file path of the data store
-   * @param directory - the file path of the data store
+   * Remove the file associated with the specified identifier; also remove the
+   * identifier from the id-file mapping.
+   * @param identifier - the identifier will be removed.
+   * @return true if the removing succeeded; false else.
+   * @throws IdentifierNotFoundException
    * @throws FileNotFoundException
    * @throws IOException
-   * @throws UnsupportedCharsetException
-   * @throws IllegalCharsetNameException
-   * @throws NullPointerException
-   * @throws IllegalArgumentException
    */
-  public void setDirectory(String directory) throws FileNotFoundException, 
-                     IOException, UnsupportedCharsetException, IllegalCharsetNameException, 
-                     NullPointerException, IllegalArgumentException {
-    init(directory);
+  public synchronized boolean delete(String identifier) throws IdentifierNotFoundException, 
+                                    FileNotFoundException, IOException {
+    File file = get(identifier);
+    boolean success = file.delete();
+    if(success) {
+      idFileMap.remove(identifier);
+    }
+    return success;
   }
   
 }
