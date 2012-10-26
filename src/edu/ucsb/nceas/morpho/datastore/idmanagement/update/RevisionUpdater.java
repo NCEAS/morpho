@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.datastore.DataStoreService;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -108,10 +108,10 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
    */
   private void getRevison(String scopeName, String fileName) {
     if(fileName != null) {
-      int index = fileName.lastIndexOf(IdentifierManager.DOT);
+      int index = fileName.lastIndexOf(LocalIdentifierGenerator.DOT);
       //dot should exist and couldn't be the last character in the file name
       if(index != -1 && (index+1) < fileName.length()) {
-        String prefix = scopeName+IdentifierManager.DOT+fileName.substring(0, index+1);
+        String prefix = scopeName+LocalIdentifierGenerator.DOT+fileName.substring(0, index+1);
         String revisionStr = fileName.substring(index+1);
         int revision =-1;
         try {

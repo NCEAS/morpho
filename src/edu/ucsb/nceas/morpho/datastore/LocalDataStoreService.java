@@ -43,7 +43,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -486,7 +486,7 @@ public class LocalDataStoreService extends DataStoreService
 					String fileName = currentfile.getName();
 					Log.debug(50, "the file name in dir is " + fileName);
 					if (fileName != null) {
-						fileName = fileName.substring(0, fileName.indexOf(IdentifierManager.DOT));
+						fileName = fileName.substring(0, fileName.indexOf(LocalIdentifierGenerator.DOT));
 						Log.debug(50, "the file name after removing revision in dir is " + fileName);
 						try {
 							docid = new Integer(fileName).intValue();
@@ -691,7 +691,7 @@ public class LocalDataStoreService extends DataStoreService
 			version++;
 		}
 		Log.debug(30, "The next version for docid " + identifier + " in local file system is " + version);
-		String nextIdentifier = idParts.get(0) + IdentifierManager.DOT + idParts.get(1) + IdentifierManager.DOT +  version;
+		String nextIdentifier = idParts.get(0) + LocalIdentifierGenerator.DOT + idParts.get(1) + LocalIdentifierGenerator.DOT +  version;
 		return nextIdentifier;
 	}
 	

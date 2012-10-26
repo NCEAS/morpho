@@ -80,7 +80,7 @@ public class IdentifierFileMap {
                                          +objectDir.getAbsolutePath());
       
     }
-    this.mappingPropertyFile = new File(this.objectDir, File.separator + IdentifierManager.DOT + this.objectDir.getName() + PROPERTYFILESUFFIX);
+    this.mappingPropertyFile = new File(this.objectDir, File.separator + LocalIdentifierGenerator.DOT + this.objectDir.getName() + PROPERTYFILESUFFIX);
     
     if(!this.mappingPropertyFile.exists()) {
       this.mappingPropertyFile.createNewFile();

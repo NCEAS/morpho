@@ -30,7 +30,6 @@ import java.io.File;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.exception.IdentifierNotFoundException;
 import edu.ucsb.nceas.morphotest.MorphoTestCase;
 

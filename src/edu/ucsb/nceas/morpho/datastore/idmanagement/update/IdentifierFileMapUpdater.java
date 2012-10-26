@@ -33,7 +33,7 @@ import java.util.Vector;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreService;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -138,7 +138,7 @@ public class IdentifierFileMapUpdater {
                       if(fileList != null) {
                         for(int j=0; j<fileList.length; j++) {
                           File file = fileList[j];
-                          String id = scopeDir.getName()+IdentifierManager.DOT+file.getName();
+                          String id = scopeDir.getName()+LocalIdentifierGenerator.DOT+file.getName();
                           map.setMap(id, file);
                         }
                       }

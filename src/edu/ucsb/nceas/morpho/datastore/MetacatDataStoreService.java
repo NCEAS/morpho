@@ -54,7 +54,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
@@ -223,7 +223,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		Log.debug(30, "Next version for doicd " +identifier+" in metacat is "+version);
 		Vector<String> idParts = AccessionNumber.getInstance().getParts(identifier);
 
-		String nextIdentifier = idParts.get(0) + IdentifierManager.DOT + idParts.get(1) + IdentifierManager.DOT +  version;
+		String nextIdentifier = idParts.get(0) + LocalIdentifierGenerator.DOT + idParts.get(1) + LocalIdentifierGenerator.DOT +  version;
 		return nextIdentifier;
 	}
 	
@@ -947,8 +947,8 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 				result = temp.substring(ind1 + 7, ind2);
 				if (!result.equals("null")) {
 					// now remove the version and scope parts of the id
-					result = result.substring(0, result.lastIndexOf(IdentifierManager.DOT));
-					result = result.substring(result.indexOf(IdentifierManager.DOT) + 1, result.length());
+					result = result.substring(0, result.lastIndexOf(LocalIdentifierGenerator.DOT));
+					result = result.substring(result.indexOf(LocalIdentifierGenerator.DOT) + 1, result.length());
 					try {
 						// double check that it is a number
 						metacatId = (new Integer(result).intValue());
