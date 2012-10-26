@@ -351,8 +351,8 @@ public class LocalDataStoreService extends DataStoreService
 	public boolean deleteFile(String name) {
 		boolean success = false;
 		try {
-			FileSystemDataStore.getInstance(getDataDir()).set(name, null);
-			success = true;
+			success = FileSystemDataStore.getInstance(getDataDir()).delete(name);
+			//success = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -370,8 +370,8 @@ public class LocalDataStoreService extends DataStoreService
 
 		boolean success = false;
 		try {
-			FileSystemDataStore.getInstance(getIncompleteDir()).set(identifier, null);
-			success = true;
+			success = FileSystemDataStore.getInstance(getIncompleteDir()).delete(identifier);
+			//success = true;
 		} catch (Exception e) {
 			//System.out.println("got an exception in deleting the local file");
 			e.printStackTrace();
