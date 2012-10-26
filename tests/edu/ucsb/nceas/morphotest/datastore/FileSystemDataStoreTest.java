@@ -90,7 +90,9 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
     fileStore.set(id2, new FileInputStream(new File(filePath2)));
     assertTrue("FileSystemDataStore.testSet - the directory should be "+objectStorePath1+ 
         " rather than "+fileStore.getDirectory(), objectStorePath1.equals(fileStore.getDirectory()));
-    fileStore.setDirectory(objectStorePath2);
+
+    // switch to different directory
+    fileStore = FileSystemDataStore.getInstance(objectStorePath2);
     fileStore.set(id3, new FileInputStream(new File(filePath1)));
     fileStore.set(id4, new FileInputStream(new File(filePath2)));
     assertTrue("FileSystemDataStore.testSet - the directory should be "+objectStorePath2+ 
@@ -116,7 +118,8 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
     output.close();
     assertTrue("The file "+f1.getAbsolutePath()+" should have the same size of file "+filePath1, 
         f1.length() == (new File(filePath1).length()));
-    fileStore.setDirectory(objectStorePath2);
+    // switch directory
+    fileStore = FileSystemDataStore.getInstance(objectStorePath2);
     boolean inException = false;
     try {
         File inputFile = fileStore.get(id2);
