@@ -809,7 +809,8 @@ public class Morpho
     	}
 
     	//TODO: this should not be done like this, but for now we will still look up Ids from Metacat
-        String lastId = Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier();
+    	  String fragment = null;
+        String lastId = Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier(fragment);
         int id = Integer.parseInt(AccessionNumber.getInstance().getParts(lastId).get(1));
         if (id > 0) {
             int num = id;
