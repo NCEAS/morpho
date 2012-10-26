@@ -11,6 +11,7 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 import edu.ucsb.nceas.morpho.datapackage.EMLTransformToNewestVersionDialog;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -112,12 +113,14 @@ public class EMLTransformToNewestVersionDialogTest extends TestCase
 		    // Stop butterfly flapping for old window.
 		    //packageWindow.setBusy(true);
 
+		    MorphoDataPackage mdp = new MorphoDataPackage();
+		    mdp.setAbstractDataPackage(adp);
 		    long stoptime = System.currentTimeMillis();
 		    Log.debug(20,"ViewContainer startUp time: "+(stoptime-starttime));
 
 		    long starttime1 = System.currentTimeMillis();
 		    DataViewContainerPanel dvcp = null;
-		    dvcp = new DataViewContainerPanel(adp);
+		    dvcp = new DataViewContainerPanel(mdp);
 		    dvcp.setFramework(morpho);
 		    dvcp.init();
 		    long stoptime1 = System.currentTimeMillis();

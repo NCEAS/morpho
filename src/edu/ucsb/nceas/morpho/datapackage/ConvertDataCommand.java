@@ -109,7 +109,8 @@ public class ConvertDataCommand implements Command, DataPackageWizardListener
 		}
 		// make sure resulPanel is not null
 		if (resultPane != null) {
-			final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
+			MorphoDataPackage mdp = resultPane.getMorphoDataPackage();
+			final AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
 			if (adp == null) {
 				Log.debug(5, "Data package is null or not found, cannot convert entity!");
@@ -134,7 +135,7 @@ public class ConvertDataCommand implements Command, DataPackageWizardListener
 			// carry on from here
 			ImportedTextFile dataTextFile = new ImportedTextFile(otherEntityFile);	
 			EntityWizardListener dataPackageWizardListener = 
-				new EntityWizardListener(adp, nextEntityIndex, morphoFrame);
+				new EntityWizardListener(mdp, nextEntityIndex, morphoFrame);
 
 			WizardContainerFrame dpWiz = new WizardContainerFrame(
 					IncompleteDocSettings.ENTITYWIZARD, morphoFrame);

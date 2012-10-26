@@ -26,10 +26,13 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.awt.event.ActionEvent;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
-
-import java.awt.event.ActionEvent;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
@@ -38,10 +41,9 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -52,11 +54,6 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-import java.util.List;
-import java.util.Iterator;
-import java.util.HashMap;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * Class to handle add additionalParty command
@@ -107,7 +104,8 @@ implements Command, DataPackageWizardListener {
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  AbstractDataPackage adp = mdp.getAbstractDataPackage();
 	    exsitingAssociatedPartyRoot =
 	        adp.getSubtrees(DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME);
 
@@ -115,7 +113,7 @@ implements Command, DataPackageWizardListener {
 
 	      try {
 	        insertAdditionalParty();
-	        UIController.showNewPackage(adp);
+	        UIController.showNewPackage(mdp);
 	      }
 	      catch (Exception w) {
 	        Log.debug(15, "Exception trying to modify additionalParty DOM: " + w);
@@ -192,7 +190,7 @@ implements Command, DataPackageWizardListener {
         DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE);
 
     OrderedMap existingValuesMap = new OrderedMap();
-
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     List additionalPartyList = adp.getSubtrees(
         DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME);
     existingValuesMap = Util.getOrderedMapFromNodeList(additionalPartyList, DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME);
@@ -235,6 +233,7 @@ implements Command, DataPackageWizardListener {
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     //delete old title from datapackage
     adp.deleteAllSubtrees(DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME);
 
@@ -304,6 +303,6 @@ implements Command, DataPackageWizardListener {
 
   private List exsitingAssociatedPartyRoot;
   private Node associatedPartyRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private AbstractUIPage associatedPartyPage;
 }

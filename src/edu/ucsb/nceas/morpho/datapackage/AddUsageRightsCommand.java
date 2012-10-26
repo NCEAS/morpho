@@ -106,13 +106,13 @@ public class AddUsageRightsCommand implements Command, DataPackageWizardListener
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 	    if (showUsageDialog()) {
 
 	      try {
 	        insertUsage();
-	        UIController.showNewPackage(adp);
+	        UIController.showNewPackage(mdp);
 	      } catch (Exception w) {
 	        Log.debug(20, "Exception trying to modify usage DOM");
 	      }
@@ -159,6 +159,7 @@ public class AddUsageRightsCommand implements Command, DataPackageWizardListener
                                                USAGE_RIGHTS);
 
     OrderedMap existingValuesMap = null;
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     usageRoot = adp.getSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, 0);
 
     if (usageRoot != null) {
@@ -220,6 +221,8 @@ public class AddUsageRightsCommand implements Command, DataPackageWizardListener
       return;
     }
 
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
+    
     //delete old project from datapackage
     adp.deleteSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, 0);
 
@@ -232,11 +235,12 @@ public class AddUsageRightsCommand implements Command, DataPackageWizardListener
       Log.debug(5,
                 "** ERROR: Unable to add new usage details to package... **");
     }
+    mdp.setAbstractDataPackage(adp);
   }
 
 
   private Node usageRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private MorphoFrame morphoFrame;
   private DataViewContainerPanel dataViewContainerPanel;
   private AbstractUIPage usagePage;

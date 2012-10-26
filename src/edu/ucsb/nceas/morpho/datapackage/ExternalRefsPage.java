@@ -202,7 +202,9 @@ public class ExternalRefsPage extends AbstractUIPage
                 dataPackageTable.getModel().getValueAt(selectedRow, DOCIDINDEX);
          // create a data package base on selected docid
          // because we only search the local, so set metacat = false
-         selectedDataPackage = DataStoreServiceController.getInstance().read(selectedDataPackageID, DataPackageInterface.LOCAL);
+         MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(selectedDataPackageID, DataPackageInterface.LOCAL);
+         selectedDataPackage = mdp.getAbstractDataPackage();
+
          parsingPackageIntoTable(selectedDataPackage);
        }
      });

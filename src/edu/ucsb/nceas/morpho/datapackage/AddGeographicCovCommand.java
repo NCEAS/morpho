@@ -69,7 +69,7 @@ public class AddGeographicCovCommand implements Command, DataPackageWizardListen
   private DataViewContainerPanel resultPane;
   private AbstractUIPage geographicPage;
 
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   
   public AddGeographicCovCommand() {
   }
@@ -111,7 +111,7 @@ public class AddGeographicCovCommand implements Command, DataPackageWizardListen
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 	    resultPane = null;
 	    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
@@ -127,10 +127,11 @@ public class AddGeographicCovCommand implements Command, DataPackageWizardListen
 	      if (infoAddFlag) {
 
 	        try {
-						// inserting new, so remove old
-						adp.removeGeographicNodes();
+	        	AbstractDataPackage adp = mdp.getAbstractDataPackage();
+				// inserting new, so remove old
+				adp.removeGeographicNodes();
 	          insertNewGeographic();
-	          UIController.showNewPackage(adp);
+	          UIController.showNewPackage(mdp);
 	        }
 	        catch (Exception w) {
 	          Log.debug(20, "Exception trying to modify coverage DOM");
@@ -217,8 +218,8 @@ public class AddGeographicCovCommand implements Command, DataPackageWizardListen
 
     covRoot = null;
     map = geographicPage.getPageData("/coverage/geographicCoverage[");
-    adp = resultPane.getAbstractDataPackage();
-
+    MorphoDataPackage mdp = resultPane.getMorphoDataPackage();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
     try {
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
@@ -242,6 +243,7 @@ public class AddGeographicCovCommand implements Command, DataPackageWizardListen
 
   private boolean insertCurrentData() {
     boolean res = true;
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     NodeList geoList = adp.getGeographicNodeList();
     if (geoList==null) return true;
     for (int i=0;i<geoList.getLength();i++) {

@@ -235,9 +235,9 @@ public class DataViewer extends javax.swing.JPanel
 
 
    /**
-	 * The AbstractDataPackage that contains the data (eml2.0.0)
+	 * The MorphoDataPackage that contains the data (eml2.0.0)
 	 */
-	 AbstractDataPackage adp = null;
+	 MorphoDataPackage mdp = null;
 
    /**
 	 *  The index of the entity within the AbstractDataPackage
@@ -665,6 +665,7 @@ public class DataViewer extends javax.swing.JPanel
      * be displayed
      */
     public void init() {
+    	AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		missing_metadata_flag = false;
 		if (entityIndex == -1) {
 			Log.debug(1, "Entity index has not been set!");
@@ -847,12 +848,12 @@ public class DataViewer extends javax.swing.JPanel
 
 	}
 
-    public void setAbstractDataPackage(AbstractDataPackage adp) {
-      this.adp = adp;
+    public void setMorphoDataPackage(MorphoDataPackage mdp) {
+      this.mdp = mdp;
     }
 
-    public AbstractDataPackage getAbstractDataPackage() {
-      return this.adp;
+    public MorphoDataPackage getMorphoDataPackage() {
+      return this.mdp;
     }
 
     public void setAttributeFile(File attr) {
@@ -1348,6 +1349,7 @@ public class DataViewer extends javax.swing.JPanel
 	*/
 
 	public void saveCurrentTable(boolean changePackageId) {
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		if (adp!=null) {  // new eml2.0.0 handling
 			String id = "";
 			//System.out.println("the file id is "+dataFileId);
@@ -1397,7 +1399,7 @@ public class DataViewer extends javax.swing.JPanel
 		// Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
 		// Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
 
-		if(adp != null) {
+		if(mdp != null) {
 			MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 			morphoFrame.setVisible(false);
 			UIController uicontroller = UIController.getInstance();
@@ -1405,7 +1407,7 @@ public class DataViewer extends javax.swing.JPanel
 				ServiceController services = ServiceController.getInstance();
 				ServiceProvider provider = services.getServiceProvider(DataPackageInterface.class);
 				DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-				dataPackageInt.openNewDataPackage(adp, null);
+				dataPackageInt.openNewDataPackage(mdp, null);
 				uicontroller.removeWindow(morphoFrame);
 				morphoFrame.dispose();
 

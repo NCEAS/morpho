@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -54,7 +55,7 @@ public class ImportMSAccessPlugin
 	private Morpho myMorpho;
 	private DataViewContainerPanel resultPane;
 	
-	private AbstractDataPackage adp;
+	private MorphoDataPackage mdp;
 	private Database accessDatabase;
 
 	/** 
@@ -66,7 +67,7 @@ public class ImportMSAccessPlugin
 	public void execute(ActionEvent event) {
 		Log.debug(11, "ImportAccess: Importing an MS Access Database design");
 
-		adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 		if (pickDatabase()) {
 
@@ -110,6 +111,7 @@ public class ImportMSAccessPlugin
 			 Collection tables = accessDatabase.getTables();
 			 Iterator iter = tables.iterator();
 	
+			 AbstractDataPackage adp = mdp.getAbstractDataPackage();
 			 while (iter.hasNext())
 			 {
 			   	// get the next database table from the collection
@@ -136,6 +138,7 @@ public class ImportMSAccessPlugin
 	 */
 	private void reopenPackage()
 	{
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		adp.setLocation("");
 
 		MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
@@ -149,7 +152,7 @@ public class ImportMSAccessPlugin
 		  DataPackageInterface dataPackage = (DataPackageInterface)provider;
 		  //dataPackage.openHiddenNewDataPackage(adp, null);
 		  morphoFrame.setVisible(false);
-		  dataPackage.openNewDataPackage(adp, null);
+		  dataPackage.openNewDataPackage(mdp, null);
 		  UIController controller = UIController.getInstance();
 		  MorphoFrame newMorphoFrame = controller.getCurrentActiveWindow();
 		  newMorphoFrame.setLocation(pos);

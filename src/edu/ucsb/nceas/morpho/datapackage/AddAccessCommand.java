@@ -105,13 +105,13 @@ public class AddAccessCommand
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 	    if (showAccessDialog()) {
 
 	      try {
 	        insertAccess();
-	        UIController.showNewPackage(adp);
+	        UIController.showNewPackage(mdp);
 	      }
 	      catch (Exception w) {
 	        Log.debug(15, "Exception trying to modify access DOM: " + w);
@@ -161,6 +161,7 @@ public class AddAccessCommand
     accessPage = dpwPlugin.getPage(DataPackageWizardInterface.ACCESS);
 
     OrderedMap existingValuesMap = null;
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     accessRoot = adp.getSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
 
     if (accessRoot != null) {
@@ -194,7 +195,7 @@ public class AddAccessCommand
   private void insertAccess() {
 
     OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
-
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     Log.debug(45, "\n insertAccess() Got access details from Access page -\n"
               + map);
 
@@ -237,6 +238,6 @@ public class AddAccessCommand
   }
 
   private Node accessRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private AbstractUIPage accessPage;
 }

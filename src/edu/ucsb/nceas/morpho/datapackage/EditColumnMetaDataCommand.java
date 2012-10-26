@@ -64,7 +64,7 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
 
-  private AbstractDataPackage adp = null;
+  private MorphoDataPackage mdp = null;
   private DataViewer dataView = null;
   private int attrIndex = -1;
   private int entityIndex = -1;
@@ -105,11 +105,12 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 
     if ( resultPane != null)
     {
-       adp = resultPane.getAbstractDataPackage();
+    	mdp = resultPane.getMorphoDataPackage();    	
     }
 
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     if(adp == null) {
-      Log.debug(16, " Abstract Data Package is null in the EditColumnMetaDataCommand");
+      Log.debug(16, " Data Package is null in the EditColumnMetaDataCommand");
       return;
     }
 
@@ -178,11 +179,12 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 
 		  if ( resultPane != null)
 		  {
-		       adp = resultPane.getAbstractDataPackage();
+			   mdp = resultPane.getMorphoDataPackage();
 		       dataView = resultPane.getCurrentDataViewer();
 		       table = dataView.getDataTable();
 		  }
 
+		  AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		  if(adp == null) {
 		      Log.debug(16, " Abstract Data Package is null in the EditColumnMetaDataCommand");
 		      return;
@@ -250,7 +252,7 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 									ServiceProvider provider =
 									services.getServiceProvider(DataPackageInterface.class);
 									DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-									dataPackageInt.openNewDataPackage(adp, null);
+									dataPackageInt.openNewDataPackage(mdp, null);
 								}
 								catch (ServiceNotHandledException snhe)
 								{
@@ -323,6 +325,7 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
   private void modifyAttribute()
   {
 
+	  AbstractDataPackage adp = mdp.getAbstractDataPackage();
     // get the ID of old attribute and set it for the new one
 		String oldID = adp.getAttributeID(entityIndex, attrIndex);
 		if(oldID == null || oldID.trim().equals("")) oldID = UISettings.getUniqueID();

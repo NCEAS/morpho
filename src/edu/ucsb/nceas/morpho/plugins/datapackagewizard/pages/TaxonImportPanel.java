@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -641,7 +642,8 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     }//if
     // make sure resulPanel is not null
     if ( resultPane != null) {
-      adp = resultPane.getAbstractDataPackage();
+      MorphoDataPackage mdp = resultPane.getMorphoDataPackage();
+      adp = mdp.getAbstractDataPackage();
     }
   }
 

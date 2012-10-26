@@ -30,7 +30,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -124,14 +123,13 @@ public class AddResearchProjectCommand implements Command, DataPackageWizardList
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 	    if (backupSubtreeAndShowProjectDialog()) {
 
 	      //gets here if user has pressed "OK" on dialog... ////////////////////////
 
-	      final MorphoFrame frame
-	          = UIController.getInstance().getCurrentActiveWindow();
+	      final MorphoFrame frame  = UIController.getInstance().getCurrentActiveWindow();
 
 	      final SwingWorker worker = new SwingWorker() {
 
@@ -145,9 +143,9 @@ public class AddResearchProjectCommand implements Command, DataPackageWizardList
 	            //replace project in datapackage...
 	            List pagesList = new ArrayList();
 	            pagesList.add(projectPage);
-
+	            
 	            DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
-	                UIController.getInstance().getCurrentAbstractDataPackage(),
+	                mdp.getAbstractDataPackage(),
 	                pagesList, PROJECT_SUBTREE_NODENAME,
 	                DATAPACKAGE_PROJECT_GENERIC_NAME);
 
@@ -167,7 +165,7 @@ public class AddResearchProjectCommand implements Command, DataPackageWizardList
 	            frame.setEnabled(true);
 
 	            //update package display in main frame...
-	            UIController.showNewPackage(adp);
+	            UIController.showNewPackage(mdp);
 	          }
 	        }
 	      };
@@ -177,6 +175,7 @@ public class AddResearchProjectCommand implements Command, DataPackageWizardList
 	      //gets here if user has pressed "cancel" on dialog... ////////////////////
 
 	      //Restore project subtree to state it was in when we started...
+	    	AbstractDataPackage adp = mdp.getAbstractDataPackage();
 	      if (existingProjectRoot==null) {
 
 	        adp.deleteSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
@@ -211,6 +210,7 @@ public class AddResearchProjectCommand implements Command, DataPackageWizardList
   private boolean backupSubtreeAndShowProjectDialog() {
 
     //backup subtree so it can be restored if user hits cancel:
+	AbstractDataPackage adp = mdp.getAbstractDataPackage();
     existingProjectRoot = adp.getSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
 
     OrderedMap existingValuesMap = null;
@@ -281,6 +281,6 @@ public class AddResearchProjectCommand implements Command, DataPackageWizardList
 
 
   private Node existingProjectRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private AbstractUIPage projectPage;
 }

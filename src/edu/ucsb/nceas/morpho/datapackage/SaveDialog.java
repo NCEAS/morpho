@@ -85,24 +85,24 @@ public class SaveDialog extends JDialog {
 	/** selected docid */
 	String selectDocId = null;
 
-	/** the AbstractDataPackage object to be saved */
-	AbstractDataPackage adp = null;
+	/** the MorphoDataPackage object to be saved */
+	MorphoDataPackage mdp = null;
 
 	/**
 	 * Construct a new instance of the dialog where parent is morphoframe
 	 * 
 	 */
-	public SaveDialog(AbstractDataPackage adp) {
+	public SaveDialog(MorphoDataPackage mdp) {
 		super(UIController.getInstance().getCurrentActiveWindow());
 		setModal(true);
-		this.adp = adp;
+		this.mdp = mdp;
 		morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 		initialize(morphoFrame);
 
 	}
 
-	public SaveDialog(AbstractDataPackage adp, boolean showPackageFlag) {
-		this(adp);
+	public SaveDialog(MorphoDataPackage mdp, boolean showPackageFlag) {
+		this(mdp);
 		this.showPackageFlag = showPackageFlag;
 	}
 
@@ -199,6 +199,7 @@ public class SaveDialog extends JDialog {
 		executeButton.addActionListener(lSymAction);
 		cancelButton.addActionListener(lSymAction);
 
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		String location = adp.getLocation();
 		if (location.equals("")) { // never been saved
 			localLoc.setEnabled(true);
@@ -262,6 +263,7 @@ public class SaveDialog extends JDialog {
 			((DataViewContainerPanel) comp).saveDataChanges();
 		}
 
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		boolean problem = false;
 		String location = adp.getLocation();
 		// track the save event
@@ -314,7 +316,7 @@ public class SaveDialog extends JDialog {
 			// BOTH
 			if ((localLoc.isSelected()) && (localLoc.isEnabled())
 					&& (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().save(adp, DataPackageInterface.BOTH);
+				DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.BOTH);
 				if (adp.getSerializeLocalSuccess()
 						&& adp.getSerializeMetacatSuccess()) {
 					adp.setLocation(DataPackageInterface.BOTH);
@@ -327,7 +329,7 @@ public class SaveDialog extends JDialog {
 				}
 			// LOCAL
 			} else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().save(adp, DataPackageInterface.LOCAL);
+				DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL);
 				if (adp.getSerializeLocalSuccess()) {
 					adp.setLocation(DataPackageInterface.LOCAL);
 				} else {
@@ -335,7 +337,7 @@ public class SaveDialog extends JDialog {
 				}
 			// METACAT
 			} else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().save(adp, DataPackageInterface.METACAT);
+				DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.METACAT);
 				if (adp.getSerializeMetacatSuccess()) {
 					adp.setLocation(DataPackageInterface.METACAT);
 				} else if (adp.getLocation() != null
@@ -388,7 +390,7 @@ public class SaveDialog extends JDialog {
 			
 			// refresh
 			if (showPackageFlag) {
-				UIController.showNewPackageNoLocChange(adp);
+				UIController.showNewPackageNoLocChange(mdp);
 			} else {
 				MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 				morphoFrame.setVisible(false);

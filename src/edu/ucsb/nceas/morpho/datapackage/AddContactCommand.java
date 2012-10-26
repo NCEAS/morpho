@@ -104,14 +104,15 @@ implements Command, DataPackageWizardListener {
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  AbstractDataPackage adp = mdp.getAbstractDataPackage();
 	    exsitingContactRoot = adp.getSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
 
 	    if (showContactDialog()) {
 
 	      try {
 	        insertContact();
-	        UIController.showNewPackage(adp);
+	        UIController.showNewPackage(mdp);
 	      }
 	      catch (Exception w) {
 	        Log.debug(15, "Exception trying to modify contact DOM: " + w);
@@ -187,7 +188,7 @@ implements Command, DataPackageWizardListener {
         DataPackageWizardInterface.PARTY_CONTACT_PAGE);
 
     OrderedMap existingValuesMap = new OrderedMap();
-
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     List contactList = adp.getSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
     existingValuesMap = Util.getOrderedMapFromNodeList(contactList, DATAPACKAGE_CONTACT_GENERIC_NAME);
 
@@ -229,6 +230,7 @@ implements Command, DataPackageWizardListener {
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     //delete old title from datapackage
     adp.deleteAllSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
 
@@ -293,6 +295,6 @@ implements Command, DataPackageWizardListener {
 
   private List exsitingContactRoot;
   private Node contactRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private AbstractUIPage contactPage;
 }

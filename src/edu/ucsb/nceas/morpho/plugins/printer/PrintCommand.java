@@ -66,7 +66,7 @@ public class PrintCommand implements Command
 
 	public void execute(ActionEvent ae) {
 
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
     if(adp == null) {
 			Log.debug(16, " Abstract Data Package is null in the Print Plugin");
 			return;

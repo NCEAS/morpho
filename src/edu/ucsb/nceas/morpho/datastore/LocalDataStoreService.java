@@ -42,6 +42,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -106,13 +107,15 @@ public class LocalDataStoreService extends DataStoreService
    * @throws FileNotFoundException
    */
   @Override
-  public AbstractDataPackage read(String identifier) throws Exception {
+  public MorphoDataPackage read(String identifier) throws Exception {
 		
 	  File file = openFile(identifier);
 	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 	  AbstractDataPackage adp = DataPackageFactory.getDataPackage(in);
 	  adp.setLocation(DataPackageInterface.LOCAL);
-	  return adp; 
+	  MorphoDataPackage mdp = new MorphoDataPackage();
+	  mdp.setAbstractDataPackage(adp);
+	  return mdp; 
   }
   
   /**
@@ -420,9 +423,9 @@ public class LocalDataStoreService extends DataStoreService
 	 * @throws FileNotFoundException
 	 */
 	@Override
-	public boolean delete(AbstractDataPackage adp) throws FileNotFoundException {
+	public boolean delete(MorphoDataPackage mdp) throws FileNotFoundException {
 		
-		String identifier = adp.getAccessionNumber();
+		String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
 		
 		// TODO: delete other parts of the ADP
 		return deleteFile(identifier);

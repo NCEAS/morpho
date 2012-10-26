@@ -228,7 +228,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		}
 		else
 		{
-			this.adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			this.adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
 		}
 		init();
 	}

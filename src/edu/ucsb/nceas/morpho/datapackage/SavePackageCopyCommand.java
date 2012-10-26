@@ -50,7 +50,7 @@ public class SavePackageCopyCommand implements Command
   private MorphoFrame morphoFrame = null;
 
   /** A reference to the AbstractDataPackage to be saved */
-  private AbstractDataPackage adp = null;
+  private MorphoDataPackage mdp = null;
 
   /** A flag indicating whether to display newly saved package */
   private boolean showPackageFlag = true;
@@ -67,17 +67,17 @@ public class SavePackageCopyCommand implements Command
    * Constructor of SavePackageCommand
    *
    */
-  public SavePackageCopyCommand(AbstractDataPackage adp)
+  public SavePackageCopyCommand(MorphoDataPackage mdp)
   {
-    this.adp = adp;
+    this.mdp = mdp;
   }//SavePackageCommand
 
   /**
    *  constructor with boolean to determine if saved package is displayed
    */
-  public SavePackageCopyCommand(AbstractDataPackage adp, boolean showPackageFlag)
+  public SavePackageCopyCommand(MorphoDataPackage mdp, boolean showPackageFlag)
   {
-    this.adp = adp;
+    this.mdp = mdp;
     this.showPackageFlag = showPackageFlag;
   }
 
@@ -94,17 +94,21 @@ public class SavePackageCopyCommand implements Command
        dvcp = morphoFrame.getDataViewContainerPanel();
     }//if
     if (dvcp!=null) {
-      adp = dvcp.getAbstractDataPackage();
+      mdp = dvcp.getMorphoDataPackage();
     }
 
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
+    
     String location = adp.getLocation();
     String oldid = adp.getMetadataId();
 
     String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
     adp.setAccessionNumber(nextid);
+    mdp = new MorphoDataPackage();
+    mdp.setAbstractDataPackage(adp);
 
     try{
-      DataStoreServiceController.getInstance().save(adp, DataPackageInterface.LOCAL);
+      DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL);
       adp.setLocation(DataPackageInterface.LOCAL);
       SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
       saveEvent.setInitialId(oldid);
@@ -118,7 +122,7 @@ public class SavePackageCopyCommand implements Command
 
     if (showPackageFlag) {
     	// this is in  a saved state, so no location change
-      UIController.showNewPackageNoLocChange(adp);
+      UIController.showNewPackageNoLocChange(mdp);
     }
     else {
       MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();

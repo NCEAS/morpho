@@ -27,6 +27,7 @@ package edu.ucsb.nceas.morpho.util;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -74,7 +75,8 @@ public class EML201DocumentCorrector {
       */
      public void correctDocument() throws Exception
      {
-    	 AbstractDataPackage dataPackage = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
+    	 MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
+    	 AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
     	 if (dataPackage != null && dataPackage instanceof EML200DataPackage)
     	 {
     		  EML200DataPackage eml2Package = (EML200DataPackage)dataPackage;
@@ -87,7 +89,8 @@ public class EML201DocumentCorrector {
     			  // save the new  package to old id.
     			  //System.out.println("after calling removing");
     			  // TODO: overwrite local without ID? seems like a bad idea
-    			  DataStoreServiceController.getInstance().save(eml2Package, DataPackageInterface.LOCAL, true);
+    			  mdp.setAbstractDataPackage(eml2Package);
+    			  DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL, true);
     			  //System.out.println("saving package");
     		  }
     			  

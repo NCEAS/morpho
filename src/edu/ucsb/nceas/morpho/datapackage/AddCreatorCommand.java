@@ -103,14 +103,15 @@ implements Command, DataPackageWizardListener {
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  AbstractDataPackage adp = mdp.getAbstractDataPackage();
 	    exsitingCreatorRoot = adp.getSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
 
 	    if (showCreatorDialog()) {
 
 	      try {
 	        insertCreator();
-	        UIController.showNewPackage(adp);
+	        UIController.showNewPackage(mdp);
 	      }
 	      catch (Exception w) {
 	        Log.debug(15, "Exception trying to modify creator DOM: " + w);
@@ -184,7 +185,7 @@ implements Command, DataPackageWizardListener {
         DataPackageWizardInterface.PARTY_CREATOR_PAGE);
 
     OrderedMap existingValuesMap = new OrderedMap();
-
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     List creatorList = adp.getSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
     existingValuesMap = Util.getOrderedMapFromNodeList(creatorList, DATAPACKAGE_CREATOR_GENERIC_NAME);
 
@@ -227,6 +228,7 @@ implements Command, DataPackageWizardListener {
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     //delete old title from datapackage
     adp.deleteAllSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
 
@@ -291,6 +293,6 @@ implements Command, DataPackageWizardListener {
 
   private List exsitingCreatorRoot;
   private Node creatorRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private AbstractUIPage creatorPage;
 }

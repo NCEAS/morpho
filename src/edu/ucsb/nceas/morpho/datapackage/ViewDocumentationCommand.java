@@ -29,7 +29,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JScrollBar;
 import javax.swing.JEditorPane;
 
 import java.awt.BorderLayout;
@@ -50,7 +49,6 @@ import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 
@@ -71,9 +69,9 @@ public class ViewDocumentationCommand implements Command
 
 	public void execute(ActionEvent ae) {
 
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		if(adp == null) {
-			Log.debug(16, " Abstract Data Package is null in View Documentation");
+		MorphoDataPackage mdp = UIController.getInstance().getCurrentAbstractDataPackage();
+		if (mdp == null) {
+			Log.debug(16, "Data Package is null in View Documentation");
 			return;
 		}
 
@@ -86,6 +84,7 @@ public class ViewDocumentationCommand implements Command
 		String htmlDoc = "<html><head><h2>Error displaying the requested Document</h2></head></html>";
 		String ID = "";
 		try{
+			AbstractDataPackage adp = mdp.getAbstractDataPackage();
 			ID = adp.getMetadataId();
 			if ((ID==null)||(ID.equals(""))) ID = "tempid";
 			resultReader = null;

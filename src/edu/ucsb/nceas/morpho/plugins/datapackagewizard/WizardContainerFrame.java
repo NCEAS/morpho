@@ -187,7 +187,7 @@ public class WizardContainerFrame
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
     setNewDataPackageWizardWindowsActive();
-    adp = UIController.getInstance().getCurrentAbstractDataPackage(); 
+    adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage(); 
     setDocidToEntityWizardRunningRecorder();//only works for entity wizard or import wizard
     addEmptyProjectTileSubtree();
     initGUI();    

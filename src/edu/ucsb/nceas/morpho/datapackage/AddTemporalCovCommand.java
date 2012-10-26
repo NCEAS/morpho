@@ -72,7 +72,7 @@ public class AddTemporalCovCommand implements Command, DataPackageWizardListener
   private DataViewContainerPanel resultPane;
   private AbstractUIPage temporalPage;
 
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
 
   public AddTemporalCovCommand() {
   }
@@ -114,7 +114,7 @@ public class AddTemporalCovCommand implements Command, DataPackageWizardListener
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 	    resultPane = null;
 	    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
@@ -130,10 +130,12 @@ public class AddTemporalCovCommand implements Command, DataPackageWizardListener
 	      if (infoAddFlag) {
 
 	        try {
-						// inserting new, so remove old
-						adp.removeTemporalNodes();
+				// inserting new, so remove old
+	        	AbstractDataPackage adp = mdp.getAbstractDataPackage();
+				adp.removeTemporalNodes();
 	          insertNewTemporal();
-	          UIController.showNewPackage(adp);
+	          mdp.setAbstractDataPackage(adp);
+	          UIController.showNewPackage(mdp);
 	        }
 	        catch (Exception w) {
 	          Log.debug(20, "Exception trying to modify coverage DOM");
@@ -218,7 +220,7 @@ public class AddTemporalCovCommand implements Command, DataPackageWizardListener
 
     covRoot = null;
     map = temporalPage.getPageData("/coverage/temporalCoverage[");
-    adp = resultPane.getAbstractDataPackage();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
       try {
         DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
@@ -237,13 +239,13 @@ public class AddTemporalCovCommand implements Command, DataPackageWizardListener
         Log.debug(5, "Unable to add OrderMap elements to DOM");
         w.printStackTrace();
       }
-
-
+      mdp.setAbstractDataPackage(adp);
     return;
   }
 
   private boolean insertCurrentData() {
     boolean res = true;
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     NodeList tempList = adp.getTemporalNodeList();
     if (tempList==null) return true;
     for (int i=0;i<tempList.getLength();i++) {

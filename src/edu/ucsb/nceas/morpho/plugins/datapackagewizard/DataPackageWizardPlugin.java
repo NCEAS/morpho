@@ -46,6 +46,7 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -282,7 +283,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
   {
     boolean running  = false;
     String docid  = null;
-    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
     if(adp != null)
     {
       docid = adp.getAccessionNumber();
@@ -306,9 +307,9 @@ public class DataPackageWizardPlugin implements PluginInterface,
    * @param frame            the old frame which need be disposed after correction is done
    * @param listener         the listener will handle some another action after the wizard is done, e.g .AddAccessCommand
    */
-  public void startCorrectionWizard(AbstractDataPackage dataPackage, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener)
+  public void startCorrectionWizard(MorphoDataPackage mdp, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener)
   {
-	  CorrectionWizardController controller = new CorrectionWizardController(errorPathes, dataPackage, frame);  
+	  CorrectionWizardController controller = new CorrectionWizardController(errorPathes, mdp, frame);  
 	  controller.setExternalListener(listener);
  	  controller.startWizard();
   }
@@ -605,7 +606,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     }
 
     deleteExistingAndAddPageDataToDOM(
-        UIController.getInstance().getCurrentAbstractDataPackage(),
+        UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage(),
         pagesList, rootXPath, subtreeGenericName);
 
     updatePartiesListFromDOM(partiesCustomList, rootXPath, subtreeGenericName, pageType);
@@ -632,7 +633,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
                                        String pageType) {
 
     AbstractDataPackage adp
-        = UIController.getInstance().getCurrentAbstractDataPackage();
+        = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
     if (adp == null) {
       Log.debug(15, "\npackage from UIController is null");
       Log.debug(5, "ERROR: cannot update!");
@@ -709,11 +710,11 @@ public class DataPackageWizardPlugin implements PluginInterface,
    * Load (open) an incomplete document into new package wizard /text import wizard
    * @param dataPackage the incomplete data package
    */
-  public void loadIncompleteDocument(AbstractDataPackage dataPackage)
+  public void loadIncompleteDocument(MorphoDataPackage mdp)
   {
 	  
-	  if(dataPackage == null) return;
-	  IncompleteDocumentLoader loader = new IncompleteDocumentLoader(dataPackage);
+	  if(mdp == null) return;
+	  IncompleteDocumentLoader loader = new IncompleteDocumentLoader(mdp);
 	  loader.load();
   }
 

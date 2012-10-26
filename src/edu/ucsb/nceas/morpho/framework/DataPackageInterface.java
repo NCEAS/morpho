@@ -27,7 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.util.Command;
 
@@ -90,7 +90,7 @@ public interface DataPackageInterface
    * @param adp indicates the location from which to open the data
    * @param coordinator the coordinator for butterfly flapping
    */
-  public MorphoFrame openNewDataPackage( AbstractDataPackage adp,
+  public MorphoFrame openNewDataPackage( MorphoDataPackage mdp,
                                   ButterflyFlapCoordinator coordinator);
   
   /**
@@ -100,11 +100,11 @@ public interface DataPackageInterface
    * @param visible if this frame visible
    * @return a MorphoFrame which displays the data package
    */
-  public MorphoFrame openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator, boolean visible);
+  public MorphoFrame openNewDataPackage(MorphoDataPackage mdp, ButterflyFlapCoordinator coordinator, boolean visible);
   /**
    *  same as openNewDataPackage except the frame is notVisible
    */                                 
-  public void openHiddenNewDataPackage( AbstractDataPackage adp,
+  public void openHiddenNewDataPackage( MorphoDataPackage mdp,
                                   ButterflyFlapCoordinator coordinator);
 
   /**

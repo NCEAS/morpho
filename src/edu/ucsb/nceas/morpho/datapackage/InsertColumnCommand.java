@@ -26,26 +26,8 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
-import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.utilities.OrderedMap;
-
-import java.util.Vector;
-
 import java.awt.event.ActionEvent;
+import java.util.Vector;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -55,10 +37,24 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
 * Class to handle insert a cloumn command
@@ -93,7 +89,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
   private OrderedMap map = null;
   private String mScale;
   private String columnName;
-  private AbstractDataPackage adp = null;
+  private MorphoDataPackage mdp = null;
   private int entityIndex = -1;
   private int selectedCol = -1;
   private String xPath = "/attribute";
@@ -291,7 +287,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
         ServiceProvider provider =
         services.getServiceProvider(DataPackageInterface.class);
         DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-        dataPackageInt.openNewDataPackage(adp, null);
+        dataPackageInt.openNewDataPackage(mdp, null);
       } catch (ServiceNotHandledException snhe) {
         Log.debug(6, snhe.getMessage());
       }
@@ -366,8 +362,10 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
     }
     map.put("/attribute/@id", UISettings.getUniqueID());
     Attribute attrObject = new Attribute(map);
-    if(adp == null)
-      adp = dataView.getAbstractDataPackage();
+    if (mdp == null) {
+      mdp = dataView.getMorphoDataPackage();
+    }
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     if(entityIndex == -1)
       entityIndex = dataView.getEntityIndex();
     adp.insertAttribute(entityIndex, attrObject, index);
@@ -398,7 +396,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
     wpd.setVisible(true);
 
     entityIndex = dataView.getEntityIndex();
-    adp = dataView.getAbstractDataPackage();
+    mdp = dataView.getMorphoDataPackage();
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
@@ -413,8 +411,9 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
       mScale = getMeasurementScale(map, xPath);
       boolean toImport = AbstractDataPackage.isImportNeeded(map, xPath, mScale);
 			
-      if(toImport) {
-        String entityName = adp.getEntityName(entityIndex);
+      if (toImport) {
+    	  AbstractDataPackage adp = mdp.getAbstractDataPackage();
+    	  String entityName = adp.getEntityName(entityIndex);
 
         adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
         DataPackageWizardListener dpwListener = new DataPackageWizardListener () {

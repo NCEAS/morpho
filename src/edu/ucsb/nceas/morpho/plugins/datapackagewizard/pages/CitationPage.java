@@ -50,6 +50,7 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -360,13 +361,15 @@ public class CitationPage extends AbstractUIPage {
   //PartyPage object before we write it to DOM...
   private void updateOriginalRefPartyPage(PartyPage partyPage) {
     String originalRefID = partyPage.getReferencesNodeIDString();
-    AbstractDataPackage adp
+    MorphoDataPackage mdp
         = UIController.getInstance().getCurrentAbstractDataPackage();
-    if (adp == null) {
+    if (mdp == null) {
       Log.debug(15, "\npackage from UIController is null");
       Log.debug(5, "ERROR: cannot update!");
       return;
     }
+    
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
     List nextRowList = null;
     PartyPage nextPage = null;
@@ -412,7 +415,7 @@ public class CitationPage extends AbstractUIPage {
       pagesList.add(nextPage);
     }
     DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
-        UIController.getInstance().getCurrentAbstractDataPackage(),
+        UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage(),
         pagesList, TAXON_CITATION_CREATOR_ROOTXPATH,
         TAXON_CITATION_CREATOR_GENERIC_NAME);
 

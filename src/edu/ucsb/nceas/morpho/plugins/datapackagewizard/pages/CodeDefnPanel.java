@@ -309,7 +309,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
   private void getADP() {
 
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
    
   }
 

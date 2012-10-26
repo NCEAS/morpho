@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -532,28 +533,23 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
   boolean isAnyDataTablePresent() {
 
-    AbstractDataPackage adp = getADP();
+	  AbstractDataPackage adp = null;
+	    DataViewContainerPanel resultPane = null;
+
+	    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+	    if (morphoFrame != null) {
+	      resultPane = morphoFrame.getDataViewContainerPanel();
+	    }//if
+	    // make sure resulPanel is not null
+	    if ( resultPane != null) {
+	      MorphoDataPackage mdp = resultPane.getMorphoDataPackage();
+	      adp = mdp.getAbstractDataPackage();
+	    }
     if(adp == null)
       return false;
     return (adp.getEntityCount() > 0);
   }
 
-
-  private AbstractDataPackage getADP() {
-
-    AbstractDataPackage adp = null;
-    DataViewContainerPanel resultPane = null;
-
-    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    if (morphoFrame != null) {
-      resultPane = morphoFrame.getDataViewContainerPanel();
-    }//if
-    // make sure resulPanel is not null
-    if ( resultPane != null) {
-      adp = resultPane.getAbstractDataPackage();
-    }
-    return adp;
-  }
 
   private JLabel getLabel(String text) {
 

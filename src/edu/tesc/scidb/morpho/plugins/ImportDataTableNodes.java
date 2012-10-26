@@ -26,6 +26,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -124,7 +125,8 @@ public class ImportDataTableNodes implements PluginInterface, ServiceProvider, C
 		// make sure resulPanel is not null
 		if (resultPane != null) {
 			//dataView = resultPane.getCurrentDataViewer();
-			AbstractDataPackage pkg = resultPane.getAbstractDataPackage();
+			MorphoDataPackage mdp = resultPane.getMorphoDataPackage();
+			AbstractDataPackage pkg = mdp.getAbstractDataPackage();
 			Node metadataNode = pkg.getMetadataNode();
 
 			// open an EML document and strip out the datatableNodes
@@ -159,16 +161,14 @@ public class ImportDataTableNodes implements PluginInterface, ServiceProvider, C
 				e.printStackTrace();
 			}
 
-
-
-
+			mdp.setAbstractDataPackage(pkg);
 
 			// reopen the datapackage			
 			MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 			Point pos = morphoFrame.getLocation();
 			Dimension size = morphoFrame.getSize();
 			
-			dataPackageInterface.openNewDataPackage(pkg,null);
+			dataPackageInterface.openNewDataPackage(mdp, null);
 			
 			MorphoFrame newMorphoFrame = UIController.getInstance().getCurrentActiveWindow();
 			newMorphoFrame.setLocation(pos);

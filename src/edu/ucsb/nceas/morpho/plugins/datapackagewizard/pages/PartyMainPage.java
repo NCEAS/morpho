@@ -303,7 +303,7 @@ public class PartyMainPage
   private void updateOriginalRefPartyPage(PartyPage partyPage) {
     String originalRefID = partyPage.getReferencesNodeIDString();
     AbstractDataPackage adp
-        = UIController.getInstance().getCurrentAbstractDataPackage();
+        = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
     if (adp == null) {
       Log.debug(15, "\npackage from UIController is null");
       Log.debug(5, "ERROR: cannot update!");
@@ -400,7 +400,7 @@ public class PartyMainPage
       return;
     }
     AbstractDataPackage adp
-        = UIController.getInstance().getCurrentAbstractDataPackage();
+        = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
     if (adp == null) {
       Log.debug(15, "\npackage from UIController is null");
       Log.debug(5, "ERROR: cannot delete!");

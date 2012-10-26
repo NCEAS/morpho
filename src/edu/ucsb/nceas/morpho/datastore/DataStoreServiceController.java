@@ -29,6 +29,7 @@ import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -117,22 +118,22 @@ public class DataStoreServiceController {
 	 * Create a new Datapackage given a docid of a metadata object and a
 	 * location
 	 */
-	public AbstractDataPackage read(String docid, String location) {
-		// get an ADP from the desired source
-		AbstractDataPackage adp = null;
+	public MorphoDataPackage read(String docid, String location) {
+		// get an MDP from the desired source
+		MorphoDataPackage mdp = null;
 		try {
 			if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
-					adp = Morpho.thisStaticInstance.getLocalDataStoreService().read(docid);
+					mdp = Morpho.thisStaticInstance.getLocalDataStoreService().read(docid);
 			}
 			else { 
 				// must be on metacat only
-				adp = Morpho.thisStaticInstance.getMetacatDataStoreService().read(docid);
+				mdp = Morpho.thisStaticInstance.getMetacatDataStoreService().read(docid);
 			}
 		} catch (Exception e) {
 			Log.debug(20, "Could not read package: " + e.getMessage());
 		}
 		
-		return adp;
+		return mdp;
 	}
 	
 	public File openFile(String identifier,String location) throws FileNotFoundException, CacheAccessException {
@@ -169,20 +170,20 @@ public class DataStoreServiceController {
 	 *            BOTH, METACAT or LOCAL
 	 */
 
-	public void delete(AbstractDataPackage adp, String location)
+	public void delete(MorphoDataPackage mdp, String location)
 			throws Exception {
 
-		String accnum = adp.getAccessionNumber();
 
 		if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
-			boolean localSuccess = Morpho.thisStaticInstance.getLocalDataStoreService().delete(adp);
+			boolean localSuccess = Morpho.thisStaticInstance.getLocalDataStoreService().delete(mdp);
 			if (!localSuccess) {
 				throw new Exception("User couldn't delete the local copy");
 			}
+			String accnum = mdp.getAbstractDataPackage().getAccessionNumber();
 			LocalQuery.removeFromCache(accnum);
 		}
 		if (location.equals(DataPackageInterface.METACAT) || location.equals(DataPackageInterface.BOTH)) {
-			boolean success = Morpho.thisStaticInstance.getMetacatDataStoreService().delete(adp);
+			boolean success = Morpho.thisStaticInstance.getMetacatDataStoreService().delete(mdp);
 			if (!success) {
 				throw new Exception("User couldn't delete the network copy");
 			}
@@ -195,7 +196,8 @@ public class DataStoreServiceController {
 	 * @param path
 	 *            the path to which this package should be exported.
 	 */
-	public void export(AbstractDataPackage adp, String path) {
+	public void export(MorphoDataPackage mdp, String path) {
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		String location = adp.getLocation();
 		String id = adp.getAccessionNumber();
 		Log.debug(20, "exporting...");
@@ -367,14 +369,15 @@ public class DataStoreServiceController {
 	 * @param path
 	 *            the path to export the zip file to
 	 */
-	public void exportToZip(AbstractDataPackage adp, String path) {
+	public void exportToZip(MorphoDataPackage mdp, String path) {
 		try {
+			AbstractDataPackage adp = mdp.getAbstractDataPackage();
 			String id = adp.getAccessionNumber();
 			// export the package in an uncompressed format to the temp
 			// directory
 			// then zip it up and save it to the specified path
 			String tempdir = ConfigXML.getConfigDirectory() + File.separator + Morpho.getConfiguration().get("tempDir", 0);
-			export(adp, tempdir + "/tmppackage");
+			export(mdp, tempdir + "/tmppackage");
 			File zipfile = new File(path);
 			FileOutputStream fos = new FileOutputStream(zipfile);
 			ZipOutputStream zos = new ZipOutputStream(fos);
@@ -637,8 +640,9 @@ public class DataStoreServiceController {
 	 * It has been assumed that the 'location' has been set to point to the
 	 * place where the data is to be saved.
 	 */
-	private void serializeData(AbstractDataPackage adp, String dataDestination) {
+	private void serializeData(MorphoDataPackage mdp, String dataDestination) {
 		Log.debug(30, "serilaize data =====================");
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		adp.getEntityArray();
 		// Log.debug(1, "About to check entityArray!");
 		if (adp.getEntityArray() == null) {
@@ -1063,8 +1067,8 @@ public class DataStoreServiceController {
 	 * @param adp
 	 * @param location
 	 */
-	public void save(AbstractDataPackage adp, String location) {
-		save(adp, location, false);
+	public void save(MorphoDataPackage mdp, String location) {
+		save(mdp, location, false);
 	}
 	
 	/**
@@ -1076,11 +1080,13 @@ public class DataStoreServiceController {
 	 *            -- can bypass the id conflict for local saves - consider
 	 *            removing!!
 	 */
-	public void save(AbstractDataPackage adp, String location,
+	public void save(MorphoDataPackage mdp, String location,
 			boolean overwrite) {
 
 		// save the data first
-		serializeData(adp, location);
+		serializeData(mdp, location);
+		
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
 		// now save the metadata
 		adp.setSerializeLocalSuccess(false);

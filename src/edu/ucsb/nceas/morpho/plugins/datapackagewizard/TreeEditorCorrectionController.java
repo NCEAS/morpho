@@ -43,13 +43,13 @@ import org.w3c.dom.NodeList;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
-import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -57,7 +57,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import org.w3c.dom.Node;
 
 /**
  * This class represents a controller which will display a serial of tree editors to correct
@@ -67,7 +66,7 @@ import org.w3c.dom.Node;
  */
 public class TreeEditorCorrectionController 
 {
-	private AbstractDataPackage dataPackage = null;
+	private MorphoDataPackage mdp = null;
 	private Vector xPathList = null; //There is no predicates in the path
 	private EditorInterface editor = null;
 	//private Node rootNode = null;
@@ -95,9 +94,9 @@ public class TreeEditorCorrectionController
 	 * Constructor with parameters datapackage and xpah list
 	 * @param xPathList the list of path will be displayed
 	 */
-	public TreeEditorCorrectionController(AbstractDataPackage dataPackage, Vector xPathList, MorphoFrame oldFrame) throws Exception
+	public TreeEditorCorrectionController(MorphoDataPackage mdp, Vector xPathList, MorphoFrame oldFrame) throws Exception
 	{
-		this.dataPackage = dataPackage;
+		this.mdp = mdp;
 		this.xPathList = xPathList;
 		this.oldFrame = oldFrame;
 		Log.debug(30, "the error list for tree editor is===== "+xPathList);
@@ -128,15 +127,6 @@ public class TreeEditorCorrectionController
 	}
 	
 	/**
-	 * Get the new data package after editing
-	 * @return
-	 */
-	public AbstractDataPackage getAbstractDataPackage()
-	{
-		return this.dataPackage;
-	}
-	
-	/**
 	 * Set externalListner for the controller.
 	 * @param externalListener
 	 */
@@ -150,6 +140,7 @@ public class TreeEditorCorrectionController
 	 */
 	private void displayTreeEditor()
 	{
+		AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
 		if(xPathList != null && !xPathList.isEmpty())
 		{
 			//Every time, we start the first xpath in the list.
@@ -192,7 +183,7 @@ public class TreeEditorCorrectionController
 		            ServiceProvider provider =
 		                services.getServiceProvider(DataPackageInterface.class);
 		            DataPackageInterface dataPackageInterface = (DataPackageInterface)provider;
-		            dataPackageInterface.openNewDataPackage(dataPackage, null);
+		            dataPackageInterface.openNewDataPackage(mdp, null);
 		            if(oldFrame != null)
 			        {
 		        		    Log.debug(40,  " in the if statement to  close the old frame is "+oldFrame);
@@ -272,6 +263,7 @@ public class TreeEditorCorrectionController
 			if (fullPath != null && nodeName != null && fullPath.contains(nodeName))
 			{
 				fullPath = XMLUtilities.removeAllPredicates(fullPath);
+				AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
 				Log.debug(30, "the full path after removing predict in findPositionOfNodeNameWithBlankValueis "+fullPath);
 				Node rootNode = dataPackage.getMetadataNode();
 				//System.out.println(XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
@@ -428,7 +420,7 @@ public class TreeEditorCorrectionController
 			  Log.debug(30, "couldn't put the xml string into a node "+e.getMessage());
 		  }
 	      AbstractDataPackage newadp = DataPackageFactory.getDataPackage(rootNode);
-	      dataPackage = newadp;		 
+	      mdp.setAbstractDataPackage(newadp);		 
 		  // then open the editor again base on the new dataPackage value
 		  displayTreeEditor();
 	  }

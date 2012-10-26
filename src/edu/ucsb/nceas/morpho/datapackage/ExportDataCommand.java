@@ -68,7 +68,8 @@ public class ExportDataCommand implements Command {
 		// make sure resultPanel is not null
 		if (resultPane != null) {
 
-			final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
+			MorphoDataPackage mdp = resultPane.getMorphoDataPackage();
+			final AbstractDataPackage adp = mdp.getAbstractDataPackage();
 			int entityIndex = resultPane.getLastTabSelected();
 				
 			// show the dialog

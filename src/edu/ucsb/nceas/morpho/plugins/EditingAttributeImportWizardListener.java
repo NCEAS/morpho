@@ -9,13 +9,13 @@ import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.Attribute;
 import edu.ucsb.nceas.morpho.datapackage.DataViewer;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.PersistentTableModel;
 import edu.ucsb.nceas.morpho.datapackage.PersistentVector;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
@@ -32,7 +32,7 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
 {
   
   private MorphoFrame morphoFrame = null;
-  private AbstractDataPackage adp = null;
+  private MorphoDataPackage mdp = null;
   private WizardContainerFrame wizardFrame = null;
   private int entityIndex = -1;
   private int attributeIndex = -1;
@@ -47,12 +47,12 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
    * @param entityIndex the index of entity which contains the editing attribute
    * @param attributeIndex the index of editing attribute
    */
-  public EditingAttributeImportWizardListener(MorphoFrame morphoFrame, AbstractDataPackage adp, 
+  public EditingAttributeImportWizardListener(MorphoFrame morphoFrame, MorphoDataPackage mdp, 
                                                                 WizardContainerFrame wizardFrame,  int entityIndex, int attributeIndex) throws Exception
   {
     this.morphoFrame = morphoFrame;
-    this.adp = adp;
-    if(morphoFrame == null || adp == null || wizardFrame == null)
+    this.mdp = mdp;
+    if(morphoFrame == null || mdp == null || wizardFrame == null)
     {
       throw new Exception("The morpho frame or dataPackage is null in EditingAttributeImportWizardListener");
     }
@@ -72,14 +72,14 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
     
     DataViewer dataView = morphoFrame.getDataViewContainerPanel().getCurrentDataViewer();
     OrderedMap map = wizardFrame.getEditingAttributeMap(); 
-    modifyAttribute(adp, dataView , entityIndex, attributeIndex, map, xPath);
+    modifyAttribute(mdp, dataView , entityIndex, attributeIndex, map, xPath);
     try
     {
       ServiceController services = ServiceController.getInstance();
       ServiceProvider provider =
       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-      dataPackageInt.openNewDataPackage(adp, null);
+      dataPackageInt.openNewDataPackage(mdp, null);
     }
     catch (ServiceNotHandledException snhe)
     {
@@ -126,12 +126,13 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
    * @param map new attribute data
    * @param xPath path to get data from ordered map
    */
-  public static void modifyAttribute(AbstractDataPackage adp, DataViewer dataView ,
+  private static void modifyAttribute(MorphoDataPackage mdp, DataViewer dataView ,
                                         int enIndex, int attrIndex, OrderedMap map, String xPath) 
   {
-    if(adp != null && map != null)
+    if (mdp != null && map != null)
     {
       JTable table = dataView.getDataTable();
+      AbstractDataPackage adp = mdp.getAbstractDataPackage();
       // get the ID of old attribute and set it for the new one
       String oldID = adp.getAttributeID(enIndex, attrIndex);
       if(oldID == null || oldID.trim().equals("")) oldID = UISettings.getUniqueID();

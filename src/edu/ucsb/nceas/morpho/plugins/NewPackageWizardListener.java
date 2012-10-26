@@ -31,6 +31,7 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -71,7 +72,9 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
       Log.debug(30, "AbstractDataPackage complete");
       adp.setAutoSavedID(autoSavedID);
       adp.setLocation(DataPackageInterface.TEMPLOCATION);
-      openMorphoFrameForDataPackage(adp);
+      MorphoDataPackage mdp = new MorphoDataPackage();
+      mdp.setAbstractDataPackage(adp);
+      openMorphoFrameForDataPackage(mdp);
       Log.debug(45, "\n\n********** Wizard finished: DOM:");
       Log.debug(45, XMLUtil.getDOMTreeAsString(newDOM));
     }
@@ -94,9 +97,9 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
     }
     
     /**
-     * Open a morpho frame for given abstractDataPacakge
+     * Open a morpho frame for given DataPacakge
      */
-    public static  MorphoFrame openMorphoFrameForDataPackage(AbstractDataPackage adp)
+    public static  MorphoFrame openMorphoFrameForDataPackage(MorphoDataPackage mdp)
     {
        MorphoFrame frame = null;
        try 
@@ -105,7 +108,7 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
         ServiceProvider provider =
               services.getServiceProvider(DataPackageInterface.class);
         DataPackageInterface dataPackage = (DataPackageInterface)provider;
-        frame = dataPackage.openNewDataPackage(adp, null);
+        frame = dataPackage.openNewDataPackage(mdp, null);
               
        } 
        catch (ServiceNotHandledException snhe) 

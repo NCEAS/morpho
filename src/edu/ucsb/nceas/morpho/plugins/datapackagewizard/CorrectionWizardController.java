@@ -32,6 +32,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -92,8 +93,8 @@ public class CorrectionWizardController
 	// short path mapping hash table - key is path (without root and value is XPathUIPageMapping)
 	// now we only consider fullPathMapping
 	private Hashtable shortPathMapping = new Hashtable();
-	// metadata in AbrstractDataPackage format
-	AbstractDataPackage dataPackage = null;
+	// metadata in DataPackage format
+	MorphoDataPackage mdp = null;
 	// the old frame need to be disposed.
 	private MorphoFrame oldFrame = null;
 	//private Document metadataDoc = null;
@@ -156,13 +157,13 @@ public class CorrectionWizardController
 	 * Constructor
 	 * @param errorPathList the list of paths which contain invalid value
 	 */
-	public CorrectionWizardController(Vector errorPathList, AbstractDataPackage dataPackage, MorphoFrame oldFrame)
+	public CorrectionWizardController(Vector errorPathList, MorphoDataPackage mdp, MorphoFrame oldFrame)
 	{
 	    this.errorPathList  = errorPathList;
-	    this.dataPackage  = dataPackage;
+	    this.mdp  = mdp;
 	    this.oldFrame       = oldFrame;
 	    //Log.debug(30, "==========old frame in correction wizard controller"+oldFrame);
-	    dpWiz = new CorrectionWizardContainerFrame(dataPackage);
+	    dpWiz = new CorrectionWizardContainerFrame(mdp.getAbstractDataPackage());
 	    // find the mapping between xpath and page class name in a file
 	    XpathUIPageMappingReader reader = new XpathUIPageMappingReader(MAPPINGFILEPATH);
 	    this.mappingList   = reader.getXPathUIPageMappingList();
@@ -207,6 +208,7 @@ public class CorrectionWizardController
 		    String totalPageNumber = (new Integer(wizardPageLibrary.size())).toString();
 		    Log.debug(35, "total number is "+totalPageNumber);
 		    dpWiz.setShowPageCountdown(true, totalPageNumber);
+		    AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
 		    dpWiz.setTitle(TITLE+dataPackage.getAccessionNumber());
 		    dpWiz.setVisible(true);
 		}
@@ -218,7 +220,7 @@ public class CorrectionWizardController
 			//there is no UIPage returned, we only run tree editor to fix the issue
 			try
 			{
-				TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(dataPackage, pathListForTreeEditor, oldFrame);
+				TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(mdp, pathListForTreeEditor, oldFrame);
 				treeEditorController.setExternalListener(externalListener);
 				treeEditorController.startCorrection();
 			}
@@ -332,6 +334,7 @@ public class CorrectionWizardController
 				className = mapping.getWizardPageClassName();
 				Log.debug(45, "get the className from mapping "+className);
 				OrderedMap additionalInfo = null;
+				AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
 				page = WizardUtil.getUIPage(mapping, dpWiz, additionalInfo, dataPackage.getMetadataNode(), path);
 			}
 		}				
@@ -468,6 +471,8 @@ public class CorrectionWizardController
 	              "Correction Wizard UI Page complete ");
 	          cleanUpLibrary();
 	          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
+	          MorphoDataPackage mdp = new MorphoDataPackage();
+	          mdp.setAbstractDataPackage(adp);
 	          Log.debug(45, "AbstractDataPackage complete");
 	          //adp.setAccessionNumber("temporary.1.1");
 	          //second, to correct data by tree editor
@@ -478,7 +483,7 @@ public class CorrectionWizardController
 					try
 					{
 						Log.debug(30, "assign the old frame to tree controler "+oldFrame);
-						TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(adp, pathListForTreeEditor, oldFrame);
+						TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(mdp, pathListForTreeEditor, oldFrame);
 						treeEditorController.setExternalListener(externalListener);
 						treeEditorController.startCorrection();
 					}
@@ -496,7 +501,7 @@ public class CorrectionWizardController
 			            ServiceProvider provider =
 			                services.getServiceProvider(DataPackageInterface.class);
 			            DataPackageInterface dataPackage = (DataPackageInterface)provider;
-			            dataPackage.openNewDataPackage(adp, null);
+			            dataPackage.openNewDataPackage(mdp, null);
 			            //dispose old frame
 			            if(oldFrame != null)
 			            {

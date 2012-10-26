@@ -116,13 +116,13 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 			if (resultPane != null) {
 				entityIndex = resultPane.getLastTabSelected();
 			}
-			adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 			if (showAccessDialog(entityIndex)) {
 
 				try {
 					insertAccess(entityIndex);
-					UIController.showNewPackage(adp);
+					UIController.showNewPackage(mdp);
 				} catch (Exception w) {
 					Log.debug(15, "Exception trying to modify access DOM: " + w);
 					w.printStackTrace();
@@ -171,6 +171,7 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 		accessPage = dpwPlugin.getPage(DataPackageWizardInterface.ENTITY_ACCESS);
 
 		OrderedMap existingValuesMap = null;
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		try {
 			accessRoot = adp.getEntityAccess(entityIndex, 0, 0);
 		} catch (Exception e) {
@@ -210,7 +211,7 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 	private void insertAccess(int entityIndex) {
 
 		OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
-
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		Log.debug(45,
 				"\n insertAccess() Got access details from Access page");
 
@@ -249,6 +250,6 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 	}
 
 	private Node accessRoot;
-	private AbstractDataPackage adp;
+	private MorphoDataPackage mdp;
 	private AbstractUIPage accessPage;
 }

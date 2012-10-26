@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.IncompleteDocumentLoader;
@@ -169,11 +170,11 @@ public interface DataPackageWizardInterface {
    * @param frame            the old frame which need be disposed after correction is done
    * @param listener          the listener will handle some another action  after the wizard is done, e.g .AddAccessCommand
    */
-  public void startCorrectionWizard(AbstractDataPackage dataPackage, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener);
+  public void startCorrectionWizard(MorphoDataPackage mdp, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener);
   
   /**
    * Load (open) an incomplete document into new package wizard /text import wizard
    * @param dataPackage the incomplete data package
    */
-  public void loadIncompleteDocument(AbstractDataPackage dataPackage);
+  public void loadIncompleteDocument(MorphoDataPackage mdp);
 }

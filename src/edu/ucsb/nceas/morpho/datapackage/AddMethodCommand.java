@@ -102,13 +102,13 @@ implements Command, DataPackageWizardListener {
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 	    if (showMethodDialog()) {
 
 	      try {
 	        insertMethod();
-	        UIController.showNewPackage(adp);
+	        UIController.showNewPackage(mdp);
 	      }
 	      catch (Exception w) {
 	        Log.debug(15, "Exception trying to modify method DOM: " + w);
@@ -159,6 +159,7 @@ implements Command, DataPackageWizardListener {
     methodPage = dpwPlugin.getPage(DataPackageWizardInterface.METHODS);
 
     OrderedMap existingValuesMap = null;
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     methodRoot = adp.getSubtree(DATAPACKAGE_METHOD_GENERIC_NAME, 0);
 
     if (methodRoot != null) {
@@ -218,6 +219,8 @@ implements Command, DataPackageWizardListener {
                 + " and methodRoot = " + methodRoot);
       return;
     }
+    
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     //delete old method from datapackage
     adp.deleteSubtree(DATAPACKAGE_METHOD_GENERIC_NAME, 0);
 
@@ -231,9 +234,10 @@ implements Command, DataPackageWizardListener {
     else {
       Log.debug(5, "** ERROR: Unable to add new method details to package **");
     }
+    mdp.setAbstractDataPackage(adp);
   }
 
   private Node methodRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private AbstractUIPage methodPage;
 }

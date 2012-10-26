@@ -29,9 +29,8 @@ package edu.ucsb.nceas.morpho.datastore;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.Reader;
 
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 
 /**
  * creates an interface for getting files from any dataStore using the same
@@ -97,9 +96,9 @@ public interface DataStoreServiceInterface
    */
   public boolean deleteFile(String name) throws Exception;
   
-  public boolean delete(AbstractDataPackage adp) throws Exception;
+  public boolean delete(MorphoDataPackage mdp) throws Exception;
   
-  public AbstractDataPackage read(String identifier) throws Exception;
+  public MorphoDataPackage read(String identifier) throws Exception;
   
   public String generateIdentifier() throws Exception;
   

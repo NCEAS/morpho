@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.SavePackageCommand;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
@@ -288,11 +289,11 @@ public class MorphoFrame extends JFrame
      * Get AbstractDataPackage represented by this frame, if it exists. If this
      * morphFrame doesn't contain an AbstractDataPackage, null will be returned
      *
-     * @return AbstractDataPackage represented by this frame, if it exists. If
-     *         this morphFrame doesn't contain an AbstractDataPackage, null will
+     * @return MorphoDataPackage represented by this frame, if it exists. If
+     *         this morphFrame doesn't contain an MorphoDataPackage, null will
      *         be returned
      */
-    public AbstractDataPackage getAbstractDataPackage() {
+    public MorphoDataPackage getMorphoDataPackage() {
 
       DataViewContainerPanel dataViewContainerPanel
           = this.getDataViewContainerPanel();
@@ -302,7 +303,7 @@ public class MorphoFrame extends JFrame
                   +"dataViewContainerPanel==null, returning NULL");
         return null;
       }
-      return dataViewContainerPanel.getAbstractDataPackage();
+      return dataViewContainerPanel.getMorphoDataPackage();
     }
 
 
@@ -634,7 +635,7 @@ public class MorphoFrame extends JFrame
         		 spc = saveAction.getCommand();
         	 }
         	 else {
-        		 spc = new SavePackageCommand(dvcp.getAbstractDataPackage(), false);
+        		 spc = new SavePackageCommand(dvcp.getMorphoDataPackage(), false);
         	 }
              spc.execute(null);
              
@@ -646,7 +647,8 @@ public class MorphoFrame extends JFrame
            
          }
          Log.debug(30, "MorphoFrame.close method to delete the autosaved file ");
-         AbstractDataPackage dataPackage = dvcp.getAbstractDataPackage();
+         MorphoDataPackage mdp = dvcp.getMorphoDataPackage();
+         AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
          if(dataPackage != null)
          {
            String docid = dataPackage.getAutoSavedD();

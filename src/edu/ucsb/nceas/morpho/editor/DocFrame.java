@@ -4236,7 +4236,7 @@ public class DocFrame extends javax.swing.JFrame
     try {
       SAXValidate validator = new SAXValidate(true);
       String emlVersion = ((EML200DataPackage)UIController.getInstance()
-                   .getCurrentAbstractDataPackage()).getEMLVersion();
+                   .getCurrentAbstractDataPackage().getAbstractDataPackage()).getEMLVersion();
       String xsdPath = "xsd/" + emlVersion + "/eml.xsd";
       Log.debug(30, "Loading schema: " + xsdPath);
       File fff = new File(xsdPath);

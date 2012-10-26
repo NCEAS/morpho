@@ -36,6 +36,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -67,7 +68,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  */
 public class IncompleteDocumentLoader 
 {
-  private AbstractDataPackage dataPackage = null;
+  private MorphoDataPackage mdp = null;
   private IncompleteDocInfo incompleteDocInfo = null;
   private String incompletionStatus = null;
   private Hashtable wizardPageName = new Hashtable();
@@ -79,15 +80,16 @@ public class IncompleteDocumentLoader
    * Constructs a IncompleteDocumentLoader with an AbstractDataPackage object
    * @param dataPackage
   */
-  public IncompleteDocumentLoader(AbstractDataPackage dataPackage)
+  public IncompleteDocumentLoader(MorphoDataPackage mdp)
   {
-    if(dataPackage == null)
+    if(mdp == null)
     {
       Log.debug(5, "Morpho couldn't open the incomplete document since the document is null");
       return;
     }
-    this.dataPackage = dataPackage;
-    this.dataPackage.setLocation(DataPackageInterface.TEMPLOCATION);
+    this.mdp = mdp;
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
+    adp.setLocation(DataPackageInterface.TEMPLOCATION);
     init();
     readXpathUIMappingInfo();
   }
@@ -97,6 +99,7 @@ public class IncompleteDocumentLoader
    */
   private void init()
   {
+	  AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
     try
     {
       incompleteDocInfo = dataPackage.readIncompleteDocInformation();
@@ -162,7 +165,7 @@ public class IncompleteDocumentLoader
     else if(incompletionStatus.equals(AbstractDataPackage.COMPLETED))
     {
       //UIController.getInstance().setWizardNotRunning();
-      MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
+      MorphoFrame frame = openMorphoFrameForDataPackage(mdp);
       frame.setVisible(true);
     }
     else
@@ -184,6 +187,7 @@ public class IncompleteDocumentLoader
       {
         return;
       }
+      AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
       //Log.debug(5, "The datatpackage is "+dataPackage);
       UIController.getInstance().setWizardIsRunning(dataPackage);
       boolean showPageCount = true;    
@@ -229,18 +233,19 @@ public class IncompleteDocumentLoader
       //handle there is no page info - just open a frame.
       if(incompleteDocInfo.getWizardPageClassInfoList() == null)
       {
-        openVisibleMorphoFrame(dataPackage);
+        openVisibleMorphoFrame(mdp);
         return;
       }   
       int index = incompleteDocInfo.getEntityIndex();
+      AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
       //remove the entity with the index (this entity is the unfinished one)
       Node entityNode = dataPackage.deleteEntity(index);
       //incomplete information was read in init method and we can delete it now
       dataPackage.removeInfoForIncompleteEntity();
-      MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
+      MorphoFrame frame = openMorphoFrameForDataPackage(mdp);
       if(frame != null)
       {
-        EntityWizardListener dataPackageWizardListener = new EntityWizardListener(dataPackage, index, frame);
+        EntityWizardListener dataPackageWizardListener = new EntityWizardListener(mdp, index, frame);
         OrderedMap editingAttributeMap = null;
         loadEntityWizard(frame, IncompleteDocSettings.ENTITYWIZARD, 
                                 dataPackageWizardListener, index, entityNode,editingAttributeMap);
@@ -264,7 +269,7 @@ public class IncompleteDocumentLoader
       //handle there is no page info - just open a frame.
       if(incompleteDocInfo.getWizardPageClassInfoList() == null)
       {
-        openVisibleMorphoFrame(dataPackage);
+        openVisibleMorphoFrame(mdp);
         return;
       }
       int index = incompleteDocInfo.getEntityIndex();
@@ -279,11 +284,12 @@ public class IncompleteDocumentLoader
       int editingAttributeIndex = editingAttributeInfo.getAttributeIndex();
       Boolean insertBeforeSelection = editingAttributeInfo.getInsertionBeforeSelection();
       OrderedMap map = editingAttributeInfo.getData();
+      AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
       //remove the entity with the index (this entity is the unfinished one)
       Node entityNode = dataPackage.deleteEntity(index);
       //incomplete information was read in init method and we can delete it now
       dataPackage.removeInfoForIncompleteCodeDef();
-      MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
+      MorphoFrame frame = openMorphoFrameForDataPackage(mdp);
       if(frame != null)
       {
         DataPackageWizardListener  listener = null;
@@ -305,14 +311,14 @@ public class IncompleteDocumentLoader
           if(insertBeforeSelection == null)
           {
             //this is for editing an attribute
-            listener = new EditingAttributeImportWizardListener(frame, dataPackage, 
+            listener = new EditingAttributeImportWizardListener(frame, mdp, 
                                                           wizard,  editingEntityIndex, editingAttributeIndex);   
             wizard.setDataPackageWizardListener(listener);          
           }
           else
           {
             //for inserting a new column
-            listener = new InsertingAttributeImportWizardListener(frame, dataPackage, 
+            listener = new InsertingAttributeImportWizardListener(frame, mdp, 
                 wizard,  editingEntityIndex, editingAttributeIndex, insertBeforeSelection);   
             wizard.setDataPackageWizardListener(listener); 
           }
@@ -349,7 +355,7 @@ public class IncompleteDocumentLoader
       if(currentPage == null)
       {
          //UIController.getInstance().setWizardNotRunning();
-        
+    	  AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
          String docid = dataPackage.getAccessionNumber();
          UIController.getInstance().removeDocidFromEntityWizardRunningRecorder(docid);   
          dpWiz.dispose();
@@ -490,7 +496,7 @@ public class IncompleteDocumentLoader
   /*
    * Open a morpho frame for given abstractDataPacakge
    */
-  private MorphoFrame openMorphoFrameForDataPackage(AbstractDataPackage adp)
+  private MorphoFrame openMorphoFrameForDataPackage(MorphoDataPackage mdp)
   {
      MorphoFrame frame = null;
      try 
@@ -502,7 +508,7 @@ public class IncompleteDocumentLoader
       // make it visible
       // see http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5245
       boolean visible = true;
-      frame = dataPackage.openNewDataPackage(adp, null, visible);
+      frame = dataPackage.openNewDataPackage(mdp, null, visible);
             
      } 
      catch (ServiceNotHandledException snhe) 
@@ -516,9 +522,9 @@ public class IncompleteDocumentLoader
   /*
    * Opens a visible morpho frame
    */
-   private void openVisibleMorphoFrame(AbstractDataPackage adp)
+   private void openVisibleMorphoFrame(MorphoDataPackage mdp)
    {
-     MorphoFrame frame = openMorphoFrameForDataPackage(adp);
+     MorphoFrame frame = openMorphoFrameForDataPackage(mdp);
      if(frame != null)
      {
        frame.setVisible(true);

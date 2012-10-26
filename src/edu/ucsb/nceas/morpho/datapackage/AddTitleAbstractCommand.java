@@ -104,13 +104,13 @@ implements Command, DataPackageWizardListener {
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 	    if (showTitleAbstractDialog()) {
 
 	      try {
 	        insertTitleAbstract();
-	        UIController.showNewPackage(adp);
+	        UIController.showNewPackage(mdp);
 	      }
 	      catch (Exception w) {
 	        Log.debug(15,"Exception trying to modify title and abstract DOM: " + w);
@@ -161,6 +161,8 @@ implements Command, DataPackageWizardListener {
     titleAbstractPage = dpwPlugin.getPage(DataPackageWizardInterface.GENERAL);
 
     OrderedMap existingValuesMap = null;
+
+	AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
     titleRoot = adp.getSubtree(DATAPACKAGE_TITLE_GENERIC_NAME, 0);
     abstractRoot = adp.getSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, 0);
@@ -232,6 +234,8 @@ implements Command, DataPackageWizardListener {
     }
     
 
+	  AbstractDataPackage adp = mdp.getAbstractDataPackage();
+
        if (abstractMap.isEmpty()){
            // make sure the abstract is not present
            adp.deleteSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, 0);
@@ -299,10 +303,11 @@ implements Command, DataPackageWizardListener {
         Log.debug(5, "** ERROR: Unable to add new abstract details to package **");
       }
     }
+    mdp.setAbstractDataPackage(adp);
   }
 
   private Node titleRoot;
   private Node abstractRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private AbstractUIPage titleAbstractPage;
 }

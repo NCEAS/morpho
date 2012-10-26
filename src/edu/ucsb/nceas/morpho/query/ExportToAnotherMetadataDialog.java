@@ -49,6 +49,7 @@ import org.w3c.dom.NodeList;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -393,7 +394,9 @@ public class ExportToAnotherMetadataDialog implements Command
     try
     {
       XMLTransformer transformer = XMLTransformer.getInstance();
-      AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, documentLocation);
+      MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, documentLocation);
+      AbstractDataPackage adp = mdp.getAbstractDataPackage();
+
       Document emlDoc = adp.getDocument();
       if(emlDoc == null)
       {

@@ -357,7 +357,7 @@ public class PartyPage extends AbstractUIPage {
     if (!(topLevelContainer instanceof Frame))topLevelContainer = null;
 
     refsDropdown = referencesHandler.getJComboBox(
-        UIController.getInstance().getCurrentAbstractDataPackage(),
+        UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage(),
         refsDropdownListener, (Frame)topLevelContainer);
 
     listPanel.add(refsDropdown);
@@ -917,7 +917,7 @@ public class PartyPage extends AbstractUIPage {
 				
 				//values in dialog need to be written to original (referenced) party,
 				referencesHandler.updateOriginalReferenceSubtree(
-            UIController.getInstance().getCurrentAbstractDataPackage(),
+            UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage(),
             backupReferencesNodeIDString,
             this.getPageData("/thisXPathRootWillGetReplaced"), ignoreList);
 
@@ -967,7 +967,7 @@ public class PartyPage extends AbstractUIPage {
   public void onLoadAction() {
 
     referencesHandler.updateJComboBox(
-        UIController.getInstance().getCurrentAbstractDataPackage(),
+        UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage(),
         refsDropdown, getRefID());
 
     //backupExists will be false only the first
@@ -994,7 +994,7 @@ public class PartyPage extends AbstractUIPage {
     if (notNullAndNotEmpty(referenceIdString))return referenceIdString;
 
     AbstractDataPackage abs
-        = UIController.getInstance().getCurrentAbstractDataPackage();
+        = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
 
     if (abs == null) {
       Log.debug(45, "*** ERROR - PartyPage.getRefID() can't get AbsDataPkg");
@@ -1771,7 +1771,7 @@ public class PartyPage extends AbstractUIPage {
 
     //get party details from AbstractDataPackage...
     AbstractDataPackage abs
-        = UIController.getInstance().getCurrentAbstractDataPackage();
+        = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
 
     if (abs == null) {
       Log.debug(45,

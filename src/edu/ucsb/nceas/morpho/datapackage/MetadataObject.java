@@ -26,38 +26,22 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.TransformerException;
+import java.util.Map;
+
 import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.*;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
+import org.apache.xpath.objects.XObject;
+import org.dataone.client.D1Object;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import com.arbortext.catalog.*;
-import java.io.*;
-import java.util.*;
-
-import org.xml.sax.InputSource;
-
-import org.apache.xpath.XPathAPI;
-import org.dataone.client.DataPackage;
-
-import java.util.Vector;
-import java.util.Hashtable;
 
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.utilities.*;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
- * class that represents a data package.
+ * class that represents a metadata object.
  */
-public class MetadataObject extends DataPackage
+public class MetadataObject extends D1Object
 {
   /**
    * Document node of the in-memory DOM structure

@@ -120,9 +120,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
 
   /**
-   * The AbstractDataPackage that contains the data
+   * The MorphoDataPackage that contains the data
    */
-  AbstractDataPackage adp;
+  MorphoDataPackage mdp;
 
   /**
    * toppanel is added to packageMetadataPanel by init
@@ -247,6 +247,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           try {
             mdi.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
                             XMLTransformer.XSLVALU_DISPLAY_ENTITY);
+            AbstractDataPackage adp = mdp.getAbstractDataPackage();
             String entityType = adp.getEntityType(lastTabSelected);
 			mdi.useTransformerProperty(XMLTransformer.SELECTED_ENTIY_TYPE_XSLPROP,
 					 entityType);
@@ -288,10 +289,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * this constructor uses an 'AbstractDataPackage' object
    * to build the interior object in the Panel
    */
-  public DataViewContainerPanel(AbstractDataPackage adp)
+  public DataViewContainerPanel(MorphoDataPackage mdp)
   {
     this();
-    this.adp = adp;
+    this.mdp = mdp;
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(5,5));
 
@@ -455,6 +457,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // id is the id of the Entity metadata module
       // code from here to 'end_setup' comment sets up the display for the
       // entity metadata
+      AbstractDataPackage adp = mdp.getAbstractDataPackage();
 //DFH      String id = getEntityIDForThisEntityName(item);
       String id = adp.getMetadataId();
         if ((id==null)||(id.equals(""))) id = "tempid";
@@ -554,6 +557,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     private void initDPMetaView(boolean hasData)
     {
 // -------------- D A T A P A C K A G E   M e t a D i s p l a y ----------------
+    	AbstractDataPackage adp = mdp.getAbstractDataPackage();
       MetaDisplayInterface md = getMetaDisplayInstance();
       md.addEditingCompleteListener(this);
       md.setTitle(TOP_METAVIEW_TITLE);
@@ -582,6 +586,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         vertSplit.setDividerLocation(1.0);
       }
       try{
+    	  
         String tempid = adp.getMetadataId();
         if ((tempid==null)||(tempid.equals(""))) tempid = "tempid";
         mdcomponent = md.getDisplayComponent( tempid, adp,
@@ -751,6 +756,7 @@ public void setTopPanel(JPanel jp) {
           boolean changeFlag = dvArray[i].getDataChangedFlag();
           if (changeFlag) {
             dvArray[i].saveCurrentTable(false);
+            AbstractDataPackage adp = mdp.getAbstractDataPackage();
             adp.setLocation("");
             int entityIndex = dvArray[i].getEntityIndex();
             adp.addDirtyEntityIndex(entityIndex);
@@ -770,12 +776,14 @@ public void setTopPanel(JPanel jp) {
    */
   public void removeDataChanges() {
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    adp = morphoFrame.getAbstractDataPackage();  
+    mdp = morphoFrame.getMorphoDataPackage(); 
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
     AbstractDataPackage tempAdp = null;
     Entity[] entArray = null;
     try{
-      tempAdp = DataStoreServiceController.getInstance().read(adp.getAccessionNumber(), adp.getLocation());
+      MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(adp.getAccessionNumber(), adp.getLocation());
+      tempAdp = mdp.getAbstractDataPackage();
       entArray = tempAdp.getEntityArray();
     }catch(Exception e){
       Log.debug(20,"Unable to read the file in RevertCommand.java");
@@ -817,6 +825,7 @@ public void setTopPanel(JPanel jp) {
       currentDataPanelOld.removeAll();
       lastTabSelected = index;
       String dataId = null;
+      AbstractDataPackage adp = mdp.getAbstractDataPackage();
         if (adp==null) {
           Log.debug(1, "adp is null! No data package");
           return;
@@ -905,7 +914,7 @@ public void setTopPanel(JPanel jp) {
 //                  "Information", JOptionPane.INFORMATION_MESSAGE );
         }
         dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
-        dv.setAbstractDataPackage(adp);
+        dv.setMorphoDataPackage(mdp);
         dv.setEntityIndex(index);
 
         dv.setDataFile(displayFile);
@@ -1087,10 +1096,10 @@ public void setTopPanel(JPanel jp) {
   }
 
  /**
-  *  returns the AbstractDataPackage for this Panel
+  *  returns the MorphoDataPackage for this Panel
   */
- public AbstractDataPackage getAbstractDataPackage() {
-    return adp;
+ public MorphoDataPackage getMorphoDataPackage() {
+    return mdp;
   }
 
  /**
@@ -1104,7 +1113,7 @@ public void setTopPanel(JPanel jp) {
   * get location of the AbstractDataPackage associated with this object
   */
  public String getPackageLocation() {
-   AbstractDataPackage adp = getAbstractDataPackage();
+   AbstractDataPackage adp = getMorphoDataPackage().getAbstractDataPackage();
    return adp.getLocation();
  }
 
@@ -1206,7 +1215,9 @@ public void setTopPanel(JPanel jp) {
       ServiceController services = ServiceController.getInstance();
       ServiceProvider provider = services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-      dataPackageInt.openNewDataPackage(newadp, null);
+      MorphoDataPackage mdp = new MorphoDataPackage();
+      mdp.setAbstractDataPackage(newadp);
+      dataPackageInt.openNewDataPackage(mdp, null);
       uicontroller.removeWindow(morphoFrame);
       morphoFrame.dispose();
 

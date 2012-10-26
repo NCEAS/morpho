@@ -14,6 +14,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.Attribute;
 import edu.ucsb.nceas.morpho.datapackage.DataViewer;
 import edu.ucsb.nceas.morpho.datapackage.DelimiterField;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.PersistentTableModel;
 import edu.ucsb.nceas.morpho.datapackage.PersistentVector;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -21,8 +22,6 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.StateChangeEvent;
-import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -36,7 +35,7 @@ public class InsertingAttributeImportWizardListener implements DataPackageWizard
 {
   
   private MorphoFrame morphoFrame = null;
-  private AbstractDataPackage adp = null;
+  private MorphoDataPackage mdp = null;
   private WizardContainerFrame wizardFrame = null;
   private int entityIndex = -1;
   private int selectedAttributeIndex = -1;
@@ -53,13 +52,13 @@ public class InsertingAttributeImportWizardListener implements DataPackageWizard
    * @param attributeIndex the index of editing attribute
    * @param beforeFalg the new column is before the selection of not
    */
-  public InsertingAttributeImportWizardListener(MorphoFrame morphoFrame, AbstractDataPackage adp, 
+  public InsertingAttributeImportWizardListener(MorphoFrame morphoFrame, MorphoDataPackage mdp, 
                                                                 WizardContainerFrame wizardFrame,  int entityIndex, int attributeIndex, 
                                                                 Boolean beforeFlag) throws Exception
   {
     this.morphoFrame = morphoFrame;
-    this.adp = adp;
-    if(morphoFrame == null || adp == null || wizardFrame == null)
+    this.mdp = mdp;
+    if(morphoFrame == null || mdp == null || wizardFrame == null)
     {
       throw new Exception("The morpho frame or dataPackage is null in InsertingAttributeImportWizardListener");
     }
@@ -83,14 +82,14 @@ public class InsertingAttributeImportWizardListener implements DataPackageWizard
     
     DataViewer dataView = morphoFrame.getDataViewContainerPanel().getCurrentDataViewer();
     OrderedMap map = wizardFrame.getEditingAttributeMap(); 
-    insertEml2Column(adp, dataView , entityIndex, selectedAttributeIndex, map, xPath, beforeFlag);
+    insertEml2Column(mdp, dataView , entityIndex, selectedAttributeIndex, map, xPath, beforeFlag);
     try
     {
       ServiceController services = ServiceController.getInstance();
       ServiceProvider provider =
       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-      dataPackageInt.openNewDataPackage(adp, null);
+      dataPackageInt.openNewDataPackage(mdp, null);
     }
     catch (ServiceNotHandledException snhe)
     {
@@ -131,7 +130,7 @@ public class InsertingAttributeImportWizardListener implements DataPackageWizard
   /*
    * Inserts a column in both data package and gui
    */
-  private void insertEml2Column(AbstractDataPackage adp, DataViewer dataView ,
+  private void insertEml2Column(MorphoDataPackage mdp, DataViewer dataView ,
       int enIndex, int selectedCol, OrderedMap map, String xPath, boolean beforeFlag)
   {
 
@@ -165,11 +164,11 @@ public class InsertingAttributeImportWizardListener implements DataPackageWizard
     {
       if (beforeFlag)
       {
-        insertNewAttributeAt(adp, map, selectedCol, dataView, enIndex);
+        insertNewAttributeAt(mdp, map, selectedCol, dataView, enIndex);
       }
       else
       {
-        insertNewAttributeAt(adp, map, (selectedCol+1), dataView, enIndex);
+        insertNewAttributeAt(mdp, map, (selectedCol+1), dataView, enIndex);
       }
 
     }//try
@@ -216,7 +215,7 @@ public class InsertingAttributeImportWizardListener implements DataPackageWizard
   /*
    * Inserts a new attribute into data package
    */
-  private void insertNewAttributeAt(AbstractDataPackage dataPackage, OrderedMap map, int index, DataViewer dataView, int enIndex)
+  private void insertNewAttributeAt(MorphoDataPackage mdp, OrderedMap map, int index, DataViewer dataView, int enIndex)
   {
     if(map == null) {
       Log.debug(15,"Error retrieving OrderedMap while Inserting Column");
@@ -224,11 +223,12 @@ public class InsertingAttributeImportWizardListener implements DataPackageWizard
     }
     map.put("/attribute/@id", UISettings.getUniqueID());
     Attribute attrObject = new Attribute(map);
-    if(dataPackage == null)
-      dataPackage = dataView.getAbstractDataPackage();
+    if(mdp == null)
+      mdp = dataView.getMorphoDataPackage();
     if(enIndex == -1)
       enIndex = dataView.getEntityIndex();
-    dataPackage.insertAttribute(enIndex, attrObject, index);
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
+    adp.insertAttribute(enIndex, attrObject, index);
 
   }
   

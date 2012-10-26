@@ -557,7 +557,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 			}*/
 			
 			//put additional metadata in the adp
-			AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
 			if (adp == null) {
 				Log.debug(7, "Error obtaining the datapackage while trying to add a custom unit!!");
 			} else {
@@ -1002,7 +1002,7 @@ class UnitsPickList extends JPanel {
 				this.unitsList.hidePopup();
 			}
 		}
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
 		if(adp == null) {
 
 			Log.debug(7, "Error obtaining the datapackage while trying to add a custom unit!!");
@@ -1087,7 +1087,7 @@ class UnitsPickList extends JPanel {
 		String[] totTypesArray = unitTypesArray;
 
 		String[] customTypesArray = new String[0];
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
 		if(adp != null) {
 			customTypesArray = adp.getUnitDictionaryCustomUnitTypes();
 			if(customTypesArray != null && customTypesArray.length > 0) {

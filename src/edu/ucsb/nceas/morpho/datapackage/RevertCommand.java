@@ -42,8 +42,8 @@ public class RevertCommand implements Command
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
 
-  /** A reference to the AbstractDataPackage to be saved */
-  private AbstractDataPackage adp = null;
+  /** A reference to the MorphoDataPackage to be saved */
+  private MorphoDataPackage mdp = null;
 
 
   /**
@@ -80,15 +80,17 @@ public class RevertCommand implements Command
        dvcp = morphoFrame.getDataViewContainerPanel();
     }//if
     if (dvcp!=null) {
-      adp = morphoFrame.getAbstractDataPackage();
+      mdp = morphoFrame.getMorphoDataPackage();
       
       AbstractDataPackage tempAdp = null;
       Entity[] entArray = null;
       DataViewer dv = dvcp.getCurrentDataViewer();
       int entityIndex = dv.getEntityIndex();
 
-      try {
-        tempAdp = DataStoreServiceController.getInstance().read(adp.getAccessionNumber(), adp.getLocation());
+	AbstractDataPackage adp = mdp.getAbstractDataPackage();
+	try {
+          MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(adp.getAccessionNumber(), adp.getLocation());
+          tempAdp = mdp.getAbstractDataPackage();
       } catch(Exception e){
         Log.debug(5,"Check if the datapackage was saved.");
       }

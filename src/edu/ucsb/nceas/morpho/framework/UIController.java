@@ -48,6 +48,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import org.w3c.dom.Document;
@@ -590,7 +591,7 @@ public class UIController
      * window; returns null if current window is null, or if current window does
      * not contain an AbstractDataPackage
      */
-    public AbstractDataPackage getCurrentAbstractDataPackage() {
+    public MorphoDataPackage getCurrentAbstractDataPackage() {
     
 	      if (isWizardRunning() && newDataPackageWziardWindowIsActive) {
 	        // *temporary* AbstractDataPackage that is used to store wizard data
@@ -599,7 +600,9 @@ public class UIController
 	                  + "getCurrentAbstractDataPackage() -"
 	                  + " isWizardRunning() == true. pkg = \n"
 	                  + this.wizardTempDataPackage);
-	        return this.wizardTempDataPackage;
+	        MorphoDataPackage mdp = new MorphoDataPackage();
+	        mdp.setAbstractDataPackage(wizardTempDataPackage);
+	        return mdp;
 	      }
 	
 	      MorphoFrame morphoFrame = this.getCurrentActiveWindow();
@@ -612,7 +615,7 @@ public class UIController
 	      }
 	      Log.debug(50, "\n\n========================="
             + "getCurrentAbstractDataPackage() from morpho frame!!!");
-	      return morphoFrame.getAbstractDataPackage();
+	      return morphoFrame.getMorphoDataPackage();
   
   }
     
@@ -664,7 +667,7 @@ public class UIController
                   +"morphoFrame==null, returning NULL");
         return null;
       }
-      return morphoFrame.getAbstractDataPackage();
+      return morphoFrame.getMorphoDataPackage().getAbstractDataPackage();
     }
 		
 		
@@ -870,7 +873,7 @@ public class UIController
     MorphoFrame frame = this.getCurrentActiveWindow();
 
     if (frame != null)panel = frame.getDataViewContainerPanel();
-    if (panel != null)adp = panel.getAbstractDataPackage();
+    if (panel != null)adp = panel.getMorphoDataPackage().getAbstractDataPackage();
 
     Document thisdoc = adp.getMetadataNode().getOwnerDocument();
     String id = adp.getMetadataId();
@@ -1280,8 +1283,8 @@ public class UIController
    * with no change in location
    * @param adp AbstractDataPackage
    */
-  public static void showNewPackageNoLocChange(AbstractDataPackage adp) {
-    showNewPackage_base(adp);   
+  public static void showNewPackageNoLocChange(MorphoDataPackage mdp) {
+    showNewPackage_base(mdp);   
   }
 
   /**
@@ -1289,12 +1292,14 @@ public class UIController
    *
    * @param adp AbstractDataPackage
    */
-  public static void showNewPackage(AbstractDataPackage adp) {
+  public static void showNewPackage(MorphoDataPackage mdp) {
+	  AbstractDataPackage adp = mdp.getAbstractDataPackage();
     adp.setLocation("");
-    showNewPackage_base(adp);   
+    mdp.setAbstractDataPackage(adp);
+    showNewPackage_base(mdp);   
   }
   
-  private static void showNewPackage_base(AbstractDataPackage adp) {
+  private static void showNewPackage_base(MorphoDataPackage mdp) {
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     Point pos = morphoFrame.getLocation();
     Dimension size = morphoFrame.getSize();
@@ -1304,7 +1309,7 @@ public class UIController
       ServiceProvider provider =
                 services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openHiddenNewDataPackage(adp, null);
+      dataPackage.openHiddenNewDataPackage(mdp, null);
       UIController controller = UIController.getInstance();
       MorphoFrame newMorphoFrame = controller.getCurrentActiveWindow();
       newMorphoFrame.setLocation(pos);

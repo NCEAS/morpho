@@ -72,7 +72,8 @@ public class EMLTransformToNewestVersionDialog
 	{
 		this.morphoFrame = frame;
 		this.listener = listener;
-		AbstractDataPackage dataPackage = morphoFrame.getAbstractDataPackage();
+		MorphoDataPackage mdp = morphoFrame.getMorphoDataPackage();
+		AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
 		if (dataPackage != null && dataPackage instanceof EML200DataPackage)
 		{
 			eml200Package = (EML200DataPackage)dataPackage;
@@ -124,7 +125,6 @@ public class EMLTransformToNewestVersionDialog
 	{
 		if (userChoice == JOptionPane.YES_OPTION && morphoFrame != null)
 		{
-			AbstractDataPackage dataPackage = morphoFrame.getAbstractDataPackage();
 			if (eml200Package != null)
 			{
 				//TODO transform the datapakcage to the newest version
@@ -152,7 +152,8 @@ public class EMLTransformToNewestVersionDialog
 		                //String newid = an.incRev(id);
 		                //eml200Package.setAccessionNumber(newid);
 		                eml200Package.setLocation("");//not save it yet
-		                
+		                MorphoDataPackage mdp = new MorphoDataPackage();
+	                    mdp.setAbstractDataPackage(eml200Package);
 		                 if(hasError)
 		                 {
 		                	//it may be invalid document since our eml201to210 transform
@@ -170,7 +171,8 @@ public class EMLTransformToNewestVersionDialog
 		                	Log.debug(40, "In there is no errors path list branch or not useCorrectionWizard");
 		                    //this is a valid new version eml document (or uses don't like to use correctionwizard. Display it and depose old frame
 		                    DataPackagePlugin plugin = new DataPackagePlugin(morpho);
-		                    plugin.openNewDataPackage(eml200Package,null);
+		                    
+		                    plugin.openNewDataPackage(mdp, null);
 		                    morphoFrame.setVisible(false);                
 			                UIController controller = UIController.getInstance();
 			                controller.removeWindow(morphoFrame);
@@ -193,7 +195,7 @@ public class EMLTransformToNewestVersionDialog
 		 			                services.getServiceProvider(DataPackageWizardInterface.class);
 		 			            DataPackageWizardInterface wizard = (DataPackageWizardInterface)provider;
 		 			            //we pass the listener to correction wizard and let it handle the listener.
-		 			            wizard.startCorrectionWizard(eml200Package, errorPathList, morphoFrame, listener);
+		 			            wizard.startCorrectionWizard(mdp, errorPathList, morphoFrame, listener);
 		 		
 		 			         } 
 		                	 catch (ServiceNotHandledException snhe) 

@@ -87,7 +87,8 @@ public class ImportOtherEntityCommand implements Command {
 		// make sure resulPanel is not null
 		if (resultPane != null) {
 
-			final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
+			MorphoDataPackage mdp = resultPane.getMorphoDataPackage();
+			final AbstractDataPackage adp = mdp.getAbstractDataPackage();
 			int entityIndex = adp.getEntityCount();
 				
 			// show the dialog
@@ -122,12 +123,13 @@ public class ImportOtherEntityCommand implements Command {
 				
 				// refresh the window
 				adp.setLocation(""); // we've changed it and not yet saved
+				mdp.setAbstractDataPackage(adp);
 				try {
 					ServiceController services = ServiceController.getInstance();
 					ServiceProvider provider = 
 						services.getServiceProvider(DataPackageInterface.class);
 					DataPackageInterface dataPackageInt = (DataPackageInterface) provider;
-					dataPackageInt.openNewDataPackage(adp, null);
+					dataPackageInt.openNewDataPackage(mdp, null);
 				} catch (ServiceNotHandledException snhe) {
 					Log.debug(6, snhe.getMessage());
 				}

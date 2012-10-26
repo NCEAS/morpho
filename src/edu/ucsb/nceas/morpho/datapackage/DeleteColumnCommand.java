@@ -26,23 +26,18 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.Command;
-
-import java.util.Vector;
-
 import java.awt.event.ActionEvent;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.Command;
 
 /**
  * Class to handle delete  a column command
@@ -93,14 +88,14 @@ public class DeleteColumnCommand implements Command
        if (dataView != null)
        {
          // Get parameters and run it
-         AbstractDataPackage adp = dataView.getAbstractDataPackage();
+         MorphoDataPackage mdp = dataView.getMorphoDataPackage();
          int entityIndex = dataView.getEntityIndex();
          JTable jtable=dataView.getDataTable();
          PersistentTableModel ptmodel=(PersistentTableModel)jtable.getModel();
          PersistentVector vector=dataView.getPV();
          Document attributeDocument=dataView.getAttributeDoc();
          Vector columnLabels=dataView.getColumnLabels();
-         deleteColumn(jtable, ptmodel, vector, adp, entityIndex, columnLabels);
+         deleteColumn(jtable, ptmodel, vector, mdp, entityIndex, columnLabels);
          dataView.setPV(ptmodel.getPersistentVector());
        }
 
@@ -120,13 +115,14 @@ public class DeleteColumnCommand implements Command
    * @param column_labels Vector
    */
   private void deleteColumn(JTable table, PersistentTableModel ptm,
-                           PersistentVector pv, AbstractDataPackage adp,
+                           PersistentVector pv, MorphoDataPackage mdp,
                            int entityIndex, Vector column_labels)
   {
 	  int viewIndex = table.getSelectedColumn();
 	  int sel =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
     if (sel>-1)
     {
+    	AbstractDataPackage adp = mdp.getAbstractDataPackage();
       adp.deleteAttribute(entityIndex, sel);
 
       column_labels.removeElementAt(sel);
@@ -137,40 +133,6 @@ public class DeleteColumnCommand implements Command
 
     }
   }
-
-
-  /**
-   * Method to delete a column into table This is the method used for Morpho
-   * version 1.4 and earlier
-   *
-   * @param table JTable
-   * @param ptm PersistentTableModel
-   * @param pv PersistentVector
-   * @param attributeDoc Document
-   * @param column_labels Vector
-   */
-  private void deleteColumn(JTable table, PersistentTableModel ptm,
-                           PersistentVector pv, Document attributeDoc,
-                           Vector column_labels)
-  {
-	  int viewIndex = table.getSelectedColumn();
-	  int sel =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
-    if (sel>-1)
-    {
-      // remove the attribute node associated with the column
-      NodeList nl = attributeDoc.getElementsByTagName("attribute");
-      Node deleteNode = nl.item(sel);
-      Node root = attributeDoc.getDocumentElement();
-      root.removeChild(deleteNode);
-
-      column_labels.removeElementAt(sel);
-      ptm.deleteColumn(sel);
-      pv = ptm.getPersistentVector();
-      ptm.fireTableStructureChanged();
-    }
-
-  }//deleteColumn
-
 
   /**
    * could also have undo functionality; disabled for now

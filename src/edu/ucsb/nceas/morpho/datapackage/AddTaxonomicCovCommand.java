@@ -176,11 +176,10 @@ public class AddTaxonomicCovCommand implements Command, DataPackageWizardListene
 
         //gets here if user has pressed "cancel" on dialog... ////////////////////
 
-        AbstractDataPackage adp = UIController.getInstance().
-                                  getCurrentAbstractDataPackage();
+        MorphoDataPackage mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
         //Restore project subtree to state it was in when we started...
-
+        AbstractDataPackage adp = mdp.getAbstractDataPackage();
         adp.removeTaxonomicNodes();
 				if (existingValuesMap != null) {
 					OrderedMap newMap = preprendKeysWithString(existingValuesMap, "/coverage");
@@ -203,10 +202,12 @@ public class AddTaxonomicCovCommand implements Command, DataPackageWizardListene
   private void insertTaxonomicNode(OrderedMap map) {
 
     //OrderedMap map = taxonomicPage.getPageData("/coverage/taxonomicCoverage[1]");
-    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    MorphoDataPackage mdp = UIController.getInstance().getCurrentAbstractDataPackage();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
+
 		Node covRoot = null;
 		
-		if(adp == null) return;
+		if (mdp == null) return;
     try {
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
       Document doc = impl.createDocument("", "coverage", null);
@@ -225,7 +226,8 @@ public class AddTaxonomicCovCommand implements Command, DataPackageWizardListene
       w.printStackTrace();
     }
 
-    UIController.showNewPackage(adp);
+    mdp.setAbstractDataPackage(adp);
+    UIController.showNewPackage(mdp);
 
   }
 
@@ -288,8 +290,9 @@ public class AddTaxonomicCovCommand implements Command, DataPackageWizardListene
 
   private boolean backupAndDisplayCurrentData() {
 
-    AbstractDataPackage adp = UIController.getInstance().
+    MorphoDataPackage mdp = UIController.getInstance().
                               getCurrentAbstractDataPackage();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
     if (adp == null) return false;
 

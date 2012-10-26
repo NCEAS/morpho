@@ -118,7 +118,8 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 	    if ( resultPane != null) {
 
 	//DFH      DataPackage dp = resultPane.getDataPackage();
-	      final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
+	    	MorphoDataPackage mdp = resultPane.getMorphoDataPackage();
+	      final AbstractDataPackage adp = mdp.getAbstractDataPackage();
 	     
 	      if(adp == null)
 	      {
@@ -141,7 +142,7 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 
 	          Log.debug(6, snhe.getMessage());
 	        }
-	        EntityWizardListener dataPackageWizardListener = new EntityWizardListener(adp, nextEntityIndex, morphoFrame);
+	        EntityWizardListener dataPackageWizardListener = new EntityWizardListener(mdp, nextEntityIndex, morphoFrame);
 	        dpw.startEntityWizard(morphoFrame, dataPackageWizardListener, nextEntityIndex);
 
 	    }//if

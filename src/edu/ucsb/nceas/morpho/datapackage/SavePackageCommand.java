@@ -25,19 +25,12 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import java.awt.event.ActionEvent;
+
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SaveCommandInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.GUIAction;
-import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.event.ActionEvent;
-import javax.swing.JDialog;
 
 
 /**
@@ -50,7 +43,7 @@ public class SavePackageCommand implements Command, SaveCommandInterface
   private MorphoFrame morphoFrame = null;
 
   /** A reference to the AbstractDataPackage to be saved */
-  private AbstractDataPackage adp = null;
+  private MorphoDataPackage mdp = null;
   
   /** A flag indicating whether to display newly saved package */
   private boolean showPackageFlag = true;
@@ -67,17 +60,17 @@ public class SavePackageCommand implements Command, SaveCommandInterface
    * Constructor of SavePackageCommand
    *
    */
-  public SavePackageCommand(AbstractDataPackage adp)
+  public SavePackageCommand(MorphoDataPackage mdp)
   {
-    this.adp = adp;
+    this.mdp = mdp;
   }//SavePackageCommand
   
   /**
    *  constructor with boolean to determine if saved package is displayed
    */
-  public SavePackageCommand(AbstractDataPackage adp, boolean showPackageFlag)
+  public SavePackageCommand(MorphoDataPackage mdp, boolean showPackageFlag)
   {
-    this.adp = adp;
+    this.mdp = mdp;
     this.showPackageFlag = showPackageFlag;
   }
    
@@ -95,9 +88,9 @@ public class SavePackageCommand implements Command, SaveCommandInterface
     }//if
     if (dvcp!=null) {
       dvcp.saveDataChanges();  // needed to flag datatable changes
-      adp = dvcp.getAbstractDataPackage();
+      mdp = dvcp.getMorphoDataPackage();
     }
-    new SaveDialog(adp, showPackageFlag);
+    new SaveDialog(mdp, showPackageFlag);
 
   }//execute
 

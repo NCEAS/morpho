@@ -894,24 +894,27 @@ public class DataPackagePlugin
    */
   public void openIncompleteDataPackage(String identifier, ButterflyFlapCoordinator coordinator)
   {
+	  // TODO: retrieve more than just ADP from incomplete
 	  AbstractDataPackage adp = null;
-	  adp =DataPackageFactory.getDataPackageFromIncompeteDir(identifier);
+	  adp = DataPackageFactory.getDataPackageFromIncompeteDir(identifier);
 	  /*if(adp.getCompletionStatus().equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
 	  {
 	    adp.setAccessionNumber(NewPackageWizardListener.TEMPORARYID);
 	  }*/  
-	  openIncompleteDataPackage(adp, coordinator);
+	  MorphoDataPackage mdp = new MorphoDataPackage();
+	  mdp.setAbstractDataPackage(adp);
+	  openIncompleteDataPackage(mdp, coordinator);
   }
   
   /*
    * Opens an incomplete data pacakge base on an AbstractDataPackage 
    */
-  private void openIncompleteDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
+  private void openIncompleteDataPackage(MorphoDataPackage mdp, ButterflyFlapCoordinator coordinator)
   {
 	  ServiceController sc;
 	    DataPackageWizardInterface dpwPlugin = null;
 	    try {
-	      if(adp == null)
+	      if(mdp == null)
 	      {
 	    	  Log.debug(5, "The data package which will be opened is null!");
     		  return;
@@ -919,7 +922,7 @@ public class DataPackagePlugin
 	      sc = ServiceController.getInstance();
 	      //EML200DataPackage eml200 = (EML200DataPackage)adp;	     
 	      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(DataPackageWizardInterface.class);
-	      dpwPlugin.loadIncompleteDocument(adp);
+	      dpwPlugin.loadIncompleteDocument(mdp);
 
 	    }
 	    catch (ServiceNotHandledException se) {
@@ -942,7 +945,8 @@ public class DataPackagePlugin
       Log.debug(5, "Morpho couldn't open the package at this location - "+location);
       return;
     }
-    adp = DataStoreServiceController.getInstance().read(identifier, location);
+    MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(identifier, location);
+    adp = mdp.getAbstractDataPackage();
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
 
@@ -972,7 +976,7 @@ public class DataPackagePlugin
     long starttime1 = System.currentTimeMillis();
 
     DataViewContainerPanel dvcp = null;
-    dvcp = new DataViewContainerPanel(adp);
+    dvcp = new DataViewContainerPanel(mdp);
     dvcp.setFramework(morpho);
 
     dvcp.init();
@@ -1075,9 +1079,9 @@ public class DataPackagePlugin
  * @param visible if this frame visible
  * @return a MorphoFrame which displays the data package
  */
-  public MorphoFrame openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator, boolean visible)
+  public MorphoFrame openNewDataPackage(MorphoDataPackage mdp, ButterflyFlapCoordinator coordinator, boolean visible)
   {
-    return openNewDataPackageFrame(adp, coordinator, visible);
+    return openNewDataPackageFrame(mdp, coordinator, visible);
   }
   
   /**
@@ -1086,10 +1090,10 @@ public class DataPackagePlugin
    * @param coordinator the coordinator 
    * @return a MorphoFrame which displays the data package
    */
-    public MorphoFrame openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
+    public MorphoFrame openNewDataPackage(MorphoDataPackage mdp, ButterflyFlapCoordinator coordinator)
     {
       boolean visible = true;
-      return openNewDataPackageFrame(adp, coordinator, visible);
+      return openNewDataPackageFrame(mdp, coordinator, visible);
     }
 
   
@@ -1097,10 +1101,11 @@ public class DataPackagePlugin
    *  This method is to be used to display a newly created AbstractDataPackage
    *  location and identifier have not yet been established
    */
-  private MorphoFrame openNewDataPackageFrame(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator, boolean visible)
+  private MorphoFrame openNewDataPackageFrame(MorphoDataPackage mdp, ButterflyFlapCoordinator coordinator, boolean visible)
   {
-    Log.debug(11, "DataPackage: Got service request to open a newly created AbstractDataPackage");
+    Log.debug(11, "DataPackage: Got service request to open a newly created MorphoDataPackage");
 
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
                 "Data Package: "+adp.getAccessionNumber());
@@ -1123,7 +1128,7 @@ public class DataPackagePlugin
     long starttime1 = System.currentTimeMillis();
 
     DataViewContainerPanel dvcp = null;
-    dvcp = new DataViewContainerPanel(adp);
+    dvcp = new DataViewContainerPanel(mdp);
     dvcp.setFramework(morpho);
     dvcp.init();
     long stoptime1 = System.currentTimeMillis();
@@ -1205,9 +1210,10 @@ public class DataPackagePlugin
    *
    *  This window will have a visibility of false!
    */
-  public void openHiddenNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
+  public void openHiddenNewDataPackage(MorphoDataPackage mdp, ButterflyFlapCoordinator coordinator)
   {
-    Log.debug(11, "DataPackage: Got service request to open a newly created AbstractDataPackage");
+    Log.debug(11, "DataPackage: Got service request to open a newly created MorphoDataPackage");
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     boolean metacat = false;
     boolean local = false;
 
@@ -1232,7 +1238,7 @@ public class DataPackagePlugin
     long starttime1 = System.currentTimeMillis();
 
     DataViewContainerPanel dvcp = null;
-    dvcp = new DataViewContainerPanel(adp);
+    dvcp = new DataViewContainerPanel(mdp);
     dvcp.setFramework(morpho);
     dvcp.init();
     long stoptime1 = System.currentTimeMillis();
@@ -1328,15 +1334,15 @@ public class DataPackagePlugin
   public String upload(String docid) throws MetacatUploadException
   {
     // get the local copy
-    AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
+	MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
     
     // save remote
-	DataStoreServiceController.getInstance().save(adp, DataPackageInterface.METACAT);
+	DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.METACAT);
 	
 	// check
-    AbstractDataPackage newadp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
-    if (newadp != null) {
-         return newadp.getMetadataId();
+	MorphoDataPackage newmdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
+    if (newmdp != null) {
+         return newmdp.getAbstractDataPackage().getMetadataId();
     }
     else {
     	return null;
@@ -1354,17 +1360,17 @@ public class DataPackagePlugin
 	public String download(String docid) {
 
 		// get from remote, save to local
-		AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
+		MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
 
 		try {
-			DataStoreServiceController.getInstance().save(adp, DataPackageInterface.LOCAL);
+			DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL);
 		} catch (Exception w) {
 			Log.debug(5, "Exception serializing local package in 'download'");
 		}
-		AbstractDataPackage newadp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
+		MorphoDataPackage newmdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
 
-		if (newadp != null) {
-			return newadp.getMetadataId();
+		if (newmdp != null) {
+			return newmdp.getAbstractDataPackage().getMetadataId();
 		} else {
 			return null;
 		}
@@ -1387,9 +1393,9 @@ public class DataPackagePlugin
 			}
 			Morpho.thisStaticInstance.getLocalDataStoreService().deleteInCompleteFile(docid);
 		} else {
-			AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, location);
-			if (adp != null) {
-				DataStoreServiceController.getInstance().delete(adp, location);
+			MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, location);
+			if (mdp != null) {
+				DataStoreServiceController.getInstance().delete(mdp, location);
 				// notify listeners of the delete
 				DeleteEvent deleteEvent = new DeleteEvent(UIController.getInstance().getCurrentActiveWindow(), StateChangeEvent.DELETE_DATAPACKAGE);
 				deleteEvent.setId(docid);
@@ -1408,8 +1414,8 @@ public class DataPackagePlugin
    */
   public void export(String docid, String path, String location)
   {
-    AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, location);
-    DataStoreServiceController.getInstance().export(adp, path);
+	  MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, location);
+	  DataStoreServiceController.getInstance().export(mdp, path);
   }
 
   /**
@@ -1435,8 +1441,8 @@ public class DataPackagePlugin
    */
   public void exportToZip(String docid, String path, String location)
   {
-    AbstractDataPackage adp = DataStoreServiceController.getInstance().read(docid, location);
-    DataStoreServiceController.getInstance().exportToZip(adp, path);
+	  MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, location);
+	  DataStoreServiceController.getInstance().exportToZip(mdp, path);
   }
 
    /**
@@ -1466,7 +1472,7 @@ public class DataPackagePlugin
   public String getDocIdFromMorphoFrame(MorphoFrame morphoFrame)
   {
     String docid = null;
-    AbstractDataPackage adp = getAbstractDataPackageFromMorphoFrame(morphoFrame);
+    AbstractDataPackage adp = getAbstractDataPackageFromMorphoFrame(morphoFrame).getAbstractDataPackage();
     docid = adp.getMetadataId();
     Log.debug(50, "docid is: "+ docid);
     return docid;
@@ -1476,9 +1482,9 @@ public class DataPackagePlugin
    * Method to get package in a given morphoFrame. If the morpho frame doesn't
    * contain a datapackage, null will be returned
    */
-  private AbstractDataPackage getAbstractDataPackageFromMorphoFrame(MorphoFrame morphoFrame)
+  private MorphoDataPackage getAbstractDataPackageFromMorphoFrame(MorphoFrame morphoFrame)
   {
-    AbstractDataPackage data = null;
+	  MorphoDataPackage data = null;
     DataViewContainerPanel resultPane = null;
 
     if (morphoFrame != null)
@@ -1489,7 +1495,7 @@ public class DataPackagePlugin
     // make sure resulPanel is not null
     if (resultPane != null)
     {
-       data = resultPane.getAbstractDataPackage();
+       data = resultPane.getMorphoDataPackage();
     }//if
     return data;
   }//getDataPackageFromMorphoFrame
@@ -1555,7 +1561,10 @@ public class DataPackagePlugin
     ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
     adp.setAccessionNumber(docid);
     adp.removeTracingChangeElement();
-    DataStoreServiceController.getInstance().save(adp, DataPackageInterface.INCOMPLETE);
+    
+    MorphoDataPackage mdp = new MorphoDataPackage();
+    mdp.setAbstractDataPackage(adp);
+	DataStoreServiceController.getInstance().save(mdp , DataPackageInterface.INCOMPLETE);
     //Util.deleteAutoSavedFile(autoSavedID);
     //return adp.getAccessionNumber();
   }
@@ -1587,8 +1596,8 @@ public class DataPackagePlugin
       throw new Exception("Morpho couldn't find a style sheet file at location "+styleSheetLocation);
       
     }
-      
-    AbstractDataPackage dataPackage = DataStoreServiceController.getInstance().read(docid, documentLocation);
+    MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, documentLocation);
+    AbstractDataPackage dataPackage = mdp.getAbstractDataPackage();
     if(dataPackage == null)
     {
       throw new Exception("Morpho couldn't open the data package with docid "+docid+" at the location "+documentLocation);

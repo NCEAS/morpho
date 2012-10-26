@@ -53,6 +53,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -152,13 +153,15 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
    * @throws CacheAccessException
    */
   @Override
-  public AbstractDataPackage read(String identifier) throws FileNotFoundException, CacheAccessException {
+  public MorphoDataPackage read(String identifier) throws FileNotFoundException, CacheAccessException {
 		
 	  File file = openFile(identifier);
 	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 	  AbstractDataPackage adp = DataPackageFactory.getDataPackage(in);
 	  adp.setLocation(DataPackageInterface.METACAT);
-	  return adp;
+	  MorphoDataPackage mdp = new MorphoDataPackage();
+	  mdp.setAbstractDataPackage(adp);
+	  return mdp;
   }
   
   /** Create a new connection to metacat */
@@ -766,9 +769,9 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
    * Delete given ADP from MDS
    */
   @Override
-  public boolean delete(AbstractDataPackage adp) {
+  public boolean delete(MorphoDataPackage mdp) {
 	  // TODO: do more delete of data objects?
-	  return this.deleteFile(adp.getAccessionNumber());
+	  return this.deleteFile(mdp.getAbstractDataPackage().getAccessionNumber());
   }
   
   /**

@@ -102,14 +102,14 @@ implements Command, DataPackageWizardListener {
    */
   public void wizardComplete(Node newDOM, String autoSavedID)
   {
-	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 		
 
 	    if (showKeywordDialog()) {
 
 	      try {
 	        insertKeyword();
-	        UIController.showNewPackage(adp);
+	        UIController.showNewPackage(mdp);
 	      }
 	      catch (Exception w) {
 	        Log.debug(15,"Exception trying to modify keyword DOM: " + w);
@@ -161,6 +161,7 @@ implements Command, DataPackageWizardListener {
 
     OrderedMap existingValuesMap = new OrderedMap();
 
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     List keywordList = adp.getSubtrees(DATAPACKAGE_KEYWORD_GENERIC_NAME);
     existingValuesMap = Util.getOrderedMapFromNodeList(keywordList, DATAPACKAGE_KEYWORD_GENERIC_NAME);
 
@@ -205,6 +206,7 @@ implements Command, DataPackageWizardListener {
          + "Keyword page -\n" + map.toString());
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
     //delete old title from datapackage
     adp.deleteAllSubtrees(DATAPACKAGE_KEYWORD_GENERIC_NAME);
 
@@ -263,6 +265,6 @@ implements Command, DataPackageWizardListener {
   }
 
   private Node keywordRoot;
-  private AbstractDataPackage adp;
+  private MorphoDataPackage mdp;
   private AbstractUIPage keywordPage;
 }
