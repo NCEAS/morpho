@@ -88,5 +88,18 @@ public abstract class DataStoreService implements DataStoreServiceInterface
     return ConfigXML.getConfigDirectory()+File.separator+Morpho.getConfiguration().get("profile_directory", 0);
   }
   
+  
+  /*
+   * Get the cache directory for the current profile.
+   */
+  protected String getCacheDir() {
+    ConfigXML profile = morpho.getProfile();
+    String profileDirName = ConfigXML.getConfigDirectory() + File.separator
+        + config.get("profile_directory", 0) + File.separator
+        + profile.get("profilename", 0);
+    String cachedir = profileDirName + File.separator
+        + profile.get("cachedir", 0);
+    return cachedir;
+  }
 
 }
