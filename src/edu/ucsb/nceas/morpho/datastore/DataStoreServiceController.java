@@ -154,10 +154,12 @@ public class DataStoreServiceController {
 	 */
 	public synchronized String generateIdentifier(String location) {
 		if (location.equals(DataPackageInterface.LOCAL)) {
-			return Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier();
+		  String fragment = null;
+			return Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(fragment);
 		}
 		if (location.equals(DataPackageInterface.METACAT)) {
-			return Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier();
+		  String fragment = null;
+			return Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier(fragment);
 		}
 		return null;
 	}

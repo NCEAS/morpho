@@ -11,6 +11,7 @@
   <plugin>edu.ucsb.nceas.morpho.plugins.printer.PrinterPlugin</plugin>
   <plugin>edu.tesc.scidb.morpho.plugins.ImportMSAccessPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.vocabulary.VocabularyPlugin</plugin>
+  <dataone_mnode_baseurl></dataone_mnode_baseurl>
   <metacat_url>https://knb.ecoinformatics.org/knb/metacat</metacat_url>
   <profile_directory>profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>

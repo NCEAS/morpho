@@ -439,7 +439,7 @@ public class LocalDataStoreService extends DataStoreService
 	 * 
 	 */
   	@Override
-	public synchronized String generateIdentifier() {
+	public synchronized String generateIdentifier(String fragment) {
 		int lastid = -1;
 		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
 		String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);

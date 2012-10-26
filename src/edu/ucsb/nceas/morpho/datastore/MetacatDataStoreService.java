@@ -970,7 +970,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	 * @return
 	 */
 	@Override
-	public String generateIdentifier() {
+	public String generateIdentifier(String fragment) {
 		String identifier = null;
 		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
 		String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
