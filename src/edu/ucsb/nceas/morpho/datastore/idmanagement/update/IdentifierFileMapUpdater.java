@@ -122,6 +122,8 @@ public class IdentifierFileMapUpdater {
     if(objectDirs != null) {  
         for(ObjectDirectory objectDir : objectDirs) {
           File dir = objectDir.getDirectory();
+          File systemMetaDir = new File(dir, File.separator+ProfileDialog.SYSTEMMETADATADIRNAME);
+          systemMetaDir.mkdir();
           boolean isQueryDir = objectDir.isQueryDirectory();            
           try {
             IdentifierFileMap map = new IdentifierFileMap(dir);
