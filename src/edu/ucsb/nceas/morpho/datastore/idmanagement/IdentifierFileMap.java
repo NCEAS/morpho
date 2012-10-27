@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Properties;
 
 import edu.ucsb.nceas.morpho.exception.IdentifierNotFoundException;
+import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 
 
 /**
@@ -80,7 +81,11 @@ public class IdentifierFileMap {
                                          +objectDir.getAbsolutePath());
       
     }
-    this.mappingPropertyFile = new File(this.objectDir, File.separator + LocalIdentifierGenerator.DOT + this.objectDir.getName() + PROPERTYFILESUFFIX);
+    String objectDirName = this.objectDir.getName();
+    if(!objectDirName.startsWith(ProfileDialog.DOT)) {
+      objectDirName = ProfileDialog.DOT+objectDirName;
+    }
+    this.mappingPropertyFile = new File(this.objectDir, File.separator + objectDirName + PROPERTYFILESUFFIX);
     
     if(!this.mappingPropertyFile.exists()) {
       this.mappingPropertyFile.createNewFile();

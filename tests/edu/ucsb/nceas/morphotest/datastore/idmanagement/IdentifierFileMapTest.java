@@ -35,13 +35,13 @@ import edu.ucsb.nceas.morphotest.MorphoTestCase;
 
 public class IdentifierFileMapTest extends MorphoTestCase {
   
-  private static final String objectStorePath = "build/tests/testfiles";
+  private static final String objectStorePath = "build/tmp1";
   private static final String id1 = "10:0=@=10;0 /10\\0";
   private static final String id2 = "tao.10.1";
   private static final String id3 = "tmp.1.1";
-  private static final String filePath1 = "build/tests/testfiles/eml201-reference-system.xml";
-  private static final String filePath2 = "build/tests/testfiles/eml201withadditionalMetacat.xml";
-  private static final String tmpDir = "build/tests/testfiles/tmp";
+  private static final String fileName1 = "name1";
+  private static final String fileName2 = "name2";
+  private static final String tmpDir = objectStorePath+"/tmp";
   private static final String tmpName ="1.1";
   private File file1 = null;
   private File file2 = null;
@@ -54,9 +54,13 @@ public class IdentifierFileMapTest extends MorphoTestCase {
    */
   public IdentifierFileMapTest(String name) {
       super(name);
+      File dir1= new File(objectStorePath);
+      dir1.mkdirs();
+      File dir2 = new File(tmpDir);
+      dir2.mkdirs();
       objectStore = new File(objectStorePath);
-      file1 = new File(filePath1);
-      file2 = new File(filePath2);
+      file1 = new File(objectStorePath, File.separator+fileName1);
+      file2 = new File(objectStorePath, File.separator+fileName2);
   }
   /**
    * Create a suite of tests to be run together
@@ -84,6 +88,8 @@ public class IdentifierFileMapTest extends MorphoTestCase {
    */
   public void testSet() throws Exception {   
    IdentifierFileMap map = new IdentifierFileMap(objectStore);
+   file1.createNewFile();
+   file2.createNewFile();
    map.setMap(id1, file1);
    map.setMap(id2, file2);
    
@@ -102,14 +108,12 @@ public class IdentifierFileMapTest extends MorphoTestCase {
   public void testGet() throws Exception {
     IdentifierFileMap map = new IdentifierFileMap(objectStore);
     File fileOne = map.getFile(id1);
-    File file1 = new File(filePath1);
     System.out.println("the fileone path "+fileOne.getPath());
-    assertTrue("The file associated with id "+id1+ " should be "+filePath1
+    assertTrue("The file associated with id "+id1+ " should be "+file1.getPath()
         ,fileOne.getPath().equals(file1.getPath()));
     File fileTwo = map.getFile(id2);
-    File file2 = new File(filePath2);
     System.out.println("the filetwo path "+fileTwo.getPath());
-    assertTrue("The file associated with id "+id2+ " should be "+filePath2
+    assertTrue("The file associated with id "+id2+ " should be "+file2.getPath()
         ,fileTwo.getPath().equals(file2.getPath()));
     File fileThree = map.getFile(id3);
     File file3 = new File(tmpDir+"/"+tmpName);
