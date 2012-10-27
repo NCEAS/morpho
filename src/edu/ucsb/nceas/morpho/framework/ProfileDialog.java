@@ -55,6 +55,9 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   public static final String INCOMPLETEDIRELEMENTNAME = "incompletedir" ;
   public static final String PROFILENAMEELEMENTNAME = "profilename";
   public static final String QUERIESDIRELEMENTNAME = "queriesdir";
+  public static final String DOT = ".";
+  public static final String SYSTEMMETADATA = "systemmetadata";
+  public static final String SYSTEMMETADATADIRNAME = DOT+ SYSTEMMETADATA;
   ConfigXML config;
   Morpho framework = null;
   /** the total number of screens to be processed */
@@ -683,21 +686,29 @@ public class ProfileDialog extends JDialog implements StateChangeListener
           String dataPath = profilePath + File.separator + dataDirName;
           File dataDir = new File(dataPath);
           success = dataDir.mkdir();
+          File dataSysMetaDir = new File(dataDir, File.separator+SYSTEMMETADATADIRNAME);
+          success = dataSysMetaDir.mkdir();
 
           String cacheDirName = profile.get(CACHEDIRELEMENTNAME, 0);
           String cachePath = profilePath + File.separator + cacheDirName;
           File cacheDir = new File(cachePath);
           success = cacheDir.mkdir();
+          File cacheSysMetaDir = new File(cacheDir, File.separator+SYSTEMMETADATADIRNAME);
+          success = cacheSysMetaDir.mkdir();
 
           String tempDirName = profile.get(TEMPDIRELEMENTNAME, 0);
           String tempPath = profilePath + File.separator + tempDirName;
           File tempDir = new File(tempPath);
           success = tempDir.mkdir();
+          File tempSysMetaDir = new File(tempDir, File.separator+SYSTEMMETADATADIRNAME);
+          success = tempSysMetaDir.mkdir();
           
           String incompleteDirName = profile.get(INCOMPLETEDIRELEMENTNAME, 0);
           String incompletePath = profilePath + File.separator + incompleteDirName;
           File incompleteDir = new File(incompletePath);
           success = incompleteDir.mkdir();
+          File incompleteSysMetaDir = new File(incompleteDir, File.separator+SYSTEMMETADATADIRNAME);
+          success = incompleteSysMetaDir.mkdir();
 
           // Copy sample data to the data directory
           Hashtable tokens = new Hashtable();
