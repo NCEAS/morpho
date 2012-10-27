@@ -101,5 +101,13 @@ public abstract class DataStoreService implements DataStoreServiceInterface
         + profile.get("cachedir", 0);
     return cachedir;
   }
+  
+  /*
+   * Get the system metadata directory associated with the object directory.
+   * This method doesn't guarantee the existing of the system metadata directory. 
+   */
+  protected String getSystemMetadataDir(String objectDir) {
+    return objectDir+File.separator+ProfileDialog.SYSTEMMETADATADIRNAME;
+  }
 
 }
