@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morphotest.MorphoTestCase;
 public class IdentifierFileMapTest extends MorphoTestCase {
   
   private static final String objectStorePath = "build/tmp1";
+  private static final String objectStorePathWithDot = "build/.tmp2";
   private static final String id1 = "10:0=@=10;0 /10\\0";
   private static final String id2 = "tao.10.1";
   private static final String id3 = "tmp.1.1";
@@ -71,7 +72,7 @@ public class IdentifierFileMapTest extends MorphoTestCase {
       suite.addTest(new IdentifierFileMapTest("testSet"));
       suite.addTest(new IdentifierFileMapTest("testGet"));
       suite.addTest(new IdentifierFileMapTest("testRemove"));
-      
+      suite.addTest(new IdentifierFileMapTest("testDotDirectory"));
       return suite;
   }
   
@@ -144,4 +145,23 @@ public class IdentifierFileMapTest extends MorphoTestCase {
     map2.remove(id3);
   }
 
+  /**
+   * Test the object directory starting with dot.
+   */
+  public void testDotDirectory() throws Exception {
+    File objectDir = new File(objectStorePathWithDot);
+    if(!objectDir.exists()) {
+      objectDir.mkdirs();
+    }
+    IdentifierFileMap map = new IdentifierFileMap(objectDir);
+    String name = "name3";
+    String id = "tao.1.1";
+    File file = new File(objectDir, File.separator+name);
+    file.createNewFile();
+    map.setMap(id, file);
+    File fileFromMap = map.getFile(id);
+    System.out.println("the file path from the map is "+fileFromMap.getPath());
+    assertTrue("The file associated with id "+id+ " should end with "+objectDir.getPath()+File.separator+name
+        ,file.getPath().equals(fileFromMap.getPath()));
+  }
 }
