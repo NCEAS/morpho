@@ -328,7 +328,7 @@ public class LocalDataStoreService extends DataStoreService
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  private File saveFile(String name, InputStream inputStream, String rootDir) {
+  public static File saveFile(String name, InputStream inputStream, String rootDir) {
 
 		File file = null;
 		try {
@@ -340,6 +340,25 @@ public class LocalDataStoreService extends DataStoreService
 		return file;
 
 	}
+  
+  /**
+   * Get the file associated with the identifier from the specified object directory.
+   * @param identifier - identifier of the object.
+   * @param objectDir - the specified the directory.
+   * @return the file associated with the identifier.
+   * @throws FileNotFoundException
+   */
+  public static File open(String identifier, String objectDir) throws FileNotFoundException{
+    File file = null;
+    try {
+      file = FileSystemDataStore.getInstance(objectDir).get(identifier);
+    } catch (Exception e) {
+      FileNotFoundException fnfe = new FileNotFoundException(e.getMessage());
+      fnfe.initCause(e);
+      throw fnfe;
+    }
+    return file;
+  }
   
   /**
    * returns a File object in the local repository.
