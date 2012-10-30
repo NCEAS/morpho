@@ -169,7 +169,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    */
   @Override
   public MorphoDataPackage read(String identifier) throws InvalidToken, ServiceFailure, 
-             NotAuthorized, NotFound, NotImplemented, InsufficientResources, FileNotFoundException, IOException {
+             NotAuthorized, NotFound, NotImplemented, InsufficientResources, FileNotFoundException, 
+             IOException, OREException, URISyntaxException, OREParserException, InvalidRequest{
     File ore = getData(identifier);
     String oreContent = IOUtil.toString(new FileInputStream(ore), IdentifierFileMap.UTF8);
     DataPackage dataPackage = DataPackage.deserializePackage(oreContent);

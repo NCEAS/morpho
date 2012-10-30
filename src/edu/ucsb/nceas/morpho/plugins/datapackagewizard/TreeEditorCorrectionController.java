@@ -154,7 +154,7 @@ public class TreeEditorCorrectionController
 				int subTreeIndex = findPositionOfNodeNameWithInvalidValue(path, nodeName);
 				if(nodeName != null && subTreeIndex != -1)
 				{
-				  editor.openEditor(dataPackage.getMetadataNode().getOwnerDocument(), dataPackage.getMetadataId(), 
+				  editor.openEditor(dataPackage.getMetadataNode().getOwnerDocument(), dataPackage.getAccessionNumber(), 
 						  dataPackage.getLocation(), listener, nodeName, subTreeIndex, false, true,  TITLE+dataPackage.getAccessionNumber());
 				}
 				else

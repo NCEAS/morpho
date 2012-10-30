@@ -459,7 +459,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // entity metadata
       AbstractDataPackage adp = mdp.getAbstractDataPackage();
 //DFH      String id = getEntityIDForThisEntityName(item);
-      String id = adp.getMetadataId();
+      String id = adp.getAccessionNumber();
         if ((id==null)||(id.equals(""))) id = "tempid";
 
 //      String location = dp.getLocation();
@@ -587,7 +587,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       }
       try{
     	  
-        String tempid = adp.getMetadataId();
+        String tempid = adp.getAccessionNumber();
         if ((tempid==null)||(tempid.equals(""))) tempid = "tempid";
         mdcomponent = md.getDisplayComponent( tempid, adp,
                                               new MetaViewListener(vertSplit));

@@ -1342,7 +1342,7 @@ public class DataPackagePlugin
 	// check
 	MorphoDataPackage newmdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
     if (newmdp != null) {
-         return newmdp.getAbstractDataPackage().getMetadataId();
+         return newmdp.getAbstractDataPackage().getAccessionNumber();
     }
     else {
     	return null;
@@ -1370,7 +1370,7 @@ public class DataPackagePlugin
 		MorphoDataPackage newmdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
 
 		if (newmdp != null) {
-			return newmdp.getAbstractDataPackage().getMetadataId();
+			return newmdp.getAbstractDataPackage().getAccessionNumber();
 		} else {
 			return null;
 		}
@@ -1473,7 +1473,7 @@ public class DataPackagePlugin
   {
     String docid = null;
     AbstractDataPackage adp = getAbstractDataPackageFromMorphoFrame(morphoFrame).getAbstractDataPackage();
-    docid = adp.getMetadataId();
+    docid = adp.getAccessionNumber();
     Log.debug(50, "docid is: "+ docid);
     return docid;
   }

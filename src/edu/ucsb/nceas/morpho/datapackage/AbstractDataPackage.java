@@ -381,11 +381,11 @@ public abstract class AbstractDataPackage extends MetadataObject
    *
    * @return String
    */
-  public String getMetadataId() {
+  /*public String getMetadataId() {
     String temp = "";
     temp = getAccessionNumber();
     return temp;
-  }
+  }*/
 
 
   /**

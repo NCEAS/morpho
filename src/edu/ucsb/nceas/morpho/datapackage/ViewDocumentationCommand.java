@@ -85,7 +85,7 @@ public class ViewDocumentationCommand implements Command
 		String ID = "";
 		try{
 			AbstractDataPackage adp = mdp.getAbstractDataPackage();
-			ID = adp.getMetadataId();
+			ID = adp.getAccessionNumber();
 			if ((ID==null)||(ID.equals(""))) ID = "tempid";
 			resultReader = null;
 			Document doc = adp.openAsDom(ID);
