@@ -672,7 +672,7 @@ public class DataStoreServiceController {
 					
 					// check if the object exists already
 					boolean existInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().exists(docid);
-					boolean existInNetwork = Morpho.thisStaticInstance.getLocalDataStoreService().exists(docid);
+					boolean existInNetwork = Morpho.thisStaticInstance.getMetacatDataStoreService().exists(docid);
 
 					// do we have any revisions for this object
 					List<String> revisions = getAllRevisions(docid, dataDestination);
