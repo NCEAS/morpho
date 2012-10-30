@@ -668,99 +668,36 @@ public class DataStoreServiceController {
 				Log.debug(30, "handle data file  with index " + i + "" + docid);
 				if (docid != null) {
 					boolean isDirty = adp.containsDirtyEntityIndex(i);
-					Log.debug(30, "url " + docid + " with index " + i
-							+ " is dirty " + isDirty);
-					// Detects if docid conflict occurs
-					// boolean updateFlag = !(version.equals("1"));
-					// boolean existFlag = false;
-					boolean existInMetacat = false;
-					boolean existInLocal = false;
-					String statusInMetacat = null;
-					String statusInLocal = null;
-					String conflictLocation = null;
-					// Check to see if id conflict or not
-					if ((dataDestination.equals(DataPackageInterface.METACAT))) {
-						statusInMetacat = Morpho.thisStaticInstance.getMetacatDataStoreService().status(docid);
-						Log.debug(30, "docid " + docid
-								+ " status in metacat is " + statusInMetacat);
-						if (statusInMetacat != null
-								&& statusInMetacat.equals(DataStoreServiceInterface.CONFLICT)) {
-							conflictLocation = DocidConflictHandler.METACAT;
-							existInMetacat = true;
-						}
-					} else if ((dataDestination.equals(DataPackageInterface.LOCAL))) {
-						statusInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().status(docid);
-						Log.debug(30, "docid " + docid + " status in local is "
-								+ statusInLocal);
-						if (statusInLocal != null
-								&& statusInLocal.equals(DataStoreServiceInterface.CONFLICT)) {
-							conflictLocation = DocidConflictHandler.LOCAL;
-							existInLocal = true;
-						}
-					} else if (dataDestination.equals(DataPackageInterface.BOTH)) {
-						statusInMetacat = Morpho.thisStaticInstance
-								.getMetacatDataStoreService().status(docid);
-						statusInLocal = Morpho.thisStaticInstance
-								.getLocalDataStoreService().status(docid);
-						Log.debug(30, "docid " + docid + " status in local is "
-								+ statusInLocal + " and status in metacat is"
-								+ statusInMetacat);
-						if (statusInMetacat != null
-								&& statusInLocal != null
-								&& statusInLocal.equals(DataStoreServiceInterface.CONFLICT)
-								&& statusInMetacat.equals(DataStoreServiceInterface.CONFLICT)) {
-							conflictLocation = DocidConflictHandler.LOCAL
-									+ " and " + DocidConflictHandler.METACAT;
-							existInMetacat = true;
-							existInLocal = true;
-							// existFlag = true;
-							//this.setIdentifierChangedInLocalSerialization(true
-							// );
-							// this.setIdentifierChangedInMetacatSerialization(
-							// true);
-						} else if (statusInMetacat != null
-								&& statusInMetacat
-										.equals(DataStoreServiceInterface.CONFLICT)) {
-							conflictLocation = DocidConflictHandler.METACAT;
-							existInMetacat = true;
-							// existFlag = true;
-							// this.setIdentifierChangedInMetacatSerialization(
-							// true);
-						} else if (statusInLocal != null
-								&& statusInLocal
-										.equals(DataStoreServiceInterface.CONFLICT)) {
-							conflictLocation = DocidConflictHandler.LOCAL;
-							existInLocal = true;
-							// existFlag = true;
-							//this.setIdentifierChangedInLocalSerialization(true
-							// );
-						}
+					Log.debug(30, "url " + docid + " with index " + i + " is dirty " + isDirty);
+					
+					// check if the obejct exists already
+					boolean existInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().exists(docid);
+					boolean existInNetwork = Morpho.thisStaticInstance.getLocalDataStoreService().exists(docid);
+
+					// if docid exists, we need to update the revision
+					String originalIdentifier = docid;
+					boolean updatedId = false;
+					if ( (existInLocal || existInNetwork) && isDirty) {
+						// get the next identifier in this series
+						docid = getNextIdentifier(docid, dataDestination);
+						// save the old one for reference later
+						original_new_id_map.put(docid, originalIdentifier);
+						// we changed the identifier
+						updatedId = true;
+						Log.debug(30, "The identifier "
+								+ originalIdentifier
+								+ " exists and has unsaved data. The identifier for next revision is " + docid );
 
 					}
 
-					if (conflictLocation != null && isDirty) {
-						// If docid conflict and the entity is dirty, we need to
-						// pop-out an window to change the docid
-						Log.debug(30, "The docid "
-									+ docid
-									+ " exists and has unsaved data. So increase docid for it");
-						docid = handleDataIdConfiction(adp, docid, conflictLocation);
-
-					}
-
-					// reset urlinfo with new docid (if docid was not changed, the url will still be same).
-
-					// urlinfo should be the id in a string
-					if (dataDestination.equals(DataPackageInterface.LOCAL)
-							|| dataDestination.equals(DataPackageInterface.BOTH)) {
-						if (isDirty || !existInLocal) {
+					if (dataDestination.equals(DataPackageInterface.LOCAL) || dataDestination.equals(DataPackageInterface.BOTH)) {
+						if (isDirty || updatedId) {
 							handleLocal(docid);
 						}
 					}
 
-					if (dataDestination.equals(DataPackageInterface.METACAT)
-							|| dataDestination.equals(DataPackageInterface.BOTH)) {
-						if (isDirty || !existInMetacat) {
+					if (dataDestination.equals(DataPackageInterface.METACAT) || dataDestination.equals(DataPackageInterface.BOTH)) {
+						if (isDirty || updatedId) {
 							handleMetacat(docid, objectName);
 						}
 					}
@@ -776,13 +713,11 @@ public class DataStoreServiceController {
 					// newDataFile must have worked; thus update the package
 					String urlinfo = "ecogrid://knb/" + docid;
 					adp.setDistributionUrl(i, 0, 0, urlinfo);
-					// File was saved successfully, we need to remove the index
-					// from the vector.
+					// File was saved successfully, we need to remove the dirty flag
 					if (isDirty) {
 						adp.removeDirtyEntityIndex(i);
 					}
 				}
-				// }
 			}
 		}
 
@@ -894,59 +829,6 @@ public class DataStoreServiceController {
 					+ e.getMessage());
 		}
 
-	}
-
-	/**
-	 * If the docid is revision 1, automatically increase data file identifier
-	 * number without notifying user. If the docid is bigger than revision 1,
-	 * user will be asked to make a chioce: increasing docid or increasing
-	 * revision.
-	 */
-	private String handleDataIdConfiction(AbstractDataPackage adp, String identifier, String conflictLocation) {
-		boolean update = true;
-		String originalIdentifier = null;
-		if (identifier != null) {
-			originalIdentifier = identifier;
-			
-			try {
-				// TODO: which location? DataPackageInterface.BOTH?
-				List<String> allRevisions = getAllRevisions(originalIdentifier, conflictLocation);
-				// we only have this one revision
-				if (allRevisions == null ||  allRevisions.size() == 1) {
-					update = false;
-				}
-			} catch (Exception e) {
-				Log.debug(5, "Couldn't find the revisons for " + identifier + ": " + e.getMessage());
-			}
-
-			// if it is update, we need give user options to choose: increase
-			// docid or revision number
-			if (update) {
-				DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, conflictLocation);
-				String choice = docidIncreaseDialog.showDialog();
-				// Log.debug(5, "choice is "+choice);
-				if (choice != null && choice.equals(DocidConflictHandler.INCREASEID)) {
-					update = false;
-				} else {
-					update = true;
-				}
-			}
-
-			// decides docid base on user choice
-			if (!update) {
-				identifier = DataStoreServiceController.getInstance().generateIdentifier(conflictLocation);
-			} else {
-				identifier = 
-					DataStoreServiceController.getInstance().getNextIdentifier(identifier, DataPackageInterface.BOTH);
-			}
-			// store the new id and original id into a map.
-			// So when morpho know the new id when it serialize
-			original_new_id_map.put(identifier, originalIdentifier);
-			adp.setDataIDChanged(true);
-
-		}
-		Log.debug(30, "======================new identifier is " + identifier);
-		return identifier;
 	}
 
 	/**
