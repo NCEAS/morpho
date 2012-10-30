@@ -642,18 +642,18 @@ public class DataStoreServiceController {
 	 * It has been assumed that the 'location' has been set to point to the
 	 * place where the data is to be saved.
 	 */
-	private void serializeData(MorphoDataPackage mdp, String dataDestination) {
+	private boolean serializeData(MorphoDataPackage mdp, String dataDestination) {
 		Log.debug(30, "serilaize data =====================");
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		adp.getEntityArray();
 		// Log.debug(1, "About to check entityArray!");
 		if (adp.getEntityArray() == null) {
 			Log.debug(30, "Entity array is null, no need to serialize data");
-			return; // there is no data!
+			return true; // there is no data!
 		}
 		if (dataDestination == null) {
 			Log.debug(30, "User didn't specify the data destination");
-			return;
+			return true;
 		}
 
 		adp.setDataIDChanged(false);
@@ -670,10 +670,27 @@ public class DataStoreServiceController {
 					boolean isDirty = adp.containsDirtyEntityIndex(i);
 					Log.debug(30, "url " + docid + " with index " + i + " is dirty " + isDirty);
 					
-					// check if the obejct exists already
+					// check if the object exists already
 					boolean existInLocal = Morpho.thisStaticInstance.getLocalDataStoreService().exists(docid);
 					boolean existInNetwork = Morpho.thisStaticInstance.getLocalDataStoreService().exists(docid);
 
+					// do we have any revisions for this object
+					List<String> revisions = getAllRevisions(docid, dataDestination);
+					if (revisions != null) {
+						// is it in the revision history?
+						boolean inRevisions = revisions.contains(docid);
+						if (inRevisions) {
+							// is it the latest revision?
+							String latestRevision = revisions.get(revisions.size() - 1);
+							if (docid != latestRevision) {
+								// prompt to get the latest revision before saving an update?
+								Log.debug(5, "Cannot update data identifier: " + docid + " because it is not the latest revsion (" + latestRevision + ")");
+								return false;
+							}
+							// otherwise we can continue
+						}
+					}
+					
 					// if docid exists, we need to update the revision
 					String originalIdentifier = docid;
 					boolean updatedId = false;
@@ -720,9 +737,7 @@ public class DataStoreServiceController {
 				}
 			}
 		}
-
-		// Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation false ");
-		// serializeDataAtBothLocation =false;
+		return true;
 	}
 
 	/**
@@ -968,7 +983,12 @@ public class DataStoreServiceController {
 			boolean overwrite) {
 
 		// save the data first
-		serializeData(mdp, location);
+		boolean dataStatus = serializeData(mdp, location);
+		
+		// only continue if that was successful
+		if (!dataStatus) {
+			return;
+		}
 		
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
@@ -989,7 +1009,6 @@ public class DataStoreServiceController {
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
 		
-
 		List<String> existingRevisions = getAllRevisions(identifier, location);
 		boolean isRevisionOne = true;
 		if (existingRevisions != null && existingRevisions.size() > 1) {
