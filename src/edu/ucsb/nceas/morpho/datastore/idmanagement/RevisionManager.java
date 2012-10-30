@@ -59,7 +59,7 @@ import edu.ucsb.nceas.morpho.datastore.DataStoreService;
  * @author tao
  *
  */
-public class RevisionManager {
+public class RevisionManager implements RevisionManagerInterface {
   
   public static final String ORIGINALDOC = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
       +"<revisions>\n"+"</revisions>\n";
