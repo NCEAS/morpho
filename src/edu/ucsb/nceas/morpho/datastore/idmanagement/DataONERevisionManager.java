@@ -27,12 +27,24 @@ package edu.ucsb.nceas.morpho.datastore.idmanagement;
 
 import java.util.List;
 
+import org.dataone.service.exceptions.InsufficientResources;
+import org.dataone.service.exceptions.InvalidToken;
+import org.dataone.service.exceptions.NotAuthorized;
+import org.dataone.service.exceptions.NotFound;
+import org.dataone.service.exceptions.NotImplemented;
+import org.dataone.service.exceptions.ServiceFailure;
+import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.SystemMetadata;
+
+import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
+
 /**
- * An interface for the revision manager
+ * Represent an object to manage the revision chains in the dataONE network.
+ * This class will call dataone network every time when you invoke its methods.
  * @author tao
  *
  */
-public interface RevisionManagerInterface {
+public class DataONERevisionManager implements RevisionManagerInterface{
   
   /**
    * Get the list of all revisions for the specified identifier. The list is in descending order.
@@ -41,14 +53,24 @@ public interface RevisionManagerInterface {
    * @param identifier - the specified identifier.
    * @return the list of all revision which includes the given version.
    */
-  public List<String> getAllRevisions(String identifier) throws Exception;
+  public List<String> getAllRevisions(String identifier) {
+    return null;
+  }
 
   /**
    * Get the identifier of the latest revision for the specified identifier.
    * @param identifier - the specified identifier
    * @return the identifier of the latest revision.
    */
-  public String getLatestRevision(String identifier) throws Exception;
+  public String getLatestRevision(String identifier) throws InvalidToken, ServiceFailure, 
+           NotAuthorized, NotFound, NotImplemented, InsufficientResources {
+    String last = getObsoletedBy(identifier);
+    if(last == null) {
+      return identifier;
+    } else {
+      return getLatestRevision(last);
+    }
+  }
   
   /**
    * Get the identifier of the previous version of the specified identifier
@@ -56,7 +78,16 @@ public interface RevisionManagerInterface {
    * @return the identifier of the previous version. Null will be returned if
    * no previous version identifier is found.
    */
-  public String getObsoletes(String identifier) throws Exception;
+  public String getObsoletes(String identifier) throws InvalidToken, ServiceFailure, 
+                       NotAuthorized, NotFound, NotImplemented, InsufficientResources {
+    SystemMetadata metadata = DataONEDataStoreService.getSystemMetadataFromDataONE(identifier);
+    Identifier id =metadata.getObsoletes();
+    if(id != null) {
+      return id.getValue();
+    } else {
+      return null;
+    }
+  }
   
   /**
    * Get the identifier of the next version of the specified identifier
@@ -64,25 +95,41 @@ public interface RevisionManagerInterface {
    * @return the next version of the specified identifier. Null will be returned if
    * no next version identifier is found.
    */
-  public String getObsoletedBy(String identifier) throws Exception;
+  public String getObsoletedBy(String identifier)  throws InvalidToken, ServiceFailure, 
+  NotAuthorized, NotFound, NotImplemented, InsufficientResources {
+    SystemMetadata metadata = DataONEDataStoreService.getSystemMetadataFromDataONE(identifier);
+    Identifier id =metadata.getObsoletedBy();
+    if(id != null) {
+      return id.getValue();
+    } else {
+      return null;
+    }
+  }
   
   /**
    * Set relationship that a new identifier obsoletes the old identifier.
    * @param newId - the new identifier which obsoletes the old one.
    * @param oldId - the old identifier which will be obsoleted by the new one.
    */
-  public void setObsoletes(String newId, String oldId) throws IllegalArgumentException;
+  public void setObsoletes(String newId, String oldId) throws IllegalArgumentException {
+    //do nothing
+  }
   
   /**
    * Set a relationship that a old identifier is obsoleted by the new identifier.
    * @param oldId - the old identifier which will be obsoleted.
    * @param newId - the new identifier which obsoletes the old one.
    */
-  public void setObsoletedBy(String oldId, String newId) throws IllegalArgumentException;
+  public void setObsoletedBy(String oldId, String newId) throws IllegalArgumentException {
+    //do nothing
+  }
   
   /**
    * Delete the specified identifier from the revision file
    * @param identifier - the identifier will be deleted
    */
-  public void delete(String identifier);
+  public void delete(String identifier) {
+    //Do nothing
+  }
+
 }

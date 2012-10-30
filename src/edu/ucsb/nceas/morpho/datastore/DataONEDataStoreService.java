@@ -78,7 +78,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   private static final String MNDOEURLELEMENTNAME = "dataone_mnode_baseurl";
   private static final String PATHQUERY = "pathquery";
   private static final String DOI = "doi";
-  private MNode activeMNode = null;
+  private static MNode activeMNode = null;
   
   
   /**
@@ -229,13 +229,13 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   /*
    * Get the system metadata from the dataone for the id. It also caches it.
    */
-  private SystemMetadata getSystemMetadataFromDataONE(String identifier) throws InvalidToken, ServiceFailure, 
+  public static SystemMetadata getSystemMetadataFromDataONE(String identifier) throws InvalidToken, ServiceFailure, 
                                              NotAuthorized, NotFound, NotImplemented, InsufficientResources {   
     Identifier pid = new Identifier();
     pid.setValue(identifier);
     SystemMetadata systemMetadata = activeMNode.getSystemMetadata(pid);
     //cache it
-    File tmp = null;
+    /*File tmp = null;
     FileOutputStream output = null;
     try {
       tmp = File.createTempFile("tmp-systemmeta", null);
@@ -256,7 +256,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
         Log.debug(30, "DataONEDataStoreService.getSystemMetadataFromDataONE - couldn't remove the tmp file which contains the system metadata since "+e.getMessage());
       }
       
-    }
+    }*/
     
     return systemMetadata;
   }
