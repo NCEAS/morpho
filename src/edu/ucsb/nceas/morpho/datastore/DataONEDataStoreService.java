@@ -87,10 +87,16 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    */
   public DataONEDataStoreService(Morpho morpho) {
     super(morpho);
+    init();
+  }
+  
+  /*
+   * Initialize the mnode.
+   */
+  private static void init() {
     String mNodeBaseURL = Morpho.getConfiguration().get(MNDOEURLELEMENTNAME, 0);
     activeMNode = new MNode(mNodeBaseURL);
   }
-  
   /**
    * Get the active member node.
    * @return the active member node.
@@ -230,7 +236,10 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    * Get the system metadata from the dataone for the id. It also caches it.
    */
   public static SystemMetadata getSystemMetadataFromDataONE(String identifier) throws InvalidToken, ServiceFailure, 
-                                             NotAuthorized, NotFound, NotImplemented, InsufficientResources {   
+                                             NotAuthorized, NotFound, NotImplemented, InsufficientResources {
+    if(activeMNode == null ) {
+      init();
+    }
     Identifier pid = new Identifier();
     pid.setValue(identifier);
     SystemMetadata systemMetadata = activeMNode.getSystemMetadata(pid);
