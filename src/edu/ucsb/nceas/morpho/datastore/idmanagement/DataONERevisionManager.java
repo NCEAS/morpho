@@ -26,6 +26,7 @@
 package edu.ucsb.nceas.morpho.datastore.idmanagement;
 
 import java.util.List;
+import java.util.Vector;
 
 import org.dataone.service.exceptions.InsufficientResources;
 import org.dataone.service.exceptions.InvalidToken;
@@ -45,6 +46,26 @@ import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
  *
  */
 public class DataONERevisionManager implements RevisionManagerInterface{
+  private static DataONERevisionManager manager = null;
+  
+  /**
+   * Get the instance of the manager
+   * @return an instance of the manager
+   */
+  public static DataONERevisionManager getInstance() {
+    if (manager == null) {
+      manager = new DataONERevisionManager();
+    }
+    return manager;
+  }
+
+  
+  /*
+   * Constructor
+   */
+  private DataONERevisionManager() {
+    
+  }
   
   /**
    * Get the list of all revisions for the specified identifier. The list is in descending order.
@@ -53,8 +74,28 @@ public class DataONERevisionManager implements RevisionManagerInterface{
    * @param identifier - the specified identifier.
    * @return the list of all revision which includes the given version.
    */
-  public List<String> getAllRevisions(String identifier) {
-    return null;
+  public List<String> getAllRevisions(String identifier) throws InvalidToken, ServiceFailure, 
+                          NotAuthorized, NotFound, NotImplemented, InsufficientResources {
+    List<String> revisions = new Vector<String>();
+    revisions.add(identifier);
+    String obsoletesId = getObsoletes(identifier);
+    //System.out.println("the obsoletes id is "+obsoletesId);
+    while(obsoletesId != null) {
+      //System.out.println("the obsoletes id is "+obsoletesId);
+      revisions.add(obsoletesId);
+      //System.out.println("add the id - "+obsoletesId);
+      obsoletesId = getObsoletes(obsoletesId);
+    }
+    
+    String obsoletedById = getObsoletedBy(identifier);
+    //System.out.println("the obsoletedby id is "+obsoletesId);
+    while (obsoletedById != null) {
+      //System.out.println("the obsoletedby id is "+obsoletesId);
+      revisions.add(0,obsoletedById);
+      //System.out.println("add the obsoletedby id "+obsoletesId);
+      obsoletedById = getObsoletedBy(obsoletedById);   
+    }
+    return revisions;
   }
 
   /**
