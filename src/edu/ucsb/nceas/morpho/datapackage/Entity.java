@@ -34,6 +34,7 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.DOMImplementation;
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.dataone.client.D1Object;
 
 import edu.ucsb.nceas.utilities.*;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -41,7 +42,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 /**
  * class that represents a Entity
  */
-public  class Entity
+public  class Entity extends D1Object
 {
   /*
    *  root node of DOM tree representing entity

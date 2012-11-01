@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -41,7 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.maven.artifact.ant.shaded.IOUtil;
+import org.apache.commons.io.IOUtils;
+import org.dataone.client.D1Object;
 import org.dataone.client.DataPackage;
 import org.dataone.client.MNode;
 import org.dataone.ore.ResourceMapFactory;
@@ -59,9 +61,12 @@ import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
 import org.jibx.runtime.JiBXException;
 
+import com.sun.org.apache.xml.internal.serializer.utils.Utils;
+
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -177,17 +182,56 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   public MorphoDataPackage read(String identifier) throws InvalidToken, ServiceFailure, 
              NotAuthorized, NotFound, NotImplemented, InsufficientResources, FileNotFoundException, 
              IOException, OREException, URISyntaxException, OREParserException, InvalidRequest{
-    File ore = getData(identifier);
-    String oreContent = IOUtil.toString(new FileInputStream(ore), IdentifierFileMap.UTF8);
-    DataPackage dataPackage = DataPackage.deserializePackage(oreContent);
-    return null;
+    //File ore = getData(identifier);
+    InputStream ore = getDataFromDataONE(identifier);
+    String oreContent = IOUtils.toString(ore, IdentifierFileMap.UTF8);
+    //DataPackage dataPackage = DataPackage.deserializePackage(oreContent);
+    Map<Identifier, Map<Identifier, List<Identifier>>> packageMap = 
+        ResourceMapFactory.getInstance().parseResourceMap(oreContent);
+
+    MorphoDataPackage dp = new MorphoDataPackage();
+    Identifier packageId = new Identifier();
+    packageId.setValue(identifier);
+    dp.setPackageId(packageId);
+    if (packageMap != null && !packageMap.isEmpty()) {
+
+      // Get and store the package Identifier in a new DataPackage
+      Identifier pid = packageMap.keySet().iterator().next();
+
+      // Get the Map of metadata/data identifiers
+      Map<Identifier, List<Identifier>> mdMap = packageMap.get(pid);
+      dp.setMetadataMap(mdMap);
+      if(mdMap.keySet().size() >1) {
+        //the ore document has more than one metadata, throw a exception
+        throw new OREException("DataONEDataStoreService.read - There are more than one metadata objects in the package "+
+                                    identifier+" which Morpho currently doesn't support.");
+      }
+      // parse the metadata/data identifiers and store the associated objects if they are accessible
+      byte[] metadata;
+      for (Identifier scienceMetadataId : mdMap.keySet()) {
+        //dp.addAndDownloadData(scienceMetadataId);
+        metadata = IOUtils.toByteArray(getDataFromDataONE(scienceMetadataId.getValue()));
+        AbstractDataPackage adp = DataPackageFactory.getDataPackage(new StringReader(new String(metadata,IdentifierFileMap.UTF8)));
+        adp.setSystemMetadata(getSystemMetadataFromDataONE(scienceMetadataId.getValue()));
+        dp.addData(adp);
+        dp.setAbstractDataPackage(adp);
+        List<Identifier> dataIdentifiers = mdMap.get(scienceMetadataId);
+        for (Identifier dataId : dataIdentifiers) {
+          byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataId.getValue()));
+          D1Object object = new D1Object();
+          object.setData(data);
+          object.setSystemMetadata(getSystemMetadataFromDataONE(dataId.getValue()));
+        }
+      }
+    }
+    return dp;
   }
   
   
   /*
    * Get the data - get it from the cache first.If it fails, get it from the dataone server.
    */
-  private File getData(String identifier) throws InvalidToken, ServiceFailure, 
+  /*private File getData(String identifier) throws InvalidToken, ServiceFailure, 
                       NotAuthorized, NotFound, NotImplemented, InsufficientResources, FileNotFoundException {
     File file = null;
     try {
@@ -198,12 +242,12 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
       file = getDataFromDataONE(identifier);
     }
     return file;
-  }
+  }*/
   
   /*
    * Get the data - get it from the cache first.If it fails, get it from the dataone server.
    */
-  private SystemMetadata getSystemMetadata(String identifier)  throws InvalidToken, ServiceFailure, 
+  /*private SystemMetadata getSystemMetadata(String identifier)  throws InvalidToken, ServiceFailure, 
                                              NotAuthorized, NotFound, NotImplemented, InsufficientResources {  
     SystemMetadata sysMeta = null;
     try {
@@ -216,20 +260,20 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     }
     return sysMeta;
     
-  }
+  }*/
   
   /*
-   * Get the data object from the dataone network and cache it.
+   * Get the data object from the dataone network.
    */
-  private File getDataFromDataONE(String identifier) throws InvalidToken, ServiceFailure, 
+  private InputStream getDataFromDataONE(String identifier) throws InvalidToken, ServiceFailure, 
                              NotAuthorized, NotFound, NotImplemented, InsufficientResources, FileNotFoundException {
-    File file = null;
+    //File file = null;
     Identifier pid = new Identifier();
     pid.setValue(identifier);
     InputStream respond = activeMNode.get(pid);
     //cache it
-    file = LocalDataStoreService.saveFile(identifier, respond, getCacheDir());
-    return file;
+    //file = LocalDataStoreService.saveFile(identifier, respond, getCacheDir());
+    return respond;
   }
   
   /*
@@ -278,8 +322,45 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    */
   @Override
   public String save(MorphoDataPackage mdp) throws Exception {
-    String identifier = null;
-    return identifier;
+    Identifier oreId = mdp.getPackageId();
+    Identifier metadataId = mdp.getAbstractDataPackage().getIdentifier();
+    Set<Identifier> identifiers = mdp.identifiers();
+    //save data objects first
+    if(identifiers != null && identifiers.size() > 0 ) {
+      for(Identifier identifier : identifiers) {
+        if(!identifier.equals(oreId) && !identifier.equals(metadataId)) {
+          save(mdp.get(identifier));
+        }
+      }
+      
+    }
+    //save metadata then
+    save(mdp.get(metadataId));
+    //save ore document finally
+    D1Object oreD1Object = new D1Object();
+    oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
+    //TODO DataPackage should have system metadata
+    //oreD1Object.setSystemMetadata(mdp.getS)
+    save(oreD1Object);
+    return oreId.getValue();
+  }
+  
+  /*
+   * Save a d1Ojbect to the DataONE network. 
+   */
+  private void save(D1Object d1Object) throws NullPointerException{
+    if(d1Object == null) {
+      throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't be null");
+    }
+    SystemMetadata sysMeta = d1Object.getSystemMetadata();
+    if(sysMeta == null) {
+      throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't have the null SystemMetadata");
+    }
+    Identifier identifier = d1Object.getIdentifier();
+    if(identifier == null || identifier.getValue() == null || identifier.getValue().trim().equals("")) {
+      throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't have a null identifier");
+    }
+    
   }
   
   /**
