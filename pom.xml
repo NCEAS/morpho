@@ -10,8 +10,8 @@
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <d1_libclient_version>1.1.0-SNAPSHOT</d1_libclient_version>
-        <d1_common_java_version>1.1.0-SNAPSHOT</d1_common_java_version>
+        <d1_libclient_version>1.2.0-SNAPSHOT</d1_libclient_version>
+        <d1_common_java_version>1.2.0-SNAPSHOT</d1_common_java_version>
     </properties>
     <repositories>
         
@@ -67,11 +67,20 @@
 		        	<groupId>org.jibx</groupId>
 					<artifactId>maven-jibx-plugin</artifactId>
 		        </exclusion>
-		        <!-- TODO: is this required? -->
+		        <!-- TODO: refine the JCS requirements -->
 		        <exclusion>
-		        	<groupId>jcs</groupId>
-					<artifactId>jcs</artifactId>
+		        	<groupId>berkeleydb</groupId>
+      				<artifactId>berkeleydb</artifactId>
 		        </exclusion>
+		        <exclusion>
+		        	<groupId>mysql</groupId>
+      				<artifactId>mysql-connector-java</artifactId>
+		        </exclusion>
+		        <exclusion>
+		        	<groupId>hsqldb</groupId>
+					<artifactId>hsqldb</artifactId>
+		        </exclusion>
+		        
 			</exclusions>
 		</dependency>
     </dependencies>
