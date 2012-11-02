@@ -154,7 +154,7 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
             //sort it into ascending order
             Collections.sort(revisions);
             for(int i=0; i<revisions.size(); i++) {
-              if(i==0) {
+              /*if(i==0) {
                 //the first version only has obsoletedBy property
                 manager.setObsoletedBy(prefix+revisions.elementAt(i), prefix+revisions.elementAt(i+1));
               } else if (i==(revisions.size()-1)) {
@@ -163,6 +163,9 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
               } else {
                 // the other versions have both obsoletedBy and obsoletes properties
                 manager.setObsoletedBy(prefix+revisions.elementAt(i), prefix+revisions.elementAt(i+1));
+                manager.setObsoletes(prefix+revisions.elementAt(i), prefix+revisions.elementAt(i-1));
+              }*/
+              if(i!= 0) {
                 manager.setObsoletes(prefix+revisions.elementAt(i), prefix+revisions.elementAt(i-1));
               }
             }

@@ -67,7 +67,8 @@ public interface RevisionManagerInterface {
   public String getObsoletedBy(String identifier) throws Exception;
   
   /**
-   * Set relationship that a new identifier obsoletes the old identifier.
+   * Set relationships that a new identifier obsoletes the old identifier. It will
+   * handle the both "obsoletes" and "obsoletedBy" relationship.
    * @param newId - the new identifier which obsoletes the old one.
    * @param oldId - the old identifier which will be obsoleted by the new one.
    */
@@ -78,7 +79,7 @@ public interface RevisionManagerInterface {
    * @param oldId - the old identifier which will be obsoleted.
    * @param newId - the new identifier which obsoletes the old one.
    */
-  public void setObsoletedBy(String oldId, String newId) throws IllegalArgumentException;
+  //public void setObsoletedBy(String oldId, String newId) throws IllegalArgumentException;
   
   /**
    * Delete the specified identifier from the revision file

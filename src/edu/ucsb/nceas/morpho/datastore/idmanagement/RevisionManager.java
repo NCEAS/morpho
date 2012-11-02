@@ -149,7 +149,7 @@ public class RevisionManager implements RevisionManagerInterface {
             String obsoletesIdentifier = (String) obsoletesId;
             //System.out.println("the identifier is "+identifier);
             //System.out.println("the obsoletes id is "+obsoletesIdentifier);
-            setObsoletes(identifier, obsoletesIdentifier);
+            setObsoletesRelation(identifier, obsoletesIdentifier);
           }
         }
         
@@ -159,7 +159,7 @@ public class RevisionManager implements RevisionManagerInterface {
             String obsoletedByIdentifier = (String) obsoletedById;
             //System.out.println("the identifier is "+identifier);
             //System.out.println("the obsoletedBy id is "+obsoletedByIdentifier);
-            setObsoletedBy(identifier, obsoletedByIdentifier);
+            setObsoletedByRelation(identifier, obsoletedByIdentifier);
           }
         }
       }
@@ -233,12 +233,25 @@ public class RevisionManager implements RevisionManagerInterface {
     return obsoletedById;
   }
   
+  
+  /**
+   * Set relationships that a new identifier obsoletes the old identifier. It will
+   * handle the both "obsoletes" and "obsoletedBy" relationship.
+   * @param newId - the new identifier which obsoletes the old one.
+   * @param oldId - the old identifier which will be obsoleted by the new one.
+   */
+  public void setObsoletes(String newId, String oldId) throws IllegalArgumentException {
+    setObsoletedByRelation(oldId, newId);
+    setObsoletesRelation(newId, oldId);
+  }
+  
+  
   /**
    * Set relationship that a new identifier obsoletes the old identifier.
    * @param newId - the new identifier which obsoletes the old one.
    * @param oldId - the old identifier which will be obsoleted by the new one.
    */
-  public synchronized void setObsoletes(String newId, String oldId) throws IllegalArgumentException {
+  private synchronized void setObsoletesRelation(String newId, String oldId) throws IllegalArgumentException {
     if(newId == null || newId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the first parameter of this method can't be null or blank.");
     }
@@ -253,12 +266,14 @@ public class RevisionManager implements RevisionManagerInterface {
   }
   
   
+  
+  
   /**
    * Set a relationship that a old identifier is obsoleted by the new identifier.
    * @param oldId - the old identifier which will be obsoleted.
    * @param newId - the new identifier which obsoletes the old one.
    */
-  public synchronized void setObsoletedBy(String oldId, String newId) throws IllegalArgumentException {
+  private synchronized void setObsoletedByRelation(String oldId, String newId) throws IllegalArgumentException {
     if(newId == null || newId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the second parameter of this method can't be null or blank.");
     }
@@ -348,8 +363,8 @@ public class RevisionManager implements RevisionManagerInterface {
         obsoletedBy.remove(identifier);
         obsoletedBy.remove(obsoletesId);
         configuration.clearTree(cleanXPath);
-        setObsoletedBy(obsoletesId, obsoletedById);
-        setObsoletes(obsoletedById, obsoletesId);
+        setObsoletedByRelation(obsoletesId, obsoletedById);
+        setObsoletesRelation(obsoletedById, obsoletesId);
         //obsoletes.put(obsoletedById,obsoletesId);
         //obsoletedBy.put(obsoletesId, obsoletedById);
         //System.out.println("obsoleted by "+obsoletedBy);

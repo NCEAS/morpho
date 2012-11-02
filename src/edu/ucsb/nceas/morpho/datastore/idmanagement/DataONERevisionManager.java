@@ -161,9 +161,9 @@ public class DataONERevisionManager implements RevisionManagerInterface{
    * @param oldId - the old identifier which will be obsoleted.
    * @param newId - the new identifier which obsoletes the old one.
    */
-  public void setObsoletedBy(String oldId, String newId) throws IllegalArgumentException {
+  /*public void setObsoletedBy(String oldId, String newId) throws IllegalArgumentException {
     //do nothing
-  }
+  }*/
   
   /**
    * Delete the specified identifier from the revision file

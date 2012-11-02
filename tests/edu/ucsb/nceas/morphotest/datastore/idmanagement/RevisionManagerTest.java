@@ -78,26 +78,26 @@ public class RevisionManagerTest extends MorphoTestCase {
    */
   public void testScatch() throws Exception {
     RevisionManager manager = RevisionManager.getInstance(DataStoreService.getProfileDir(),PREFIX);
-    manager.setObsoletedBy("tao.1.1", "tao.1.2");
-    manager.setObsoletedBy("tao.1.2", "tao.1.3");
+    //manager.setObsoletedBy("tao.1.1", "tao.1.2");
+    //manager.setObsoletedBy("tao.1.2", "tao.1.3");
     manager.setObsoletes("tao.1.2", "tao.1.1");
     manager.setObsoletes("tao.1.3", "tao.1.2");
-    manager.setObsoletedBy("tao.1.3", "tao.1.4");
+    //manager.setObsoletedBy("tao.1.3", "tao.1.4");
     manager.setObsoletes("tao.1.4", "tao.1.3");
     
-    manager.setObsoletedBy("tao.2.1", "tao.2.2");
-    manager.setObsoletedBy("tao.2.2", "tao.2.3");
+    //manager.setObsoletedBy("tao.2.1", "tao.2.2");
+    //manager.setObsoletedBy("tao.2.2", "tao.2.3");
     manager.setObsoletes("tao.2.2", "tao.2.1");
     manager.setObsoletes("tao.2.3", "tao.2.2");
     manager.setObsoletes("tao.2.4", "tao.2.3");
-    manager.setObsoletedBy("tao.2.3", "tao.2.4");
+    //manager.setObsoletedBy("tao.2.3", "tao.2.4");
     
-    manager.setObsoletedBy("jing.3.1", "jing.3.2");
-    manager.setObsoletedBy("jing.3.2", "jing.3.3");
+    //manager.setObsoletedBy("jing.3.1", "jing.3.2");
+    //manager.setObsoletedBy("jing.3.2", "jing.3.3");
     manager.setObsoletes("jing.3.2", "jing.3.1");
     manager.setObsoletes("jing.3.3", "jing.3.2");
     manager.setObsoletes("jing.3.4", "jing.3.3");
-    manager.setObsoletedBy("jing.3.3", "jing.3.4");
+    //manager.setObsoletedBy("jing.3.3", "jing.3.4");
     
     String latest = manager.getLatestRevision("jing.3.4");
     assertTrue("the last version should be jing.3.4.", latest.equals("jing.3.4"));
@@ -178,17 +178,17 @@ public class RevisionManagerTest extends MorphoTestCase {
    */
   public void testExistedConfigurationFile() throws Exception {
     RevisionManager manager = RevisionManager.getInstance(DataStoreService.getProfileDir(),PREFIX);
-    manager.setObsoletedBy("tao.3.1", "tao.3.2");
-    manager.setObsoletedBy("tao.3.2", "tao.3.3");
+    //manager.setObsoletedBy("tao.3.1", "tao.3.2");
+    //manager.setObsoletedBy("tao.3.2", "tao.3.3");
     manager.setObsoletes("tao.3.2", "tao.3.1");
     manager.setObsoletes("tao.3.3", "tao.3.2");
-    manager.setObsoletedBy("tao.3.3", "tao.3.4");
+    //manager.setObsoletedBy("tao.3.3", "tao.3.4");
     manager.setObsoletes("tao.3.4", "tao.3.3");
     
     manager.setObsoletes("jing.3.5", "jing.3.4");
-    manager.setObsoletedBy("jing.3.4", "jing.3.5");
+    //manager.setObsoletedBy("jing.3.4", "jing.3.5");
     manager.setObsoletes("jing.3.6", "jing.3.5");
-    manager.setObsoletedBy("jing.3.5", "jing.3.6");
+    //manager.setObsoletedBy("jing.3.5", "jing.3.6");
     
     String latest = manager.getLatestRevision("jing.3.6");
     assertTrue("the last version should be jing.3.6.", latest.equals("jing.3.6"));
