@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.datastore;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -149,53 +148,48 @@ public class FileSystemDataStore {
    * @throws IOException
    */
   public synchronized void set(String identifier, InputStream data) throws FileNotFoundException, IOException, NullPointerException{
-    if(identifier == null ) {
+    if (identifier == null) {
       throw new NullPointerException("FileSystemDataStrore.set - the specified identifier shouldn't be null.");
     }
-    if(data == null ) {
-      throw new NullPointerException("FileSystemDataStrore.set - the InputStream object of the data shouldn't be null.");
+    
+    File file = generateFile(identifier);
+    
+    // allow null data so we can get a handle on the file for writing to it later
+    if (data != null ) {
+        
+	    BufferedInputStream buffData = null;
+	    FileOutputStream out = null;
+	    BufferedOutputStream buffOut = null;
+	    try {
+	    //String fileName = generateFileName(identifier);
+	      buffData = new BufferedInputStream(data);
+	      out = new FileOutputStream(file);
+	      buffOut = new BufferedOutputStream(out);
+	       
+	      int d = -1;
+	      while((d =buffData.read()) != -1) {
+	        buffOut.write(d); //write out everything in the reader    
+	      }
+	      buffOut.flush();
+	    } finally {
+	      
+	      if(buffData != null) {
+	        buffData.close();
+	      }
+	      if(data != null ) {
+	        data.close();
+	      }
+	      
+	      if(buffOut != null) {
+	        buffOut.close();
+	      }
+	      if(out != null) {
+	        out.close();
+	      }
+	  }     
     }
-    
-    BufferedInputStream buffData = null;
-    FileOutputStream out = null;
-    BufferedOutputStream buffOut = null;
-    try {
-    //String fileName = generateFileName(identifier);
-      buffData = new BufferedInputStream(data);
-      File file = generateFile(identifier);
-      out = new FileOutputStream(file);
-      buffOut = new BufferedOutputStream(out);
-       
-      int d = -1;
-      while((d =buffData.read()) != -1) {
-        buffOut.write(d); //write out everything in the reader    
-      }
-      buffOut.flush();
-      idFileMap.setMap(identifier, file);
-    } finally {
-      
-      if(buffData != null) {
-        buffData.close();
-      }
-      if(data != null ) {
-        data.close();
-      }
-      
-      if(buffOut != null) {
-        buffOut.close();
-      }
-      if(out != null) {
-        out.close();
-      }
-     
-    
-     
-           
-    }
-    
-   
-    
-    
+    idFileMap.setMap(identifier, file);
+ 
   }
   
   /**
