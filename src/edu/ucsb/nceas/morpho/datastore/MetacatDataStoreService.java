@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datastore;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -53,6 +55,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
@@ -64,6 +67,7 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
@@ -78,6 +82,9 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
   private URL metacatPingURL = null;
   private URLConnection urlConn = null;
   private boolean origNetworkStatus = false;
+  
+  // store the map between new data id and old data id
+  private Hashtable<String, String> original_new_id_map = new Hashtable<String, String>(); 
   
   private static final String AUTHENTICATEERROR = "peer not authenticated";
   /**
@@ -176,7 +183,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	 * return the max version of metacat. So we should increase 1 to get next version number.
 	 * If couldn't connect metacat or metacat doesn't have this docid, 1 will be returned.
 	 */
-	public String getNextRevisionNumber(String identifier)
+	public String getNextIdentifier(String identifier)
 	{
 		int version = AbstractDataPackage.ORIGINAL_REVISION;
 		String semiColon = ";";
@@ -341,7 +348,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		} catch (Exception e) {
 			CacheAccessException cae = new CacheAccessException(e.getMessage());
 			cae.initCause(e);
-			throw cae;
+			//throw cae;
 		}
 
 		// check for local file and return it if we have it
@@ -567,9 +574,209 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
    */
   @Override
   public String save(MorphoDataPackage mdp) throws Exception {
-    String identifier = null;
-    return identifier;
-  }
+	// save the data first
+		boolean dataStatus = serializeData(mdp);
+		
+		// only continue if that was successful
+		if (!dataStatus) {
+			return null;
+		}
+		
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+
+		// now save the metadata
+		adp.setSerializeLocalSuccess(false);
+		adp.setSerializeMetacatSuccess(false);
+		adp.setPackageIDChanged(false);
+
+		// To check if this update or insert action
+		String identifier = adp.getAccessionNumber();
+		boolean exists = exists(identifier);
+		List<String> existingRevisions = getAllRevisions(identifier);
+		boolean isRevisionOne = true;
+		if (existingRevisions != null && existingRevisions.size() > 1) {
+			isRevisionOne = false;
+		}
+
+		// We need to change id to resolve id confilcition
+		if (exists) {
+			Log.debug(30, "=============In existFlag and update branch");
+			// ToDo - add a frame to give user option to increase docid or
+			// revision
+			DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, DataPackageInterface.METACAT);
+			String choice = docidIncreaseDialog.showDialog();
+			// Log.debug(5, "choice is "+choice);
+			if (choice != null && choice.equals(DocidConflictHandler.INCREASEID)) {
+				// increase to a new id
+				identifier = generateIdentifier(null);
+				adp.setAccessionNumber(identifier);
+				adp.setPackageIDChanged(true);				
+			} else {
+				// get next revision
+				identifier = getNextIdentifier(adp.getAccessionNumber());
+				adp.setAccessionNumber(identifier);
+				adp.setPackageIDChanged(true);
+				Log.debug(30, "The new id (after increase revision number) is " + identifier);
+			}
+		} else  {
+			Log.debug(30, "Identifier: " + identifier + "does not exist in Metacat");
+			// since it is saving a new package, increase docid silently
+			identifier = generateIdentifier(null);
+			adp.setAccessionNumber(identifier);
+			adp.setPackageIDChanged(true);
+		}
+		// Log.debug(30, temp);
+
+		// save doc to metacat
+		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+		InputStream stringInput = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
+		if (exists) {
+			try {
+				saveFile(adp.getAccessionNumber(), stringInput);
+				adp.setSerializeMetacatSuccess(true);
+			} catch (Exception e) {
+				adp.setSerializeMetacatSuccess(false);
+				Log.debug(5, "Problem with saving to metacat in EML200DataPackage!\n" + e.getMessage());
+			}
+		} else {
+			try {
+				newFile(adp.getAccessionNumber(), stringInput);
+				adp.setSerializeMetacatSuccess(true);
+			} catch (Exception e) {
+				adp.setSerializeMetacatSuccess(false);
+				Log.debug(5, "Problem with saving to metacat in EML200DataPackage!\n"
+								+ e.getMessage());
+			}
+		}
+		
+		return adp.getAccessionNumber();
+	}
+  
+	private boolean serializeData(MorphoDataPackage mdp) {
+		Log.debug(30, "serilaize data =====================");
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		adp.getEntityArray();
+		// Log.debug(1, "About to check entityArray!");
+		if (adp.getEntityArray() == null) {
+			Log.debug(30, "Entity array is null, no need to serialize data");
+			return true; // there is no data!
+		}
+
+		adp.setDataIDChanged(false);
+		for (int i = 0; i < adp.getEntityArray().length; i++) {
+			String URLinfo = adp.getDistributionUrl(i, 0, 0);
+			String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
+			String objectName = adp.getPhysicalName(i, 0);
+			Log.debug(25, "object name is ===================== " + objectName);
+			if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
+
+				String docid = AbstractDataPackage.getUrlInfo(URLinfo);
+				Log.debug(30, "handle data file  with index " + i + "" + docid);
+				if (docid != null) {
+					boolean isDirty = adp.containsDirtyEntityIndex(i);
+					Log.debug(30, "url " + docid + " with index " + i + " is dirty " + isDirty);
+					
+					// check if the object exists already
+					boolean exists = exists(docid);
+
+					// do we have any revisions for this object
+					List<String> revisions = getAllRevisions(docid);
+					if (revisions != null) {
+						// is it in the revision history?
+						boolean inRevisions = revisions.contains(docid);
+						if (inRevisions) {
+							// is it the latest revision?
+							String latestRevision = revisions.get(revisions.size() - 1);
+							if (docid != latestRevision) {
+								// prompt to get the latest revision before saving an update?
+								Log.debug(5, "Cannot update data identifier: " + docid + " because it is not the latest revsion (" + latestRevision + ")");
+								return false;
+							}
+							// otherwise we can continue
+						}
+					}
+					
+					// if docid exists, we need to update the revision
+					String originalIdentifier = docid;
+					boolean updatedId = false;
+					if ( exists && isDirty) {
+						// get the next identifier in this series
+						docid = getNextIdentifier(docid);
+						// save the old one for reference later
+						original_new_id_map.put(docid, originalIdentifier);
+						// we changed the identifier
+						updatedId = true;
+						Log.debug(30, "The identifier "
+								+ originalIdentifier
+								+ " exists and has unsaved data. The identifier for next revision is " + docid );
+
+					}
+
+					if (isDirty || updatedId) {
+						handleMetacat(docid, objectName);
+					}
+
+					// reset the map after finishing save. There is no need for
+					// this pair after saving
+					original_new_id_map = new Hashtable<String, String>();
+					
+					// newDataFile must have worked; thus update the package
+					String urlinfo = "ecogrid://knb/" + docid;
+					adp.setDistributionUrl(i, 0, 0, urlinfo);
+					// File was saved successfully, we need to remove the dirty flag
+					if (isDirty) {
+						adp.removeDirtyEntityIndex(i);
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Saves data files to Metacat
+	 */
+	private void handleMetacat(String docid, String objectName) {
+		Log.debug(30, "----------------------------------------handle metacat "
+				+ docid);
+		File dataFile = null;
+		String oldDocid = null;
+		ConfigXML profile = Morpho.thisStaticInstance.getProfile();
+		String separator = profile.get("separator", 0);
+		separator = separator.trim();
+		if (!original_new_id_map.isEmpty()) {
+			// System.out.println("the key is "+urlinfo);
+			// System.out.println("the hashtable is "+original_new_id_map);
+			// Log.debug(1,
+			// "~~~~~~~~~~~~~~~~~~~~~~change id in local serialization ");
+			oldDocid = (String) original_new_id_map.get(docid);
+			Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~the id from map is "
+					+ oldDocid);
+
+		}
+		// if oldDocid is null, that means docid change. So we set old docid to
+		// be the current id
+		if (oldDocid == null) {
+			oldDocid = docid;
+		}
+		try {
+			dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(docid);
+		} catch (Exception eee) {
+			Log.debug(5,"Couldn't find "
+						+ oldDocid
+						+ " in local system, so morpho couldn't upload it to metacat");
+			return;
+		}
+
+		try {
+			newDataFile(docid, dataFile, objectName);
+		} catch (Exception e) {
+			// Gets some error from metacat
+			Log.debug(5, "Some problem with saving data files has occurred! "
+					+ e.getMessage());
+		}
+
+	}
   
   /**
    * Save an xml metadata file (which already exists) to metacat using the 

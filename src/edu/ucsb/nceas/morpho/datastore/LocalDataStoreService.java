@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -42,6 +43,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
@@ -50,6 +52,7 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.query.Query;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * implements and the DataStoreInterface for accessing files on the local
@@ -61,6 +64,9 @@ public class LocalDataStoreService extends DataStoreService
 	public final static String INCOMPLETEDIR = "incomplete";
 	public static final String TEMP = "temporary";
 	private static final String TEMPIDNAME = "lastTempId";
+	
+	// store the map between new data id and old data id
+	private Hashtable<String, String> original_new_id_map = new Hashtable<String, String>(); 
 	
   /**
    * create a new FileSystemDataStore for a Morpho
@@ -294,15 +300,291 @@ public class LocalDataStoreService extends DataStoreService
 	}
 	
 	/**
+	 * Save an incomplete data package locally. This is a special case.
+	 * @param mdp
+	 * @return
+	 * @throws Exception
+	 */
+	public String saveIncomplete(MorphoDataPackage mdp) throws Exception {
+		return save(mdp, DataPackageInterface.INCOMPLETE);
+	}
+	
+	/**
 	 * Save the MorphoDataPackage object into the local data store.
 	 * @param mdp - the object will be saved
 	 * @return the identifier of saved object
-	 * TODO: need to implement it.
 	 */
 	@Override
 	public String save(MorphoDataPackage mdp) throws Exception {
-	  String identifier = null;
-	  return identifier;
+		return save(mdp, DataPackageInterface.LOCAL);
+		
+	}
+	
+	/**
+	 * Save the MorphoDataPackage object into the local data store.
+	 * @param mdp - the object will be saved
+	 * @return the identifier of saved object
+	 */
+	private String save(MorphoDataPackage mdp, String location) throws Exception {
+		
+		// save the data first
+		boolean dataStatus = serializeData(mdp, location);
+		
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+
+		// only continue if that was successful
+		if (!dataStatus) {
+			adp.setSerializeLocalSuccess(false);
+			return null;
+		}
+
+		// now save the metadata
+		adp.setSerializeLocalSuccess(false);
+		adp.setSerializeMetacatSuccess(false);
+		adp.setPackageIDChanged(false);
+		
+		// To check if this update or insert action
+		String identifier = adp.getAccessionNumber();
+		boolean exists = this.exists(identifier);
+		List<String> existingRevisions = getAllRevisions(identifier);
+
+		// if we allow local overwrite, we reset confilcLocation. It will skip
+		// the code to handle conflict
+		boolean overwrite = false;
+		
+		// does the identifier exist already?
+		if (exists) {
+			Log.debug(30, "=============In existFlag and update branch");
+			// TODO: is this frame needed or can we just increase the revision silently?
+			DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, DataPackageInterface.LOCAL);
+			String choice = docidIncreaseDialog.showDialog();
+			// Log.debug(5, "choice is "+choice);
+			if (choice != null && choice.equals(DocidConflictHandler.INCREASEID)) {
+				// generate a new identifier - separate from the original chain
+				identifier = generateIdentifier(null);
+				adp.setAccessionNumber(identifier);
+				adp.setPackageIDChanged(true);
+			} else {
+				// get next revision
+				String nextIdentifier = getNextIdentifier(identifier);
+				adp.setAccessionNumber(nextIdentifier);
+				adp.setPackageIDChanged(true);
+				Log.debug(30, "Orginal identifier: " + identifier + ", next revision: " + nextIdentifier);
+				// record this in revision manager
+				getRevisionManager().setObsoletes(nextIdentifier, identifier);
+				identifier = nextIdentifier;
+			}
+		} else {
+			Log.debug(30, "==============In existFlag and insert revision 1 branch");
+			// since it is saving a new package, increase docid silently
+			//identifier = generateIdentifier(null);
+			adp.setAccessionNumber(identifier);
+			adp.setPackageIDChanged(true);
+
+		}
+		
+		// now save doc to local file system, either for real or in incomplete directory
+		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+		InputStream stringStream = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
+		if (location.equals(DataPackageInterface.INCOMPLETE)) {
+			Log.debug(30, "Serialize metadata into incomplete dir with docid " + identifier);
+			File newFile = saveIncompleteFile(identifier, stringStream);
+			if (newFile != null) {
+				adp.setSerializeLocalSuccess(true);
+			} else {
+				adp.setSerializeLocalSuccess(false);
+			}
+		}
+		else {
+			File newFile = saveFile(adp.getAccessionNumber(), stringStream);
+			if (newFile != null) {
+				adp.setSerializeLocalSuccess(true);
+			} else {
+				adp.setSerializeLocalSuccess(false);
+			}
+		}
+		
+		return adp.getAccessionNumber();
+		
+	}
+	
+	private boolean serializeData(MorphoDataPackage mdp, String dataDestination) {
+		Log.debug(30, "serilaize data =====================");
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		adp.getEntityArray();
+		// Log.debug(1, "About to check entityArray!");
+		if (adp.getEntityArray() == null) {
+			Log.debug(30, "Entity array is null, no need to serialize data");
+			return true; // there is no data!
+		}
+
+		adp.setDataIDChanged(false);
+		for (int i = 0; i < adp.getEntityArray().length; i++) {
+			String URLinfo = adp.getDistributionUrl(i, 0, 0);
+			String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
+			String objectName = adp.getPhysicalName(i, 0);
+			Log.debug(25, "object name is ===================== " + objectName);
+			if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
+
+				String docid = AbstractDataPackage.getUrlInfo(URLinfo);
+				Log.debug(30, "handle data file  with index " + i + "" + docid);
+				if (docid != null) {
+					boolean isDirty = adp.containsDirtyEntityIndex(i);
+					Log.debug(30, "url " + docid + " with index " + i + " is dirty " + isDirty);
+					
+					// check if the object exists already
+					boolean exists = exists(docid);
+
+					// do we have any revisions for this object
+					List<String> revisions = getAllRevisions(docid);
+					if (revisions != null) {
+						// is it in the revision history?
+						boolean inRevisions = revisions.contains(docid);
+						if (inRevisions) {
+							// is it the latest revision?
+							String latestRevision = revisions.get(revisions.size() - 1);
+							if (docid != latestRevision) {
+								// prompt to get the latest revision before saving an update?
+								Log.debug(5, "Should not update data identifier: " + docid + " because it is not the latest revsion (" + latestRevision + ")");
+								return false;
+							}
+							// otherwise we can continue
+						}
+					}
+					
+					// if docid exists, we need to update the revision
+					String originalIdentifier = docid;
+					boolean updatedId = false;
+					if ( exists && isDirty) {
+						// get the next identifier in this series
+						docid = getNextIdentifier(docid);
+						// save the old one for reference later
+						original_new_id_map.put(docid, originalIdentifier);
+						// we changed the identifier
+						updatedId = true;
+						Log.debug(30, "The identifier "
+								+ originalIdentifier
+								+ " exists and has unsaved data. The identifier for next revision is " + docid );
+
+					}
+
+					// handle incomplete
+					if (isDirty || updatedId) {
+						if (dataDestination.equals(DataPackageInterface.INCOMPLETE)) {
+							handleIncompleteDir(docid);
+						} else {
+							handleLocal(docid);
+						}
+					}
+					
+					
+
+					// reset the map after finishing save. There is no need for
+					// this pair after saving
+					original_new_id_map = new Hashtable<String, String>();
+					
+					// newDataFile must have worked; thus update the package
+					String urlinfo = "ecogrid://knb/" + docid;
+					adp.setDistributionUrl(i, 0, 0, urlinfo);
+					// File was saved successfully, we need to remove the dirty flag
+					if (isDirty) {
+						adp.removeDirtyEntityIndex(i);
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Saves the entity into local system
+	 */
+	private void handleLocal(String docid) {
+		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local " + docid);
+		File dataFile = null;
+		String oldDocid = null;
+		// if morpho serialized data into local store and docid was changed,
+		// we need to get the old docid and find the it in temp dir
+		if (!original_new_id_map.isEmpty()) {
+			// System.out.println("the key is "+urlinfo);
+			// System.out.println("the hashtable is "+original_new_id_map);
+			// Log.debug(1,
+			// "~~~~~~~~~~~~~~~~~~~~~~change id in local serialization ");
+			oldDocid = (String) original_new_id_map.get(docid);
+			Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~the id from map is " + oldDocid);
+
+		}
+		// if oldDocid is null, that means docid change. So we set old docid to
+		// be the current id
+		if (oldDocid == null) {
+			oldDocid = docid;
+		}
+		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~eventually old id is  " + oldDocid);
+		
+		try {
+			// try to get the temp file for old id
+			dataFile = openTempFile(oldDocid);
+			// open old file name (if no file change, the old file name will be as same as docid).
+			newDataFile(docid, dataFile, oldDocid);
+
+		} catch (Exception qq) {
+			// try to open incomplete file
+			try {
+				dataFile = openIncompleteFile(oldDocid);
+				// open old file name (if no file change, the old file name will be as same as docid).
+				// Log.debug(1, "ready to save: urlinfo: "+urlinfo);
+				newDataFile(docid, dataFile, oldDocid);
+			} catch (Exception e) {
+				// if a datafile is on metacat and one wants to save locally
+				try {
+					// open old file name (if no file change, the old file name
+					// will be as same as docid).
+					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(oldDocid);
+					newDataFile(docid, dataFile, oldDocid);
+				} catch (Exception qqq) {
+					// some other problem has occurred
+					Log.debug(5, "Some problem with saving local data files has occurred! " + qqq.getMessage());
+					qq.printStackTrace();
+				}// end catch
+			}
+		}
+
+	}
+	
+	/**
+	 * Save the data file in the incomplete dir
+	 */
+	private void handleIncompleteDir(String docid) {
+		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle incomplete " + docid);
+		File dataFile = null;
+
+		try {
+			dataFile = openFile(docid);
+			Log.debug(30, "Docid " + docid
+							+ " exist in data dir in AbstractDataPackage.handleIncompleteDir");
+			return;
+		} catch (Exception m) {
+			try {
+				dataFile = openTempFile(docid);
+				InputStream dfis = new FileInputStream(dataFile);
+				saveIncompleteDataFile(docid, dfis);
+				dfis.close();
+			} catch (Exception qq) {
+				// if a datafile is on metacat and user wants to save locally
+				try {
+					// open old file name (if no file change, the old file name will be as same as docid).
+					InputStream dfis = new FileInputStream(dataFile);
+					saveIncompleteDataFile(docid, dfis);
+					dfis.close();
+				} catch (Exception qqq) {
+					// some other problem has occured
+					Log.debug(5, "Some problem with saving local data files has occurred! "
+									+ qqq.getMessage());
+					qq.printStackTrace();
+				}// end catch
+			}
+		}
+
 	}
 	
 	/**
@@ -676,20 +958,12 @@ public class LocalDataStoreService extends DataStoreService
 	private List<String> getLatestVersion(List<String> identifiers) {
 
 		Vector<String> returnVector = null;
-		RevisionManager revisionManager = null;
-		try {
-			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.LOCAL);
-		} catch (Exception e) {
-			Log.debug(6, "Could not create RevisionManager: " + e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
 
 		if (identifiers != null) {
 			returnVector = new Vector<String>();
 			for (int i = 0; i < identifiers.size(); i++) {
 				String identifier = identifiers.get(i);
-				String obsoletedBy = revisionManager.getObsoletedBy(identifier);
+				String obsoletedBy = getRevisionManager().getObsoletedBy(identifier);
 				if (obsoletedBy == null) {
 					returnVector.add(identifier);
 				}	
@@ -718,9 +992,9 @@ public class LocalDataStoreService extends DataStoreService
 		}
 
 		// if we found a maximum revision, we should increase 1 to get the next revision
-		if (version != AbstractDataPackage.ORIGINAL_REVISION) {
+		//if (version != AbstractDataPackage.ORIGINAL_REVISION) {
 			version++;
-		}
+		//}
 		Log.debug(30, "The next version for docid " + identifier + " in local file system is " + version);
 		String nextIdentifier = idParts.get(0) + LocalIdentifierGenerator.DOT + idParts.get(1) + LocalIdentifierGenerator.DOT +  version;
 		return nextIdentifier;
