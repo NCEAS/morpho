@@ -297,19 +297,13 @@ public class SaveDialog extends JDialog {
 						+ ex.toString());
 			}
 
-			try {
-				if (id.indexOf(LocalDataStoreService.TEMP) > -1) {
-					String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.BOTH);
-					adp.setAccessionNumber(nextid);
-				} else {
-					String nextid = DataStoreServiceController.getInstance().getNextIdentifier(id, DataPackageInterface.BOTH);
-					adp.setAccessionNumber(nextid);
-				}
-			} catch (Exception www) {
-				// no valid accession number; thus create one
+			// make id for temp id?
+			// TODO: remove this and put else where in the save process?
+			if (id.indexOf(LocalDataStoreService.TEMP) > -1) {
 				String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.BOTH);
 				adp.setAccessionNumber(nextid);
 			}
+
 		}
 
 		try {
