@@ -1018,13 +1018,13 @@ public class DataPackagePlugin
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
-                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
     }
     else {
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
-                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
     }
 
     monitor.notifyStateChange(
@@ -1158,13 +1158,13 @@ public class DataPackagePlugin
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
-                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
     }
     else {
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
-                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
     }
 
     monitor.notifyStateChange(
@@ -1278,13 +1278,13 @@ public class DataPackagePlugin
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
-                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
     }
     else {
       monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
-                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
+                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
     }
 
     monitor.notifyStateChange(
@@ -1337,7 +1337,12 @@ public class DataPackagePlugin
 	MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.LOCAL);
     
     // save remote
-	DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.METACAT);
+	try {
+		DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.METACAT);
+	} catch (Exception e) {
+		e.printStackTrace();
+		throw new MetacatUploadException(e.getMessage());
+	}
 	
 	// check
 	MorphoDataPackage newmdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
