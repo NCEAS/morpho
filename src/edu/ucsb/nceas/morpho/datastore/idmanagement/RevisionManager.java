@@ -198,6 +198,45 @@ public class RevisionManager implements RevisionManagerInterface {
   
   
   /**
+   * Get the list of all the revisions which is older than the specified identifier. The list is in descending order.
+   * Empty list will be returned if there are no older versions.
+   * @param identifier - the specified identifier.
+   * @return the list of all revisions which are older than the specified identifier.
+   */
+  public List<String> getOlderRevisions(String identifier) {
+    List<String> revisions = new Vector<String>();
+    String obsoletesId = getObsoletes(identifier);
+    //System.out.println("the obsoletes id is "+obsoletesId);
+    while(obsoletesId != null) {
+      //System.out.println("the obsoletes id is "+obsoletesId);
+      revisions.add(obsoletesId);
+      //System.out.println("add the id - "+obsoletesId);
+      obsoletesId = getObsoletes(obsoletesId);
+    }
+    return revisions;
+  }
+  
+  
+  /**
+   * Get the list of all the revisions which is newer than the specified identifier. The list is in descending order.
+   * Empty list will be returned if there are no newer versions.
+   * @param identifier - the specified identifier.
+   * @return the list of all revisions which are newer than the specified identifier.
+   */
+  public List<String> getNewerRevisions(String identifier) {
+    List<String> revisions = new Vector<String>();
+    String obsoletedById = getObsoletedBy(identifier);
+    //System.out.println("the obsoletedby id is "+obsoletesId);
+    while (obsoletedById != null) {
+      //System.out.println("the obsoletedby id is "+obsoletesId);
+      revisions.add(0,obsoletedById);
+      //System.out.println("add the obsoletedby id "+obsoletesId);
+      obsoletedById = getObsoletedBy(obsoletedById);   
+    }    
+    return revisions;
+  }
+  
+  /**
    * Get the identifier of the latest revision for the specified identifier.
    * @param identifier - the specified identifier
    * @return the identifier of the latest revision.
