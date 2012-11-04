@@ -99,6 +99,20 @@ public class RevisionManagerTest extends MorphoTestCase {
     manager.setObsoletes("jing.3.4", "jing.3.3");
     //manager.setObsoletedBy("jing.3.3", "jing.3.4");
     
+    List<String> olderVersions = manager.getOlderRevisions("tao.1.3");
+    assertTrue("The first older version should be tao.1.2", olderVersions.get(0).equals("tao.1.2"));
+    assertTrue("The second older version should be tao.1.1", olderVersions.get(1).equals("tao.1.1"));
+    List<String> newerVersions = manager.getNewerRevisions("tao.1.2");
+    assertTrue("The first mewer version should be tao.1.4", newerVersions.get(0).equals("tao.1.4"));
+    assertTrue("The second older version should be tao.1.3", newerVersions.get(1).equals("tao.1.3"));
+    olderVersions = manager.getOlderRevisions("tao.1.1");
+    assertTrue("The older versions list should be 0", olderVersions.size() ==0);
+    newerVersions = manager.getNewerRevisions("tao.1.4");
+    assertTrue("The newer versions list should be 0", newerVersions.size() ==0);
+    newerVersions = manager.getNewerRevisions("tao.1.8");
+    assertTrue("The newer versions list should be 0", newerVersions.size() ==0);
+    
+    
     String latest = manager.getLatestRevision("jing.3.4");
     assertTrue("the last version should be jing.3.4.", latest.equals("jing.3.4"));
     List<String> allVersions = manager.getAllRevisions("jing.3.4");
