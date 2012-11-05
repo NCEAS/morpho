@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -49,8 +50,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreService;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
@@ -550,53 +553,60 @@ public class Query extends DefaultHandler {
   }
   
   /**
-   * Run the query against the local data store and metacat, depending
-   * on how the searchMetacat and searchLocal flags are set.  If both
-   * local and metacat searches are run, merge the results into a single
-   * ResultSet and return it.
-   *
-   * @returns ResultSet the results of the query(s)
-   */
-  public ResultSet execute()
-  {
-    ResultSet results = null;
+	 * Run the query against the local data store and metacat, depending on how
+	 * the searchMetacat and searchLocal flags are set. If both local and
+	 * metacat searches are run, merge the results into a single ResultSet and
+	 * return it.
+	 * 
+	 * @returns ResultSet the results of the query(s)
+	 */
+	public ResultSet execute() {
+		ResultSet results = null;
 
-    // TODO: Run these queries in parallel threads
+		// TODO: Run these queries in parallel threads
 
-    Log.debug(30, "(1) Executing result set...");
-    // if appropriate, query metacat
-    ResultSet metacatResults = null;
-    if (searchMetacat) {
-      Log.debug(30, "(2) Executing metacat query...");
-      metacatResults = new HeadResultSet(this, DataStoreServiceInterface.NONEXIST, QueryRefreshInterface.NETWWORKCOMPLETE,
-                                     morpho.getMetacatDataStoreService().query(toXml()), morpho);
+		Log.debug(30, "(1) Executing result set...");
+		// if appropriate, query metacat
+		ResultSet metacatResults = null;
+		if (searchMetacat) {
+			Log.debug(30, "(2) Executing metacat query...");
+			InputStream queryResults = null;
+			try {
+				queryResults = DataStoreServiceController.getInstance().query(toXml(), DataPackageInterface.METACAT);
+			} catch (Exception e) {
+				Log.debug(5, "Error querying network: " + e.getMessage());
+			}
+			metacatResults = new HeadResultSet(this,
+					DataStoreServiceInterface.NONEXIST,
+					QueryRefreshInterface.NETWWORKCOMPLETE, queryResults,
+					morpho);
 
-    }
+		}
 
-    Log.debug(30, "(2.5) Executing result set...");
-    // if appropriate, query locally
-    ResultSet localResults = null;
-    if (searchLocal) {
-      Log.debug(30, "(3) Executing local query...");
-      LocalQuery lq = new LocalQuery(this, morpho);
-      localResults = lq.execute();
-    }
+		Log.debug(30, "(2.5) Executing result set...");
+		// if appropriate, query locally
+		ResultSet localResults = null;
+		if (searchLocal) {
+			Log.debug(30, "(3) Executing local query...");
+			LocalQuery lq = new LocalQuery(this, morpho);
+			localResults = lq.execute();
+		}
 
-    // merge the results if needed, and return the right result set
-    if (!searchLocal) {
-      results = metacatResults;
-    } else if (!searchMetacat) {
-      results = localResults;
-    } else {
-      // must merge results
-      //metacatResults.merge(localResults);
-      //results = metacatResults;
-      localResults.mergeWithMetacatResultset(metacatResults);
-      results = localResults;
-    }
-    // return the merged results
-    return results;
-  }
+		// merge the results if needed, and return the right result set
+		if (!searchLocal) {
+			results = metacatResults;
+		} else if (!searchMetacat) {
+			results = localResults;
+		} else {
+			// must merge results
+			// metacatResults.merge(localResults);
+			// results = metacatResults;
+			localResults.mergeWithMetacatResultset(metacatResults);
+			results = localResults;
+		}
+		// return the merged results
+		return results;
+	}
  
 
   /**
@@ -675,57 +685,53 @@ public class Query extends DefaultHandler {
 
  }//excute
 
- /*
-  * Method to display the metacat search result
- */
- private void doMetacatSearchDisplay(final ResultPanel resultDisplayPanel,
-                                     final Morpho morpho,
-                                     final HeadResultSet localResult)
- {
+	/*
+	 * Method to display the metacat search result
+	 */
+	private void doMetacatSearchDisplay(final ResultPanel resultDisplayPanel,
+			final Morpho morpho, final HeadResultSet localResult) {
 
+		SynchronizeVector dataVector = new SynchronizeVector();
+		// String source = "metacat";
+		// parsing result set
+		String localStatus = DataStoreServiceInterface.NONEXIST;
+		String metacatStatus = QueryRefreshInterface.NETWWORKCOMPLETE;
+		InputStream queryResults = null;
+		try {
+			queryResults = DataStoreServiceController.getInstance().query(toXml(), DataPackageInterface.METACAT);
+		} catch (Exception e) {
+			Log.debug(5, "Error querying network: " + e.getMessage());
+		}
+		ResultsetHandler handler = new ResultsetHandler(queryResults, dataVector, morpho, localStatus, metacatStatus);
+		// start another thread for parser
+		Thread parserThread = new Thread(handler);
+		parserThread.start();
 
-         SynchronizeVector dataVector = new SynchronizeVector();
-         //String source = "metacat";
-         // parsing result set
-         String localStatus = DataStoreServiceInterface.NONEXIST;
-         String metacatStatus = QueryRefreshInterface.NETWWORKCOMPLETE;
-         ResultsetHandler handler = new ResultsetHandler(morpho.getMetacatDataStoreService().query(toXml()),
-                                            dataVector,  morpho, localStatus, metacatStatus);
-         // start another thread for parser
-         Thread parserThread = new Thread(handler);
-         parserThread.start();
+		Vector allResults = new Vector();
+		// if the parsing is not finished, get the synchronzied vector
+		// length of total resultset
+		int length = 0;
+		while (!handler.isDone()) {
+			Vector partResult = dataVector.getVector();
+			// add partReulst inot all Result
+			for (int i = 0; i < partResult.size(); i++) {
+				allResults.add(partResult.elementAt(i));
+			}
+			if (allResults.size() > length) {
+				resultDisplayPanel.resetResultsVector(allResults);
+				length = allResults.size();
+			}
 
-         Vector allResults = new Vector();
-         // if the parsing is not finished, get the synchronzied vector
-         // length of total resultset
-         int length = 0;
-         while (!handler.isDone())
-         {
-           Vector partResult = dataVector.getVector();
-           // add partReulst inot all Result
-           for ( int i=0; i < partResult.size(); i++)
-           {
-             allResults.add(partResult.elementAt(i));
-           }
-           if ( allResults.size() > length)
-           {
-             resultDisplayPanel.resetResultsVector(allResults);
-             length = allResults.size();
-           }
+		}// while
 
-         }//while
+		// merge the allResult into local result if it is not null
+		if (localResult != null) {
+			localResult.mergeWithMetacatResults(allResults);
+			// transfer the mergered vector to reslult panel
+			resultDisplayPanel.resetResultsVector(localResult.getResultsVector());
+		}
 
-         // merge the allResult into local result if it is not null
-          if ( localResult != null )
-          {
-            localResult.mergeWithMetacatResults(allResults);
-            // transfer the mergered vector to reslult panel
-            resultDisplayPanel.resetResultsVector(
-                                                localResult.getResultsVector());
-          }
-
-
- }
+	}
 
  /*
   * Method to display local search result. This include incomplete documents list too.

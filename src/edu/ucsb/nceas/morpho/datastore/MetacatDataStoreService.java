@@ -449,7 +449,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
     prop.put("qformat", "xml");
     try
     {
-      queryResult = morpho.getMetacatDataStoreService().getMetacatInputStream(prop);
+      queryResult = getMetacatInputStream(prop);
     }
     catch(Exception w)
     {

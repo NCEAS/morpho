@@ -41,6 +41,8 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.triple.Triple;
@@ -178,13 +180,13 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       {
         //try to open the file locally, if it isn't here then try to get
         //it from metacat
-        subfile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(id.trim());
+    	  subfile = DataStoreServiceController.getInstance().openFile(id.trim(), getLocation());
       }
-      catch(FileNotFoundException fnfe)
+      catch(Exception fnfe)
       {
         try
         {
-          subfile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(id.trim());
+      	  subfile = DataStoreServiceController.getInstance().openFile(id.trim(), DataPackageInterface.METACAT);
         }
         catch(FileNotFoundException fnfe2)
         {

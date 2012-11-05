@@ -136,8 +136,15 @@ public class DataStoreServiceController {
 		// get from metacat only if we have to
 		if (location.equals(DataPackageInterface.METACAT)) {
 			file  = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(identifier);
-		} else {
+		} if (location.equals(DataPackageInterface.LOCAL)) {
 			file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
+		} if (location.equals(DataPackageInterface.BOTH)) {
+			// try local then metacat if not in local
+			try {
+				file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
+			} catch (Exception e) {
+				file  = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(identifier);
+			}
 		}
 		return file;
 	}
@@ -747,6 +754,27 @@ public class DataStoreServiceController {
 		if (location.equals(DataPackageInterface.INCOMPLETE)) {
 			Morpho.thisStaticInstance.getLocalDataStoreService().saveIncomplete(mdp);
 		}
+	}
+
+	/**
+	 * serialize the package to the indicated location
+	 * 
+	 * @param adp
+	 * @param location
+	 * @param overwrite -- can bypass the id conflict for local saves - consider removing!!
+	 * @throws Exception 
+	 */
+	public InputStream query(String query, String location) throws Exception {
+
+		InputStream results = null;
+		if (location.equals(DataPackageInterface.METACAT)) {
+			results = Morpho.thisStaticInstance.getMetacatDataStoreService().query(query);
+		}
+
+		// TODO: other query locations
+		
+		return results;
+		
 	}
 	
 	
