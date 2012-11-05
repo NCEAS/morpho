@@ -359,20 +359,25 @@ public class LocalDataStoreService extends DataStoreService
 			DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, DataPackageInterface.LOCAL);
 			String choice = docidIncreaseDialog.showDialog();
 			// Log.debug(5, "choice is "+choice);
-			if (choice != null && choice.equals(DocidConflictHandler.INCREASEID)) {
-				// generate a new identifier - separate from the original chain
-				identifier = generateIdentifier(null);
-				adp.setAccessionNumber(identifier);
-				adp.setPackageIDChanged(true);
+			if (choice != null) {
+				if (choice.equals(DocidConflictHandler.INCREASEID)) {
+					// generate a new identifier - separate from the original chain
+					identifier = generateIdentifier(null);
+					adp.setAccessionNumber(identifier);
+					adp.setPackageIDChanged(true);
+				} else {
+					// get next revision
+					String nextIdentifier = getNextIdentifier(identifier);
+					adp.setAccessionNumber(nextIdentifier);
+					adp.setPackageIDChanged(true);
+					Log.debug(30, "Orginal identifier: " + identifier + ", next revision: " + nextIdentifier);
+					// record this in revision manager
+					getRevisionManager().setObsoletes(nextIdentifier, identifier);
+					identifier = nextIdentifier;
+				}
 			} else {
-				// get next revision
-				String nextIdentifier = getNextIdentifier(identifier);
-				adp.setAccessionNumber(nextIdentifier);
-				adp.setPackageIDChanged(true);
-				Log.debug(30, "Orginal identifier: " + identifier + ", next revision: " + nextIdentifier);
-				// record this in revision manager
-				getRevisionManager().setObsoletes(nextIdentifier, identifier);
-				identifier = nextIdentifier;
+				// canceled the save
+				return identifier;
 			}
 		} else {
 			Log.debug(30, "==============In existFlag and insert revision 1 branch");

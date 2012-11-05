@@ -615,19 +615,25 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 			DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, DataPackageInterface.METACAT);
 			String choice = docidIncreaseDialog.showDialog();
 			// Log.debug(5, "choice is "+choice);
-			if (choice != null && choice.equals(DocidConflictHandler.INCREASEID)) {
-				// increase to a new id
-				identifier = generateIdentifier(null);
-				adp.setAccessionNumber(identifier);
-				adp.setPackageIDChanged(true);				
+			if (choice != null) {
+				
+				if (choice.equals(DocidConflictHandler.INCREASEID)) {
+					// increase to a new id
+					identifier = generateIdentifier(null);
+					adp.setAccessionNumber(identifier);
+					adp.setPackageIDChanged(true);				
+				} else {
+					// get next revision
+					String nextIdentifier = getNextIdentifier(adp.getAccessionNumber());
+					adp.setAccessionNumber(nextIdentifier);
+					adp.setPackageIDChanged(true);
+					Log.debug(30, "The new id (after increase revision number) is " + nextIdentifier);
+					getRevisionManager().setObsoletes(nextIdentifier, identifier);
+					identifier = nextIdentifier;
+				}
 			} else {
-				// get next revision
-				String nextIdentifier = getNextIdentifier(adp.getAccessionNumber());
-				adp.setAccessionNumber(nextIdentifier);
-				adp.setPackageIDChanged(true);
-				Log.debug(30, "The new id (after increase revision number) is " + nextIdentifier);
-				getRevisionManager().setObsoletes(nextIdentifier, identifier);
-				identifier = nextIdentifier;
+				// they canceled the save
+				return identifier;
 			}
 		} else  {
 			Log.debug(30, "Identifier: " + identifier + "does not exist in Metacat");

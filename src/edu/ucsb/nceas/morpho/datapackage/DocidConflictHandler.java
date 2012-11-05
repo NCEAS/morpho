@@ -2,7 +2,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,15 +12,13 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
-
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
 
 /**
@@ -66,7 +63,7 @@ public class DocidConflictHandler
     	    //super(parent, true);
     	    this.docid = docid;
     	    this.location = location;
-    	    this.userChoice = INCREASEREVISION;
+    	    this.userChoice = null;
     	    message =  "<html><font style=\"font-size: 9px;\" color=\"#666666\"><br>&#x0020;&#x0020;Document id "+docid +" already exists in "+location+
             ". <br>&#x0020;&#x0020;If the saving document is an updated version of the document, increment the revision number. "+ 
             "<br>&#x0020;&#x0020;Otherwise, generate a new document id.<font></html>";
@@ -154,7 +151,7 @@ public class DocidConflictHandler
        private void createOKButtonPanel()
        {
          okButtonPanel = new JPanel();
-         JButton okButton = new JButton(" Ok ");
+         JButton okButton = new JButton(Language.getInstance().getMessage("OK"));
          ActionListener okAction = new DialogOKAction();
          okButton.addActionListener(okAction);
          okButtonPanel.setLayout(new BoxLayout(okButtonPanel, BoxLayout.X_AXIS));
@@ -162,7 +159,10 @@ public class DocidConflictHandler
          okButtonPanel.add(Box.createHorizontalGlue());
          okButtonPanel.add(okButton);
          okButtonPanel.add(Box.createHorizontalStrut(PADDING));
-         okButtonPanel.add(okButton);
+         JButton cancelButton = new JButton(Language.getInstance().getMessage("Cancel"));
+         ActionListener cancelAction = new DialogCancelAction();
+         cancelButton.addActionListener(cancelAction);
+         okButtonPanel.add(cancelButton);
        }
        
        /**
@@ -177,38 +177,46 @@ public class DocidConflictHandler
        
        
        /*
-        * Listener class for OK button. It will get user's choice.
-        */
-       private class DialogOKAction implements ActionListener
-       {
-         /** 
-          * Listens to the radio buttons.
-         */
-         public void actionPerformed(ActionEvent e) 
-         {
-            //userChoice = e.getActionCommand();
-           //Log.debug(5, "action peformed");
-           if(increaseRevision != null && increaseRevision.isSelected())
-           {
-             //Log.debug(5, "in crease revisoin branch");
-             userChoice = INCREASEREVISION;
-           }
-           else if(increaseDocid != null && increaseDocid.isSelected())
-           {
-             //Log.debug(5, "in crease id branch");
-             userChoice = INCREASEID;
-           }
-           else
-           {
-             //Log.debug(5, "in other brach");
-             userChoice = INCREASEREVISION;
-           }
-           if(dialog != null)
-           {
-             dialog.setVisible(false);
-             dialog.dispose();
-           }
-           //Log.debug(5, "final choice is "+userChoice);
-         }
-       }
+	 * Listener class for OK button. It will get user's choice.
+	 */
+	private class DialogOKAction implements ActionListener {
+		/**
+		 * Listens to the radio buttons.
+		 */
+		public void actionPerformed(ActionEvent e) {
+			// userChoice = e.getActionCommand();
+			// Log.debug(5, "action peformed");
+			if (increaseRevision != null && increaseRevision.isSelected()) {
+				// Log.debug(5, "in crease revisoin branch");
+				userChoice = INCREASEREVISION;
+			} else if (increaseDocid != null && increaseDocid.isSelected()) {
+				// Log.debug(5, "in crease id branch");
+				userChoice = INCREASEID;
+			} else {
+				// Log.debug(5, "in other brach");
+				userChoice = INCREASEREVISION;
+			}
+			if (dialog != null) {
+				dialog.setVisible(false);
+				dialog.dispose();
+			}
+			// Log.debug(5, "final choice is "+userChoice);
+		}
+	}
+       
+	/*
+	 * Listener class for OK button. It will get user's choice.
+	 */
+	private class DialogCancelAction implements ActionListener {
+		/**
+		 * Listens to the cancel button.
+		 */
+		public void actionPerformed(ActionEvent e) {
+
+			if (dialog != null) {
+				dialog.setVisible(false);
+				dialog.dispose();
+			}
+		}
+	}
 }
