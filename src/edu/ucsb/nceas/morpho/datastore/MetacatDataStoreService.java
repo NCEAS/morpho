@@ -737,30 +737,21 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	 * Saves data files to Metacat
 	 */
 	private void handleMetacat(String docid, String objectName) {
-		Log.debug(30, "----------------------------------------handle metacat "
-				+ docid);
+		Log.debug(30, "----------------------------------------handle metacat " + docid);
 		File dataFile = null;
 		String oldDocid = null;
-		ConfigXML profile = Morpho.thisStaticInstance.getProfile();
-		String separator = profile.get("separator", 0);
-		separator = separator.trim();
+		// did we update the id?
 		if (!original_new_id_map.isEmpty()) {
-			// System.out.println("the key is "+urlinfo);
-			// System.out.println("the hashtable is "+original_new_id_map);
-			// Log.debug(1,
-			// "~~~~~~~~~~~~~~~~~~~~~~change id in local serialization ");
 			oldDocid = (String) original_new_id_map.get(docid);
-			Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~the id from map is "
-					+ oldDocid);
+			Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~the original id from map is " + oldDocid);
 
 		}
-		// if oldDocid is null, that means docid change. So we set old docid to
-		// be the current id
+		// if oldDocid is null, that means docid hasn't changed
 		if (oldDocid == null) {
 			oldDocid = docid;
 		}
 		try {
-			dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(docid);
+			dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(oldDocid);
 		} catch (Exception eee) {
 			Log.debug(5,"Couldn't find "
 						+ oldDocid
