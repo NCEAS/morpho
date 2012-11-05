@@ -42,18 +42,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.dataone.client.D1Object;
 import org.dataone.client.DataPackage;
 import org.dataone.client.MNode;
 import org.dataone.ore.ResourceMapFactory;
+import org.dataone.service.exceptions.IdentifierNotUnique;
 import org.dataone.service.exceptions.InsufficientResources;
 import org.dataone.service.exceptions.InvalidRequest;
+import org.dataone.service.exceptions.InvalidSystemMetadata;
 import org.dataone.service.exceptions.InvalidToken;
 import org.dataone.service.exceptions.NotAuthorized;
 import org.dataone.service.exceptions.NotFound;
 import org.dataone.service.exceptions.NotImplemented;
 import org.dataone.service.exceptions.ServiceFailure;
+import org.dataone.service.exceptions.UnsupportedType;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.util.TypeMarshaller;
@@ -68,7 +72,10 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.DataONERevisionManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
+import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.utilities.Log;
 
@@ -81,6 +88,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 
   
   private static final String MNDOEURLELEMENTNAME = "dataone_mnode_baseurl";
+  private static final String CREATE = "create";
+  private static final String UPDATe = "update";
   private static final String PATHQUERY = "pathquery";
   private static final String DOI = "doi";
   private static MNode activeMNode = null;
@@ -339,8 +348,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     //save ore document finally
     D1Object oreD1Object = new D1Object();
     oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
-    //TODO DataPackage should have system metadata
-    //oreD1Object.setSystemMetadata(mdp.getS)
+    oreD1Object.setSystemMetadata(mdp.getSystemMetadata());
     save(oreD1Object);
     return oreId.getValue();
   }
@@ -348,7 +356,11 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   /*
    * Save a d1Ojbect to the DataONE network. 
    */
-  private void save(D1Object d1Object) throws NullPointerException{
+  private void save(D1Object d1Object) throws NullPointerException, InvalidToken, ServiceFailure, NotAuthorized, 
+              NotFound, NotImplemented, InsufficientResources, IllegalActionException, IllegalArgumentException, 
+               ConfigurationException, IOException, IdentifierNotUnique, InvalidRequest, InvalidSystemMetadata, UnsupportedType {
+    String action = null;
+    
     if(d1Object == null) {
       throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't be null");
     }
@@ -360,7 +372,119 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     if(identifier == null || identifier.getValue() == null || identifier.getValue().trim().equals("")) {
       throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't have a null identifier");
     }
-    
+    boolean hasObsoletes = adjustsObsoletes(sysMeta);
+    adjustObsoletedBy(sysMeta);
+    if(!hasObsoletes) {
+      //create action
+      activeMNode.create(d1Object.getIdentifier(), new ByteArrayInputStream(d1Object.getData()), sysMeta);
+    } else {
+      //update action
+      activeMNode.update(sysMeta.getObsoletes(), new ByteArrayInputStream(d1Object.getData()), d1Object.getIdentifier(), sysMeta);
+    }
+  }
+  
+  
+  /**
+   * Adjust the Obsoletes object in the specified SystemMetadata object according the existence of the obsoletes id.
+   * @param sysMeta
+   * @return true if the Obsoletes object is kept; false else.
+   * @throws ServiceFailure
+   * @throws NotImplemented
+   * @throws NotAuthorized
+   * @throws InvalidToken
+   * @throws IllegalArgumentException
+   * @throws ConfigurationException
+   * @throws IOException
+   */
+  private boolean adjustsObsoletes(SystemMetadata sysMeta) throws ServiceFailure, NotImplemented, NotAuthorized, 
+                                         InvalidToken, IllegalArgumentException, ConfigurationException, IOException{
+    boolean hasObsoletes = false;
+    Identifier obsoletes = sysMeta.getObsoletes();
+    if(obsoletes != null) {
+      if(obsoletes.getValue() != null && !obsoletes.getValue().equals("")) {
+        if(exists(obsoletes.getValue())) {
+          //the obsoletes identifier exists in the dataone, so no change.
+          hasObsoletes = true;
+        } else {
+          // Thought the obsoletes doesn't exist, it is possible in this scenario:
+          //users has local version local.1.1, local.1.2, and local 1.3. It published
+          //local.1.1 and now is publishing the 1.3. Since 1.2 wasn't published, so 1.2 doesn't exist in dataone.
+          // But the local 1.1 does. So we should modify the obsoletes from 1.2 to 1.1
+          List<String> olderVersions = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.LOCAL).getOlderRevisions(obsoletes.getValue());
+          String obsoletesId = exists(olderVersions);
+          if(obsoletesId != null) {
+            hasObsoletes = true;
+            //modify the obsolete object value
+            obsoletes.setValue(obsoletesId);
+          }
+        }
+      }
+    }
+    if(!hasObsoletes) {
+      //if there is no obsoletes, set it to null.
+      sysMeta.setObsoletes(null);
+    }
+    return hasObsoletes;
+  }
+  
+  /**
+   * Adjust the obsoletedBy object. Generally, we don't allow an older version of object created (having obsoletedBy fields).
+   * But, there is an exception : the obsoletedBy id doesn't exist in the dataone and there are no newer versions (base on the local revision chain) 
+   * than the obsoletedBy id in the dataone network. The reason we don't use the dataone network revision chains is that the the obsoletedBy id doesn't exist
+   * in the dataone network and there is no way for us to track down.
+   * @param sysMeta
+   * @throws ServiceFailure
+   * @throws NotImplemented
+   * @throws NotAuthorized
+   * @throws InvalidToken
+   * @throws IllegalActionException
+   * @throws IllegalArgumentException
+   * @throws ConfigurationException
+   * @throws IOException
+   */
+  private void adjustObsoletedBy(SystemMetadata sysMeta) throws ServiceFailure, NotImplemented, NotAuthorized, 
+                                         InvalidToken, IllegalActionException, IllegalArgumentException, 
+                                         ConfigurationException, IOException {
+    Identifier obsoletedBy = sysMeta.getObsoletedBy();
+    if(obsoletedBy != null) {
+      if (obsoletedBy.getValue() != null && !obsoletedBy.getValue().equals("")) {
+        if(exists(obsoletedBy.getValue())) {
+          throw new IllegalActionException("DataONEDataStoreService.adjustObsoletedBy - morpho doesn't allow to insert an older version to the DataONE network since "+
+                                          " the object is obsoleted by "+obsoletedBy.getValue() +" in the system metadata and the id "+obsoletedBy.getValue()+" exists in the network");
+        } else {
+          // Thought the obsoletedBy doesn't exist, it is possible in this scenario:
+          //users has local version local.1.1, local.1.2, and local 1.3. It published
+          //local.1.3 and now is publishing the 1.1. The obsoletedBy for 1.1 is 1.2. Since 1.2 wasn't published, 1.2 doesn't
+          //exist in the dataone network. However, 1.3 does exist which is newer version than 1.1. So we shouldn't allow 1.1 to
+          //be published.
+          List<String> newerVersions = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.LOCAL).getNewerRevisions(obsoletedBy.getValue());
+          String obsoletedById = exists(newerVersions);
+          if(obsoletedById != null) {
+            throw new IllegalActionException("DataONEDataStoreService.adjustObsoletedBy - morpho doesn't allow to insert an older version to the DataONE network since "+
+                " the object is obsoleted by "+obsoletedBy.getValue() +" in the system metadata and a newer version of "+obsoletedBy.getValue()+" - "+obsoletedById+ " exists in the network");
+          }
+        }
+      }
+    }
+    sysMeta.setObsoletedBy(null);
+  }
+  
+  /*
+   * Find any id in an array existing in the dataONE. If null is returned, we couldn't find it. Otherwise, the found
+   * identifier will be returned.
+   */
+  private String exists(List<String> identifiers) throws ServiceFailure, NotImplemented, NotAuthorized, InvalidToken {
+    String existedIdentifier = null;
+    if(identifiers != null) {
+      for(int i=0; i<identifiers.size(); i++) {
+        boolean existing = exists(identifiers.get(i));
+          if (existing) {
+            existedIdentifier = identifiers.get(i);
+            break;
+          }
+        }
+      }
+    return existedIdentifier;
   }
   
   /**
