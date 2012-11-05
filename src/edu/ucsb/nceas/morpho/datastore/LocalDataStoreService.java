@@ -469,15 +469,18 @@ public class LocalDataStoreService extends DataStoreService
 					}
 
 					// handle incomplete
+					boolean status = false;
 					if (isDirty || updatedId) {
 						if (dataDestination.equals(DataPackageInterface.INCOMPLETE)) {
 							handleIncompleteDir(docid);
 						} else {
-							handleLocal(docid);
+							status = handleLocal(docid);
+							// this was a failure, return now
+							if (!status) {
+								return false;
+							}
 						}
 					}
-					
-					
 
 					// reset the map after finishing save. There is no need for
 					// this pair after saving
@@ -499,7 +502,7 @@ public class LocalDataStoreService extends DataStoreService
 	/**
 	 * Saves the entity into local system
 	 */
-	private void handleLocal(String docid) {
+	private boolean handleLocal(String docid) {
 		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local " + docid);
 		File dataFile = null;
 		String oldDocid = null;
@@ -524,31 +527,36 @@ public class LocalDataStoreService extends DataStoreService
 		try {
 			// try to get the temp file for old id
 			dataFile = openTempFile(oldDocid);
-			// open old file name (if no file change, the old file name will be as same as docid).
-			newDataFile(docid, dataFile, oldDocid);
-
 		} catch (Exception qq) {
 			// try to open incomplete file
 			try {
 				dataFile = openIncompleteFile(oldDocid);
-				// open old file name (if no file change, the old file name will be as same as docid).
-				// Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-				newDataFile(docid, dataFile, oldDocid);
 			} catch (Exception e) {
 				// if a datafile is on metacat and one wants to save locally
 				try {
-					// open old file name (if no file change, the old file name
-					// will be as same as docid).
+					// open from network
 					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(oldDocid);
-					newDataFile(docid, dataFile, oldDocid);
 				} catch (Exception qqq) {
 					// some other problem has occurred
 					Log.debug(5, "Some problem with saving local data files has occurred! " + qqq.getMessage());
 					qq.printStackTrace();
-				}// end catch
+					return false;
+				}
 			}
 		}
-
+		
+		// open old file name (if no file change, the old file name will be as same as docid).
+		try {
+			newDataFile(docid, dataFile, oldDocid);
+		} catch (FileNotFoundException e) {
+			// some other problem has occurred
+			Log.debug(5, "Problem with saving local data file: " + docid + ", Error: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+		
+		// if we get here it was successful
+		return true;
 	}
 	
 	/**
