@@ -713,7 +713,10 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 					}
 
 					if (isDirty || updatedId) {
-						handleMetacat(docid, objectName);
+						boolean status = handleMetacat(docid, objectName);
+						if (!status) {
+							return false;
+						}
 					}
 
 					// reset the map after finishing save. There is no need for
@@ -736,7 +739,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	/**
 	 * Saves data files to Metacat
 	 */
-	private void handleMetacat(String docid, String objectName) {
+	private boolean handleMetacat(String docid, String objectName) {
 		Log.debug(30, "----------------------------------------handle metacat " + docid);
 		File dataFile = null;
 		String oldDocid = null;
@@ -756,7 +759,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 			Log.debug(5,"Couldn't find "
 						+ oldDocid
 						+ " in local system, so morpho couldn't upload it to metacat");
-			return;
+			return false;
 		}
 
 		try {
@@ -765,7 +768,10 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 			// Gets some error from metacat
 			Log.debug(5, "Some problem with saving data files has occurred! "
 					+ e.getMessage());
+			return false;
 		}
+		
+		return true;
 
 	}
   
