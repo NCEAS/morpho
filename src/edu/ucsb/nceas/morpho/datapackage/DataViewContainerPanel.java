@@ -878,20 +878,16 @@ public void setTopPanel(JPanel jp) {
             dataId = urlinfo;
             try{
               String loc = adp.getLocation();
-              if ((loc.equals(DataPackageInterface.LOCAL))||(loc.equals(DataPackageInterface.BOTH))) {
-                displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
-              }
-              else if (loc.equals(DataPackageInterface.METACAT)) {
-                displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
+              if (loc.equals(DataPackageInterface.LOCAL) || loc.equals(DataPackageInterface.BOTH) || loc.equals(DataPackageInterface.METACAT)) {
+                displayFile = DataStoreServiceController.getInstance().openFile(urlinfo, loc);
               }
               else if (loc.equals("")) {
             	  // try getting local sources first, then network
             	  try {
             		  displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(urlinfo);
             	  } catch (Exception e) {
-                      displayFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
-				}
-                
+                      displayFile = DataStoreServiceController.getInstance().openFile(urlinfo, DataPackageInterface.METACAT);
+				} 
               }
             }
             catch (Exception q) {
