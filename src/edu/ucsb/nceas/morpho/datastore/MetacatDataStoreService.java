@@ -225,6 +225,22 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		String nextIdentifier = idParts.get(0) + LocalIdentifierGenerator.DOT + idParts.get(1) + LocalIdentifierGenerator.DOT +  version;
 		return nextIdentifier;
 	}
+
+	/**
+	 * Get revision manager for this store
+	 * @return RevisionManager for this storage service
+	 */
+	public RevisionManager getRevisionManager() {
+		RevisionManager revisionManager = null;
+		try {
+			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.METACAT);
+		} catch (Exception e) {
+			Log.debug(6, "Could not get revision manager: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		return revisionManager;
+	}
 	
 	/**
 	 * Get all revisions for a given identifier. The identifier can be be first, last or anywhere else in the 
@@ -233,15 +249,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	 * @return list of all versions of the given identifier (in order) with the earliest revision first
 	 */
 	public List<String> getAllRevisions(String identifier) {
-		RevisionManager revisionManager = null;
-		try {
-			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.METACAT);
-		} catch (Exception e) {
-			Log.debug(6, "Could not find remote revisions for: " + identifier);
-			e.printStackTrace();
-			return null;
-		}
-		return revisionManager.getAllRevisions(identifier);
+		return getRevisionManager().getAllRevisions(identifier);
 	}
   
   /**
@@ -562,7 +570,8 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		
 		String status = DataStoreServiceInterface.NONEXIST;
 		status = status(identifier);
-		return !status.equals(DataStoreServiceInterface.NONEXIST);
+		// choices are CONFLICT (rev <= existing), UPDATE (rev > existing), NONEXIST
+		return status.equals(DataStoreServiceInterface.CONFLICT);
 		
 	}
 	
@@ -613,24 +622,22 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 				adp.setPackageIDChanged(true);				
 			} else {
 				// get next revision
-				identifier = getNextIdentifier(adp.getAccessionNumber());
-				adp.setAccessionNumber(identifier);
+				String nextIdentifier = getNextIdentifier(adp.getAccessionNumber());
+				adp.setAccessionNumber(nextIdentifier);
 				adp.setPackageIDChanged(true);
-				Log.debug(30, "The new id (after increase revision number) is " + identifier);
+				Log.debug(30, "The new id (after increase revision number) is " + nextIdentifier);
+				getRevisionManager().setObsoletes(nextIdentifier, identifier);
+				identifier = nextIdentifier;
 			}
 		} else  {
 			Log.debug(30, "Identifier: " + identifier + "does not exist in Metacat");
-			// since it is saving a new package, increase docid silently
-			identifier = generateIdentifier(null);
-			adp.setAccessionNumber(identifier);
-			adp.setPackageIDChanged(true);
+			// since it is saving a new package, no need to change id
 		}
-		// Log.debug(30, temp);
 
 		// save doc to metacat
 		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
 		InputStream stringInput = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
-		if (exists) {
+		if (!isRevisionOne) {
 			try {
 				saveFile(adp.getAccessionNumber(), stringInput);
 				adp.setSerializeMetacatSuccess(true);
