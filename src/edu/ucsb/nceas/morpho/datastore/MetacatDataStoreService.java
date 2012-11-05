@@ -719,7 +719,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 
 					}
 
-					if (isDirty || updatedId) {
+					if (isDirty || !exists) {
 						boolean status = handleMetacat(docid, objectName);
 						if (!status) {
 							return false;
@@ -1489,8 +1489,20 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
           // use object name to replace the meaningless name such as 12.2
           if (objectName != null && !Util.isBlank(objectName))
           {
-          	String tmpDir = Morpho.getConfiguration().get("tempDir", 0);
+        	  // NOTE: this is a horrible way to get the object name for the uploaded file
+        	  // but this service is being deprecated
+          	String tmpDir = getTempDir();
           	newFile = new File(tmpDir, objectName);
+          	if (newFile.exists()) {
+          		// make sure it is empty
+          		newFile.delete();
+          	}          
+          	if (!newFile.exists()) {
+          		newFile.createNewFile();
+          	}
+          	// make sure we try to clean it up afterward
+          	newFile.deleteOnExit();
+          	
           	FileInputStream input = new FileInputStream(file);
           	FileOutputStream out = new FileOutputStream(newFile);
           	byte[] c = new byte[3*1024];
