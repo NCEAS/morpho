@@ -68,20 +68,5 @@ public class AccessionNumber
     v.addElement(separator);
     return v;
   }
-  
-  /**
-   * Method to get only the beginning (scope and id parts) of
-   * a given full id
-   * @param fullId the accessionNumber to strip the rev off of
-   * @return scope+separator+id
-   */
-  public String getIdNoRev(String fullId) {
-	  Vector<String> idVec = getParts(fullId);
-      String scope = (String)idVec.elementAt(0);
-      String id = (String)idVec.elementAt(1);
-      //String rev = (String)idVec.elementAt(2);
-      String sep = (String)idVec.elementAt(3);
-      return scope + sep + id;
-  }
 
 }
