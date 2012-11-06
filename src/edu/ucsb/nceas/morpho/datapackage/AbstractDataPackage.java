@@ -1758,6 +1758,8 @@ public abstract class AbstractDataPackage extends MetadataObject
       return 0;
     return attributes.length;
   }
+  
+  
 
   /**
    * This method sets the number of records in the entity, given the index of
@@ -3260,6 +3262,39 @@ public abstract class AbstractDataPackage extends MetadataObject
                 "exception in getting distribution inline data: " + w.toString());
     }
     return temp;
+  }
+  
+  /**
+   * Get the entity from the identifier of the data object.
+   * @param identifier - the identifier of the data object.
+   * @return the entity having the identifier in the distribution url. Null will be return if the
+   * identifier can't be found.
+   */
+  public Entity getEntity(String identifier ) {
+    Entity entity = null;
+    if ( entityArray != null) {
+     outer: for(int i=0; i<entityArray.length; i++) {
+       Entity entityElement = entityArray[i];
+       if(entityElement != null ) {
+         Node[] physNodes = getPhysicalArray(i);
+         if(physNodes != null) {
+           for(int k=0; k<physNodes.length; k++) {
+             Node[] distNodes = getDistributionArray(i, k);
+             if(distNodes != null ) {
+               for(int m=0; m<distNodes.length; m++) {
+                 String url = getDistributionUrl(i,k,m);
+                 if(url != null && url.contains(identifier)) {
+                   entity = entityElement;
+                   break outer;
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+    }  
+    return entity;
   }
 
   /**

@@ -226,10 +226,16 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
         dp.setAbstractDataPackage(adp);
         List<Identifier> dataIdentifiers = mdMap.get(scienceMetadataId);
         for (Identifier dataId : dataIdentifiers) {
-          byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataId.getValue()));
-          D1Object object = new D1Object();
-          object.setData(data);
-          object.setSystemMetadata(getSystemMetadataFromDataONE(dataId.getValue()));
+          Entity entity = adp.getEntity(dataId.getValue());
+          if (entity != null) {
+            byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataId.getValue()));
+            entity.setData(data);
+            entity.setSystemMetadata(getSystemMetadataFromDataONE(dataId.getValue()));
+          } else {
+            throw new OREException("DataONEDataStoreService.read - the data object "+dataId.getValue()+" in the ORE document "+
+                                    "couldn't be found in the science metadata document.");
+          }
+        
         }
       }
     }
