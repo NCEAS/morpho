@@ -46,7 +46,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.DOMImplementation;
@@ -1503,7 +1503,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 	    File f2 = new File(styleSheetPath);
 		TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource(f2));
 		Transformer lastTransformer = tHandler2.getTransformer();
-		lastTransformer.setOutputProperty(OutputProperties.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
+		lastTransformer.setOutputProperty(OutputPropertiesFactory.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
 		
 		//add code to handle the error message from xslt style sheet
 		XSLTErrorListener xslErrorListener = new XSLTErrorListener();
