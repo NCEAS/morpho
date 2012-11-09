@@ -27,6 +27,7 @@ package edu.ucsb.nceas.morphotest.datastore;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.math.BigInteger;
@@ -78,6 +79,7 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
   private static final String EMLFORMATID = "eml://ecoinformatics.org/eml-2.0.0";
   private static final String DATAFORMATID = "text/csv";
   private static final String DATAID = "data-identifier";
+  private static final String OREIDFILEPATH = "build/oreid";
   private DataONEDataStoreService service = null;
   private Subject submitter = null;
   /**
@@ -88,6 +90,8 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
       suite.addTest(new DataONEDataStoreServiceTest("initialize"));
       suite.addTest(new DataONEDataStoreServiceTest("testExists"));
       suite.addTest(new DataONEDataStoreServiceTest("testSave"));
+      suite.addTest(new DataONEDataStoreServiceTest("testReadAndDelete"));
+      deleteOREIdFile();
       return suite;
   }
   
@@ -188,6 +192,7 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
        dataFormatId, submitter,node); 
     dataObject.setSystemMetadata(dataSysMeta);
     ore.addData(dataObject);
+    storeOREIdToFile(oreIdStr);
     return ore;
     
    /*InputStream ore = new FileInputStream(new File(OREPATH));
@@ -207,6 +212,18 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
     
     
   }
+  
+  /**
+   * Test the read action.
+   * @throws Exception
+   */
+  public void testReadAndDelete() throws Exception {
+    String oreid = readOREIdFromFile();
+    MorphoDataPackage dataPackage = service.read(oreid);
+    service.delete(dataPackage);
+  }
+  
+  
   
   /*
    * Generate the system metadata.
@@ -265,6 +282,49 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
     String tmpDir = System.getProperty("java.io.tmpdir");
     File file =new File(tmpDir,"x509up_u1000");
     return file.getAbsolutePath();
+  }
+  
+  
+  /**
+   * Store the oreId into an external file
+   * @param oreId
+   * @throws Exception
+   */
+  private void storeOREIdToFile(String oreId) throws Exception {
+    File oreIdFile = new File(OREPATH);
+    oreIdFile.createNewFile();
+    FileOutputStream out = new FileOutputStream(oreIdFile);
+    try {
+      IOUtils.write(oreId, out);
+    } finally {
+      if(out != null) {
+        out.close();
+      }
+    }
+  }
+  
+  /*
+   * Delete the file storing the ore id
+   */
+  private static void deleteOREIdFile() {
+   File oreIdFile = new File(OREPATH);
+   if(oreIdFile.exists()) {
+     oreIdFile.deleteOnExit();
+   }
+  }
+  
+  /**
+   * Read the id from the storing file.
+   * @return id of the ore; null will be returned if can't find file.
+   * @throws Exception
+   */
+  private String readOREIdFromFile() throws Exception {
+    String id = null;
+    File oreIdFile = new File(OREPATH);
+    if(oreIdFile.exists()) {
+      id = IOUtils.toString(new FileInputStream(oreIdFile));
+    }
+    return id;
   }
 }
 
