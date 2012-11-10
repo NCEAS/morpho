@@ -218,19 +218,24 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
       // parse the metadata/data identifiers and store the associated objects if they are accessible
       byte[] metadata;
       for (Identifier scienceMetadataId : mdMap.keySet()) {
+        //System.out.println("The scienceMetadataId is ======= "+scienceMetadataId.getValue());
         //dp.addAndDownloadData(scienceMetadataId);
         metadata = IOUtils.toByteArray(getDataFromDataONE(scienceMetadataId.getValue()));
         AbstractDataPackage adp = DataPackageFactory.getDataPackage(new StringReader(new String(metadata,IdentifierFileMap.UTF8)));
+        adp.setData(metadata);
         adp.setSystemMetadata(getSystemMetadataFromDataONE(scienceMetadataId.getValue()));
         dp.addData(adp);
         dp.setAbstractDataPackage(adp);
         List<Identifier> dataIdentifiers = mdMap.get(scienceMetadataId);
+        //System.out.println("The data id list size is === "+dataIdentifiers.size());
         for (Identifier dataId : dataIdentifiers) {
+          //System.out.println("the data id is ==== "+dataId.getValue());
           Entity entity = adp.getEntity(dataId.getValue());
           if (entity != null) {
             byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataId.getValue()));
             entity.setData(data);
             entity.setSystemMetadata(getSystemMetadataFromDataONE(dataId.getValue()));
+            dp.addData(entity);
           } else {
             throw new OREException("DataONEDataStoreService.read - the data object "+dataId.getValue()+" in the ORE document "+
                                     "couldn't be found in the science metadata document.");

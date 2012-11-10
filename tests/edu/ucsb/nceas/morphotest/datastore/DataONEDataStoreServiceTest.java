@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.dataone.client.D1Object;
@@ -65,6 +66,7 @@ import junit.framework.TestSuite;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
@@ -230,8 +232,21 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
    */
   public void testReadAndDelete() throws Exception {
     String oreid = readOREIdFromFile();
+    //String oreid = "test-1352508561138507.76878722186103";
     MorphoDataPackage dataPackage = service.read(oreid);
-    System.out.println("The size of data package is === "+dataPackage.identifiers().size());
+    assertTrue("The size of d1object in this data package should be two", dataPackage.identifiers().size() ==2);
+    Set<Identifier> set = dataPackage.identifiers();
+    for(Identifier id :set) {
+      System.out.println("The id is "+id.getValue());
+      D1Object object = dataPackage.get(id);
+      byte[] array = object.getData();
+      if(object instanceof Entity) {   
+        assertTrue("the arrary size should be 8", array.length==8);
+      } else {
+        System.out.println("the arrary size should be "+array.length);
+      }
+    }
+    
     service.delete(dataPackage);
   }
   
