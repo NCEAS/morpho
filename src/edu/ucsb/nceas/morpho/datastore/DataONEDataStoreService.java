@@ -338,7 +338,11 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   @Override
   public String save(MorphoDataPackage mdp) throws Exception {
     Identifier oreId = mdp.getPackageId();
-    Identifier metadataId = mdp.getAbstractDataPackage().getIdentifier();
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
+    if(adp == null) {
+      throw new IllegalActionException("DataONEDataStoreService.save - users is trying save an Morpho data package without setting metadata - the AbstractDatapackage");
+    }
+    Identifier metadataId = adp.getIdentifier();
     Set<Identifier> identifiers = mdp.identifiers();
     //save data objects first
     if(identifiers != null && identifiers.size() > 0 ) {

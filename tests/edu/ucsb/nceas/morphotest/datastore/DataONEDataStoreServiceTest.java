@@ -46,14 +46,19 @@ import org.dataone.client.auth.CertificateManager;
 import org.dataone.client.auth.ClientIdentityManager;
 import org.dataone.ore.ResourceMapFactory;
 import org.dataone.service.exceptions.BaseException;
+import org.dataone.service.types.v1.AccessPolicy;
+import org.dataone.service.types.v1.AccessRule;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.Node;
 import org.dataone.service.types.v1.NodeReference;
 import org.dataone.service.types.v1.ObjectFormat;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.Permission;
 import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.types.v1.util.ChecksumUtil;
+import org.dataone.service.util.Constants;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -142,16 +147,19 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
    * Create a morpho data package.
    */
   private MorphoDataPackage createMorphoPackage() throws Exception {
-    String oreIdStr = service.generateIdentifier("tao");
+    //String oreIdStr = service.generateIdentifier("tao");
+    String oreIdStr = generateId();
     System.out.println("the oreIdStr is "+oreIdStr);
-    String metadataIdStr = service.generateIdentifier("tao");
+    //String metadataIdStr = service.generateIdentifier("tao");
+    String metadataIdStr = generateId();
     System.out.println(" the metadataIdStr is "+metadataIdStr);
-    String dataIdStr = service.generateIdentifier("tao");
+    //String dataIdStr = service.generateIdentifier("tao");
+    String dataIdStr = generateId();
     System.out.println(" the dataIdStr is "+dataIdStr);
     
     MNode activeNode = service.getActiveMNode();
-    NodeReference node = new NodeReference();
-    node.setValue(activeNode.getNodeId());
+    Node nodeAPI = activeNode.getCapabilities();
+    NodeReference node = nodeAPI.getIdentifier();
     
     Identifier oreId = new Identifier();
     oreId.setValue(oreIdStr);
@@ -163,6 +171,7 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
     List<Identifier> list = new ArrayList<Identifier>();
     Identifier dataId = new Identifier();
     dataId.setValue(dataIdStr);
+    list.add(dataId);
     metadataRelation.put(metadataId, list);
     ore.setMetadataMap(metadataRelation);
     ObjectFormatIdentifier oreFormatId = new ObjectFormatIdentifier();
@@ -172,7 +181,8 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
     ore.setSystemMetadata(oreSysMeta);
     
     String eml = IOUtils.toString(new FileInputStream(new File(EMLPATH)));
-    eml.replaceAll(DATAID, dataIdStr);
+    eml = eml.replaceAll(DATAID, dataIdStr);
+    //System.out.println("the eml is "+eml);
     AbstractDataPackage adp = DataPackageFactory.getDataPackage(new StringReader(eml));
     byte[] emlByte = eml.getBytes();
     adp.setData(emlByte);
@@ -182,6 +192,7 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
         emlFormatId, submitter,node); 
     adp.setSystemMetadata(emlSysMeta);
     ore.addData(adp);
+    ore.setAbstractDataPackage(adp);
     
     String data = IOUtils.toString(new FileInputStream(new File(DATAPATH)));
     D1Object dataObject = new D1Object();
@@ -220,6 +231,7 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
   public void testReadAndDelete() throws Exception {
     String oreid = readOREIdFromFile();
     MorphoDataPackage dataPackage = service.read(oreid);
+    System.out.println("The size of data package is === "+dataPackage.identifiers().size());
     service.delete(dataPackage);
   }
   
@@ -269,7 +281,16 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
     // Node information
     sm.setOriginMemberNode(nodeId);
     sm.setAuthoritativeMemberNode(nodeId);
-
+    
+    AccessPolicy ap = new AccessPolicy();
+    AccessRule ar = new AccessRule();
+    Subject s = new Subject();
+    s.setValue(Constants.SUBJECT_PUBLIC);
+    ar.addSubject(s);
+    ar.addPermission(Permission.READ);
+    ap.addAllow(ar);
+    sm.setAccessPolicy(ap);
+    
     return sm;
   }
 
@@ -279,8 +300,10 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
    */
   private String getCertificateFileLocation()
   {
-    String tmpDir = System.getProperty("java.io.tmpdir");
-    File file =new File(tmpDir,"x509up_u1000");
+    //String tmpDir = System.getProperty("java.io.tmpdir");
+    String tmpDir="/tmp/";
+    System.out.println("the tmp directory is "+tmpDir);
+    File file =new File(tmpDir,"x509up_u502");
     return file.getAbsolutePath();
   }
   
@@ -324,6 +347,15 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
     if(oreIdFile.exists()) {
       id = IOUtils.toString(new FileInputStream(oreIdFile));
     }
+    return id;
+  }
+  
+  /*
+   * Generate an id by combine current time and a random number
+   */
+  private String generateId () {
+    double appendix = Math.random() *1000;
+    String id = "test-"+System.currentTimeMillis()+appendix;
     return id;
   }
 }
