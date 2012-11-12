@@ -122,7 +122,7 @@ public class OpenSynchronizeDialogCommand implements Command
       }
        //Try if it is datapackage frame
       selectDocId = dataPackage.getDocIdFromMorphoFrame(frame);
-      inNetwork   = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.METACAT);
+      inNetwork   = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.NETWORK);
       inLocal     = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.LOCAL);
       frameType   = MorphoFrame.DATAPACKAGEFRAME;      
     }//else

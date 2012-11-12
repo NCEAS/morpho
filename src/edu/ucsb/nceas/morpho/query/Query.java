@@ -572,7 +572,7 @@ public class Query extends DefaultHandler {
 			Log.debug(30, "(2) Executing metacat query...");
 			InputStream queryResults = null;
 			try {
-				queryResults = DataStoreServiceController.getInstance().query(toXml(), DataPackageInterface.METACAT);
+				queryResults = DataStoreServiceController.getInstance().query(toXml(), DataPackageInterface.NETWORK);
 			} catch (Exception e) {
 				Log.debug(5, "Error querying network: " + e.getMessage());
 			}
@@ -697,7 +697,7 @@ public class Query extends DefaultHandler {
 		String metacatStatus = QueryRefreshInterface.NETWWORKCOMPLETE;
 		InputStream queryResults = null;
 		try {
-			queryResults = DataStoreServiceController.getInstance().query(toXml(), DataPackageInterface.METACAT);
+			queryResults = DataStoreServiceController.getInstance().query(toXml(), DataPackageInterface.NETWORK);
 		} catch (Exception e) {
 			Log.debug(5, "Error querying network: " + e.getMessage());
 		}

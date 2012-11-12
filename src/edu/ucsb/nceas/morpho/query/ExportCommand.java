@@ -179,7 +179,7 @@ public class ExportCommand implements Command
     {
       //Try if it is datapackage frame
       selectDocId = dataPackage.getDocIdFromMorphoFrame(morphoFrame);
-      metacatLoc = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.METACAT);
+      metacatLoc = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.NETWORK);
       localLoc = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.LOCAL);
        // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))

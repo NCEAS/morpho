@@ -164,12 +164,12 @@ public class DeleteCommand implements Command
           return;
         }
       }
-      else if (chosenDeletingStatus != null && chosenDeletingStatus.equals(DataPackageInterface.METACAT))
+      else if (chosenDeletingStatus != null && chosenDeletingStatus.equals(DataPackageInterface.NETWORK))
       {
         // Delete network copy
         message = NETWORKWARNING;
         // If has network copy can delete network copy
-        if(packageNetworkStatus == null  || !packageNetworkStatus.equals(DataPackageInterface.METACAT))
+        if(packageNetworkStatus == null  || !packageNetworkStatus.equals(DataPackageInterface.NETWORK))
         {
           showWarningPanel("Morpho couldn't delete the network copy of the data package since it doesn't exist");
           return;
@@ -180,7 +180,7 @@ public class DeleteCommand implements Command
        // Delete both
        message = BOTHWARNING;
        if(packageLocalStatus == null  || packageNetworkStatus == null || !packageLocalStatus.equals(DataPackageInterface.LOCAL) ||
-           !packageNetworkStatus.equals(DataPackageInterface.METACAT))
+           !packageNetworkStatus.equals(DataPackageInterface.NETWORK))
        {
          showWarningPanel("Morpho couldn't delete the both local and network copy of the data package since they don't exist");
          return;
@@ -441,7 +441,7 @@ public class DeleteCommand implements Command
              Log.debug(30, "finding the delete packagid: "+docid);
              if (chosenDeletingStatus.equals(DataPackageInterface.LOCAL) && 
                       packageLocalStatus.equals(DataPackageInterface.LOCAL) &&
-                 packageNetworkStatus.equals(DataPackageInterface.METACAT))
+                 packageNetworkStatus.equals(DataPackageInterface.NETWORK))
              {
                 Log.debug(30, "delete local copy from local copy "
                           +"and networkcopy - delete the local icon");
@@ -450,29 +450,29 @@ public class DeleteCommand implements Command
 
              }
              else if (chosenDeletingStatus.equals(DataPackageInterface.LOCAL) && packageLocalStatus.equals(DataPackageInterface.LOCAL)
-                 && !packageNetworkStatus.equals(DataPackageInterface.METACAT))
+                 && !packageNetworkStatus.equals(DataPackageInterface.NETWORK))
              {
                 Log.debug(30,"delete local copy from local copy - get rid "+
                           "this row");
                 resultVector.remove(i);
              }
-             else if (chosenDeletingStatus.equals(DataPackageInterface.METACAT) && packageLocalStatus.equals(DataPackageInterface.LOCAL)
-                 && packageNetworkStatus.equals(DataPackageInterface.METACAT))
+             else if (chosenDeletingStatus.equals(DataPackageInterface.NETWORK) && packageLocalStatus.equals(DataPackageInterface.LOCAL)
+                 && packageNetworkStatus.equals(DataPackageInterface.NETWORK))
              {
                 Log.debug(30, "delete network copy from local copy and "+
                           "network copy - delete network icon");
                 // set index=ISMETACATINDEX value false
                 row.set(ResultSet.ISMETACATINDEX, DataStoreServiceInterface.NONEXIST);
              }
-             else if (chosenDeletingStatus.equals(DataPackageInterface.METACAT) && !packageLocalStatus.equals(DataPackageInterface.LOCAL)
-                     && packageNetworkStatus.equals(DataPackageInterface.METACAT))
+             else if (chosenDeletingStatus.equals(DataPackageInterface.NETWORK) && !packageLocalStatus.equals(DataPackageInterface.LOCAL)
+                     && packageNetworkStatus.equals(DataPackageInterface.NETWORK))
              {
                 Log.debug(30, "delete network copy from "+
                          "network copy - delete the row");
                 resultVector.remove(i);
              }
              else if (chosenDeletingStatus.equals(DataPackageInterface.BOTH) && packageLocalStatus.equals(DataPackageInterface.LOCAL)
-                 && packageNetworkStatus.equals(DataPackageInterface.METACAT))
+                 && packageNetworkStatus.equals(DataPackageInterface.NETWORK))
              {
                 Log.debug(30,"delete both copy, so remove this row");
                 resultVector.remove(i);
@@ -504,15 +504,15 @@ public class DeleteCommand implements Command
           // the location of data package after deleting
           String location = null;
           if ( packageLocalStatus.equals(DataPackageInterface.LOCAL) && 
-               packageNetworkStatus.equals(DataPackageInterface.METACAT) && 
+               packageNetworkStatus.equals(DataPackageInterface.NETWORK) && 
                chosenDeletingStatus.equals(DataPackageInterface.LOCAL))
           {
-            location = DataPackageInterface.METACAT;
+            location = DataPackageInterface.NETWORK;
             dataPackage.openDataPackage(location, selectDocId, null, null, null);
           }
           else if(packageLocalStatus.equals(DataPackageInterface.LOCAL) && 
-                    packageNetworkStatus.equals(DataPackageInterface.METACAT) && 
-                    chosenDeletingStatus.equals(DataPackageInterface.METACAT))
+                    packageNetworkStatus.equals(DataPackageInterface.NETWORK) && 
+                    chosenDeletingStatus.equals(DataPackageInterface.NETWORK))
           {
             location = DataPackageInterface.LOCAL;
             dataPackage.openDataPackage(location, selectDocId, null, null, null);

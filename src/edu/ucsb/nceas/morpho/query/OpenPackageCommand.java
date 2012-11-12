@@ -111,17 +111,17 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
       String location = null;
       if(localStatus != null && metacatStatus != null && 
           localStatus.equals(DataPackageInterface.LOCAL) && 
-          metacatStatus.equals(DataPackageInterface.METACAT))
+          metacatStatus.equals(DataPackageInterface.NETWORK))
       {
         location = DataPackageInterface.BOTH;
       }
       else if( (localStatus == null  || !localStatus.equals(DataPackageInterface.LOCAL))  && 
-          metacatStatus != null && metacatStatus.equals(DataPackageInterface.METACAT))
+          metacatStatus != null && metacatStatus.equals(DataPackageInterface.NETWORK))
       {
-        location = DataPackageInterface.METACAT;
+        location = DataPackageInterface.NETWORK;
       }
       else if( localStatus != null  && localStatus.equals(DataPackageInterface.LOCAL) && 
-             (metacatStatus == null || !metacatStatus.equals(DataPackageInterface.METACAT)))
+             (metacatStatus == null || !metacatStatus.equals(DataPackageInterface.NETWORK)))
       {
         location = DataPackageInterface.LOCAL;
       }

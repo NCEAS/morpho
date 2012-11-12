@@ -216,7 +216,7 @@ public class DeleteDialog extends JDialog
         enabledRadioButtonList.add(deleteLocal);
       }
       // If has network copy
-      if (packageNetworkStatus != null && packageNetworkStatus.equals(DataPackageInterface.METACAT))
+      if (packageNetworkStatus != null && packageNetworkStatus.equals(DataPackageInterface.NETWORK))
       {
         deleteNetwork.setEnabled(true);
         // Add to the list
@@ -224,7 +224,7 @@ public class DeleteDialog extends JDialog
       }
       // If have both
       if (packageLocalStatus != null && packageLocalStatus.equals(DataPackageInterface.LOCAL)&&
-          packageNetworkStatus != null && packageNetworkStatus.equals(DataPackageInterface.METACAT))
+          packageNetworkStatus != null && packageNetworkStatus.equals(DataPackageInterface.NETWORK))
       {
         deleteBoth.setEnabled(true);
         // Add to the list
@@ -338,7 +338,7 @@ public class DeleteDialog extends JDialog
         Log.debug(30, "In delete network branch");
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog,
-                     morphoFrame, morphoFrameType, DataPackageInterface.METACAT, 
+                     morphoFrame, morphoFrameType, DataPackageInterface.NETWORK, 
                      selectDocId, packageLocalStatus, packageNetworkStatus));
       }
       else if (object == deleteBoth)

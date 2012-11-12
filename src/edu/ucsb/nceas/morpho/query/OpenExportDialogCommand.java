@@ -139,7 +139,7 @@ public class OpenExportDialogCommand implements Command
       }
        //Try if it is datapackage frame
       selectDocId = dataPackage.getDocIdFromMorphoFrame(frame);
-      inNetwork   = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.METACAT);
+      inNetwork   = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.NETWORK);
       inLocal     = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.LOCAL);
        // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))

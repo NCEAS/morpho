@@ -143,11 +143,11 @@ public class OpenDeleteDialogCommand implements Command
       }
        //Try if it is datapackage frame
       selectDocId = dataPackage.getDocIdFromMorphoFrame(frame);
-      boolean inNetwork   = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.METACAT);
+      boolean inNetwork   = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.NETWORK);
       boolean inLocal     = DataStoreServiceController.getInstance().exists(selectDocId, DataPackageInterface.LOCAL);
       if(inNetwork)
       {
-        networkStatus = DataPackageInterface.METACAT;
+        networkStatus = DataPackageInterface.NETWORK;
       }
       else
       {

@@ -360,7 +360,7 @@ public class ExportDialog extends JDialog
       }
       else if(metacatLoc && !localLoc)
       {
-        location = DataPackageInterface.METACAT;
+        location = DataPackageInterface.NETWORK;
       }
       else if(!metacatLoc && localLoc)
       {

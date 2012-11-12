@@ -189,7 +189,7 @@ public class LocalToNetworkCommand implements Command
               saveEvent.setSynchronize(true);
               saveEvent.setInitialId(selectDocId);
               saveEvent.setFinalId(metacatDocid);
-              saveEvent.setLocation(DataPackageInterface.METACAT);
+              saveEvent.setLocation(DataPackageInterface.NETWORK);
               StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
               
               refreshFlag = true;
@@ -230,7 +230,7 @@ public class LocalToNetworkCommand implements Command
           String location = DataPackageInterface.BOTH;
           if (docid != null && !docid.equals(selectDocId))
           {
-          	location = DataPackageInterface.METACAT;
+          	location = DataPackageInterface.NETWORK;
           }
           dataPackage.openDataPackage(location, docid, null, null, null);
           
