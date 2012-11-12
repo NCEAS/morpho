@@ -692,7 +692,6 @@ public class Query extends DefaultHandler {
 			final Morpho morpho, final HeadResultSet localResult) {
 
 		SynchronizeVector dataVector = new SynchronizeVector();
-		// String source = "metacat";
 		// parsing result set
 		String localStatus = DataStoreServiceInterface.NONEXIST;
 		String metacatStatus = QueryRefreshInterface.NETWWORKCOMPLETE;

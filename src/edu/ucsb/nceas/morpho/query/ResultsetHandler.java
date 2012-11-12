@@ -104,16 +104,7 @@ public class ResultsetHandler implements ContentHandler, Runnable
  {
    ConfigXML config = morpho.getConfiguration();
    returnFields = config.get("returnfield");
-   /*if (source.equals("local"))
-   {
-     isLocal = true;
-     isMetacat = false;
-   }
-   else if (source.equals("metacat"))
-   {
-     isLocal = false;
-     isMetacat = true;
-   }*/
+
 
  }
 

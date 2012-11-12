@@ -32,7 +32,6 @@ public class DocidConflictHandler
      
        public static final String INCREASEID = "increaseID";
        public static final String INCREASEREVISION = "increaseRevision";
-       public static final String METACAT = "Metacat";
        public static final String LOCAL  = "local system";
        private static final int PADDING = 5;
        private static final int WIDTH = 580;
