@@ -211,7 +211,7 @@ public class SaveDialog extends JDialog {
 			networkLoc.setEnabled(true);
 			localLoc.setSelected(false);
 			networkLoc.setSelected(true);
-		} else if (location.equals(DataPackageInterface.METACAT)) {
+		} else if (location.equals(DataPackageInterface.NETWORK)) {
 			localLoc.setEnabled(true);
 			networkLoc.setEnabled(false);
 			localLoc.setSelected(true);
@@ -317,7 +317,7 @@ public class SaveDialog extends JDialog {
 				} else if (adp.getSerializeLocalSuccess()) {
 					adp.setLocation(DataPackageInterface.LOCAL);
 				} else if (adp.getSerializeMetacatSuccess()) {
-					adp.setLocation(DataPackageInterface.METACAT);
+					adp.setLocation(DataPackageInterface.NETWORK);
 				} else {
 					adp.setLocation("");
 				}
@@ -331,9 +331,9 @@ public class SaveDialog extends JDialog {
 				}
 			// METACAT
 			} else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.METACAT);
+				DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.NETWORK);
 				if (adp.getSerializeMetacatSuccess()) {
-					adp.setLocation(DataPackageInterface.METACAT);
+					adp.setLocation(DataPackageInterface.NETWORK);
 				} else if (adp.getLocation() != null
 						&& adp.getLocation().equals(DataPackageInterface.LOCAL)
 						&& !adp.getPackageIDChanged()

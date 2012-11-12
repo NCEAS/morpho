@@ -57,7 +57,7 @@ public interface QueryRefreshInterface
   public static final String LOCALCOMPLETE = DataPackageInterface.LOCAL;
   
   /** network complete document*/
-  public static final String NETWWORKCOMPLETE = DataPackageInterface.METACAT;
+  public static final String NETWWORKCOMPLETE = DataPackageInterface.NETWORK;
   
   /** Local crashed document */
   public static final String LOCALAUTOSAVEDINCOMPLETE = "auto-saved-incomplete";

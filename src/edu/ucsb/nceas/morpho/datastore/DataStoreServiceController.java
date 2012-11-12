@@ -72,7 +72,7 @@ public class DataStoreServiceController {
 		if (location.equals(DataPackageInterface.LOCAL)) {
 			nextIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
 		}
-		if (location.equals(DataPackageInterface.METACAT)) {
+		if (location.equals(DataPackageInterface.NETWORK)) {
 			nextIdentifier = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextIdentifier(docid);
 		}
 		if (location.equals(DataPackageInterface.BOTH)) {
@@ -98,7 +98,7 @@ public class DataStoreServiceController {
 		if (location.equals(DataPackageInterface.LOCAL)) {
 			versions  = Morpho.thisStaticInstance.getLocalDataStoreService().getAllRevisions(docid);
 		}
-		if (location.equals(DataPackageInterface.METACAT)) {
+		if (location.equals(DataPackageInterface.NETWORK)) {
 			versions = Morpho.thisStaticInstance.getMetacatDataStoreService().getAllRevisions(docid);
 		}
 		if (location.equals(DataPackageInterface.BOTH)) {
@@ -134,7 +134,7 @@ public class DataStoreServiceController {
 	public File openFile(String identifier,String location) throws FileNotFoundException, CacheAccessException {
 		File file = null;
 		// get from metacat only if we have to
-		if (location.equals(DataPackageInterface.METACAT)) {
+		if (location.equals(DataPackageInterface.NETWORK)) {
 			file  = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(identifier);
 		} if (location.equals(DataPackageInterface.LOCAL)) {
 			file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
@@ -159,7 +159,7 @@ public class DataStoreServiceController {
 		  String fragment = null;
 			return Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(fragment);
 		}
-		if (location.equals(DataPackageInterface.METACAT)) {
+		if (location.equals(DataPackageInterface.NETWORK)) {
 		  String fragment = null;
 			return Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier(fragment);
 		}
@@ -186,7 +186,7 @@ public class DataStoreServiceController {
 			String accnum = mdp.getAbstractDataPackage().getAccessionNumber();
 			LocalQuery.removeFromCache(accnum);
 		}
-		if (location.equals(DataPackageInterface.METACAT) || location.equals(DataPackageInterface.BOTH)) {
+		if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
 			boolean success = Morpho.thisStaticInstance.getMetacatDataStoreService().delete(mdp);
 			if (!success) {
 				throw new Exception("User couldn't delete the network copy");
@@ -214,7 +214,7 @@ public class DataStoreServiceController {
 		if (location.equals(DataPackageInterface.BOTH)) {
 			localloc = true;
 			metacatloc = true;
-		} else if (location.equals(DataPackageInterface.METACAT)) {
+		} else if (location.equals(DataPackageInterface.NETWORK)) {
 			metacatloc = true;
 		} else if (location.equals(DataPackageInterface.LOCAL)) {
 			localloc = true;
@@ -568,7 +568,7 @@ public class DataStoreServiceController {
 						|| (location.equals(DataPackageInterface.BOTH))) {
 					dataFile = Morpho.thisStaticInstance
 							.getLocalDataStoreService().openFile(urlinfo);
-				} else if (location.equals(DataPackageInterface.METACAT)) {
+				} else if (location.equals(DataPackageInterface.NETWORK)) {
 					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService()
 							.openFile(urlinfo);
 				}
@@ -682,7 +682,7 @@ public class DataStoreServiceController {
 				String loc = adp.getLocation();
 				if ((loc.equals(DataPackageInterface.LOCAL)) || (loc.equals(DataPackageInterface.BOTH))) {
 					entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
-				} else if (loc.equals(DataPackageInterface.METACAT)) {
+				} else if (loc.equals(DataPackageInterface.NETWORK)) {
 					entityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
 				} else if (loc.equals("")) { // just created the package; not yet saved!!!
 					try {
@@ -733,7 +733,7 @@ public class DataStoreServiceController {
 	public void save(MorphoDataPackage mdp, String location, boolean overwrite) throws Exception {
 
 
-		if (location.equals(DataPackageInterface.METACAT)) {
+		if (location.equals(DataPackageInterface.NETWORK)) {
 			Morpho.thisStaticInstance.getMetacatDataStoreService().save(mdp);
 		}
 
@@ -767,7 +767,7 @@ public class DataStoreServiceController {
 	public InputStream query(String query, String location) throws Exception {
 
 		InputStream results = null;
-		if (location.equals(DataPackageInterface.METACAT)) {
+		if (location.equals(DataPackageInterface.NETWORK)) {
 			results = Morpho.thisStaticInstance.getMetacatDataStoreService().query(query);
 		}
 

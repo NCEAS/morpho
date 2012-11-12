@@ -540,7 +540,7 @@ public class LocalDataStoreService extends DataStoreService
 				// if a datafile is on metacat and one wants to save locally
 				try {
 					// open from network
-					dataFile = DataStoreServiceController.getInstance().openFile(oldDocid, DataPackageInterface.METACAT);
+					dataFile = DataStoreServiceController.getInstance().openFile(oldDocid, DataPackageInterface.NETWORK);
 				} catch (Exception qqq) {
 					// some other problem has occurred
 					Log.debug(5, "Some problem with saving local data files has occurred! " + qqq.getMessage());

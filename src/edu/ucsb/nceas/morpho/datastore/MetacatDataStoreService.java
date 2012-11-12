@@ -157,7 +157,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	  File file = openFile(identifier);
 	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 	  AbstractDataPackage adp = DataPackageFactory.getDataPackage(in);
-	  adp.setLocation(DataPackageInterface.METACAT);
+	  adp.setLocation(DataPackageInterface.NETWORK);
 	  MorphoDataPackage mdp = new MorphoDataPackage();
 	  mdp.setAbstractDataPackage(adp);
 	  return mdp;
@@ -233,7 +233,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	public RevisionManager getRevisionManager() {
 		RevisionManager revisionManager = null;
 		try {
-			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.METACAT);
+			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.NETWORK);
 		} catch (Exception e) {
 			Log.debug(6, "Could not get revision manager: " + e.getMessage());
 			e.printStackTrace();
@@ -612,7 +612,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 			Log.debug(30, "=============In existFlag and update branch");
 			// ToDo - add a frame to give user option to increase docid or
 			// revision
-			DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, DataPackageInterface.METACAT);
+			DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, DataPackageInterface.NETWORK);
 			String choice = docidIncreaseDialog.showDialog();
 			// Log.debug(5, "choice is "+choice);
 			if (choice != null) {

@@ -939,7 +939,7 @@ public class DataPackagePlugin
     AbstractDataPackage adp = null;
     Log.debug(11, "DataPackage: Got service request to open: " +
                     identifier + " from " + location);
-    if(location == null || ( !location.equals(DataPackageInterface.METACAT) &&
+    if(location == null || ( !location.equals(DataPackageInterface.NETWORK) &&
         !location.equals(DataPackageInterface.LOCAL) && !location.equals(DataPackageInterface.BOTH)))
     {
       Log.debug(5, "Morpho couldn't open the package at this location - "+location);
@@ -1338,14 +1338,14 @@ public class DataPackagePlugin
     
     // save remote
 	try {
-		DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.METACAT);
+		DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.NETWORK);
 	} catch (Exception e) {
 		e.printStackTrace();
 		throw new MetacatUploadException(e.getMessage());
 	}
 	
 	// check
-	MorphoDataPackage newmdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
+	MorphoDataPackage newmdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.NETWORK);
     if (newmdp != null) {
          return newmdp.getAbstractDataPackage().getAccessionNumber();
     }
@@ -1365,7 +1365,7 @@ public class DataPackagePlugin
 	public String download(String docid) {
 
 		// get from remote, save to local
-		MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.METACAT);
+		MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(docid, DataPackageInterface.NETWORK);
 
 		try {
 			DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL);

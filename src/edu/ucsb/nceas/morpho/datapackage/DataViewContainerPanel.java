@@ -378,7 +378,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     netLabel.setIcon(metacatIcon);
     netLabel.setToolTipText("Package is stored on the network");
     String location = adp.getLocation();
-    if (location.equals(DataPackageInterface.METACAT)) {
+    if (location.equals(DataPackageInterface.NETWORK)) {
       localLabel.setText("");
       localLabel.setIcon(blankIcon);
     }
@@ -878,7 +878,7 @@ public void setTopPanel(JPanel jp) {
             dataId = urlinfo;
             try{
               String loc = adp.getLocation();
-              if (loc.equals(DataPackageInterface.LOCAL) || loc.equals(DataPackageInterface.BOTH) || loc.equals(DataPackageInterface.METACAT)) {
+              if (loc.equals(DataPackageInterface.LOCAL) || loc.equals(DataPackageInterface.BOTH) || loc.equals(DataPackageInterface.NETWORK)) {
                 displayFile = DataStoreServiceController.getInstance().openFile(urlinfo, loc);
               }
               else if (loc.equals("")) {
@@ -886,7 +886,7 @@ public void setTopPanel(JPanel jp) {
             	  try {
             		  displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(urlinfo);
             	  } catch (Exception e) {
-                      displayFile = DataStoreServiceController.getInstance().openFile(urlinfo, DataPackageInterface.METACAT);
+                      displayFile = DataStoreServiceController.getInstance().openFile(urlinfo, DataPackageInterface.NETWORK);
 				} 
               }
             }

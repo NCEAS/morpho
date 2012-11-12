@@ -45,22 +45,18 @@ public interface DataPackageInterface
 {
 
   /**
-   * used to signify that this package is located on a metacat server
+   * used to signify that this package is located on network server
    */
-  public static final String METACAT  = "metacat";
+  public static final String NETWORK  = "network";
   
-  /**
-   * used to signify that this package is located on the dataone network.
-   */
-  public static final String DATAONE = "dataone";
   /**
    * used to signify that this package is located locally
    */
   public static final String LOCAL    = "local";
   /**
-   * used to signify that this package is stored on metacat and locally.
+   * used to signify that this package is stored on network and locally.
    */
-  public static final String BOTH     = "localmetacat";
+  public static final String BOTH     = "localnetwork";
   
   /**
    * used to specify incomplete location

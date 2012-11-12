@@ -87,7 +87,7 @@ public class OpenByIdDialog extends JDialog {
 					location = DataPackageInterface.LOCAL;
 				}
 				if (cmd.equals(options[1])) {
-					location = DataPackageInterface.METACAT;
+					location = DataPackageInterface.NETWORK;
 				}
 			}
 		});

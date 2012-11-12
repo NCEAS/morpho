@@ -139,7 +139,7 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 		if (localLoc) {
 			location = DataPackageInterface.LOCAL;
 		} else {
-			location = DataPackageInterface.METACAT;
+			location = DataPackageInterface.NETWORK;
 		}
 		dataPackage.openDataPackage(location, selectedIdentifier, null, null, null);
 		this.setVisible(false);

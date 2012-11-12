@@ -186,7 +186,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       {
         try
         {
-      	  subfile = DataStoreServiceController.getInstance().openFile(id.trim(), DataPackageInterface.METACAT);
+      	  subfile = DataStoreServiceController.getInstance().openFile(id.trim(), DataPackageInterface.NETWORK);
         }
         catch(FileNotFoundException fnfe2)
         {
