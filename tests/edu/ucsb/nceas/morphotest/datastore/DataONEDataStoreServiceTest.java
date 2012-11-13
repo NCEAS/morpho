@@ -141,23 +141,61 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
   public void testSave() throws Exception {
     CertificateManager.getInstance().setCertificateLocation(getCertificateFileLocation());
     submitter = ClientIdentityManager.getCurrentIdentity();
-    MorphoDataPackage dataPackage = createMorphoPackage();
+    //String oreIdStr = service.generateIdentifier("tao");
+    String oreIdStr = generateId();
+  //String metadataIdStr = service.generateIdentifier("tao");
+    String metadataIdStr = generateId();
+    //String dataIdStr = service.generateIdentifier("tao");
+    String dataIdStr = generateId();
+    MorphoDataPackage dataPackage = createMorphoPackage(oreIdStr, metadataIdStr, dataIdStr);
     service.save(dataPackage);
+    System.out.println("get here ===================");
+    Thread.sleep(20000);
+    //test update
+    String oreIdStr2 = generateId();
+    //String metadataIdStr = service.generateIdentifier("tao");
+    String metadataIdStr2 = generateId();
+      //String dataIdStr = service.generateIdentifier("tao");
+    String dataIdStr2 = generateId();
+    dataPackage = createMorphoPackage(oreIdStr2, metadataIdStr2, dataIdStr2);
+    
+    //set up obsoletes 
+    SystemMetadata sysmeta = dataPackage.getSystemMetadata();
+    Identifier oldOreId  = new Identifier();
+    oldOreId.setValue(oreIdStr);
+    sysmeta.setObsoletes(oldOreId);
+    
+    Identifier metadataId = new Identifier();
+    metadataId.setValue(metadataIdStr2);
+    D1Object metadata = dataPackage.get(metadataId);
+    SystemMetadata metadataSysMeta = metadata.getSystemMetadata();
+    Identifier oldMetadataId = new Identifier();
+    oldMetadataId.setValue(metadataIdStr);
+    metadataSysMeta.setObsoletes(oldMetadataId);
+    
+    Identifier dataId = new Identifier();
+    dataId.setValue(dataIdStr2);
+    Identifier oldDataId = new Identifier();
+    oldDataId.setValue(dataIdStr);
+    D1Object data = dataPackage.get(dataId);
+    SystemMetadata dataSysMeta = data.getSystemMetadata();
+    dataSysMeta.setObsoletes(oldDataId);
+    
+    service.save(dataPackage);
+    storeOREIdToFile(oreIdStr2);
+  
   }
   
   /*
    * Create a morpho data package.
    */
-  private MorphoDataPackage createMorphoPackage() throws Exception {
-    //String oreIdStr = service.generateIdentifier("tao");
-    String oreIdStr = generateId();
-    System.out.println("the oreIdStr is "+oreIdStr);
-    //String metadataIdStr = service.generateIdentifier("tao");
-    String metadataIdStr = generateId();
-    System.out.println(" the metadataIdStr is "+metadataIdStr);
-    //String dataIdStr = service.generateIdentifier("tao");
-    String dataIdStr = generateId();
-    System.out.println(" the dataIdStr is "+dataIdStr);
+  private MorphoDataPackage createMorphoPackage(String oreIdStr, String metadataIdStr, String dataIdStr) throws Exception {
+   
+    System.out.println("===============the oreIdStr is "+oreIdStr);
+    
+    System.out.println("===============the metadataIdStr is "+metadataIdStr);
+   
+    System.out.println("===============the dataIdStr is "+dataIdStr);
     
     MNode activeNode = service.getActiveMNode();
     Node nodeAPI = activeNode.getCapabilities();
@@ -205,7 +243,7 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
        dataFormatId, submitter,node); 
     dataObject.setSystemMetadata(dataSysMeta);
     ore.addData(dataObject);
-    storeOREIdToFile(oreIdStr);
+    
     return ore;
     
    /*InputStream ore = new FileInputStream(new File(OREPATH));
