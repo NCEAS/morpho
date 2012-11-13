@@ -47,6 +47,7 @@ import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -346,7 +347,7 @@ public class LocalDataStoreService extends DataStoreService
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
 		boolean exists = this.exists(identifier);
-		List<String> existingRevisions = getAllRevisions(identifier);
+		List<String> existingRevisions = getRevisionManager().getAllRevisions(identifier);
 
 		// if we allow local overwrite, we reset confilcLocation. It will skip
 		// the code to handle conflict
@@ -413,7 +414,7 @@ public class LocalDataStoreService extends DataStoreService
 		
 	}
 	
-	private boolean serializeData(MorphoDataPackage mdp, String dataDestination) {
+	private boolean serializeData(MorphoDataPackage mdp, String dataDestination) throws Exception {
 		Log.debug(30, "serilaize data =====================");
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		adp.getEntityArray();
@@ -441,7 +442,7 @@ public class LocalDataStoreService extends DataStoreService
 					boolean exists = exists(docid);
 
 					// do we have any revisions for this object
-					List<String> revisions = getAllRevisions(docid);
+					List<String> revisions = getRevisionManager().getAllRevisions(docid);
 					if (revisions != null) {
 						// is it in the revision history?
 						boolean inRevisions = revisions.contains(docid);
@@ -952,13 +953,14 @@ public class LocalDataStoreService extends DataStoreService
 			} else {
 				identifiers = FileSystemDataStore.getInstance(getDataDir()).getIdentifiers();
 			}
+			// only get the latest revision
+			identifiers = getLatestVersion(identifiers);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.debug(6, e.getMessage());
 			return null;
 		}
-		// only get the latest revision
-		identifiers = getLatestVersion(identifiers);
+
 		return identifiers;
 	}
 	
@@ -967,8 +969,9 @@ public class LocalDataStoreService extends DataStoreService
 	 /**
 	 * modify list to only contain latest version as reported by 
 	 * the RevisionManager
+	 * @throws Exception 
 	 */
-	private List<String> getLatestVersion(List<String> identifiers) {
+	private List<String> getLatestVersion(List<String> identifiers) throws Exception {
 
 		Vector<String> returnVector = null;
 
@@ -990,8 +993,9 @@ public class LocalDataStoreService extends DataStoreService
 	 * dir and figure it out the maximum revision. This number will be increase
 	 * 1 to get the next revision number. If local file system doesn't have this
 	 * docid, 1 will be returned
+	 * * @throws Exception 
 	 */
-	public String getNextIdentifier(String identifier) {
+	public String getNextIdentifier(String identifier) throws Exception {
 		// default
 		int version = AbstractDataPackage.ORIGINAL_REVISION;
 		String latestIdentifier = getRevisionManager().getLatestRevision(identifier);
@@ -1014,20 +1018,10 @@ public class LocalDataStoreService extends DataStoreService
 	}
 	
 	/**
-	 * Get all revisions for a given identifier. The identifier can be be first, last or anywhere else in the 
-	 * revision history.
-	 * @param identifier
-	 * @return list of all versions of the given identifier (in order) with the earliest revision first
-	 */
-	public List<String> getAllRevisions(String identifier) {
-		return getRevisionManager().getAllRevisions(identifier);
-	}
-	
-	/**
 	 * Get the RevisionManager
 	 * @return the RevisionManager being used
 	 */
-	public RevisionManager getRevisionManager() {
+	public RevisionManagerInterface getRevisionManager() {
 		RevisionManager revisionManager = null;
 		try {
 			revisionManager = RevisionManager.getInstance(getProfileDir(), DataPackageInterface.LOCAL);

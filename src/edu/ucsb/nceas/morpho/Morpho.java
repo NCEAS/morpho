@@ -62,6 +62,7 @@ import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStoreService;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
@@ -175,7 +176,9 @@ public class Morpho
     
     // for interacting with the Metacat services
     private MetacatDataStoreService mds = null;
-
+    
+    // for interacting with the DataONE services
+    private DataONEDataStoreService dds = null;
 
     /**
      * Creates a new instance of Morpho
@@ -204,6 +207,18 @@ public class Morpho
     
     public void setMetacatDataStoreService(MetacatDataStoreService mds) {
     	this.mds = mds;
+    }
+    
+    /**
+     * Get a reference to the DataONEDataStoreService
+     * @return
+     */
+    public DataONEDataStoreService getDataONEDataStoreService() {
+    	return dds;
+    }
+    
+    public void setDataONEDataStoreService(DataONEDataStoreService dds) {
+    	this.dds = dds;
     }
     
     /**
@@ -705,6 +720,9 @@ public class Morpho
             
             // create the remote data store
             morpho.setMetacatDataStoreService(new MetacatDataStoreService(morpho));
+            
+            // create the remote DataONE data store
+            morpho.setDataONEDataStoreService(new DataONEDataStoreService(morpho));
          
             // Get the configuration file information needed by the framework
             morpho.loadConfigurationParameters();

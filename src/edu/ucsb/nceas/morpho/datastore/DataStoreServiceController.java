@@ -65,21 +65,26 @@ public class DataStoreServiceController {
 	 * @param identifier the current revision of the identifier
 	 * @param location of the doc
 	 * @return the identifier for the next revision at the given location
+	 * @throws Exception 
 	 */
 	public String getNextIdentifier(String docid, String location)
 	{
 		String nextIdentifier = null;
-		if (location.equals(DataPackageInterface.LOCAL)) {
-			nextIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
-		}
-		if (location.equals(DataPackageInterface.NETWORK)) {
-			nextIdentifier = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextIdentifier(docid);
-		}
-		if (location.equals(DataPackageInterface.BOTH)) {
-			String localNextRevision = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
-			String metacatNextRevision = Morpho.thisStaticInstance.getMetacatDataStoreService().getNextIdentifier(docid);
-			// TODO: reconcile them?
-			nextIdentifier = localNextRevision;
+		try {
+			if (location.equals(DataPackageInterface.LOCAL)) {
+				nextIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
+			}
+			if (location.equals(DataPackageInterface.NETWORK)) {
+				nextIdentifier = Morpho.thisStaticInstance.getDataONEDataStoreService().getNextIdentifier(docid);
+			}
+			if (location.equals(DataPackageInterface.BOTH)) {
+				String localNextRevision = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
+				String networkNextRevision = Morpho.thisStaticInstance.getDataONEDataStoreService().getNextIdentifier(docid);
+				// TODO: reconcile them?
+				nextIdentifier = localNextRevision;
+			}
+		} catch (Exception e) {
+			Log.debug(5, e.getMessage());
 		}
 		
 		return nextIdentifier;
@@ -90,20 +95,25 @@ public class DataStoreServiceController {
 	 * @param docid the partial identifier (no rev)
 	 * @param location of the doc
 	 * @return  the next revision number
+	 * @throws Exception 
 	 */
 	public List<String> getAllRevisions(String docid, String location)
 	{
 		
 		List<String> versions = null;
-		if (location.equals(DataPackageInterface.LOCAL)) {
-			versions  = Morpho.thisStaticInstance.getLocalDataStoreService().getAllRevisions(docid);
-		}
-		if (location.equals(DataPackageInterface.NETWORK)) {
-			versions = Morpho.thisStaticInstance.getMetacatDataStoreService().getAllRevisions(docid);
-		}
-		if (location.equals(DataPackageInterface.BOTH)) {
-			versions  = Morpho.thisStaticInstance.getLocalDataStoreService().getAllRevisions(docid);
-			//versions = Morpho.thisStaticInstance.getMetacatDataStoreService().getAllRevisions(docid);
+		try {
+			if (location.equals(DataPackageInterface.LOCAL)) {
+				versions  = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getAllRevisions(docid);
+			}
+			if (location.equals(DataPackageInterface.NETWORK)) {
+				versions = Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().getAllRevisions(docid);
+			}
+			if (location.equals(DataPackageInterface.BOTH)) {
+				versions  = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getAllRevisions(docid);
+				//versions = Morpho.thisStaticInstance.getMetacatDataStoreService().getAllRevisions(docid);
+			}
+		} catch (Exception e) {
+			Log.debug(5, e.getMessage());
 		}
 		
 		return versions;
@@ -121,8 +131,8 @@ public class DataStoreServiceController {
 				mdp = Morpho.thisStaticInstance.getLocalDataStoreService().read(docid);
 			}
 			else { 
-				// must be on metacat only
-				mdp = Morpho.thisStaticInstance.getMetacatDataStoreService().read(docid);
+				// must be on network only
+				mdp = Morpho.thisStaticInstance.getDataONEDataStoreService().read(docid);
 			}
 		} catch (Exception e) {
 			Log.debug(20, "Could not read package: " + e.getMessage());
@@ -131,19 +141,19 @@ public class DataStoreServiceController {
 		return mdp;
 	}
 	
-	public File openFile(String identifier,String location) throws FileNotFoundException, CacheAccessException {
+	public File openFile(String identifier, String location) throws FileNotFoundException, CacheAccessException {
 		File file = null;
-		// get from metacat only if we have to
+		// get from network only if we have to
 		if (location.equals(DataPackageInterface.NETWORK)) {
-			file  = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(identifier);
+			file  = Morpho.thisStaticInstance.getDataONEDataStoreService().openFile(identifier);
 		} if (location.equals(DataPackageInterface.LOCAL)) {
 			file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
 		} if (location.equals(DataPackageInterface.BOTH)) {
-			// try local then metacat if not in local
+			// try local then network if not in local
 			try {
 				file = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(identifier);
 			} catch (Exception e) {
-				file  = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(identifier);
+				file  = Morpho.thisStaticInstance.getDataONEDataStoreService().openFile(identifier);
 			}
 		}
 		return file;
@@ -161,7 +171,12 @@ public class DataStoreServiceController {
 		}
 		if (location.equals(DataPackageInterface.NETWORK)) {
 		  String fragment = null;
-			return Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier(fragment);
+			try {
+				return Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(fragment);
+			} catch (Exception e) {
+				Log.debug(5, e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
@@ -187,7 +202,7 @@ public class DataStoreServiceController {
 			LocalQuery.removeFromCache(accnum);
 		}
 		if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
-			boolean success = Morpho.thisStaticInstance.getMetacatDataStoreService().delete(mdp);
+			boolean success = Morpho.thisStaticInstance.getDataONEDataStoreService().delete(mdp);
 			if (!success) {
 				throw new Exception("User couldn't delete the network copy");
 			}
@@ -264,8 +279,8 @@ public class DataStoreServiceController {
 		try {
 			if (localloc) { // get the file locally and save it
 				openfile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(id);
-			} else if (metacatloc) { // get the file from metacat
-				openfile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(id);
+			} else if (metacatloc) { // get the file from network
+				openfile = Morpho.thisStaticInstance.getDataONEDataStoreService().openFile(id);
 			}
 			FileInputStream fis = new FileInputStream(openfile);
 			BufferedInputStream bfis = new BufferedInputStream(fis);
@@ -280,23 +295,6 @@ public class DataStoreServiceController {
 			bfis.close();
 			bfos.close();
 
-			// css file
-			/*
-			 * File outputCSSFile = new File(cssPath + "/export.css"); // File
-			 * inputCSSFile = new
-			 * File(getClass().getResource("/style/export.css")); //
-			 * FileInputStream inputCSS = new FileInputStream(inputCSSFile);
-			 * FileInputStream inputCSS = (FileInputStream)
-			 * getClass().getResource("/style/export.css"); BufferedInputStream
-			 * inputBufferedCSS = new BufferedInputStream(inputCSS);
-			 * FileOutputStream outputCSS = new FileOutputStream(outputCSSFile);
-			 * BufferedOutputStream outputBufferedCSS = new
-			 * BufferedOutputStream( outputCSS); c = inputBufferedCSS.read();
-			 * while (c != -1) { //copy the files to the source directory
-			 * outputBufferedCSS.write(c); c = inputBufferedCSS.read(); }
-			 * outputBufferedCSS.flush(); inputBufferedCSS.close();
-			 * outputBufferedCSS.close();
-			 */
 			// for html
 			Reader xmlInputReader = null;
 			Reader result = null;
@@ -569,7 +567,7 @@ public class DataStoreServiceController {
 					dataFile = Morpho.thisStaticInstance
 							.getLocalDataStoreService().openFile(urlinfo);
 				} else if (location.equals(DataPackageInterface.NETWORK)) {
-					dataFile = Morpho.thisStaticInstance.getMetacatDataStoreService()
+					dataFile = Morpho.thisStaticInstance.getDataONEDataStoreService()
 							.openFile(urlinfo);
 				}
 			} catch (FileNotFoundException fnf) {
@@ -683,14 +681,14 @@ public class DataStoreServiceController {
 				if ((loc.equals(DataPackageInterface.LOCAL)) || (loc.equals(DataPackageInterface.BOTH))) {
 					entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().openFile(urlinfo);
 				} else if (loc.equals(DataPackageInterface.NETWORK)) {
-					entityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
+					entityFile = Morpho.thisStaticInstance.getDataONEDataStoreService().openFile(urlinfo);
 				} else if (loc.equals("")) { // just created the package; not yet saved!!!
 					try {
 						entityFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(urlinfo);
 					} catch (Exception eee) {
 						Log.debug(15, "Exception opening datafile after trying all sources!");
 						// try getting it from 
-						entityFile = Morpho.thisStaticInstance.getMetacatDataStoreService().openFile(urlinfo);
+						entityFile = Morpho.thisStaticInstance.getDataONEDataStoreService().openFile(urlinfo);
 						return null;
 					}
 				}
@@ -734,7 +732,7 @@ public class DataStoreServiceController {
 
 
 		if (location.equals(DataPackageInterface.NETWORK)) {
-			Morpho.thisStaticInstance.getMetacatDataStoreService().save(mdp);
+			Morpho.thisStaticInstance.getDataONEDataStoreService().save(mdp);
 		}
 
 		// save doc to local file system
@@ -744,7 +742,7 @@ public class DataStoreServiceController {
 		
 		if (location.equals(DataPackageInterface.BOTH)) {
 			// save to network
-			Morpho.thisStaticInstance.getMetacatDataStoreService().save(mdp);
+			Morpho.thisStaticInstance.getDataONEDataStoreService().save(mdp);
 			// then save locally (Ids may have changed
 			Morpho.thisStaticInstance.getLocalDataStoreService().save(mdp);
 
@@ -768,7 +766,7 @@ public class DataStoreServiceController {
 
 		InputStream results = null;
 		if (location.equals(DataPackageInterface.NETWORK)) {
-			results = Morpho.thisStaticInstance.getMetacatDataStoreService().query(query);
+			results = Morpho.thisStaticInstance.getDataONEDataStoreService().query(query);
 		}
 
 		// TODO: other query locations
@@ -791,7 +789,12 @@ public class DataStoreServiceController {
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
 			exists = Morpho.thisStaticInstance.getLocalDataStoreService().exists(docid);
 		} else {
-			exists = Morpho.thisStaticInstance.getMetacatDataStoreService().exists(docid);
+			try {
+				exists = Morpho.thisStaticInstance.getDataONEDataStoreService().exists(docid);
+			} catch (Exception e) {
+				Log.debug(5, e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		return exists;
 		

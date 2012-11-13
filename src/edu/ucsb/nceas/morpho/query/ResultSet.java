@@ -569,7 +569,13 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
          //merge a complete documents vector to a incomplete documents vector
           DocInfo info = incompleteDocidMap.get(currentDocid);
           String existIdentifier = info.getDocid();
-          String latestIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getLatestRevision(existIdentifier);
+          String latestIdentifier = null;
+			try {
+				latestIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getLatestRevision(existIdentifier);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
           
           if (existIdentifier.equals(latestIdentifier)) {
           
@@ -618,7 +624,13 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
 		if (info != null) {
 			// merge two complete documents vector
 			String existingIdentifier = info.getDocid();
-			String latestIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getLatestRevision(existingIdentifier);
+			String latestIdentifier = null;
+			try {
+				latestIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getLatestRevision(existingIdentifier);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (existingIdentifier.equals(latestIdentifier)) {
 				// do nothing
 			} else if (newIdentifier.equals(latestIdentifier)) {

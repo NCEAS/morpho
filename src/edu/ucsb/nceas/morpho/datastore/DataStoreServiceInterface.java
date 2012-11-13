@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 
 /**
  * creates an interface for getting files from any dataStore using the same
@@ -107,5 +108,9 @@ public interface DataStoreServiceInterface
   public boolean exists(String identifer) throws Exception;
   
   public InputStream query(String query) throws Exception;
+  
+  public RevisionManagerInterface getRevisionManager();
+
+  public String getNextIdentifier(String identifier) throws Exception;
 
 }

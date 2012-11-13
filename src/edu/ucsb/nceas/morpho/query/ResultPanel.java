@@ -751,7 +751,12 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         metacatStatus = (String) rowV.elementAt(ResultSet.ISMETACATINDEX);
         packageName = selectedId; // just use the identifier for the name
         Log.debug(30, "the package name is: " + packageName);
-        vers = Morpho.thisStaticInstance.getLocalDataStoreService().getAllRevisions(selectedId);
+        try {
+			vers = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getAllRevisions(selectedId);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         Log.debug(30, "the number of previous version is: " + vers);
         doctype = (String) rowV.elementAt(8);
         // Fire state change event only in morpho frame

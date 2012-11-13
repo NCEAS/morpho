@@ -27,17 +27,11 @@ package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +39,6 @@ import java.util.Set;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.dataone.client.D1Object;
-import org.dataone.client.DataPackage;
 import org.dataone.client.MNode;
 import org.dataone.ore.ResourceMapFactory;
 import org.dataone.service.exceptions.IdentifierNotUnique;
@@ -60,12 +53,8 @@ import org.dataone.service.exceptions.ServiceFailure;
 import org.dataone.service.exceptions.UnsupportedType;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
-import org.dataone.service.util.TypeMarshaller;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
-import org.jibx.runtime.JiBXException;
-
-import com.sun.org.apache.xml.internal.serializer.utils.Utils;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
@@ -75,9 +64,9 @@ import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.DataONERevisionManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.utilities.Log;
 
 /**
  * Implements the DataStoreServiceInterface to access the files on the DataOne service
@@ -555,6 +544,20 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     return identifier.getValue();
   }
   
+  /**
+   * Generate identifier for next revision of given identifier
+   * NOTE: DataONE really does not have a notion of this
+   * @return
+   */
+  @Override
+  public String getNextIdentifier(String identifier) throws InvalidToken, ServiceFailure, NotAuthorized,
+                                            NotImplemented, InvalidRequest {
+    throw new NotImplemented("", "This method is not yet implemented in DataONEDataStoreService");
+//	String scheme = DOI;
+//    Identifier nextIdentifier = activeMNode.generateIdentifier(scheme, identifier);
+//    return nextIdentifier.getValue();
+  }
+  
   /** Send the given query to the Dataone member node, get back the XML InputStream
    * @param the SOLR query 
    * @return the result of the query
@@ -564,5 +567,11 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
                                          InvalidRequest, NotImplemented, NotFound {
     return activeMNode.query(PATHQUERY, query);
   }
+
+	@Override
+	public RevisionManagerInterface getRevisionManager() {
+		// TODO: migrate into this class
+		return DataONERevisionManager.getInstance();
+	}
  
 }

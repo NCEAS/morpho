@@ -241,16 +241,6 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		}
 		return revisionManager;
 	}
-	
-	/**
-	 * Get all revisions for a given identifier. The identifier can be be first, last or anywhere else in the 
-	 * revision history.
-	 * @param identifier
-	 * @return list of all versions of the given identifier (in order) with the earliest revision first
-	 */
-	public List<String> getAllRevisions(String identifier) {
-		return getRevisionManager().getAllRevisions(identifier);
-	}
   
   /**
    * Send a request to Metacat
@@ -601,7 +591,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
 		boolean exists = exists(identifier);
-		List<String> existingRevisions = getAllRevisions(identifier);
+		List<String> existingRevisions = getRevisionManager().getAllRevisions(identifier);
 		boolean isRevisionOne = true;
 		if (existingRevisions != null && existingRevisions.size() > 1) {
 			isRevisionOne = false;
@@ -693,7 +683,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 					boolean exists = exists(docid);
 
 					// do we have any revisions for this object
-					List<String> revisions = getAllRevisions(docid);
+					List<String> revisions = getRevisionManager().getAllRevisions(docid);
 					if (revisions != null) {
 						// is it in the revision history?
 						boolean inRevisions = revisions.contains(docid);
