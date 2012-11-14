@@ -118,16 +118,15 @@ public class AccessPage
   protected AccessProgressThread pbt = null;
   private String accessListFilePath = "./lib/accesslist.xml";
   public JTreeTable treeTable = null;
-  private QueryMetacatThread queryMetacat = null;
-  private boolean queryMetacatCancelled;
+  private QueryNetworkThread queryNetwork = null;
+  private boolean queryCancelled;
   private String userDN = null;
   private String userName = null;
   private String userEmail = null;
   private String userOrg = null;
-  private boolean alreadyGeneratedfromDocumentationMenu = false;
 
   private ConfigXML config;
-  private Vector orgList;
+  private Vector<String> orgList;
 
   private final String[] accessTypeText = new String[] {
       /*"  Allow"*/ " " + Language.getInstance().getMessage("Allow"),
@@ -144,8 +143,8 @@ public class AccessPage
   public boolean accessIsAllow = true;
   private String xPathRoot = "/eml:eml/access";
 
-  public void setQueryMetacatCancelled(boolean queryMetacatCancelled) {
-    this.queryMetacatCancelled = queryMetacatCancelled;
+  public void setQueryCancelled(boolean queryCancelled) {
+    this.queryCancelled = queryCancelled;
   }
 
   public AccessPage() {
@@ -274,11 +273,11 @@ public class AccessPage
           new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
           Log.debug(45, "\nAccessPage: CustomCancelAction called");
-          cancelGetDocumentFromMetacat();
+          cancelGetDocumentFromNetwork();
         }
       });
 
-      getDocumentFromMetacat();
+      getDocumentFromNetwork();
     } else {
       DefaultMutableTreeNode treeNode = getTreeFromDocument(doc);
       displayTree(treeNode);
@@ -362,15 +361,15 @@ public class AccessPage
     }
   }
 
-  protected void getDocumentFromMetacat() {
+  protected void getDocumentFromNetwork() {
     if (pbt != null) {
       pbt.setProgressBarString(
-          "Contacting Metacat Server for Access information....");
+          "Contacting Server for Access information....");
     }
 
-    queryMetacatCancelled = false;
-    queryMetacat = new QueryMetacatThread(this);
-    queryMetacat.start();
+    queryCancelled = false;
+    queryNetwork = new QueryNetworkThread(this);
+    queryNetwork.start();
 
     return;
   }
@@ -539,7 +538,7 @@ public class AccessPage
       displayTree(treeNode);
     }
     catch (Exception e) {
-      Log.debug(10, "Unable to parse the reply from Metacat server.");
+      Log.debug(10, "Unable to parse the reply from server.");
       Log.debug(10, "Exception in AccessPage class in parseInputStream()."
           + "Exception: " + e.getClass());
       Log.debug(10, e.getMessage());
@@ -548,7 +547,7 @@ public class AccessPage
       if (Access.accessTreeNode != null &&
           Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
         Log.debug(10,
-            "Retrieving access information from Metacat server failed. "
+            "Retrieving access information from server failed. "
             + "Displaying the old access information.");
         displayTree(Access.accessTreeNode);
       } else {
@@ -686,10 +685,10 @@ public class AccessPage
               new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
               Log.debug(45, "\nAccess: CustomAddAction called");
-              cancelGetDocumentFromMetacat();
+              cancelGetDocumentFromNetwork();
             }
           });
-          getDocumentFromMetacat();
+          getDocumentFromNetwork();
         }
       });
 
@@ -713,19 +712,19 @@ public class AccessPage
     return panel;
   }
 
-  protected void cancelGetDocumentFromMetacat() {
+  protected void cancelGetDocumentFromNetwork() {
 
     if (Access.accessTreeNode != null &&
         Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
       Log.debug(10,
-          "Retrieving access information from Metacat server cancelled. "
+          "Retrieving access information from server cancelled. "
           + "Using the old access tree.");
       displayTree(Access.accessTreeNode);
     } else {
       displayDNPanel();
     }
 
-    setQueryMetacatCancelled(true);
+    setQueryCancelled(true);
   }
 
   /**
@@ -1140,7 +1139,6 @@ public class AccessPage
             warnLabel.setText(EMPTY_STRING);
 
             if (userDN != null) {
-              alreadyGeneratedfromDocumentationMenu = true;
               userDN = nodeOb.getDN();
             }
 
@@ -1160,7 +1158,6 @@ public class AccessPage
       if (dnField.getText().trim().compareTo(EMPTY_STRING) != 0) {
         warnLabel.setText(EMPTY_STRING);
         if (userDN != null) {
-          alreadyGeneratedfromDocumentationMenu = true;
           userDN = dnField.getText().trim();
         }
         return true;
@@ -1383,8 +1380,8 @@ public class AccessPage
     return pageNumber;
   }
 
-  public boolean isQueryMetacatCancelled() {
-    return queryMetacatCancelled;
+  public boolean isQueryCancelled() {
+    return queryCancelled;
   }
 
   public boolean setPageData(OrderedMap map, String xPathRoot) {
@@ -1516,14 +1513,10 @@ public class AccessPage
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//                       TreeSelectionAction  Class
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * TreeSelectionAction  Class
+ *
+ */
 class TreeSelectionAction
     implements TreeSelectionListener {
 
@@ -1570,14 +1563,10 @@ class TreeSelectionAction
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//                     AccessProgressThread Class
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * AccessProgressThread class
+ *
+ */
 class AccessProgressThread
     extends ProgressBarThread {
 
@@ -1606,21 +1595,18 @@ class AccessProgressThread
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//                     QueryMetacatThread  Class
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
-class QueryMetacatThread
+/**
+ * QueryNetworkThread
+ *
+ */
+class QueryNetworkThread
     extends Thread {
 
   AccessPage accessPage;
   InputStream queryResult;
 
-  public QueryMetacatThread(AccessPage accessPage) {
+  public QueryNetworkThread(AccessPage accessPage) {
     this.accessPage = accessPage;
   }
 
@@ -1632,19 +1618,19 @@ class QueryMetacatThread
       if (Morpho.thisStaticInstance.getMetacatDataStoreService().getNetworkStatus()) {
         queryResult = Morpho.thisStaticInstance.getMetacatDataStoreService().getPrincipals();
       }
-      if (!accessPage.isQueryMetacatCancelled()) {
+      if (!accessPage.isQueryCancelled()) {
         accessPage.parseInputStream(queryResult);
       }
     }
     catch (Exception w) {
-      Log.debug(10, "Error in retrieving User list from Metacat server.");
+      Log.debug(10, "Error in retrieving User list from server.");
       Log.debug(45, w.getMessage());
 
       if (Access.accessTreeNode != null &&
           Access.accessTreeMetacatServerName.compareTo(Morpho.
           thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
         Log.debug(10,
-            "Retrieving access information from Metacat server failed. "
+            "Retrieving access information from server failed. "
             + "Using the old access tree.");
         accessPage.displayTree(Access.accessTreeNode);
       } else {
@@ -1656,28 +1642,3 @@ class QueryMetacatThread
   }
 
 }
-
-/**
- *
- * Code for debugging dom trees made in between
- * processing of xml files and doms
- *
- * try {
- * // Prepare the DOM document for writing
- * Source source = new DOMSource(tempDoc);
- *
- * // Prepare the output file
- * File file = new File("./lib/ls.xml");
- * Result result = new StreamResult(file);
- *
- * // Write the DOM document to the file
- * Transformer xformer = TransformerFactory.newInstance().newTransformer();
- * xformer.transform(source, result);
- *
- *}
- *catch (TransformerConfigurationException e) {
- *}
- *catch (TransformerException e) {
- *}
- *
- */
