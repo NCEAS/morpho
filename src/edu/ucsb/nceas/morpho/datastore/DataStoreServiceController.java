@@ -161,16 +161,16 @@ public class DataStoreServiceController {
     
     /**
 	 * returns the next id for the given location
-	 * for the current scope
+	 * for the current scope ("fragment")
 	 * 
 	 */
 	public synchronized String generateIdentifier(String location) {
 		if (location.equals(DataPackageInterface.LOCAL)) {
-		  String fragment = null;
+			String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 			return Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(fragment);
 		}
 		if (location.equals(DataPackageInterface.NETWORK)) {
-		  String fragment = null;
+		  String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 			try {
 				return Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(fragment);
 			} catch (Exception e) {

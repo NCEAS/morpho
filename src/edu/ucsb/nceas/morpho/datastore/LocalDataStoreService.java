@@ -363,7 +363,8 @@ public class LocalDataStoreService extends DataStoreService
 			if (choice != null) {
 				if (choice.equals(DocidConflictHandler.INCREASEID)) {
 					// generate a new identifier - separate from the original chain
-					identifier = generateIdentifier(null);
+					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+					identifier = generateIdentifier(scope);
 					adp.setAccessionNumber(identifier);
 					adp.setPackageIDChanged(true);
 				} else {
@@ -769,16 +770,12 @@ public class LocalDataStoreService extends DataStoreService
 	public synchronized String generateIdentifier(String fragment) {
 		int lastid = -1;
 		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
-		String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
-		// Get last id f
-		lastid = getLastDocid(scope);
-		if (lastid > 0) {
-			// in order to get next id, this number should be increase 1
-			lastid++;
-		}
-
-		// scope.docid.1
-		String identifier = scope + separator + lastid + separator + 1;
+		
+		// Get last id found
+		lastid = getLastDocid(fragment);
+		
+		// scope.X
+		String identifier = fragment + separator + lastid;
 
 		// set to the next in local for he next time we call this
 		lastid++;
@@ -795,41 +792,11 @@ public class LocalDataStoreService extends DataStoreService
 	}
   
   /**
-	 * Gets the max local id for given scope in current the profile. The local
-	 * file's names look like 100.1, 102.1... under scope dir. In this case, 102
-	 * will be returned.
+	 * Gets the max local id for given fragment in current profile.
 	 */
-	private int getLastDocid(String scope) {
-		int docid = 0;
-		int maxDocid = 0;		
-		String datadir = getDataDir();
-		Log.debug(30, "the data dir is ===== " + datadir);
-		File directoryFile = new File(datadir);
-		File[] files = directoryFile.listFiles();
-		if (files != null) {
-			for (int i = 0; i < files.length; i++) {
-				File currentfile = files[i];
-				if (currentfile != null && currentfile.isFile()) {
-					String fileName = currentfile.getName();
-					Log.debug(50, "the file name in dir is " + fileName);
-					if (fileName != null) {
-						fileName = fileName.substring(0, fileName.indexOf(LocalIdentifierGenerator.DOT));
-						Log.debug(50, "the file name after removing revision in dir is " + fileName);
-						try {
-							docid = new Integer(fileName).intValue();
-							if (docid > maxDocid) {
-								maxDocid = docid;
-							}
-						} catch (NumberFormatException nfe) {
-							Log.debug(30, "Not loading file with invalid name");
-						}
-					}
-				}
-			}
-		}
-		Log.debug(30, "The max docid in local file system for scope " + scope + " is " + maxDocid);
+	private int getLastDocid(String fragment) {
 
-		int lastid = -1;
+		int lastid = 1;
 		String lastidS = morpho.getProfile().get("lastId", 0);
 		try {
 			lastid = Integer.parseInt(lastidS);
@@ -838,10 +805,16 @@ public class LocalDataStoreService extends DataStoreService
 		}
 		Log.debug(30, "the last id from profile " + lastid);
 
-		// choose the larger of the two
-		maxDocid = Math.max(maxDocid, lastid);
-
-		return maxDocid;
+		// check if we have used that one, find one we haven't
+		String identifier = null;
+		boolean inUse = false;
+		do {
+			lastid++;
+			identifier = fragment + "." + lastid;
+			inUse = exists(identifier);
+		} while (inUse);
+		
+		return lastid;
 	}
 	
 	  /**

@@ -63,12 +63,14 @@ import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStoreService;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
 import edu.ucsb.nceas.morpho.framework.IdentifierUpdaterFrame;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
@@ -819,30 +821,38 @@ public class Morpho
      *
      * @param scope  the scope 
      */
-    public void setLastID(String scope)
-    {
-        // look up last remote id
-    	if (Morpho.thisStaticInstance.getMetacatDataStoreService() == null) {
-    		return;
-    	}
+    public void setLastID(String fragment) {
+    	
+		// look up last remote id
+		if (Morpho.thisStaticInstance.getDataONEDataStoreService() == null) {
+			return;
+		}
 
-    	//TODO: this should not be done like this, but for now we will still look up Ids from Metacat
-    	  String fragment = null;
-        String lastId = Morpho.thisStaticInstance.getMetacatDataStoreService().generateIdentifier(fragment);
-        int id = Integer.parseInt(AccessionNumber.getInstance().getParts(lastId).get(1));
-        if (id > 0) {
-            int num = id;
-            String curval = Morpho.thisStaticInstance.getProfile().get("lastId", 0);
-            long curnum = (new Long(curval)).longValue();
-            if (curnum <= num) {
-                num = num + 1;
-                // required because Metacat does not return the latest id
-                id = num;
-                Morpho.thisStaticInstance.getProfile().set("lastId", 0, String.valueOf(id));
-                Morpho.thisStaticInstance.getProfile().save();
-            }
-        }
-    }
+		int lastid = 1;
+		String lastidS = getProfile().get("lastId", 0);
+		try {
+			lastid = Integer.parseInt(lastidS);
+		} catch (Exception e) {
+			Log.debug(30, "couldn't get lastid from profile");
+		}
+		Log.debug(30, "the last id from profile " + lastid);
+
+		int id = lastid;
+
+		// check if we have used that one in the network, find one we haven't
+		String identifier = null;
+		boolean inUse = false;
+		do {
+			lastid++;
+			identifier = fragment + "." + lastid;
+			inUse = DataStoreServiceController.getInstance().exists(identifier, DataPackageInterface.NETWORK);
+		} while (inUse);
+
+		if (lastid > id) {
+			Morpho.thisStaticInstance.getProfile().set("lastId", 0, String.valueOf(lastid));
+			Morpho.thisStaticInstance.getProfile().save();
+		}
+	}
 
     /**
      * Load all of the plugins specified in the configuration file. The plugins
