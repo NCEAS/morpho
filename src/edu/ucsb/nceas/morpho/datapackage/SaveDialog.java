@@ -300,7 +300,7 @@ public class SaveDialog extends JDialog {
 			// make id for temp id?
 			// TODO: remove this and put else where in the save process?
 			if (id.indexOf(LocalDataStoreService.TEMP) > -1) {
-				String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.BOTH);
+				String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
 				adp.setAccessionNumber(nextid);
 			}
 
