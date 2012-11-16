@@ -348,24 +348,11 @@ public class SaveDialog extends JDialog {
 				// don't refresh the screen - nothing has been done
 				problem = true;
 			}
-		// TODO: these exceptions seem to be caught earlier in the serialize steps	
 		} catch (Exception mue) {
+			// TODO: More informative?
 			String errormsg = mue.getMessage();
-			if (errormsg.indexOf("ERROR SAVING DATA TO METACAT") > -1) {
-				// error in saving data file
-				Log.debug(5, "Problem Saving Data to Metacat");
-			} else if (errormsg.indexOf("is already in use") > -1) {
-				// metadata insert error
-				Log.debug(5, "Problem Saving Data: Id already in use");
-			} else if (errormsg.indexOf("Document not found for Accession number") > -1) {
-				// error in updating data file
-				Log.debug(5, "Problem Saving Data: Document not found for Accession number");
-			} else if (errormsg.indexOf("Invalid content") > -1) {
-				// validation error
-				Log.debug(5, "Problem Saving Data due to invalid content");
-			}
-
-			Log.debug(20, "Problem Saving\n" + mue.getMessage());
+			Log.debug(5, "Problem Saving package: \n" + errormsg);
+			mue.printStackTrace();
 			problem = true;
 		}
 		
