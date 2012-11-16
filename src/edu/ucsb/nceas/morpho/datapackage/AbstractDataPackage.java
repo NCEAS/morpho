@@ -39,6 +39,7 @@ import java.util.Vector;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
+import org.dataone.service.types.v1.Identifier;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -376,43 +377,6 @@ public abstract class AbstractDataPackage extends MetadataObject
 
 
   /**
-   * convenience method to retrieve packageID from DOM synonym for
-   * getAccessionNumber
-   *
-   * @return String
-   */
-  /*public String getMetadataId() {
-    String temp = "";
-    temp = getAccessionNumber();
-    return temp;
-  }*/
-
-
-  /**
-   *
-   */
-  public String getPackageIdFromDOM() {
-      String emlXpath = "/eml:eml/";
-      NodeList nodes = null;
-      try {
-          nodes = XMLUtilities.getNodeListWithXPath(getMetadataNode(), emlXpath);
-      } catch (Exception w) {
-        //  Log.debug(30, "Problem with getting NodeList for " + emlXpath);
-      }
-
-      if (nodes == null) {
-          return null; // no eml:eml
-      }
-
-      if (nodes.getLength() > 0) {
-          NamedNodeMap atts = nodes.item(0).getAttributes();
-          String packageId = atts.getNamedItem("packageId").getNodeValue();
-          return packageId;
-      }
-      return "";
-  }
-
-  /**
    * convenience method to set accession number from DOM
    *
    * @param id String
@@ -420,6 +384,11 @@ public abstract class AbstractDataPackage extends MetadataObject
   public void setAccessionNumber(String id) {
     setGenericValue("/xpathKeyMap/contextNode[@name='package']/accessionNumber", id);
     setInitialId(null);
+    
+    // save it in the SM
+    Identifier identifier = new Identifier();
+    identifier.setValue(id);
+	this.getSystemMetadata().setIdentifier(identifier);
   }
 
 
