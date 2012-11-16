@@ -128,6 +128,9 @@ public  class EML200DataPackage extends AbstractDataPackage
     	 this.getEntityArray();
          //Log.debug(5, "After calling getEntityArray and its "+this.getEntityArray().length);
          //metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
+    	 
+    	 // make sure we have the id set
+    	 this.setAccessionNumber(this.getAccessionNumber());
       }
       catch (Exception e2) {
         Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
