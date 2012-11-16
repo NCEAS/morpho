@@ -41,11 +41,9 @@ import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -962,31 +960,21 @@ public class LocalDataStoreService extends DataStoreService
 	}
   
   /**
-	 * Gets next revisions from local. This method will look at the profile/scope
-	 * dir and figure it out the maximum revision. This number will be increase
-	 * 1 to get the next revision number. If local file system doesn't have this
-	 * docid, 1 will be returned
-	 * * @throws Exception 
+	 * Current implementation does not inspect the given identifier for a "fragment"
+	 * and will simply use a new identifier for the current scope.
+	 * @throws Exception 
 	 */
 	public String getNextIdentifier(String identifier) throws Exception {
-		// default
-		int version = AbstractDataPackage.ORIGINAL_REVISION;
-		String latestIdentifier = getRevisionManager().getLatestRevision(identifier);
-		Vector<String> idParts = AccessionNumber.getInstance().getParts(latestIdentifier);
+		// default the fragment to be the current scope
+		String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 		
-		try {
-			version = Integer.parseInt(idParts.get(2));
-		} catch (Exception e) {
-			Log.debug(6, "Could not find revision from identifier: " + identifier);
-			e.printStackTrace();
+		// TODO: can we glean anything about the current identifier?
+		if (false) {
+			// get a meaningful fragment?
 		}
-
-		// if we found a maximum revision, we should increase 1 to get the next revision
-		//if (version != AbstractDataPackage.ORIGINAL_REVISION) {
-			version++;
-		//}
-		Log.debug(30, "The next version for docid " + identifier + " in local file system is " + version);
-		String nextIdentifier = idParts.get(0) + LocalIdentifierGenerator.DOT + idParts.get(1) + LocalIdentifierGenerator.DOT +  version;
+		
+		// all we can do now is generate an identifier....
+		String nextIdentifier = generateIdentifier(fragment);
 		return nextIdentifier;
 	}
 	
