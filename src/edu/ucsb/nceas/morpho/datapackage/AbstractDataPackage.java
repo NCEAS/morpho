@@ -28,6 +28,8 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import java.io.Reader;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,7 +41,15 @@ import java.util.Vector;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
+import org.dataone.client.ObjectFormatCache;
+import org.dataone.service.types.v1.AccessPolicy;
+import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.NodeReference;
+import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.Subject;
+import org.dataone.service.types.v1.SystemMetadata;
+import org.dataone.service.types.v1.util.ChecksumUtil;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -47,6 +57,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.ibm.icu.util.Calendar;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -57,6 +69,7 @@ import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -294,6 +307,51 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public abstract Node getReferencedNode(Node node);
 
+  /**
+   * Return bytes of the ADP (serialized dom tree)
+   * This overrides the D1Object implementation of the method
+   * so that we do not need to keep two copies in memory
+   */
+	@Override
+	public byte[] getData() {
+		String temp = XMLUtil.getDOMTreeAsString(this.getMetadataNode().getOwnerDocument());
+		byte[] bytes = temp.getBytes(Charset.forName("UTF-8"));
+		return bytes;
+	}
+	
+	/**
+	 * Uses information from the ADP (e.g., EML) to populate SystemMetadata
+	 * Also gathers information from current Morpho profile for things like 
+	 * the Authoritative MN and the rightsHolder
+	 * @throws Exception
+	 */
+	protected void initializeSystemMetadata() throws Exception {
+		// TODO: mutate the parent variable directly when it is 'protected'
+		SystemMetadata sysmeta = this.getSystemMetadata();
+		sysmeta.setArchived(false);
+		NodeReference authMn = new NodeReference();
+		//authMn.setValue(Morpho.thisStaticInstance.getDataONEDataStoreService().getActiveMNode().getNodeId());
+		authMn.setValue("TBD");
+		sysmeta.setAuthoritativeMemberNode(authMn);
+		Checksum checksum = ChecksumUtil.checksum(getData(), "MD5");
+		sysmeta.setChecksum(checksum);
+		sysmeta.setDateSysMetadataModified(Calendar.getInstance().getTime());
+		ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
+		formatId.setValue(getXMLNamespace());	
+		sysmeta.setFormatId(formatId);
+		Subject rightsHolder = new Subject();
+		rightsHolder.setValue(Morpho.thisStaticInstance.getUserName());
+		sysmeta.setRightsHolder(rightsHolder);
+		BigInteger size = BigInteger.valueOf(getData().length);
+		sysmeta.setSize(size);
+		// TODO: access policy
+		AccessPolicy accessPolicy = null;
+		sysmeta.setAccessPolicy(accessPolicy);
+		
+	}
+	
+	abstract public String getXMLNamespace();
+  
   /**
    *  sets the initialId variable
    */

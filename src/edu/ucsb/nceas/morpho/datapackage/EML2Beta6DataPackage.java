@@ -70,6 +70,15 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
   }
   
   /**
+   * Not implemented
+   * @return String
+   */
+    @Override
+  public String getXMLNamespace() {
+      return null;
+  }
+  
+  /**
    * returns a vector containing a distinct set of all of the file ids that make
    * up this package
    *

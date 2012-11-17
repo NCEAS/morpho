@@ -131,6 +131,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	 
     	 // make sure we have the id set
     	 this.setAccessionNumber(this.getAccessionNumber());
+    	 this.initializeSystemMetadata();
       }
       catch (Exception e2) {
         Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
@@ -215,6 +216,7 @@ public  class EML200DataPackage extends AbstractDataPackage
    * Get the xmlns:eml attribute of <eml:eml>.
    * @return String
    */
+    @Override
   public String getXMLNamespace() {
       return XMLUtil.getAttributeValue(getRootNodeAttributes(), "xmlns:eml");
 
