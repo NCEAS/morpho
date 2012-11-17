@@ -31,15 +31,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.dataone.client.D1Object;
 import org.dataone.client.MNode;
+import org.dataone.client.auth.CertificateManager;
 import org.dataone.ore.ResourceMapFactory;
 import org.dataone.service.exceptions.IdentifierNotUnique;
 import org.dataone.service.exceptions.InsufficientResources;
@@ -51,8 +55,12 @@ import org.dataone.service.exceptions.NotFound;
 import org.dataone.service.exceptions.NotImplemented;
 import org.dataone.service.exceptions.ServiceFailure;
 import org.dataone.service.exceptions.UnsupportedType;
+import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SystemMetadata;
+import org.dataone.service.types.v1.util.ChecksumUtil;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
 
@@ -331,12 +339,14 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    */
   @Override
   public String save(MorphoDataPackage mdp) throws Exception {
-    Identifier oreId = mdp.getPackageId();
     AbstractDataPackage adp = mdp.getAbstractDataPackage();
     if(adp == null) {
       throw new IllegalActionException("DataONEDataStoreService.save - users is trying save an Morpho data package without setting metadata - the AbstractDatapackage");
     }
     Identifier metadataId = adp.getIdentifier();
+    Identifier oreId = new Identifier();
+    oreId.setValue("resourceMap_" + metadataId.getValue());
+
     Set<Identifier> identifiers = mdp.identifiers();
     //save data objects first
     if(identifiers != null && identifiers.size() > 0 ) {
@@ -349,9 +359,34 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     }
     //save metadata then
     save(mdp.get(metadataId));
+    
+    //return now if we do not have data packages to save as ORE
+    if (identifiers == null || identifiers.size() == 1) {
+    	return metadataId.getValue();
+    }
+    
     //save ore document finally
     D1Object oreD1Object = new D1Object();
+    mdp.setPackageId(oreId);
     oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
+    
+    // generate ORE SM for the save
+    SystemMetadata resourceMapSysMeta = new SystemMetadata();
+    PropertyUtils.copyProperties(resourceMapSysMeta, adp.getSystemMetadata());
+    resourceMapSysMeta.setIdentifier(oreId);
+    Checksum oreChecksum = ChecksumUtil.checksum(new ByteArrayInputStream(oreD1Object.getData()), resourceMapSysMeta.getChecksum().getAlgorithm());
+	resourceMapSysMeta.setChecksum(oreChecksum);
+    ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
+    formatId.setValue("http://www.openarchives.org/ore/terms");
+	resourceMapSysMeta.setFormatId(formatId);
+	resourceMapSysMeta.setSize(BigInteger.valueOf(oreD1Object.getData().length));
+	
+	// set the revision graph
+	resourceMapSysMeta.setObsoletes(null);
+	resourceMapSysMeta.setObsoletedBy(null);
+
+	// this is just weird to set in two different places
+    mdp.setSystemMetadata(resourceMapSysMeta);
     oreD1Object.setSystemMetadata(mdp.getSystemMetadata());
     save(oreD1Object);
     return oreId.getValue();
@@ -369,6 +404,13 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
       throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't be null");
     }
     SystemMetadata sysMeta = d1Object.getSystemMetadata();
+	
+    // TODO: better place to do this?
+    String rightsHolderDN = CertificateManager.getInstance().getSubjectDN(CertificateManager.getInstance().loadCertificate());
+    Subject rightsHolder = new Subject();
+    rightsHolder.setValue(rightsHolderDN);
+    sysMeta.setRightsHolder(rightsHolder );
+    
     if(sysMeta == null) {
       throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't have the null SystemMetadata");
     }
