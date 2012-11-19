@@ -75,8 +75,13 @@ public class MorphoDataPackage extends DataPackage {
 		Map<Identifier, List<Identifier>> adpMetadataMap = getMetadataMap();
 		List<Identifier> dataIds = new ArrayList<Identifier>();;
 		if (adp.getEntityArray() != null) {
+			int entityIndex = 0;
 			for (Entity entity: adp.getEntityArray()) {
-				dataIds.add(entity.getIdentifier());
+				String URLinfo = adp.getDistributionUrl(entityIndex, 0, 0);
+				String dataId = AbstractDataPackage.getUrlInfo(URLinfo);
+				Identifier identifier = new Identifier();
+				identifier.setValue(dataId);
+				dataIds.add(identifier);
 			}
 		}
 		adpMetadataMap.put(adp.getIdentifier(), dataIds);
