@@ -131,9 +131,19 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    * with the id name does not exist in the datastore.  Throws IOException
    * if a there is a communications problem with the datastore.
    */
-  public File openFile(String name) throws FileNotFoundException, 
+  public File openFile(String identifier) throws FileNotFoundException, 
                                            CacheAccessException {
-    return null;
+	  File file = null;
+	  try {
+		  InputStream data = getDataFromDataONE(identifier);
+		  FileSystemDataStore.getInstance(getCacheDir()).set(identifier, data);
+		  file = FileSystemDataStore.getInstance(getCacheDir()).get(identifier);
+	  } catch (Exception e) {
+		  CacheAccessException cae = new CacheAccessException(e.getMessage());
+		  cae.initCause(e);
+		  throw cae;
+	}
+	  return file;
   }
   
   /**
@@ -221,6 +231,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
         AbstractDataPackage adp = DataPackageFactory.getDataPackage(new StringReader(new String(metadata,IdentifierFileMap.UTF8)));
         adp.setData(metadata);
         adp.setSystemMetadata(getSystemMetadataFromDataONE(scienceMetadataId.getValue()));
+        adp.setLocation(DataPackageInterface.NETWORK);
         dp.addData(adp);
         dp.setAbstractDataPackage(adp);
         List<Identifier> dataIdentifiers = mdMap.get(scienceMetadataId);
