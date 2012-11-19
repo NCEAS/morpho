@@ -27,7 +27,10 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.dataone.client.D1Object;
 import org.dataone.client.DataPackage;
@@ -67,6 +70,18 @@ public class MorphoDataPackage extends DataPackage {
 	public void setAbstractDataPackage(AbstractDataPackage adp) {
 		// save in the DataPackage collection
 		this.addData(adp);
+
+		// make sure the map has everything
+		Map<Identifier, List<Identifier>> adpMetadataMap = getMetadataMap();
+		List<Identifier> dataIds = new ArrayList<Identifier>();;
+		if (adp.getEntityArray() != null) {
+			for (Entity entity: adp.getEntityArray()) {
+				dataIds.add(entity.getIdentifier());
+			}
+		}
+		adpMetadataMap.put(adp.getIdentifier(), dataIds);
+		this.setMetadataMap(adpMetadataMap);
+		
 		// TODO: don't keep reference here
 		this.adp = adp;
 	}
