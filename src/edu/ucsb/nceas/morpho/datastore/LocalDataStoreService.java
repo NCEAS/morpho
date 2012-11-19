@@ -34,15 +34,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.IOUtils;
+import org.dataone.service.types.v1.Checksum;
+import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.util.ChecksumUtil;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
+import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
@@ -118,9 +128,44 @@ public class LocalDataStoreService extends DataStoreService
 	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 	  AbstractDataPackage adp = DataPackageFactory.getDataPackage(in);
 	  adp.setLocation(DataPackageInterface.LOCAL);
+	  loadData(adp);
 	  MorphoDataPackage mdp = new MorphoDataPackage();
 	  mdp.setAbstractDataPackage(adp);
 	  return mdp; 
+  }
+  
+  private void loadData(AbstractDataPackage adp) throws Exception {
+	  
+	  
+	  List<Identifier> dataIds = new ArrayList<Identifier>();;
+	  if (adp.getEntityArray() != null) {
+			int entityIndex = 0;
+			for (Entity entity: adp.getEntityArray()) {
+				String URLinfo = adp.getDistributionUrl(entityIndex, 0, 0);
+				String dataId = AbstractDataPackage.getUrlInfo(URLinfo);
+				Identifier identifier = new Identifier();
+				identifier.setValue(dataId);
+				dataIds.add(identifier);
+				byte[] data = IOUtils.toByteArray(new FileInputStream(openFile(identifier.getValue())));
+				entity.setData(data);
+				
+				// dupe the EML SystemMetadata for the data
+				try {
+					PropertyUtils.copyProperties(entity.getSystemMetadata(), adp.getSystemMetadata());
+					entity.getSystemMetadata().setIdentifier(identifier);
+					ObjectFormatIdentifier dataFormatId = new ObjectFormatIdentifier();
+					dataFormatId.setValue(adp.getPhysicalFormat(entityIndex, 0));
+					entity.getSystemMetadata().setFormatId(dataFormatId);
+					Checksum dataChecksum = ChecksumUtil.checksum(entity.getData(), entity.getSystemMetadata().getChecksum().getAlgorithm());
+					entity.getSystemMetadata().setChecksum(dataChecksum);
+					entity.getSystemMetadata().setSize(BigInteger.valueOf(entity.getData().length));
+				} catch (Exception e) {
+					Log.debug(10, "Error setting SystemMetadata for entity " + entityIndex);
+					e.printStackTrace();
+				}
+			}
+	  }
+	  
   }
   
   /**
