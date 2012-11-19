@@ -82,6 +82,8 @@ public class MorphoDataPackage extends DataPackage {
 				Identifier identifier = new Identifier();
 				identifier.setValue(dataId);
 				dataIds.add(identifier);
+				
+				this.addData(entity);
 			}
 		}
 		adpMetadataMap.put(adp.getIdentifier(), dataIds);
