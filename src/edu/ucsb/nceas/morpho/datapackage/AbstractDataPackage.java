@@ -325,7 +325,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 * the Authoritative MN and the rightsHolder
 	 * @throws Exception
 	 */
-	protected void initializeSystemMetadata() throws Exception {
+	public void initializeSystemMetadata() throws Exception {
 		// TODO: mutate the parent variable directly when it is 'protected'
 		SystemMetadata sysmeta = this.getSystemMetadata();
 		sysmeta.setArchived(false);

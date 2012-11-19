@@ -91,6 +91,14 @@ public class DataPackageFactory
 				|| (type.indexOf("eml-dataset-2.0.0beta4") > -1)) {
 			dp = new EML2Beta6DataPackage();
 		}
+		// make sure we have the id set
+		dp.setAccessionNumber(dp.getAccessionNumber());
+		try {
+			dp.initializeSystemMetadata();
+		} catch (Exception e) {
+			Log.debug(15, "Could not initialize SystemMetadata");
+			e.printStackTrace();
+		}
 		return dp;
 	}
   
@@ -119,6 +127,14 @@ public class DataPackageFactory
     dp = new EML200DataPackage();
     dp.load(source);
     dp.setAutoSavedID(docid);
+    // make sure we have the id set
+	dp.setAccessionNumber(dp.getAccessionNumber());
+	try {
+		dp.initializeSystemMetadata();
+	} catch (Exception e) {
+		Log.debug(15, "Could not initialize SystemMetadata");
+		e.printStackTrace();
+	}
     return dp;
   }
 
@@ -163,6 +179,16 @@ public class DataPackageFactory
     if (dp==null) {
       Log.debug(1,"DOM document type is unknown! (DataPackaqeFactory.getDataPackage)");
     }
+    
+	// make sure we have the id set
+    dp.setAccessionNumber(dp.getAccessionNumber());
+    try {
+		dp.initializeSystemMetadata();
+	} catch (Exception e) {
+		Log.debug(15, "Could not initialize SystemMetadata");
+		e.printStackTrace();
+	}
+	 
     return dp;
   }
   
