@@ -475,7 +475,7 @@ public class LocalDataStoreService extends DataStoreService
 
 					// handle incomplete
 					boolean status = false;
-					if (isDirty || updatedId) {
+					if (isDirty || updatedId || !exists) {
 						if (dataDestination.equals(DataPackageInterface.INCOMPLETE)) {
 							handleIncompleteDir(docid);
 						} else {
