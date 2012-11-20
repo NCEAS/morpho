@@ -111,7 +111,6 @@ public class ConfigXML
     this.fileName = filename;
 
     DocumentBuilder parser = Morpho.createDomParser();
-    File XMLConfigFile = new File(filename);
     InputSource in;
     FileInputStream fs;
     fs = new FileInputStream(filename);
@@ -261,10 +260,30 @@ public class ConfigXML
    */
   public boolean set(String key, int i, String value)
   {
+	  return set(key, i, value, false);
+  }
+  
+  /**
+   * used to set a value corresponding to 'key'; value is changed
+   * in DOM structure in memory
+   *
+   * @param key 'key' is element name.
+   * @param i index in set of elements with 'key' name
+   * @param value new value to be inserted in ith key
+   * @param insertMissing will add the property if it does not exist
+   * @return boolean true if the operation succeeded
+   */
+  public boolean set(String key, int i, String value, boolean insertMissing)
+  {
     boolean result = false;
     NodeList nl = doc.getElementsByTagName(key);
     if (nl.getLength() <= i) {
-      result = false;
+    	// add the property if it is not present already and we are instructed to
+    	if (insertMissing) {
+    		result = insert(key, value);
+    	} else {
+    		result = false;
+    	}
     } else {
       Node cn = nl.item(i).getFirstChild(); // assumed to be a text node
       if (cn == null) {
@@ -417,12 +436,12 @@ public class ConfigXML
    *
    * this method will return a Hashtable of names-values of parent
    */
-  public Hashtable getHashtable(String parentName, String keyName,
+  public Hashtable<String, String> getHashtable(String parentName, String keyName,
                                 String valueName)
   {
     String keyval = "";
     String valval = "";
-    Hashtable ht = new Hashtable();
+    Hashtable<String, String> ht = new Hashtable<String, String>();
     NodeList nl = doc.getElementsByTagName(parentName);
     if (nl.getLength() > 0)
     {
@@ -652,8 +671,8 @@ public class ConfigXML
    *  utility routine to return the value(s) of a node defined by
    *  a specified XPath
    */
-  public Vector getValuesForPath(String pathstring) {
-    Vector val = new Vector();
+  public Vector<String> getValuesForPath(String pathstring) {
+    Vector<String> val = new Vector<String>();
     if (!pathstring.startsWith("/")) {
       pathstring = "//*/"+pathstring;
     }
