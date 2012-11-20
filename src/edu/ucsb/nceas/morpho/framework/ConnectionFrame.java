@@ -26,17 +26,24 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.util.Log;
-
-import java.net.*;
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * A graphical window for obtaining login information from the
@@ -176,7 +183,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
 
     pack();
     
-    updateEnabeDisable();
+    updateEnableDisable();
     
     /* Center the Frame */
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -187,7 +194,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
   }
 
   
-  private void updateEnabeDisable() 
+  private void updateEnableDisable() 
   {
     DisconnectButton.setEnabled(container.getMetacatDataStoreService().isConnected());
     connectButton.setEnabled(!container.getMetacatDataStoreService().isConnected());
@@ -329,9 +336,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
   void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     container.getMetacatDataStoreService().logOut();
-    updateEnabeDisable();
-    
-//    DisconnectButton.setEnabled(false);
+    updateEnableDisable();
   }
 
   /**
@@ -372,7 +377,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
     		  	+ /*"Please check the Caps Lock key and try again."*/ Language.getInstance().getMessage("CheckCaps")
     		  	);
 //      DisconnectButton.setEnabled(false);
-      updateEnabeDisable();
+      updateEnableDisable();
       ActivityLabel.setIcon(still);
     }
   }
