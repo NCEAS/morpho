@@ -27,12 +27,14 @@ package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -194,9 +196,10 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    * @return the MorphoDataPackage object
    * @throws FileNotFoundException
    * @throws CacheAccessException
+   * NOTE: this has temporarily been replaced by the the EML-based read method
+   * which does not use ORE objects to construct the package
    */
-  @Override
-  public MorphoDataPackage read(String identifier) throws InvalidToken, ServiceFailure, 
+  public MorphoDataPackage readByORE(String identifier) throws InvalidToken, ServiceFailure, 
              NotAuthorized, NotFound, NotImplemented, InsufficientResources, FileNotFoundException, 
              IOException, OREException, URISyntaxException, OREParserException, InvalidRequest{
     //File ore = getData(identifier);
@@ -255,6 +258,66 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     }
     return dp;
   }
+  
+  /**
+   * Retrieve a MorphoDataPackage for the given identifier
+   * @param identifier - the identifier of the ore document
+   * @return the MorphoDataPackage object
+   * @throws FileNotFoundException
+   * @throws CacheAccessException
+   */
+  @Override
+  public MorphoDataPackage read(String identifier) throws InvalidToken,
+			ServiceFailure, NotAuthorized, NotFound, NotImplemented,
+			InsufficientResources, FileNotFoundException, IOException,
+			OREException, URISyntaxException, OREParserException,
+			InvalidRequest {
+
+	  // construct the package
+		MorphoDataPackage mdp = new MorphoDataPackage();
+		Identifier packageId = new Identifier();
+		packageId.setValue(identifier);
+		mdp.setPackageId(packageId);
+
+		// parse the metadata/data identifiers and store the associated objects
+		// if they are accessible
+		byte[] metadata;
+		// the science metadata id is the package id in this case
+		Identifier scienceMetadataId = packageId;
+		metadata = IOUtils.toByteArray(getDataFromDataONE(scienceMetadataId.getValue()));
+		AbstractDataPackage adp = DataPackageFactory.getDataPackage(new StringReader(new String(metadata, IdentifierFileMap.UTF8)));
+		adp.setData(metadata);
+		adp.setSystemMetadata(getSystemMetadataFromDataONE(scienceMetadataId.getValue()));
+		adp.setLocation(DataPackageInterface.NETWORK);
+		mdp.addData(adp);
+		mdp.setAbstractDataPackage(adp);
+		
+		// construct the data entities
+		List<Identifier> dataIds = new ArrayList<Identifier>();;
+		if (adp.getEntityArray() != null) {
+			int entityIndex = 0;
+			for (Entity entity: adp.getEntityArray()) {
+				String URLinfo = adp.getDistributionUrl(entityIndex, 0, 0);
+				String dataId = AbstractDataPackage.getUrlInfo(URLinfo);
+				Identifier dataIdentifier = new Identifier();
+				dataIdentifier.setValue(dataId);
+				dataIds.add(dataIdentifier);
+				if (entity != null) {
+					byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataIdentifier.getValue()));
+					entity.setData(data);
+					entity.setSystemMetadata(getSystemMetadataFromDataONE(dataIdentifier.getValue()));
+					mdp.addData(entity);
+				} else {
+					throw new OREException(
+							"DataONEDataStoreService.read - the data object "
+									+ dataIdentifier.getValue()
+									+ "could not be found on the system");
+				}
+			}
+		}
+		
+		return mdp;
+	}
   
   
   /*
