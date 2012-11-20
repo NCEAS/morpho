@@ -170,7 +170,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
           ConnectionFrame cf = new ConnectionFrame(morpho);
           cf.setVisible(true);
       } else {
-          morpho.getProfile().set("searchmetacat", 0, "false");
+          morpho.getProfile().set("searchnetwork", 0, "false", true);
           Log.debug(6,
           			/*"No network connection available - can't log in"*/
           		   Language.getInstance().getMessage("Morpho.NoNetworkConnection")
@@ -1716,13 +1716,13 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
       	}
           networkStatus = false;
           if (morpho.getProfile() != null) {
-        	  morpho.getProfile().set("searchmetacat", 0, "false");
+        	  morpho.getProfile().set("searchnetwork", 0, "false", true);
           }
       } catch (NullPointerException npe) {
             Log.debug(55, " - unable to open network connection to Metacat");
             networkStatus = false;
             if (morpho.getProfile() != null) {
-            	morpho.getProfile().set("searchmetacat", 0, "false");
+            	morpho.getProfile().set("searchnetwork", 0, "false", true);
             }
         }
   }
@@ -1742,7 +1742,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
       if (origNetworkStatus != networkStatus) {
           //if lost connection, can't log out, but can still do cleanup
           if (!networkStatus) {
-              morpho.getProfile().set("searchmetacat", 0, "false");
+              morpho.getProfile().set("searchnetwork", 0, "false", true);
               doLogoutCleanup();
           } else {
               if (!isStartUp) {

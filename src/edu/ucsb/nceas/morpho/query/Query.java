@@ -97,8 +97,8 @@ public class Query extends DefaultHandler {
   /** A reference to the Morpho application */
   private Morpho morpho = null;
 
-  /** Flag, true if Metacat searches are performed for this query */
-  private boolean searchMetacat = true;
+  /** Flag, true if network searches are performed for this query */
+  private boolean searchNetwork = true;
 
   /** Flag, true if network searches are performed for this query */
   private boolean searchLocal = true;
@@ -299,19 +299,19 @@ public class Query extends DefaultHandler {
   }
 
   /**
-   * determine if we should search metacat
+   * determine if we should search network
    */
-  public boolean getSearchMetacat()
+  public boolean getSearchNetwork()
   {
-    return searchMetacat;
+    return searchNetwork;
   }
 
   /**
-   * method to set searchMetacat
+   * method to set searchNetwork
    */
-  public void setSearchMetacat(boolean searchMetacat)
+  public void setSearchNetwork(boolean searchNetwork)
   {
-    this.searchMetacat = searchMetacat;
+    this.searchNetwork = searchNetwork;
   }
 
   /**
@@ -435,9 +435,9 @@ public class Query extends DefaultHandler {
       }
     } else if (currentTag.equals("network_search")) {
       if(inputString.equals("true")){
-        this.searchMetacat = true;
+        this.searchNetwork = true;
       } else {
-        this.searchMetacat = false;
+        this.searchNetwork = false;
       }
     } else if (currentTag.equals("querytitle")) {
     	// the whole string was not included in one call - collecting the complete value 
@@ -482,7 +482,7 @@ public class Query extends DefaultHandler {
     self.append("  <local_search>"+this.searchLocal+"</local_search>\n");
 
     // Metacat Search
-    self.append("  <network_search>"+this.searchMetacat+"</network_search>\n");
+    self.append("  <network_search>"+this.searchNetwork+"</network_search>\n");
 
     // The query title
     if (queryTitle != null) {
@@ -554,7 +554,7 @@ public class Query extends DefaultHandler {
   
   /**
 	 * Run the query against the local data store and metacat, depending on how
-	 * the searchMetacat and searchLocal flags are set. If both local and
+	 * the searchNetwork and searchLocal flags are set. If both local and
 	 * metacat searches are run, merge the results into a single ResultSet and
 	 * return it.
 	 * 
@@ -568,7 +568,7 @@ public class Query extends DefaultHandler {
 		Log.debug(30, "(1) Executing result set...");
 		// if appropriate, query metacat
 		ResultSet metacatResults = null;
-		if (searchMetacat) {
+		if (searchNetwork) {
 			Log.debug(30, "(2) Executing metacat query...");
 			InputStream queryResults = null;
 			try {
@@ -596,7 +596,7 @@ public class Query extends DefaultHandler {
 		// merge the results if needed, and return the right result set
 		if (!searchLocal) {
 			results = metacatResults;
-		} else if (!searchMetacat) {
+		} else if (!searchNetwork) {
 			results = localResults;
 		} else {
 			// must merge results
@@ -644,7 +644,7 @@ public class Query extends DefaultHandler {
             doMetacatSearchDisplay(resultDisplayPanel, morpho, localResult);
 
          }
-         else if (!searchMetacat)
+         else if (!searchNetwork)
          {
            Log.debug(30, "(2) Executing local query...");
            doLocalSearchDisplay(resultDisplayPanel, morpho);
@@ -775,8 +775,8 @@ public class Query extends DefaultHandler {
   private void loadConfigurationParameters()
   {
     ConfigXML profile = morpho.getProfile();
-    String searchMetacatString = profile.get("searchmetacat", 0);
-    searchMetacat = (new Boolean(searchMetacatString)).booleanValue();
+    String searchNetworkString = profile.get("searchnetwork", 0);
+    searchNetwork = (new Boolean(searchNetworkString)).booleanValue();
     String searchLocalString = profile.get("searchlocal", 0);
     searchLocal = (new Boolean(searchLocalString)).booleanValue();
   }

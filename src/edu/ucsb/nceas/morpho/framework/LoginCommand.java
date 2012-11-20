@@ -80,7 +80,7 @@ public class LoginCommand implements Command
           public void run() {
             if (connected) {
               ConfigXML profile = morpho.getProfile();
-              profile.set("searchmetacat", 0, "true");
+              profile.set("searchnetwork", 0, "true", true);
               profile.save();
               Log.debug(12, "LoginCommand: Login successful");
               loginClient.setLoginSuccessful(true);

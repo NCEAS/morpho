@@ -113,8 +113,8 @@ public class QueryDialog extends JDialog
   String eastBCSearchPath = "eastBoundingCoordinate";
 
 
-  /** Flag, true if Metacat searches are performed for this query */
-  private boolean searchMetacat = true;
+  /** Flag, true if Network searches are performed for this query */
+  private boolean searchNetwork = true;
 
   /** Flag, true if network searches are performed for this query */
   private boolean searchLocal = true;
@@ -220,11 +220,11 @@ public class QueryDialog extends JDialog
         taxonRankSearchPath = temp;
     }
     ConfigXML profile = morpho.getProfile();
-    String searchMetacatString = profile.get("searchmetacat", 0);
-    searchMetacat = (new Boolean(searchMetacatString)).booleanValue();
+    String searchNetworkString = profile.get("searchnetwork", 0);
+    searchNetwork = (new Boolean(searchNetworkString)).booleanValue();
     String searchLocalString = profile.get("searchlocal", 0);
     searchLocal = (new Boolean(searchLocalString)).booleanValue();
-    if (!searchMetacat) {
+    if (!searchNetwork) {
       searchLocal = true;
     }
 
@@ -289,7 +289,7 @@ public class QueryDialog extends JDialog
     searchChoicePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     catalogSearchCheckBox.setText(/*"Network Search"*/ Language.getInstance().getMessage("NetworkSearch"));
     catalogSearchCheckBox.setActionCommand("Network Search");
-    catalogSearchCheckBox.setSelected(searchMetacat);
+    catalogSearchCheckBox.setSelected(searchNetwork);
     searchChoicePanel.add(catalogSearchCheckBox);
     localSearchCheckBox.setText(/*"Local Search"*/ Language.getInstance().getMessage("LocalSearch"));
     localSearchCheckBox.setActionCommand("Local Search");
@@ -632,7 +632,7 @@ public class QueryDialog extends JDialog
       queryTitleTF.setText(new Date().toString());
     }
     newQuery.setQueryTitle(queryTitleTF.getText());
-    newQuery.setSearchMetacat(catalogSearchCheckBox.isSelected());
+    newQuery.setSearchNetwork(catalogSearchCheckBox.isSelected());
     newQuery.setSearchLocal(localSearchCheckBox.isSelected());
 
     // Set the returndoc and returnfield parameters
@@ -910,10 +910,10 @@ public class QueryDialog extends JDialog
       buildQuery();
     }
     else {
-      String metacatflag = "true";
+      String networkflag = "true";
       String localflag = "true";
       if (!catalogSearchCheckBox.isSelected()) {
-          metacatflag = "false";
+          networkflag = "false";
       }
       if (!localSearchCheckBox.isSelected()) {
         if (catalogSearchCheckBox.isSelected()) {
@@ -921,7 +921,7 @@ public class QueryDialog extends JDialog
         }
       }
       ConfigXML profile = morpho.getProfile();
-      profile.set("searchmetacat", 0, metacatflag);
+      profile.set("searchnetwork", 0, networkflag, true);
       profile.set("searchlocal",0,localflag);
 
       savedQuery = buildQuery();
@@ -946,8 +946,8 @@ public class QueryDialog extends JDialog
   {
     ConfigXML profile = morpho.getProfile();
 
-    profile.set("searchmetacat", 0,
-                catalogSearchCheckBox.isSelected() ? "true" : "false");
+    profile.set("searchnetwork", 0,
+                catalogSearchCheckBox.isSelected() ? "true" : "false", true);
     profile.set("searchlocal",0,
                 localSearchCheckBox.isSelected() ? "true" : "false");
     profile.set("casesensitive",0,

@@ -61,7 +61,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
@@ -1627,7 +1626,7 @@ public class Morpho
                 currentProfile + File.separator +
                 currentProfile + ".xml";
             ConfigXML profile = new ConfigXML(profileName);
-            profile.set("searchmetacat",0,"false");
+            profile.set("searchnetwork", 0, "false", true);
             setProfileDontLogin(profile);
         }
     }

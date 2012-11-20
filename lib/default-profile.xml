@@ -9,7 +9,7 @@
   <tempdir>temp</tempdir>
   <incompletedir>incomplete</incompletedir>
   <queriesdir>queries</queriesdir>
-  <searchmetacat>true</searchmetacat>
+  <searchnetwork>true</searchnetwork>
   <searchlocal>true</searchlocal>
   <casesensitive>false</casesensitive>
   <includesynonyms>false</includesynonyms>

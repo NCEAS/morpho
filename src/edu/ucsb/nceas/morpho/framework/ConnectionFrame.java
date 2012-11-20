@@ -346,7 +346,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
   {
     
     ConfigXML profile = container.getProfile();
-    profile.set("searchmetacat", 0, "false");
+    profile.set("searchnetwork", 0, "false", true);
     profile.save();
     dispose();
   }
