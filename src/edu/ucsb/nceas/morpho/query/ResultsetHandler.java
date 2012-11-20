@@ -33,6 +33,7 @@ public class ResultsetHandler implements ContentHandler, Runnable
   private Stack elementStack = null;
   private String[] headers;
   private String docid;
+  private String guid;
   private String docname;
   private String doctype;
   private String createdate;
@@ -178,6 +179,7 @@ public class ResultsetHandler implements ContentHandler, Runnable
    // Reset the variables for each document
    if (localName.equals("document")) {
      docid = "";
+     guid = "";
      docname = "";
      doctype = "";
      createdate = "";
@@ -254,7 +256,8 @@ public class ResultsetHandler implements ContentHandler, Runnable
      // Then store additional default fields
      row.addElement(createdate);
      row.addElement(updatedate);
-     row.addElement(docid);
+     //row.addElement(docid);
+     row.addElement(guid);
      row.addElement(docname);
      row.addElement(doctype);
      row.addElement(localStatus);
@@ -287,6 +290,8 @@ public class ResultsetHandler implements ContentHandler, Runnable
    // added by higgins to remove extra white space 7/11/01
    if (currentTag.equals("docid")) {
      docid = inputString;
+   } else if (currentTag.equals("guid")) {
+     guid = inputString;
    } else if (currentTag.equals("docname")) {
      docname = inputString;
    } else if (currentTag.equals("doctype")) {
