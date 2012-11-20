@@ -26,36 +26,30 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.GUIAction;
-import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.Container;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.Point;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Vector;
-import javax.swing.AbstractAction;
+
 import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+
+import org.w3c.dom.Document;
+
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import org.w3c.dom.Document;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 
 
 /**
@@ -411,36 +405,6 @@ public class UIController
     count = res.size();
     return res;
     }
-/*
-    public void addGuiAction(GUIAction action)
-    {
-        // for each window, clone the action, add it to the vector of
-        // clones for this GUIAction, add it to the clone/window
-        // association hash, and send the clone to the window
-        Vector cloneList = new Vector();
-        guiActionClones.put(action, cloneList);
-        Enumeration windows = windowList.elements();
-        while (windows.hasMoreElements()) {
-            MorphoFrame window = (MorphoFrame)windows.nextElement();
-            GUIAction clone = action.cloneAction();
-            cloneList.addElement(clone);
-            actionCloneWindowAssociation.put(clone, window);
-            window.addGuiAction(clone);
-        }
-    }
-
-    public void removeGuiAction(GUIAction action)
-    {
-        Vector cloneList = (Vector)guiActionClones.get(action);
-        guiActionClones.remove(action);
-        for (int i=0; i< cloneList.size(); i++) {
-            GUIAction clone = (GUIAction)cloneList.elementAt(i);
-            MorphoFrame window =
-                (MorphoFrame)actionCloneWindowAssociation.get(clone);
-            window.removeGuiAction(clone);
-        }
-    }
-*/
 
     /**
      * Add a menu item and optionally a toolbar button by registering
@@ -948,281 +912,6 @@ public class UIController
                 morpho.getMetacatDataStoreService().getNetworkStatus());
         statusBar.setSSLStatus(morpho.getMetacatDataStoreService().getSslStatus());
     }
-
-
-  /**
-   * Create a new menubar for use in a window
-   *
-   * @return JMenuBar
-   */
-  private static JMenuBar createMenuBar()
-    {
-        /*
-        Log.debug(50, "Creating menu bar for window...");
-        JMenuBar newMenuBar = new JMenuBar();
-        for (int j=0; j < orderedMenuList.size(); j++) {
-            String menuName = (String)orderedMenuList.get(j);
-            JMenu currentMenu = new JMenu(menuName);
-            newMenuBar.add(currentMenu);
-
-            // Add all of the actions for this menu from its Vector
-            createMenuItems(menuName, currentMenu);
-        }
-        return newMenuBar;
-        */
-        return null;
-    }
-
-
-  /**
-   * Create new menu items for a particular menu
-   *
-   * @param menuName String
-   * @param currentMenu JMenu
-   */
-  private static void createMenuItems(String menuName, JMenu currentMenu)
-    {
-        Vector currentActions = (Vector)orderedMenuActions.get(menuName);
-        registerActionToMenu(currentMenu, currentActions);
-        Log.debug(50, "Creating menu items for: " + menuName + " (" +
-                currentActions.size() + " actions)");
-
-    }
-
-
-  /**
-   * Create new menu items for a particular menu
-   *
-   * @param menuName String
-   * @param currentMenu JMenu
-   */
-  private static void createMenuItemsCopy(String menuName, JMenu currentMenu)
-    {
-        Vector currentActions = (Vector)orderedMenuActions.get(menuName);
-        Log.debug(20, "Creating menu items for: " + menuName + " (" +
-                currentActions.size() + " actions)");
-        for (int j=0; j < currentActions.size(); j++) {
-            Action currentAction = (Action)currentActions.elementAt(j);
-
-            JMenuItem currentItem = null;
-            String hasDefaultSep =
-            (String)currentAction.getValue(Action.DEFAULT);
-            Integer itemPosition =
-                (Integer)currentAction.getValue("menuPosition");
-            int menuPos =
-                (itemPosition != null) ? itemPosition.intValue() : -1;
-
-            menuPos = -1;
-            if (menuPos >= 0) {
-                // Insert menus at the specified position
-                Log.debug(50, "Inserting Action as menu item.");
-                int menuCount = currentMenu.getMenuComponentCount();
-                if (menuPos > menuCount) {
-                    menuPos = menuCount;
-                }
-
-                if (hasDefaultSep != null &&
-                    hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
-                    currentMenu.insertSeparator(menuPos++);
-                }
-                currentItem = currentMenu.insert(currentAction, menuPos);
-                currentItem.setAccelerator(
-                    (KeyStroke)currentAction.getValue(
-                    Action.ACCELERATOR_KEY));
-                if (hasDefaultSep != null &&
-                    hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
-                    menuPos++;
-                    currentMenu.insertSeparator(menuPos);
-                }
-            } else {
-                // Append everything else at the bottom of the menu
-                Log.debug(50, "Appending Action as menu item.");
-                if (hasDefaultSep != null &&
-                    hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
-                    currentMenu.addSeparator();
-                }
-                currentItem = currentMenu.add(currentAction);
-                currentItem.setAccelerator(
-                    (KeyStroke)currentAction.getValue(
-                    Action.ACCELERATOR_KEY));
-                if (hasDefaultSep != null &&
-                    hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
-                    currentMenu.addSeparator();
-                }
-            }
-        }
-    }
-
-
-  /**
-   * Register a array actions to a menu. This method using recursion to handle
-   * pull right submenu.
-   *
-   * @param currentMenu JMenu
-   * @param actions Vector
-   */
-  private static void registerActionToMenu(JMenu currentMenu, Vector actions)
-    {
-      boolean pullRightMenuFlag = false;// flag for a pull right menu
-      JMenu currentPullRightMenu = null;// for a pull right menu
-      Vector subMenuActions = null; // Store the actions for submenu
-      JMenuItem currentItem = null;// for a menuitem if it is not a pull menu
-      // Make sure the meun and vector is valid
-      if (currentMenu == null || actions.size() == 0)
-      {
-        return;
-      }
-      for (int j=0; j < actions.size(); j++)
-      {
-        Action currentAction = (Action)actions.elementAt(j);
-         // To check the action if it is a pull right menu
-        String pullRightMenu =(String)currentAction.getValue(PULL_RIGHT_MENU);
-        if (pullRightMenu !=null && pullRightMenu.equals(YES))
-        {
-          Log.debug(50, "in submenu ");
-          // Get the action's path
-          String pullRightMenuPath = (String)currentAction.getValue(MENU_PATH);
-          Log.debug(50, "Pull right Menu path: "+pullRightMenuPath);
-          // check the sub menu path if it exsit
-          /*if (pullRightMenuPath == null || pullRightMenuPath.equals("") ||
-                            isSubMenuPathExisted(pullRightMenuPath))
-          {
-            continue;
-          }*/
-          pullRightMenuFlag = true;
-          // This is pull right menu and create a new JMenu
-          currentPullRightMenu = new JMenu(currentAction);
-          // initialize subMenuActions
-          subMenuActions = new Vector();
-          // Get every subactions for this menu, the subaction menu path
-          // should contains the jmenu path
-          for ( int i =0; i< actions.size(); i++)
-          {
-            Action current = (Action)actions.elementAt(i);
-            String actionMenuPath = (String)current.getValue(MENU_PATH);
-            // If action path start will pull right menu path
-            // this mean this action is a subaction of this JMenu
-            if (actionMenuPath!=null && current!=currentAction &&
-                                  actionMenuPath.startsWith(pullRightMenuPath))
-            {
-                 Log.debug(50, "Action path : "+actionMenuPath);
-                 subMenuActions.add(current);
-            }//if
-          }//for
-          // if it is new, register the subMenu and path
-          subMenuAndPath.put(currentPullRightMenu, pullRightMenuPath);
-       }//if
-       else
-       {
-         // Handle MenuItem
-         // Get the path the action
-         // Get the action's path
-         String actionPath = (String)currentAction.getValue(MENU_PATH);
-         // Get the path of the JMenu - parameter of this mehtod
-         String paramterMenuPath = (String)subMenuAndPath.get(currentMenu);
-         // If MenuItem's path is not equals the menu's path, this means
-         // this menu item is not add to this menu skip it.
-         if (paramterMenuPath != null && actionPath != null &&
-              !paramterMenuPath.equals(actionPath))
-         {
-           continue;
-         }//if
-       }//else
-
-       String hasDefaultSep = (String)currentAction.getValue(Action.DEFAULT);
-       Integer itemPosition = (Integer)currentAction.getValue("menuPosition");
-
-       int menuPos = (itemPosition != null) ? itemPosition.intValue() : -1;
-
-       //menuPos = -1;
-
-       if (menuPos >= 0)
-       {
-         // Insert menus at the specified position
-         Log.debug(50, "Inserting Action as menu item.");
-         int menuCount = currentMenu.getMenuComponentCount();
-         if (menuPos > menuCount) {
-            menuPos = menuCount;
-         }
-         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_PRECEDING))
-         {
-           currentMenu.insertSeparator(menuPos);
-           menuPos++;
-         }
-         // If it is pull right menu recall this method
-         if (pullRightMenuFlag)
-         {
-           registerActionToMenu(currentPullRightMenu, subMenuActions);
-           // Add submenu to the menu
-           currentItem =currentMenu.insert(currentPullRightMenu, menuPos);
-
-         }
-         else
-         {
-           currentItem = currentMenu.insert(currentAction, menuPos);
-           currentItem.setAccelerator(
-                    (KeyStroke)currentAction.getValue(
-                    Action.ACCELERATOR_KEY));
-         }
-         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_FOLLOWING))
-         {
-           menuPos++;
-           currentMenu.insertSeparator(menuPos);
-         }
-      } //if
-      else
-      {
-         // Append everything else at the bottom of the menu
-         Log.debug(50, "Appending Action as menu item.");
-         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_PRECEDING))
-         {
-           currentMenu.addSeparator();
-         }
-         if (pullRightMenuFlag)
-         {
-           registerActionToMenu(currentPullRightMenu, subMenuActions);
-           // Add submenu to the menu
-           currentItem = currentMenu.add(currentPullRightMenu);
-
-         }
-         else
-         {
-           currentItem = currentMenu.add(currentAction);
-           currentItem.setAccelerator(
-                    (KeyStroke)currentAction.getValue(
-                    Action.ACCELERATOR_KEY));
-         }
-         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_FOLLOWING))
-         {
-           currentMenu.addSeparator();
-         }
-      }//else
-    }//for
-  }//registerActionToMenu
-
-
-  /**
-   * Check a sub menu path already in the subMenuAndPath hashtable
-   *
-   * @param path String
-   * @return boolean
-   */
-  private static boolean isSubMenuPathExisted(String path)
-   {
-       boolean flag = false;
-       Enumeration menuPath = subMenuAndPath.elements();
-       while (menuPath.hasMoreElements())
-       {
-            String existedPath = (String)menuPath.nextElement();
-            if (existedPath.equals(path))
-            {
-              flag = true;
-              break;
-            }//if
-       }//if
-       return flag;
-   }//isSubMenuPathExisted
-
 
 
    //initialize values for window locations
