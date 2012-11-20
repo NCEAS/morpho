@@ -575,6 +575,7 @@ public class Query extends DefaultHandler {
 				queryResults = DataStoreServiceController.getInstance().query(toXml(), DataPackageInterface.NETWORK);
 			} catch (Exception e) {
 				Log.debug(5, "Error querying network: " + e.getMessage());
+				e.printStackTrace();
 			}
 			metacatResults = new HeadResultSet(this,
 					DataStoreServiceInterface.NONEXIST,
@@ -700,6 +701,7 @@ public class Query extends DefaultHandler {
 			queryResults = DataStoreServiceController.getInstance().query(toXml(), DataPackageInterface.NETWORK);
 		} catch (Exception e) {
 			Log.debug(5, "Error querying network: " + e.getMessage());
+			e.printStackTrace();
 		}
 		ResultsetHandler handler = new ResultsetHandler(queryResults, dataVector, morpho, localStatus, metacatStatus);
 		// start another thread for parser

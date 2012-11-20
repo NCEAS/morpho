@@ -61,6 +61,7 @@ import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.types.v1.util.ChecksumUtil;
+import org.dataone.service.util.EncodingUtilities;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
 
@@ -618,7 +619,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   @Override
   public InputStream query(String query) throws InvalidToken, ServiceFailure, NotAuthorized, 
                                          InvalidRequest, NotImplemented, NotFound {
-    return activeMNode.query(PATHQUERY, query);
+	String encodedQuery = EncodingUtilities.encodeUrlPathSegment(query);
+    return activeMNode.query(PATHQUERY, encodedQuery);
   }
 
 	@Override
