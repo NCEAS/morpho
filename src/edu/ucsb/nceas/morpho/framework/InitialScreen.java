@@ -105,7 +105,7 @@ public class InitialScreen extends JPanel
         this.morpho      = morpho;
         this.parentFrame = parentFrame;
         
-        prevLoginStatus = !morpho.getMetacatDataStoreService().isConnected();
+        prevLoginStatus = !morpho.getDataONEDataStoreService().isConnected();
         
         profileComboBox = new JComboBox();
         currentProfileLDAPLabel = new JLabel();
@@ -441,10 +441,11 @@ public class InitialScreen extends JPanel
                                     JPasswordField  passwordField, 
                                     JButton         loginButton)
     {
+    	boolean connected = morpho.getDataONEDataStoreService().isConnected();
         loginPanel.setTitle(  
                          UISettings.INIT_SCRN_PANELS_LOGIN_TITLE_TEXT_OPEN
                         +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN
-                        +((morpho.getMetacatDataStoreService().isConnected())? 
+                        +((connected)? 
                                         UISettings.INIT_SCR_LOGGED_IN_STATUS :
                                         UISettings.INIT_SCR_LOGGEDOUT_STATUS)
                         +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE
@@ -452,15 +453,15 @@ public class InitialScreen extends JPanel
 
         loginMessageLabel.setText(  
                         UISettings.INIT_SCR_PANEL_LITE_FONT_OPEN
-                        +((morpho.getMetacatDataStoreService().isConnected())? 
+                        +((connected)? 
                                         UISettings.INIT_SCR_LOGGED_IN_MESSAGE :
                                         UISettings.INIT_SCR_LOGIN_MESSAGE)
                         +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
 
         //if no change, don't need to update panel
-        if (morpho.getMetacatDataStoreService().isConnected()==prevLoginStatus) return;
+        if (connected==prevLoginStatus) return;
 
-        if (morpho.getMetacatDataStoreService().isConnected()) {
+        if (connected) {
             loginPanel.clearRow3();
             loginPanel.addToRow3(logoutLink);
             logoutLink.resetRollovers();

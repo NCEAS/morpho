@@ -27,19 +27,21 @@ package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
@@ -78,6 +80,7 @@ import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.utilities.Log;
 
 /**
  * Implements the DataStoreServiceInterface to access the files on the DataOne service
@@ -87,9 +90,7 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 public class DataONEDataStoreService extends DataStoreService implements DataStoreServiceInterface {
 
   
-  private static final String MNDOEURLELEMENTNAME = "dataone_mnode_baseurl";
-  private static final String CREATE = "create";
-  private static final String UPDATe = "update";
+  private static final String MNODE_URL_ELEMENT_NAME = "dataone_mnode_baseurl";
   private static final String PATHQUERY = "pathquery";
   private static final String DOI = "doi";
   private static MNode activeMNode = null;
@@ -108,7 +109,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    * Initialize the mnode.
    */
   private static void init() {
-    String mNodeBaseURL = Morpho.getConfiguration().get(MNDOEURLELEMENTNAME, 0);
+    String mNodeBaseURL = Morpho.getConfiguration().get(MNODE_URL_ELEMENT_NAME, 0);
     activeMNode = new MNode(mNodeBaseURL);
   }
   /**
@@ -690,6 +691,54 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	public RevisionManagerInterface getRevisionManager() {
 		// TODO: migrate into this class
 		return DataONERevisionManager.getInstance();
+	}
+	
+	/**
+	 * Determines if the framework has a valid certificate
+	 * @return boolean true if the client certificate is valid (a proxy for "connected")
+	 */
+	public boolean isConnected() {
+		boolean isValidCert = false;
+		X509Certificate clientCertificate = CertificateManager.getInstance().loadCertificate();
+		if (clientCertificate != null) {
+			try {
+				clientCertificate.checkValidity();
+				isValidCert = true;
+			} catch (CertificateExpiredException e) {
+				e.printStackTrace();
+				isValidCert = false;
+			} catch (CertificateNotYetValidException e) {
+				e.printStackTrace();
+				isValidCert = false;
+			}
+		}
+		
+		return isValidCert;
+		
+	}
+	
+	/**
+	 * Determines if the framework is using an ssl connection
+	 * 
+	 * @return boolean true if using SSL, false otherwise
+	 */
+	public boolean getSslStatus() {
+		// check if we are using https, which we have to for DataONE!
+		// TODO: consider using this icon for something more meaningful, like whether or not we true the server
+		boolean usingSSL = false;
+		try {
+			URL mnURL = new URL(activeMNode.getNodeBaseServiceUrl());
+			String protocol = mnURL.getProtocol();
+			if (protocol.equalsIgnoreCase("https")) {
+				usingSSL = true;	
+			}
+		} catch (Exception e) {
+			Log.debug(10, "Error checking SSL status: " + e.getMessage());
+			e.printStackTrace();
+			usingSSL = false;
+		}
+		
+		return usingSSL;
 	}
  
 }

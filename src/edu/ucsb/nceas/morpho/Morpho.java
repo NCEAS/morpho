@@ -1221,7 +1221,7 @@ public class Morpho
             ConnectionListener listener =
                     (ConnectionListener)connectionRegistry.elementAt(i);
             if (listener != null) {
-                listener.connectionChanged(mds.isConnected());
+                listener.connectionChanged(dds.isConnected());
             }
         }
     }

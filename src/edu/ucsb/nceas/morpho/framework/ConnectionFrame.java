@@ -194,14 +194,16 @@ public class ConnectionFrame  extends javax.swing.JDialog
   }
 
   
-  private void updateEnableDisable() 
-  {
-    DisconnectButton.setEnabled(container.getMetacatDataStoreService().isConnected());
-    connectButton.setEnabled(!container.getMetacatDataStoreService().isConnected());
-    CancelButton.setEnabled(!container.getMetacatDataStoreService().isConnected());
-    PWTextField.setEnabled(!container.getMetacatDataStoreService().isConnected());
-    if (PWTextField.isEnabled()) PWTextField.requestFocus();
-  }
+  private void updateEnableDisable() {
+		boolean connected = container.getDataONEDataStoreService().isConnected();
+		DisconnectButton.setEnabled(connected);
+		connectButton.setEnabled(!connected);
+		CancelButton.setEnabled(!connected);
+		PWTextField.setEnabled(!connected);
+		if (PWTextField.isEnabled()) {
+			PWTextField.requestFocus();
+		}
+	}
   
   /**
    * Adjust the window size

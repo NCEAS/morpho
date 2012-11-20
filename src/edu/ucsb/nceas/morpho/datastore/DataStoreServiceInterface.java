@@ -112,5 +112,5 @@ public interface DataStoreServiceInterface
   public RevisionManagerInterface getRevisionManager();
 
   public String getNextIdentifier(String identifier) throws Exception;
-
+  
 }

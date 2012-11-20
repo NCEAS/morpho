@@ -68,17 +68,14 @@ public class UIController
     private static MorphoFrame currentActiveWindow;
 
     /** A hash of cloned GUIActions keyed on the original GUIAction */
-    private static Hashtable guiActionClones;
+    private static Hashtable<GUIAction, Vector<GUIAction>> guiActionClones;
 
     /** A hash of windows keyed on its Window menu GUIAction */
-    private static Hashtable windowList;
+    private static Hashtable<GUIAction, MorphoFrame> windowList;
 
     /** A hash of windows keyed on an associated GUIAction clone */
-    private static Hashtable actionCloneWindowAssociation;
+    private static Hashtable<GUIAction, MorphoFrame> actionCloneWindowAssociation;
 
-    private static Vector orderedMenuList;
-    private static Hashtable orderedMenuActions;
-    private static Vector toolbarList;
     //keep the record that the entity wizards are running (base on docid)
     private static HashSet<String> entityWizardRunningRecorder = null;
     //keep the record that the package (or entity) wizard are idle 
@@ -86,7 +83,6 @@ public class UIController
     private static HashSet<String>packageEntityWizardIdleRecorder = null;
     // A hashtable to store the pair: submenu-path,
     // such as synchronize - file/synchroize
-    private static Hashtable subMenuAndPath;
     private static int count = 0; // count create how many frames
     private static boolean newDataPackageWziardWindowIsActive = false;
 
@@ -115,14 +111,10 @@ public class UIController
   private UIController(Morpho morpho)
     {
         this.morpho = morpho;
-        windowList = new Hashtable();
-        actionCloneWindowAssociation = new Hashtable();
-        guiActionClones = new Hashtable();
+        windowList = new Hashtable<GUIAction, MorphoFrame>();
+        actionCloneWindowAssociation = new Hashtable<GUIAction, MorphoFrame>();
+        guiActionClones = new Hashtable<GUIAction, Vector<GUIAction>>();
 
-        orderedMenuList = new Vector();
-        orderedMenuActions = new Hashtable();
-        toolbarList = new Vector();
-        subMenuAndPath = new Hashtable();
         entityWizardRunningRecorder = new HashSet<String>();
         packageEntityWizardIdleRecorder = new HashSet<String>();
     }
@@ -177,25 +169,6 @@ public class UIController
 
         updateStatusBar(window.getStatusBar());
 
-        // If initial  window morpho in the window list, remove it
-
-/*  leave the startup screen - request from reviewers!  Feb 2004
-        if ( count == 1)// create the second frame
-        {
-          Enumeration frameList = windowList.elements();
-          while (frameList.hasMoreElements())
-          {
-            MorphoFrame frame = (MorphoFrame)frameList.nextElement();
-            if ((frame.getTitle()).equals(Morpho.INITIALFRAMENAME))
-            {
-              removeWindow(frame);
-              frame.dispose();
-              frame = null;
-            }
-
-          }
-        }
-*/
         setCurrentActiveWindow(window);
         setWindowLocation(window);
         window.toFront();
@@ -308,7 +281,7 @@ public class UIController
     }
 
     /*
-     * A method to remove a winodw and the method without checking window list
+     * A method to remove a window and the method without checking window list
      * if it is empty
      */
     private void removeWindowWithoutCheckingEmpty(MorphoFrame window)
@@ -317,9 +290,9 @@ public class UIController
 
         // Look up the Action for this window
         GUIAction currentAction = null;
-        Enumeration keys = windowList.keys();
+        Enumeration<GUIAction> keys = windowList.keys();
         while (keys.hasMoreElements()) {
-            currentAction = (GUIAction)keys.nextElement();
+            currentAction = keys.nextElement();
             MorphoFrame savedWindow =
                 (MorphoFrame)windowList.get(currentAction);
             if (savedWindow == window) {
@@ -340,19 +313,19 @@ public class UIController
         int cnt = 0;
         // need to remove all reference to window from actionCloneWindowAssociation
         GUIAction currentAction1 = null;
-        Enumeration keys1 = actionCloneWindowAssociation.keys();
-        Vector matches = new Vector();
+        Enumeration<GUIAction> keys1 = actionCloneWindowAssociation.keys();
+        Vector<GUIAction> matches = new Vector<GUIAction>();
         while (keys1.hasMoreElements()) {
-          currentAction1 = (GUIAction)keys1.nextElement();
-          MorphoFrame sWindow = (MorphoFrame)windowList.get(currentAction1);
+          currentAction1 = keys1.nextElement();
+          MorphoFrame sWindow = windowList.get(currentAction1);
           if (sWindow == window) {
             matches.addElement(currentAction1);
          Log.debug(10,"found matching window!"+cnt++);
           }
         }
-        Enumeration en = matches.elements();
+        Enumeration<GUIAction> en = matches.elements();
         while (en.hasMoreElements()) {
-          actionCloneWindowAssociation.remove((GUIAction)en.nextElement());
+          actionCloneWindowAssociation.remove(en.nextElement());
         Log.debug(10,"removed window"+cnt++);
         }
 
@@ -373,10 +346,10 @@ public class UIController
      */
     public void removeAllWindows()
     {
-      Enumeration frameList = windowList.elements();
+      Enumeration<MorphoFrame> frameList = windowList.elements();
       while (frameList.hasMoreElements())
       {
-        MorphoFrame frame = (MorphoFrame)frameList.nextElement();
+        MorphoFrame frame = frameList.nextElement();
         removeWindowWithoutCheckingEmpty(frame);
         frame.dispose();
         frame = null;
@@ -390,10 +363,10 @@ public class UIController
      */
     public Vector removeCleanWindows() {
       Vector res = new Vector();
-      Enumeration frameList = windowList.elements();
+      Enumeration<MorphoFrame> frameList = windowList.elements();
       while (frameList.hasMoreElements())
       {
-        MorphoFrame frame = (MorphoFrame)frameList.nextElement();
+        MorphoFrame frame = frameList.nextElement();
         if (frame.isDirty()) {
           res.addElement(frame);
         } else {
@@ -419,11 +392,11 @@ public class UIController
         // for each window, clone the action, add it to the vector of
         // clones for this GUIAction, add it to the clone/window
         // association hash, and send the clone to the window
-        Vector cloneList = new Vector();
+        Vector<GUIAction> cloneList = new Vector<GUIAction>();
         guiActionClones.put(action, cloneList);
-        Enumeration windows = windowList.elements();
+        Enumeration<MorphoFrame> windows = windowList.elements();
         while (windows.hasMoreElements()) {
-            MorphoFrame window = (MorphoFrame)windows.nextElement();
+            MorphoFrame window = windows.nextElement();
             GUIAction clone = action.cloneAction();
             cloneList.addElement(clone);
             actionCloneWindowAssociation.put(clone, window);
@@ -441,10 +414,10 @@ public class UIController
     {
     	if (guiActionClones != null && action != null)
     	{
-            Vector cloneList = (Vector)guiActionClones.get(action);
+            Vector<GUIAction> cloneList = guiActionClones.get(action);
             guiActionClones.remove(action);
             for (int i=0; i< cloneList.size(); i++) {
-               GUIAction clone = (GUIAction)cloneList.elementAt(i);
+               GUIAction clone = cloneList.elementAt(i);
                MorphoFrame window = getMorphoFrameContainingGUIAction(clone);
                window.removeGuiAction(clone);
             }
@@ -461,7 +434,7 @@ public class UIController
     public static MorphoFrame getMorphoFrameContainingGUIAction(GUIAction clone)
     {
         if (clone==null || actionCloneWindowAssociation==null) return null;
-        return (MorphoFrame)actionCloneWindowAssociation.get(clone);
+        return actionCloneWindowAssociation.get(clone);
     }
 
     /**
@@ -485,17 +458,17 @@ public class UIController
 
         //guiActionClones is a hashtable where each key is the original
         //GUIAction instance, and its corresponding value is a Vector of clones
-        Vector cloneList = (Vector)guiActionClones.get(action);
+        Vector<GUIAction> cloneList = guiActionClones.get(action);
 
         //cloneList therefore holds all possible clones of the passed GUIAction
         for (int i=0; i< cloneList.size(); i++) {
-            GUIAction clone = (GUIAction)cloneList.elementAt(i);
+            GUIAction clone = cloneList.elementAt(i);
             //actionCloneWindowAssociation is a hash each clone (the keys) and the
             //window that holds it (the values)
 
             //therefore check each clone in turn to see if it belongs to
             //passed MorphoFrame:
-            if ((MorphoFrame)actionCloneWindowAssociation.get(clone)==frame) {
+            if (actionCloneWindowAssociation.get(clone)==frame) {
                 return clone;
             }
         }
@@ -507,9 +480,9 @@ public class UIController
      */
     public void refreshWindows()
     {
-        Enumeration windows = windowList.elements();
+        Enumeration<MorphoFrame> windows = windowList.elements();
         while (windows.hasMoreElements()) {
-            ((MorphoFrame)windows.nextElement()).validate();
+            windows.nextElement().validate();
         }
     }
 
@@ -518,10 +491,9 @@ public class UIController
      */
     public void updateAllStatusBars()
     {
-        Enumeration windows = windowList.elements();
+        Enumeration<MorphoFrame> windows = windowList.elements();
         while (windows.hasMoreElements()) {
-            StatusBar statusBar =
-                ((MorphoFrame)windows.nextElement()).getStatusBar();
+            StatusBar statusBar = windows.nextElement().getStatusBar();
             updateStatusBar(statusBar);
         }
     }
@@ -860,12 +832,12 @@ public class UIController
       Log.debug(50, "Window is null, create failed!");
         }
         // clone all of the existing GUIActions for this new window
-        Enumeration actionList = guiActionClones.keys();
+        Enumeration<GUIAction> actionList = guiActionClones.keys();
         while (actionList.hasMoreElements()) {
-            GUIAction action = (GUIAction)actionList.nextElement();
+            GUIAction action = actionList.nextElement();
             Log.debug(50, "Cloning action: " + action.toString());
             GUIAction clone = action.cloneAction();
-            Vector cloneList = (Vector)guiActionClones.get(action);
+            Vector<GUIAction> cloneList = guiActionClones.get(action);
             cloneList.addElement(clone);
             actionCloneWindowAssociation.put(clone, window);
             Log.debug(50, "Clone menu name is: " + clone.getMenuName());
@@ -908,9 +880,9 @@ public class UIController
     private void updateStatusBar(StatusBar statusBar)
     {
         statusBar.setConnectStatus(morpho.getMetacatDataStoreService().getNetworkStatus());
-        statusBar.setLoginStatus(morpho.getMetacatDataStoreService().isConnected() &&
+        statusBar.setLoginStatus(morpho.getDataONEDataStoreService().isConnected() &&
                 morpho.getMetacatDataStoreService().getNetworkStatus());
-        statusBar.setSSLStatus(morpho.getMetacatDataStoreService().getSslStatus());
+        statusBar.setSSLStatus(morpho.getDataONEDataStoreService().getSslStatus());
     }
 
 
