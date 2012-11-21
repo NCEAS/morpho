@@ -38,6 +38,7 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -80,6 +81,8 @@ import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.ProfileDialog;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.utilities.Log;
 
 /**
@@ -699,6 +702,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	 */
 	public boolean isConnected() {
 		boolean isValidCert = false;
+		String clientCertificateLocation = Morpho.thisStaticInstance.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+        CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
 		X509Certificate clientCertificate = CertificateManager.getInstance().loadCertificate();
 		if (clientCertificate != null) {
 			try {
@@ -739,6 +744,43 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		}
 		
 		return usingSSL;
+	}
+	
+	public boolean logIn(String certificateLocation) {
+		// load the configured certificate
+		Morpho.thisStaticInstance.getProfile().set(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0, certificateLocation, true);
+		Morpho.thisStaticInstance.getProfile().save();
+		CertificateManager.getInstance().setCertificateLocation(certificateLocation);
+	      
+		return isConnected();
+	}
+	
+	public boolean logOut() {
+		//String certificateLocation = Morpho.thisStaticInstance.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+		// TODO: remove file?
+		
+		// clear out the certificate config
+		Morpho.thisStaticInstance.getProfile().set(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0, null, true);
+		Morpho.thisStaticInstance.getProfile().save();
+
+		return true;
+	}
+	
+	  /**
+	 * Determine whether a network connection is available
+	 * 
+	 * @return boolean true if the network is reachable
+	 */
+	public boolean getNetworkStatus() {
+		boolean networkStatus = false;
+		Date pingDate = null;
+		try {
+			pingDate = activeMNode.ping();
+		} catch (Exception e) {
+			Log.debug(30, "Could not ping MN + " + e.getMessage());
+		}
+		networkStatus = (pingDate != null);
+		return networkStatus;
 	}
  
 }

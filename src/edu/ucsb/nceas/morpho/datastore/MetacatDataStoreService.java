@@ -1357,10 +1357,9 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
                            File.separator + username + ".xml";
       ConfigXML profile = new ConfigXML(profileName);
       morpho.setProfile(profile);
-      morpho.setPassword(password);
       
       MetacatDataStoreService mds = new MetacatDataStoreService(morpho);
-      mds.logIn();
+      mds.logIn(username, password);
       
       // Test metadata (xml) upload
       Log.debug(20, "Testing metadata upload...");
@@ -1570,14 +1569,14 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
    *
    * @return   boolean true if the attempt to log in succeeded
    */
-  public boolean logIn()
+  public boolean logIn(String username, String password)
   {
       Properties prop = new Properties();
       prop.put("action", "login");
       prop.put("qformat", "xml");
-      Log.debug(20, "Logging in using uid: " + morpho.getUserName());
-      prop.put("username", morpho.getUserName());
-      prop.put("password", morpho.getPassword());
+      Log.debug(20, "Logging in using uid: " + username);
+      prop.put("username", username);
+      prop.put("password", password);
 
       // Now contact metacat
       String response = getMetacatString(prop);
@@ -1606,7 +1605,6 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
   public void logOut()
   {
       if (connected) {
-    	  morpho.setPassword("none");
           // get rid of existing password info
           Properties prop = new Properties();
           prop.put("action", "logout");
@@ -1623,7 +1621,6 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
   public void logOutExit()
   {
       if (connected) {
-          morpho.setPassword("none");
           // get rid of existing password info
           Properties prop = new Properties();
           prop.put("action", "logout");

@@ -44,6 +44,7 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import javax.swing.DefaultComboBoxModel;
@@ -80,6 +81,7 @@ public class InitialScreen extends JPanel
     private final MorphoFrame   parentFrame;
     private final JComboBox     profileComboBox;
     private final JPasswordField passwordField;
+    private final JTextField certificateField;
     private ProfileComboBoxModel profileComboBoxModel;
     private final JLabel        currentProfileLDAPLabel;
     private static boolean      ignoreSelectionEvents;
@@ -110,6 +112,7 @@ public class InitialScreen extends JPanel
         profileComboBox = new JComboBox();
         currentProfileLDAPLabel = new JLabel();
         passwordField = new JPasswordField();
+        certificateField = new JTextField();
         ignoreSelectionEvents = false;
         
         init();
@@ -216,7 +219,7 @@ public class InitialScreen extends JPanel
                     return;
                 }
                 ///////////////////////////////////////////////////////////////
-                logoutCommand.execute(null);
+                //logoutCommand.execute(null);
                 morpho.setProfileDontLogin(selectedProfile);
                 updateProfileStatus();
             }
@@ -296,7 +299,7 @@ public class InitialScreen extends JPanel
         profilePanel.setTitle(  
                          UISettings.INIT_SCRN_PANELS_PROFILE_TITLE_TEXT_OPEN
                         +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN
-                        +morpho.getCurrentProfileName()
+                        +Morpho.getCurrentProfileName()
                         +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE
                         +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE);
         profilePanel.invalidate();
@@ -334,13 +337,13 @@ public class InitialScreen extends JPanel
         // ROW 3 ///////////////////////////////////////////////////////////////
 
         //LABEL:
-        final JLabel passwordLabel = new JLabel(UISettings.PASSWORD_LABEL_TEXT);
-        setSizes(passwordLabel,UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
+        final JLabel credentialLabel = new JLabel(UISettings.CERTIFICATE_LABEL_TEXT);
+        setSizes(credentialLabel,UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
         //////////////
        
         //PASSWORD FIELD:
-        setSizes(passwordField,UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
-        passwordField.addActionListener(
+        setSizes(certificateField,UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
+        certificateField.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     loginButton.doClick(); 
@@ -352,10 +355,12 @@ public class InitialScreen extends JPanel
         //LOGOUT LINK:
         logoutCommand = new Command(){
             public void execute(ActionEvent e) {
-                morpho.getMetacatDataStoreService().logOut();
+            	// TODO: logout?
+                morpho.getDataONEDataStoreService().logOut();
+                morpho.fireUsernameChangedEvent();
                 updateLoginStatus(  loginMessageLabel, 
-                                    loginHeaderLabel, passwordLabel, 
-                                    passwordField, loginButton);
+                                    loginHeaderLabel, credentialLabel, 
+                                    certificateField, loginButton);
             }};
         GUIAction logoutAction = new GUIAction( UISettings.LOGOUT_LINK_TEXT, 
                                                 UISettings.LOGOUT_ICON, 
@@ -381,17 +386,25 @@ public class InitialScreen extends JPanel
                         passwordField.setEnabled(false);
                         return new String(passwordField.getPassword());
                     }
+                    
+                    public String getCertificateLocation()
+                    {
+                        parentFrame.setBusy(true);
+                        loginButton.setEnabled(false);
+                        certificateField.setEnabled(false);
+                        return new String(certificateField.getText());
+                    }
 
                     public void setLoginSuccessful(boolean success)
                     {
                         parentFrame.setBusy(false);
                         loginButton.setEnabled(true);
-                        passwordField.setEnabled(true);
+                        certificateField.setEnabled(true);
                         
                         if (success) {
                             updateLoginStatus(  loginMessageLabel, 
-                                                loginHeaderLabel, passwordLabel, 
-                                                passwordField, loginButton);
+                                                loginHeaderLabel, credentialLabel, 
+                                                certificateField, loginButton);
                         } else {
                             Log.debug(9, Language.getInstance().getMessage("LoginFailed") + "\n" + 
                               Language.getInstance().getMessage("CheckCaps"));
@@ -415,8 +428,8 @@ public class InitialScreen extends JPanel
                 public void connectionChanged(boolean isConnected)
                 {
                     updateLoginStatus(  loginMessageLabel, 
-                                        loginHeaderLabel, passwordLabel, 
-                                        passwordField, loginButton);
+                                        loginHeaderLabel, credentialLabel, 
+                                        certificateField, loginButton);
                 }
               
                 public void usernameChanged(String username) {
@@ -427,7 +440,7 @@ public class InitialScreen extends JPanel
  
         //DO INITIAL UPDATES:
         updateLoginStatus(  loginMessageLabel, loginHeaderLabel, 
-                            passwordLabel, passwordField, loginButton);
+                            credentialLabel, certificateField, loginButton);
     }
     
     
@@ -438,7 +451,7 @@ public class InitialScreen extends JPanel
     private void updateLoginStatus( JLabel          loginMessageLabel,
                                     JLabel          loginHeaderLabel, 
                                     JLabel          passwordLabel, 
-                                    JPasswordField  passwordField, 
+                                    JTextField  passwordField, 
                                     JButton         loginButton)
     {
     	boolean connected = morpho.getDataONEDataStoreService().isConnected();
@@ -458,6 +471,12 @@ public class InitialScreen extends JPanel
                                         UISettings.INIT_SCR_LOGIN_MESSAGE)
                         +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
 
+        // update the status bar
+        UIController controller = UIController.getInstance();
+		if (controller != null) {
+			controller.updateAllStatusBars();
+		}
+		
         //if no change, don't need to update panel
         if (connected==prevLoginStatus) return;
 

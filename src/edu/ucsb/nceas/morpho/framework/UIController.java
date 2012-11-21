@@ -879,9 +879,9 @@ public class UIController
      */
     private void updateStatusBar(StatusBar statusBar)
     {
-        statusBar.setConnectStatus(morpho.getMetacatDataStoreService().getNetworkStatus());
+        statusBar.setConnectStatus(morpho.getDataONEDataStoreService().getNetworkStatus());
         statusBar.setLoginStatus(morpho.getDataONEDataStoreService().isConnected() &&
-                morpho.getMetacatDataStoreService().getNetworkStatus());
+                morpho.getDataONEDataStoreService().getNetworkStatus());
         statusBar.setSSLStatus(morpho.getDataONEDataStoreService().getSslStatus());
     }
 

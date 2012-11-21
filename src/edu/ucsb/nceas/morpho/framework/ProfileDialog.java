@@ -58,6 +58,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   public static final String DOT = ".";
   public static final String SYSTEMMETADATA = "systemmetadata";
   public static final String SYSTEMMETADATADIRNAME = DOT+ SYSTEMMETADATA;
+  public static final String D1_CLIENT_CERTIFICATE_LOCATION = "D1Client.certificate.file";
   ConfigXML config;
   Morpho framework = null;
   /** the total number of screens to be processed */

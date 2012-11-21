@@ -242,7 +242,7 @@ public class ConfigXML
       return result;
     }
     Node cn = nl.item(i).getFirstChild(); // assume 1st child is text node
-    if ((cn != null) && (cn.getNodeType() == Node.TEXT_NODE))
+    if ((cn != null) && (cn.getNodeType() == Node.TEXT_NODE) && cn.getNodeValue() != null)
     {
       result = (cn.getNodeValue().trim());
     }

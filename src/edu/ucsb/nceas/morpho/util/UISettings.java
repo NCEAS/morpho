@@ -508,6 +508,13 @@ public class UISettings
                         +"font-size: 9px;\">&nbsp;"
                         +/*"Password:"*/ Language.getInstance().getMessage("Password") +":"
                         +"</p></html>";
+    
+    public static final String CERTIFICATE_LABEL_TEXT
+	    = "<html><p style=\"color: #000000; align: left; "
+	        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+	        +"font-size: 9px;\">&nbsp;"
+	        +/*"Certificate:"*/ Language.getInstance().getMessage("Certificate") +":"
+	        +"</p></html>";
 
     public static final String INIT_SCR_LOGIN_MESSAGE
                     = /*"If you do not choose to login, you will "

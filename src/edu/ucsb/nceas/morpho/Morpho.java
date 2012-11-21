@@ -144,9 +144,6 @@ public class Morpho
     // redirects standard out and err streams
     static boolean log_file = false;
 
-    private String userName = "public";
-    private String passWord = "none";
-
     private static ConfigXML config;
     private static ConfigXML profileConfig;
     private ConfigXML profile;
@@ -239,29 +236,6 @@ public class Morpho
     }
     
     /**
-     * Set the username associated with this framework
-     *
-     * @param uname  The new UserName value
-     */
-    public void setUserName(String uname)
-    {
-        if (!userName.equals(uname)) {
-            this.userName = uname;
-            fireUsernameChangedEvent();
-        }
-    }
-
-    /**
-     * Set the password associated with this framework
-     *
-     * @param pword  The new Password value
-     */
-    public void setPassword(String pword)
-    {
-        this.passWord = pword;
-    }
-
-    /**
      * Set the profile for the currently logged in user (on startup, or when
      * switching profiles).  Pops up a Login dialog after profile is set
      *
@@ -297,16 +271,8 @@ public class Morpho
         this.profile = newProfile;
 
         // load the certificate/identity for the given profile
-		String subjectDN = null;
-        String clientCertificateLocation = profile.get("D1Client.certificate.file", 0);
-        CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
-        
-        X509Certificate clientCert = CertificateManager.getInstance().loadCertificate();
-		if (clientCert != null) {
-			subjectDN = CertificateManager.getInstance().getSubjectDN(clientCert);
-		}
-        userName = (subjectDN != null) ? subjectDN : Constants.SUBJECT_PUBLIC;
-        setUserName(userName);
+		String userName = getUserName();
+        fireUsernameChangedEvent();
 
         // Load basic profile information
         String profilename = profile.get("profilename", 0);
@@ -430,20 +396,16 @@ public class Morpho
      */
     public String getUserName()
     {
-        return userName;
-    }
-
-    /**
-     * get password associated with this framework
-     *
-     * @return   The Password value
-     */
-    public String getPassword()
-    {
-        return passWord;
-    }
-
-    
+        String subjectDN = null;
+        String clientCertificateLocation = profile.get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+        CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
+        X509Certificate clientCert = CertificateManager.getInstance().loadCertificate();
+		if (clientCert != null) {
+			subjectDN = CertificateManager.getInstance().getSubjectDN(clientCert);
+		}
+        String userName = (subjectDN != null) ? subjectDN : Constants.SUBJECT_PUBLIC;
+		return userName;
+    }    
 
     /**
      * Get the configuration object associated with the framework. Plugins use
@@ -1066,7 +1028,8 @@ public class Morpho
     /** Switch profiles (from one existing profile to another) */
     private void switchProfile()
     {
-        mds.logOut();
+    	// TODO: logout?
+        //dds.logOut();
         String currentProfile = getCurrentProfileName();
 
         String[] profilesList = getProfilesList();
@@ -1227,7 +1190,7 @@ public class Morpho
      * Fire off notifications for all of the registered ConnectionListeners when
      * the username is changed.
      */
-    private void fireUsernameChangedEvent()
+    public void fireUsernameChangedEvent()
     {
 
         for (int i = 0; i < connectionRegistry.size(); i++) {
@@ -1593,7 +1556,7 @@ public class Morpho
     /** Switch profiles (from one existing profile to another) */
 	private void removeProfile()
 	{
-    mds.logOut();
+    dds.logOut();
     String currentProfile = getCurrentProfileName();
 
     String[] allProfilesList = getProfilesList();

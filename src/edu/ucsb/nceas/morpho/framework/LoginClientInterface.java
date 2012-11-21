@@ -26,11 +26,6 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
-import java.awt.event.ActionEvent;
-
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.Command;
 
 
 /**
@@ -45,6 +40,12 @@ public interface LoginClientInterface
    *  @return   the user-entered password as a String
    */
   public String getPassword();
+  
+  /**
+   * Retrieve the certificate location for client authentication
+   * @return the location of the client certificate
+   */
+  public String getCertificateLocation();
   
   /**
    *  notifies client whether login was successful or not

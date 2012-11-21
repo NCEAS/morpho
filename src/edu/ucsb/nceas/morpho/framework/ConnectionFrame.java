@@ -37,9 +37,16 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -49,13 +56,13 @@ import edu.ucsb.nceas.morpho.util.Log;
  * A graphical window for obtaining login information from the
  * user and logging into Metacat
  */
-public class ConnectionFrame  extends javax.swing.JDialog 
+public class ConnectionFrame  extends JDialog 
                               implements LoginClientInterface
 {
 
   Morpho container = null;
   javax.swing.ImageIcon still = null;
-  javax.swing.ImageIcon flapping = null;
+  ImageIcon flapping = null;
 
   /**
    * Construct a frame and set the framework
@@ -85,12 +92,12 @@ public class ConnectionFrame  extends javax.swing.JDialog
     // what Visual Cafe can generate, or Visual Cafe may be unable to back
     // parse your Java file into its visual environment.
     //{{INIT_CONTROLS
-    setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setTitle(/*"Network Login"*/ Language.getInstance().getMessage("NetworkLogin"));
     getContentPane().setLayout(new BorderLayout(0,0));
     //setSize(315,290);
     setVisible(false);
-    JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    JLabel1.setHorizontalAlignment(SwingConstants.CENTER);
     JLabel1.setText(/*"Network Login"*/ Language.getInstance().getMessage("NetworkLogin"));
     getContentPane().add(BorderLayout.NORTH,JLabel1);
     JLabel1.setForeground(java.awt.Color.black);
@@ -129,8 +136,8 @@ public class ConnectionFrame  extends javax.swing.JDialog
     addKeyListenerToComponent(PWTextField);
     JPanel4.add(PWTextField);
     ActivityLabel.setDoubleBuffered(true);
-    ActivityLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-    ActivityLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+    ActivityLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+    ActivityLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     JButtonGroupPanel1.add(ActivityLabel);
     ActivityLabel.setForeground(java.awt.Color.black);
 
@@ -174,9 +181,9 @@ public class ConnectionFrame  extends javax.swing.JDialog
 
     // Example of loading icon as resource - DFH 
     try {
-      still = new javax.swing.ImageIcon(getClass().getResource("Btfly.gif"));
+      still = new ImageIcon(getClass().getResource("Btfly.gif"));
       ActivityLabel.setIcon(still);
-      flapping = new javax.swing.ImageIcon(getClass().getResource("Btfly4.gif"));
+      flapping = new ImageIcon(getClass().getResource("Btfly4.gif"));
     } catch (Exception w) {
       Log.debug(7, "Error in loading images");
     }
@@ -221,7 +228,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
 
     // Adjust size of frame according to the insets and menu bar
     Insets insets = getInsets();
-    javax.swing.JMenuBar menuBar = getRootPane().getJMenuBar();
+    JMenuBar menuBar = getRootPane().getJMenuBar();
     int menuBarHeight = 0;
     if (menuBar != null)
       menuBarHeight = menuBar.getPreferredSize().height;
@@ -233,20 +240,21 @@ public class ConnectionFrame  extends javax.swing.JDialog
   boolean frameSizeAdjusted = false;
 
   //{{DECLARE_CONTROLS
-  javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
-  javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
-  javax.swing.JPanel JButtonGroupPanel1 = new javax.swing.JPanel();
-  javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
-  javax.swing.JLabel Name = new javax.swing.JLabel();
-  javax.swing.JLabel NameLabel = new javax.swing.JLabel();
-  javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
-  javax.swing.JLabel Password = new javax.swing.JLabel();
-  javax.swing.JPasswordField PWTextField = new javax.swing.JPasswordField();
-  javax.swing.JLabel ActivityLabel = new javax.swing.JLabel();
-  javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
-  javax.swing.JButton connectButton = new javax.swing.JButton();
-  javax.swing.JButton DisconnectButton = new javax.swing.JButton();
-  javax.swing.JButton CancelButton = new javax.swing.JButton();
+  JLabel JLabel1 = new JLabel();
+  JPanel JPanel2 = new JPanel();
+  JPanel JButtonGroupPanel1 = new JPanel();
+  JPanel JPanel3 = new JPanel();
+  JLabel Name = new JLabel();
+  JLabel NameLabel = new JLabel();
+  JPanel JPanel4 = new JPanel();
+  JLabel Password = new JLabel();
+  JPasswordField PWTextField = new JPasswordField();
+  JTextField certificateLocationTextField = new JTextField();
+  JLabel ActivityLabel = new JLabel();
+  JPanel JPanel1 = new JPanel();
+  JButton connectButton = new JButton();
+  JButton DisconnectButton = new JButton();
+  JButton CancelButton = new JButton();
   KeyPressActionListener keyPressListener = new KeyPressActionListener();
   //}}
 
@@ -337,7 +345,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
    */
   void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-    container.getMetacatDataStoreService().logOut();
+    container.getDataONEDataStoreService().logOut();
     updateEnableDisable();
   }
 
@@ -361,6 +369,16 @@ public class ConnectionFrame  extends javax.swing.JDialog
   public String getPassword()
   {
     return new String(PWTextField.getPassword());
+  }
+  
+  /**
+   *  gets the certificate location from the client
+   *
+   *  @return   the user-entered certificate location as a String
+   */
+  public String getCertificateLocation()
+  {
+    return new String(certificateLocationTextField.getText());
   }
   
   /**

@@ -65,33 +65,34 @@ public class LoginCommand implements Command
 
 
   /**
-  * execute command
-  */
-  public void execute(ActionEvent event) {
-    Thread worker = new Thread() {
-      public void run() {
-        if (morpho!=null) {
-          morpho.setPassword(loginClient.getPassword());
-        }
+	 * execute command
+	 */
+	public void execute(ActionEvent event) {
+		Thread worker = new Thread() {
+			public void run() {
 
-        final boolean connected = morpho.getMetacatDataStoreService().logIn();
-
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            if (connected) {
-              ConfigXML profile = morpho.getProfile();
-              profile.set("searchnetwork", 0, "true", true);
-              profile.save();
-              Log.debug(12, "LoginCommand: Login successful");
-              loginClient.setLoginSuccessful(true);
-            } else {
-              Log.debug(12, "LoginCommand: " + Language.getInstance().getMessage("LoginFailed"));
-              loginClient.setLoginSuccessful(false);
-            }
-          }
-        });
-      }
-    };
-    worker.start();
-  }
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						ConfigXML profile = morpho.getProfile();
+						boolean connected = morpho.getDataONEDataStoreService().logIn(loginClient.getCertificateLocation());
+						if (connected) {
+							profile.set("searchnetwork", 0, "true", true);
+							Log.debug(12, "LoginCommand: Login successful");
+							loginClient.setLoginSuccessful(true);
+							UIController controller = UIController.getInstance();
+							if (controller != null) {
+								controller.updateAllStatusBars();
+							}
+							morpho.fireConnectionChangedEvent();
+							morpho.fireUsernameChangedEvent();
+						} else {
+							Log.debug(12, "LoginCommand: " + Language.getInstance().getMessage("LoginFailed"));
+							loginClient.setLoginSuccessful(false);
+						}
+					}
+				});
+			}
+		};
+		worker.start();
+	}
 }

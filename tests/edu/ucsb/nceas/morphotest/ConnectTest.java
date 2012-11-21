@@ -88,8 +88,6 @@ public class ConnectTest extends TestCase
       ConfigXML config = new ConfigXML(configFile);
       config.set("debug_level", 0, "0");
       morpho = new Morpho(config);
-      morpho.setUserName(username);
-      morpho.setPassword(password);
     } catch (FileNotFoundException fnf) {
       System.err.println("Could not find configuration file!"); 
     }
@@ -129,7 +127,7 @@ public class ConnectTest extends TestCase
    */
   public void testValidLogin()
   {
-    boolean connected = morpho.getMetacatDataStoreService().logIn();
+    boolean connected = morpho.getMetacatDataStoreService().logIn(username, password);
     assertTrue(connected);
     assertTrue(morpho.getMetacatDataStoreService().isConnected());
   }
@@ -148,8 +146,7 @@ public class ConnectTest extends TestCase
    */
   public void testInvalidLogin()
   {
-    morpho.setPassword("garbage");
-    boolean connected = morpho.getMetacatDataStoreService().logIn();
+    boolean connected = morpho.getMetacatDataStoreService().logIn(username, "garbage");
     assertTrue(connected == false);
     assertTrue(morpho.getMetacatDataStoreService().isConnected() == false);
   }
