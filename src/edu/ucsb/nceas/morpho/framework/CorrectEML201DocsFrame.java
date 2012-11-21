@@ -25,7 +25,6 @@
  */
 package edu.ucsb.nceas.morpho.framework;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -37,9 +36,7 @@ import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilder;
 
@@ -118,7 +115,7 @@ public class CorrectEML201DocsFrame extends JFrame
 			finally
 			{
 				 //set back to orginal profile.
-			    morpho.setProfileDontLogin(orginalProfile);
+			    morpho.setProfileDontLogin(orginalProfile, true);
 			}
 		}
 	}
@@ -133,7 +130,7 @@ public class CorrectEML201DocsFrame extends JFrame
 			   //Set morpho to a new profile
 			   try
 			   {
-				   morpho.setProfileDontLogin(correctionStatus.getProfile());
+				   morpho.setProfileDontLogin(correctionStatus.getProfile(), true);
 			   }
 			   catch(Exception e)
 			   {

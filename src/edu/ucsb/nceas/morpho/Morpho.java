@@ -41,9 +41,9 @@ import java.net.Socket;
 import java.net.URLStreamHandler;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -57,6 +57,9 @@ import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.dataone.client.auth.CertificateManager;
+import org.dataone.service.util.Constants;
 
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
@@ -277,45 +280,39 @@ public class Morpho
     }
 
     /**
-     *  Set the profile for the currently logged in user, but does not popup a
-     *  login dialog
-     *
-     *  @param newProfile  the profile object
-     */
-    public void setProfileDontLogin(ConfigXML newProfile)
-    {
-        setProfileDontLogin(newProfile, true);
-    }
-
-    //
-    //  Set the profile for the currently logged in user, but does not popup a
-    //  login dialog
-    //
-    //  @param newProfile  the profile object
-    //
-    //  @param doFireConnectionChangedEvent boolean flag to tell method whether
-    //                          to do a <code>fireConnectionChangedEvent</code>;
-    //                          mainly used by calls from the above
-    //                          "setProfile(ConfigXML newProfile)" method, which
-    //                          already does its own fireConnectionChangedEvent,
-    //                          so needs to disable that call here.
-    //
-    private void setProfileDontLogin(ConfigXML newProfile,
+    *  Set the profile for the currently logged in user
+    *  but does not popup a login dialog
+    *  @param newProfile  the profile object
+    *  @param doFireConnectionChangedEvent boolean flag to tell method whether
+    *                          to do a <code>fireConnectionChangedEvent</code>;
+    *                          mainly used by calls from the above
+    *                          "setProfile(ConfigXML newProfile)" method, which
+    *                          already does its own fireConnectionChangedEvent,
+    *                          so needs to disable that call here.
+    *
+    */
+    public void setProfileDontLogin(ConfigXML newProfile,
                                     boolean doFireConnectionChangedEvent)
     {
         this.profile = newProfile;
 
+        // load the certificate/identity for the given profile
+		String subjectDN = null;
+        String clientCertificateLocation = profile.get("D1Client.certificate.file", 0);
+        CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
+        
+        X509Certificate clientCert = CertificateManager.getInstance().loadCertificate();
+		if (clientCert != null) {
+			subjectDN = CertificateManager.getInstance().getSubjectDN(clientCert);
+		}
+        userName = (subjectDN != null) ? subjectDN : Constants.SUBJECT_PUBLIC;
+        setUserName(userName);
+
         // Load basic profile information
         String profilename = profile.get("profilename", 0);
         String scope = profile.get("scope", 0);
-        String dn = profile.get("dn", 0);
-        //setUserName(username);
-        Log.debug(20, "Setting username to dn: " + dn);
-        setUserName(dn);
-
         if (!profileConfig.set("current_profile", 0, profilename)) {
-            boolean success = profileConfig.insert("current_profile",
-                    profilename);
+            boolean success = profileConfig.insert("current_profile", profilename);
         }
         profileConfig.save();
         setLastID(scope);
@@ -348,7 +345,7 @@ public class Morpho
     // either pops up a login dialog or does not, depending on "doLogin" flag
     private void setProfile(String newProfileName, boolean doLogin)
     {
-        String profileDir = config.getConfigDirectory() + File.separator +
+        String profileDir = ConfigXML.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
         String currentProfile = getCurrentProfileName();
         if (!newProfileName.equals(currentProfile)) {
@@ -356,8 +353,12 @@ public class Morpho
                 newProfileName + File.separator + newProfileName + ".xml";
             try {
                 ConfigXML newProfile = new ConfigXML(newProfilePath);
-                if (doLogin) setProfile(newProfile);
-                else setProfileDontLogin(newProfile);
+                if (doLogin) {
+                	setProfile(newProfile);
+                }
+                else {
+                	setProfileDontLogin(newProfile, true);
+                }
             } catch (FileNotFoundException fnf) {
                 Log.debug(5, "Profile not found!");
             }
@@ -366,7 +367,7 @@ public class Morpho
 
     private void deleteProfile(String profileName)
     {
-        String profileDir = config.getConfigDirectory() + File.separator +
+        String profileDir = ConfigXML.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
         String profilePath = 
         	profileDir + File.separator + profileName;
@@ -378,7 +379,7 @@ public class Morpho
      *  delete all files in cache
      */
     public void cleanCache() {
-      String profileDir = config.getConfigDirectory() + File.separator +
+      String profileDir = ConfigXML.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
       String cacheDir = profileDir + File.separator + getCurrentProfileName() +
                          File.separator + "cache";
@@ -401,7 +402,7 @@ public class Morpho
      *  delete all files in temp
      */
     public void cleanTemp() {
-      String profileDir = config.getConfigDirectory() + File.separator +
+      String profileDir = ConfigXML.getConfigDirectory() + File.separator +
                 config.get("profile_directory", 0);
       String cacheDir = profileDir + File.separator + getCurrentProfileName() +
                          File.separator + "temp";
@@ -725,9 +726,6 @@ public class Morpho
             // create the remote DataONE data store
             morpho.setDataONEDataStoreService(new DataONEDataStoreService(morpho));
          
-            // Get the configuration file information needed by the framework
-            morpho.loadConfigurationParameters();
-            
             // Correct the invalid eml 201 documents
             CorrectEML201DocsFrame correctFrame = new CorrectEML201DocsFrame(morpho);
             correctFrame.doCorrection();
@@ -738,8 +736,6 @@ public class Morpho
             
             // Set up the Service Controller
             ServiceController services = ServiceController.getInstance();
-
-            
 
             // Add the default menus and toolbars
              morpho.initializeActions();
@@ -1269,43 +1265,6 @@ public class Morpho
         if (listener!=null) profileAddedListenerList.add(listener);
     }
 
-
-    /** Load configuration parameters from the config file as needed */
-    private void loadConfigurationParameters()
-    {
-        String temp_uname = config.get("username", 0);
-        userName = (temp_uname != null) ? temp_uname : "public";
-    }
-
-
-    /**
-     * Takes a hashtable where the key is an Integer and returns a
-     * Vector of hashtable values sorted by key values.
-     * this is a quick hack!!! DFH
-     *
-     * @param hash  the data to sort
-     * @return      sorted version of the hash table
-     */
-    private Vector sortValues(Hashtable hash)
-    {
-        // assume that there are no more that 20 values in the hash
-        // and return only the first 20 (i.e. 0 - 19
-        Vector sorted = new Vector();
-        for (int i = 0; i < 20; i++) {
-            Integer iii = new Integer(i);
-            Enumeration www = hash.keys();
-            while (www.hasMoreElements()) {
-                Object thiskey = www.nextElement();
-                if (iii.equals(thiskey)) {
-                    sorted.addElement(hash.get(thiskey));
-                }
-            }
-        }
-        return sorted;
-    }
-
-    
-
     /**
      * set look & feel to system default
      *
@@ -1627,7 +1586,7 @@ public class Morpho
                 currentProfile + ".xml";
             ConfigXML profile = new ConfigXML(profileName);
             profile.set("searchnetwork", 0, "false", true);
-            setProfileDontLogin(profile);
+            setProfileDontLogin(profile, true);
         }
     }
 
