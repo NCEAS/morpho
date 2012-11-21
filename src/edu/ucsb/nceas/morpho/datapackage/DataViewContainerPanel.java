@@ -129,8 +129,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    */
   JPanel toppanel;
 
-  private JPanel packagePanel;
-
   /**
    * tabbedEntitiesPanel is the tabbed panel which contains
    * the entity list (as tabs) + dataView + entityMetadata
@@ -170,31 +168,22 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   // Store the current data viewer
   private DataViewer dv = null;
 
-  Hashtable listValueHash = new Hashtable();
+  Hashtable<String, String> listValueHash = new Hashtable<String, String>();
   JSplitPane entityPanel;
   JPanel entityMetadataPanel;
   JPanel currentDataPanel;
   JSplitPane vertSplit;
 
-  Vector entityItems = null;
+  Vector<String> entityItems = null;
   PersistentVector lastPV = null;
   JLabel moreLabel;
 
-
   private static MetaDisplayFactoryInterface metaDisplayFactory = null;
-
-  private ActionListener mdHideListener;
 
   private static final int METADATA_PANEL_DEFAULT_WIDTH = 675;
 
-
-  /**
-   *  the value of the current URL, if there is one
-   */
-  private String currentURLInfo = null;
-
   // Store the event
-  private Vector storedStateChangeEventlist = new Vector();
+  private Vector<StateChangeEvent> storedStateChangeEventlist = new Vector<StateChangeEvent>();
   /*
    * no parameter constuctor for DataViewContainerPanel.
    * Some basic gui setup
@@ -218,7 +207,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     entityMetadataPanel.setLayout(new BorderLayout(0,0));
     dataViewPanel = new JPanel();
     dataViewPanel.setLayout(new BorderLayout(0,0));
-    JPanel AttributeMetadataPanel = new JPanel();
 
 
 //ScrollTabLayout only works for Java 1.4; commented out for now so will compile unbder 1.3
@@ -239,7 +227,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           container = (TabbedContainer)
                             tabbedEntitiesPanel.getComponentAt(lastTabSelected);
           mdi = container.getMetaDisplayInterface();
-          item = (String)entityItems.elementAt(lastTabSelected);
+          item = entityItems.elementAt(lastTabSelected);
 //          id = (String)listValueHash.get(item);
           id = mdi.getIdentifier();
 
@@ -297,7 +285,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(5,5));
 
-    entityItems = new Vector();
+    entityItems = new Vector<String>();
     int numEnts = 0;
     if (adp.getEntityArray()==null) {
       numEnts = 0;
@@ -453,7 +441,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     for (int i=0;i<entityItems.size();i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
 
-      String item = (String)entityItems.elementAt(i);
+      String item = entityItems.elementAt(i);
       // id is the id of the Entity metadata module
       // code from here to 'end_setup' comment sets up the display for the
       // entity metadata
@@ -512,7 +500,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       component.setSplitPane(currentEntityPanel);
         component.setMetaDisplayInterface(md);
       component.setVisible(true);
-      tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i),component);
+      tabbedEntitiesPanel.addTab(entityItems.elementAt(i), component);
       //tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
 
     }
@@ -569,7 +557,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         String nextDataFileID = null;
         String nextEntityID = null;
         Object nextObj = null;
-        Iterator it = entityItems.iterator();
+        Iterator<String> it = entityItems.iterator();
         while (it.hasNext()) {
             nextObj = it.next();
             if (nextObj==null || !(nextObj instanceof String)) continue;
@@ -644,10 +632,10 @@ public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
     this.toppanel.setVisible(true);
   }
-  public void setEntityItems(Vector ei) {
+  public void setEntityItems(Vector<String> ei) {
     this.entityItems = ei;
   }
-  public void setListValueHash(Hashtable ht) {
+  public void setListValueHash(Hashtable<String, String> ht) {
     this.listValueHash = ht;
   }
 
@@ -693,7 +681,7 @@ public void setTopPanel(JPanel jp) {
 
         //check if it's an entity (if so, deselect all)
         //or an attribute (if so, select that attribute)
-        String item = (String)entityItems.elementAt(lastTabSelected);
+        String item = entityItems.elementAt(lastTabSelected);
 //        String entityID = (String)listValueHash.get(item);
         String entityID = getEntityIDForThisEntityName(item);
         if (newID.equalsIgnoreCase(entityID)) {
@@ -741,7 +729,7 @@ public void setTopPanel(JPanel jp) {
   //title/name
   private String getEntityIDForThisEntityName(String entityName) {
 
-      return (String)listValueHash.get(entityName);
+      return listValueHash.get(entityName);
   }
 
   /**
@@ -858,7 +846,6 @@ public void setTopPanel(JPanel jp) {
         } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
           // this is the case where there is a url link to the data
           String urlinfo = adp.getDistributionUrl(index, 0,0);
-          currentURLInfo = urlinfo;
           // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
           // protocol is probably 'ecogrid'; system name is 'knb'
           // we just want the local id here
@@ -1070,7 +1057,7 @@ public void setTopPanel(JPanel jp) {
   /**
    * Get the  stored state change event.
    */
-  public Vector getStoredStateChangeEvent()
+  public Vector<StateChangeEvent> getStoredStateChangeEvent()
   {
     return storedStateChangeEventlist;
   }
@@ -1084,9 +1071,8 @@ public void setTopPanel(JPanel jp) {
     {
       for ( int i = 0; i< storedStateChangeEventlist.size(); i++)
       {
-        StateChangeEvent event =
-                (StateChangeEvent) storedStateChangeEventlist.elementAt(i);
-        (StateChangeMonitor.getInstance()).notifyStateChange(event);
+        StateChangeEvent event = storedStateChangeEventlist.elementAt(i);
+        StateChangeMonitor.getInstance().notifyStateChange(event);
       }//for
     }//if
   }
