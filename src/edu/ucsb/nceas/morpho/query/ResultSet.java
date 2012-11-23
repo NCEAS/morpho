@@ -33,6 +33,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -624,25 +625,29 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
 		if (info != null) {
 			// merge two complete documents vector
 			String existingIdentifier = info.getDocid();
-			String latestIdentifier = null;
-			try {
-				latestIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getLatestRevision(existingIdentifier);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (existingIdentifier.equals(latestIdentifier)) {
-				// do nothing
-			} else if (newIdentifier.equals(latestIdentifier)) {
-				int rowIndex = info.getRowNumber();
-				Vector originalRow = (Vector) resultsVector.elementAt(rowIndex);
-				replaceResultRowValue(originalRow, newRow);
-			} else {
+			
+			if (existingIdentifier.equals(newIdentifier)) {
 				// existRev == newRev
 				int rowIndex = info.getRowNumber();
 				Vector originalRow = (Vector) resultsVector.elementAt(rowIndex);
 				originalRow.setElementAt(QueryRefreshInterface.LOCALCOMPLETE, ISLOCALINDEX);
 				originalRow.setElementAt( QueryRefreshInterface.NETWWORKCOMPLETE, ISMETACATINDEX);
+			} 
+			else {
+				// replace with newer row if applicable
+				try {
+					List<String> revisions = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getAllRevisions(existingIdentifier);
+					int existRev = revisions.indexOf(existingIdentifier);
+					int newRev = revisions.indexOf(newIdentifier);
+					if (existRev < newRev) {
+				        int rowIndex = info.getRowNumber();
+				        Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
+				        replaceResultRowValue(originalRow, newRow);
+					} 
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} else {
 			// Log.debug(5, "add directly2");
