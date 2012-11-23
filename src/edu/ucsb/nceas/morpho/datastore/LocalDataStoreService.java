@@ -30,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,7 +47,9 @@ import org.apache.commons.io.IOUtils;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.types.v1.util.ChecksumUtil;
+import org.dataone.service.util.TypeMarshaller;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
@@ -77,13 +80,12 @@ public class LocalDataStoreService extends DataStoreService
 	// store the map between new data id and old data id
 	private Hashtable<String, String> original_new_id_map = new Hashtable<String, String>(); 
 	
-  /**
-   * create a new FileSystemDataStore for a Morpho
-   */
-  public LocalDataStoreService(Morpho morpho)
-  {
-    super(morpho);
-  }
+	/**
+	* create a new FileSystemDataStore for a Morpho
+	*/
+	public LocalDataStoreService(Morpho morpho) {
+		super(morpho);
+	}
   
 	/**
 	 * Gets the data dir directory
@@ -127,6 +129,10 @@ public class LocalDataStoreService extends DataStoreService
 	  File file = openFile(identifier);
 	  Reader in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 	  AbstractDataPackage adp = DataPackageFactory.getDataPackage(in);
+	  SystemMetadata sysMeta = getSystemMetadata(identifier);
+	  if (sysMeta != null) {
+		  adp.setSystemMetadata(sysMeta);
+	  }
 	  adp.setLocation(DataPackageInterface.LOCAL);
 	  loadData(adp);
 	  MorphoDataPackage mdp = new MorphoDataPackage();
@@ -135,7 +141,6 @@ public class LocalDataStoreService extends DataStoreService
   }
   
   private void loadData(AbstractDataPackage adp) throws Exception {
-	  
 	  
 	  List<Identifier> dataIds = new ArrayList<Identifier>();;
 	  if (adp.getEntityArray() != null) {
@@ -148,20 +153,25 @@ public class LocalDataStoreService extends DataStoreService
 				dataIds.add(identifier);
 				byte[] data = IOUtils.toByteArray(new FileInputStream(openFile(identifier.getValue())));
 				entity.setData(data);
-				
-				// dupe the EML SystemMetadata for the data
-				try {
-					PropertyUtils.copyProperties(entity.getSystemMetadata(), adp.getSystemMetadata());
-					entity.getSystemMetadata().setIdentifier(identifier);
-					ObjectFormatIdentifier dataFormatId = new ObjectFormatIdentifier();
-					dataFormatId.setValue(adp.getPhysicalFormat(entityIndex, 0));
-					entity.getSystemMetadata().setFormatId(dataFormatId);
-					Checksum dataChecksum = ChecksumUtil.checksum(entity.getData(), entity.getSystemMetadata().getChecksum().getAlgorithm());
-					entity.getSystemMetadata().setChecksum(dataChecksum);
-					entity.getSystemMetadata().setSize(BigInteger.valueOf(entity.getData().length));
-				} catch (Exception e) {
-					Log.debug(10, "Error setting SystemMetadata for entity " + entityIndex);
-					e.printStackTrace();
+				// set the SM if we have it
+				SystemMetadata sysmeta = getSystemMetadata(identifier.getValue());
+				if (sysmeta != null) {
+					entity.setSystemMetadata(sysmeta);
+				} else {
+					// dupe the EML SystemMetadata for the data
+					try {
+						PropertyUtils.copyProperties(entity.getSystemMetadata(), adp.getSystemMetadata());
+						entity.getSystemMetadata().setIdentifier(identifier);
+						ObjectFormatIdentifier dataFormatId = new ObjectFormatIdentifier();
+						dataFormatId.setValue(adp.getPhysicalFormat(entityIndex, 0));
+						entity.getSystemMetadata().setFormatId(dataFormatId);
+						Checksum dataChecksum = ChecksumUtil.checksum(entity.getData(), entity.getSystemMetadata().getChecksum().getAlgorithm());
+						entity.getSystemMetadata().setChecksum(dataChecksum);
+						entity.getSystemMetadata().setSize(BigInteger.valueOf(entity.getData().length));
+					} catch (Exception e) {
+						Log.debug(10, "Error setting SystemMetadata for entity " + entityIndex);
+						e.printStackTrace();
+					}
 				}
 			}
 	  }
@@ -454,6 +464,11 @@ public class LocalDataStoreService extends DataStoreService
 			}
 		}
 		
+		// save the SM
+		saveSystemMetadata(adp.getSystemMetadata());
+		
+		// TODO: save ORE
+		
 		return adp.getAccessionNumber();
 		
 	}
@@ -470,6 +485,7 @@ public class LocalDataStoreService extends DataStoreService
 
 		adp.setDataIDChanged(false);
 		for (int i = 0; i < adp.getEntityArray().length; i++) {
+			Entity entity = adp.getEntity(i);
 			String URLinfo = adp.getDistributionUrl(i, 0, 0);
 			String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
 			String objectName = adp.getPhysicalName(i, 0);
@@ -518,7 +534,7 @@ public class LocalDataStoreService extends DataStoreService
 
 					}
 
-					// handle incomplete
+					// save the data if it is new or has changes
 					boolean status = false;
 					if (isDirty || updatedId || !exists) {
 						if (dataDestination.equals(DataPackageInterface.INCOMPLETE)) {
@@ -530,6 +546,8 @@ public class LocalDataStoreService extends DataStoreService
 								return false;
 							}
 						}
+						// save the SM
+						saveSystemMetadata(entity.getSystemMetadata());
 					}
 
 					// reset the map after finishing save. There is no need for
@@ -1021,6 +1039,56 @@ public class LocalDataStoreService extends DataStoreService
 		// all we can do now is generate an identifier....
 		String nextIdentifier = generateIdentifier(fragment);
 		return nextIdentifier;
+	}
+	
+	/**
+	 * retrieve the SystemMetadata associated with this identifier
+	 * @param identifier
+	 * @return
+	 * @throws Exception
+	 */
+	public SystemMetadata getSystemMetadata(String identifier) throws Exception {
+		
+		File file = null;
+		SystemMetadata sysMeta= null;
+		try {
+			file = FileSystemDataStore.getInstance(getSystemMetadataDir(getDataDir())).get(identifier);
+			if (file != null) {
+				sysMeta = TypeMarshaller.unmarshalTypeFromFile(SystemMetadata.class, file);
+			}
+		} catch (Exception e) {
+			// nope
+			Log.debug(30, "SystemMetadata file not found for identifier: " + identifier);
+		}
+		
+		return sysMeta;
+		
+	}
+	
+	/**
+	 * save the SystemMetadata associated with this identifier
+	 * @param identifier
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean saveSystemMetadata(SystemMetadata sysMeta) throws Exception {
+		
+		File file = null;
+		String identifier = null;
+		try {
+			identifier = sysMeta.getIdentifier().getValue();
+			FileSystemDataStore.getInstance(getSystemMetadataDir(getDataDir())).set(identifier, null);
+			file = FileSystemDataStore.getInstance(getSystemMetadataDir(getDataDir())).get(identifier);
+			if (file != null) {
+				TypeMarshaller.marshalTypeToOutputStream(sysMeta, new FileOutputStream(file));
+			}
+		} catch (Exception e) {
+			// nope
+			Log.debug(10, "SystemMetadata could not be saved for identifier: " + identifier);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
