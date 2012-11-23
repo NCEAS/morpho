@@ -417,6 +417,7 @@ public class LocalDataStoreService extends DataStoreService
 			String choice = docidIncreaseDialog.showDialog();
 			// Log.debug(5, "choice is "+choice);
 			if (choice != null) {
+				String origId = identifier;
 				if (choice.equals(DocidConflictHandler.INCREASEID)) {
 					// generate a new identifier - separate from the original chain
 					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
@@ -428,11 +429,17 @@ public class LocalDataStoreService extends DataStoreService
 					String nextIdentifier = getNextIdentifier(identifier);
 					adp.setAccessionNumber(nextIdentifier);
 					adp.setPackageIDChanged(true);
-					Log.debug(30, "Orginal identifier: " + identifier + ", next revision: " + nextIdentifier);
+					Log.debug(30, "Original identifier: " + identifier + ", next revision: " + nextIdentifier);
 					// record this in revision manager
 					getRevisionManager().setObsoletes(nextIdentifier, identifier);
 					identifier = nextIdentifier;
 				}
+				
+				// make sure the mdp has the latest ADP object/identifier
+				Identifier originalIdentifier = new Identifier();
+				originalIdentifier.setValue(origId);
+				mdp.remove(originalIdentifier);
+				mdp.addData(adp);
 			} else {
 				// canceled the save
 				return identifier;
@@ -442,7 +449,7 @@ public class LocalDataStoreService extends DataStoreService
 			// since it is saving a new package, increase docid silently
 			//identifier = generateIdentifier(null);
 			adp.setAccessionNumber(identifier);
-			adp.setPackageIDChanged(true);
+			adp.setPackageIDChanged(false);
 
 		}
 		
