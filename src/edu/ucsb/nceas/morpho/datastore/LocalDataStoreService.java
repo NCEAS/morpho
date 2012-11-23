@@ -40,10 +40,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
+import org.dataone.client.D1Object;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
@@ -57,6 +59,7 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -464,12 +467,47 @@ public class LocalDataStoreService extends DataStoreService
 			}
 		}
 		
-		// save the SM
+		// save the SM for the science metadata
 		saveSystemMetadata(adp.getSystemMetadata());
 		
-		// TODO: save ORE
+	    Set<Identifier> identifiers = mdp.identifiers();
+	    //return now if we do not have data packages to save as ORE
+	    if (identifiers == null || identifiers.size() == 1) {
+			return adp.getAccessionNumber();
+	    }
+	    
+		// save ore document finally
+		Identifier oreId = new Identifier();
+	    oreId.setValue("resourceMap_" + adp.getIdentifier().getValue());
+	    D1Object oreD1Object = new D1Object();
+	    mdp.setPackageId(oreId);
+	    oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
+	    
+	    // generate ORE SM for the save
+	    SystemMetadata resourceMapSysMeta = new SystemMetadata();
+	    PropertyUtils.copyProperties(resourceMapSysMeta, adp.getSystemMetadata());
+	    resourceMapSysMeta.setIdentifier(oreId);
+	    Checksum oreChecksum = ChecksumUtil.checksum(new ByteArrayInputStream(oreD1Object.getData()), resourceMapSysMeta.getChecksum().getAlgorithm());
+		resourceMapSysMeta.setChecksum(oreChecksum);
+	    ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
+	    formatId.setValue("http://www.openarchives.org/ore/terms");
+		resourceMapSysMeta.setFormatId(formatId);
+		resourceMapSysMeta.setSize(BigInteger.valueOf(oreD1Object.getData().length));
 		
-		return adp.getAccessionNumber();
+		// set the revision graph
+		resourceMapSysMeta.setObsoletes(null);
+		resourceMapSysMeta.setObsoletedBy(null);
+
+		// this is just weird to set in two different places
+	    mdp.setSystemMetadata(resourceMapSysMeta);
+	    oreD1Object.setSystemMetadata(mdp.getSystemMetadata());
+	    
+	    // save the ORE
+	    saveSystemMetadata(oreD1Object.getSystemMetadata());
+	    saveFile(mdp.getPackageId().getValue(), new ByteArrayInputStream(oreD1Object.getData()));
+		
+	    // return the ORE package id. (not yet used)
+		return oreId.getValue();
 		
 	}
 	
