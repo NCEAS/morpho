@@ -439,6 +439,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     //save metadata then
     save(mdp.get(metadataId));
     
+    adp.setSerializeMetacatSuccess(true);
+    
     //return now if we do not have data packages to save as ORE
     if (identifiers == null || identifiers.size() == 1) {
     	return metadataId.getValue();
