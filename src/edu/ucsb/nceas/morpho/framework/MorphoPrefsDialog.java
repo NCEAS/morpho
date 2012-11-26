@@ -44,6 +44,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import org.dataone.client.D1Client;
+import org.dataone.client.MNode;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -73,14 +76,14 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		CenterPanel.add(aboutLabel);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		CenterPanel.add(JPanel2);
-		metacatURLLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
-		metacatURLLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		metacatURLLabel.setText(Language.getInstance().getMessage("MetacatURL"));
-		JPanel2.add(metacatURLLabel);
-		metacatURLLabel.setForeground(java.awt.Color.black);
-		metacatURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		metacataURLTextField.setColumns(35);
-		JPanel2.add(metacataURLTextField);
+		memberNodeURLLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
+		memberNodeURLLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		memberNodeURLLabel.setText(Language.getInstance().getMessage("MemberNodeURL"));
+		JPanel2.add(memberNodeURLLabel);
+		memberNodeURLLabel.setForeground(java.awt.Color.black);
+		memberNodeURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		memberNodeURLTextField.setColumns(35);
+		JPanel2.add(memberNodeURLTextField);
 		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		CenterPanel.add(JPanel3);
 		loggingLabel.setText(Language.getInstance().getMessage("LogMessages"));
@@ -147,7 +150,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		logNo.addItemListener(lSymItem);
 		// }}
 		config = Morpho.getConfiguration();
-		metacataURLTextField.setText(config.get("metacat_url", 0));
+		memberNodeURLTextField.setText(config.get("dataone_mnode_baseurl", 0));
 		if (config.get("log_file", 0).equals("true")) {
 			logYes.setSelected(true);
 			logNo.setSelected(false);
@@ -186,8 +189,8 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	JLabel aboutLabel = new JLabel();
 	JPanel JPanel1 = new JPanel();
 	JPanel JPanel2 = new JPanel();
-	JLabel metacatURLLabel = new JLabel();
-	JTextField metacataURLTextField = new JTextField();
+	JLabel memberNodeURLLabel = new JLabel();
+	JTextField memberNodeURLTextField = new JTextField();
 	JPanel JPanel3 = new JPanel();
 	JLabel loggingLabel = new JLabel();
 	JRadioButton logYes = new JRadioButton();
@@ -258,7 +261,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	}
 
 	void setButton_actionPerformed(java.awt.event.ActionEvent event) {
-		config.set("metacat_url", 0, metacataURLTextField.getText());
+		config.set("dataone_mnode_baseurl", 0, memberNodeURLTextField.getText());
 		if (logYes.isSelected()) {
 			config.set("log_file", 0, "true");
 		} else {
@@ -290,7 +293,10 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 
 		config.save();
 
-		morpho.getMetacatDataStoreService().setMetacatURL(config.get("metacat_url", 0));
+		// set the active MN
+		// TODO: select based on the CN
+		MNode activeMNode = D1Client.getMN(config.get("dataone_mnode_baseurl", 0));
+		morpho.getDataONEDataStoreService().setActiveMNode(activeMNode );
 
 		Morpho.initializeLogging(config);
 		// need to add Look and Feel support
