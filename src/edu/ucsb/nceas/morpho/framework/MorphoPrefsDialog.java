@@ -26,14 +26,24 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.Rectangle;
 
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * A simple Morpho Preferences Dialog
@@ -47,7 +57,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	public MorphoPrefsDialog(Frame parentFrame, Morpho morpho)
 	{
 		super(parentFrame);
-    this.morpho = morpho;
+		this.morpho = morpho;
 		setTitle(Language.getInstance().getMessage("MorphoPreferences"));
 		setModal(true);
 		getContentPane().setLayout(new BorderLayout(0,0));
@@ -57,7 +67,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		getContentPane().add(BorderLayout.CENTER,CenterPanel);
 		aboutLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		aboutLabel.setText(Language.getInstance().getMessage("MorphoPreferences"));
-    aboutLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+		aboutLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 		CenterPanel.add(aboutLabel);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		CenterPanel.add(JPanel2);
@@ -96,22 +106,21 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		LFLabel.setForeground(java.awt.Color.black);
 		LFLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JPanel5.add(LFCombo);
-    LFCombo.addItem("system L&F");
-    LFCombo.addItem("kunststoff L&F");
-    LFCombo.addItem("metal L&F");
-    LFCombo.addItem("windows L&F");
-    LFCombo.addItem("motif L&F");
-    LFCombo.setSelectedIndex(0);
+	    LFCombo.addItem("system L&F");
+	    LFCombo.addItem("kunststoff L&F");
+	    LFCombo.addItem("metal L&F");
+	    LFCombo.addItem("windows L&F");
+	    LFCombo.addItem("motif L&F");
+	    LFCombo.setSelectedIndex(0);
     
-    clearButton.setText(Language.getInstance().getMessage("ClearTemporaryStorage"));
+	    clearButton.setText(Language.getInstance().getMessage("ClearTemporaryStorage"));
 		JPanel6.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-    JPanel6.add(clearButton);
+		JPanel6.add(clearButton);
 		CenterPanel.add(JPanel6);
     
 		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		CenterPanel.add(JPanel1);
 
-    
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
 		setButton.setText(/*"Set"*/ Language.getInstance().getMessage("Set"));
@@ -135,24 +144,24 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		logYes.addItemListener(lSymItem);
 		logNo.addItemListener(lSymItem);
 		//}}
-    config = morpho.getConfiguration();
-    metacataURLTextField.setText(config.get("metacat_url",0));
-    if (config.get("log_file",0).equals("true")) {
-      logYes.setSelected(true);
-      logNo.setSelected(false);
-    }
-    else {
-      logYes.setSelected(false);
-      logNo.setSelected(true);
-    }
-    debugLevelTextField.setText(config.get("debug_level",0));
-    
-    String lnf = config.get("lookAndFeel", 0);
-    if (lnf==null) LFCombo.setSelectedIndex(0);
-    else if (lnf.equalsIgnoreCase("kunststoff")) LFCombo.setSelectedIndex(1); 
-    else if (lnf.equalsIgnoreCase("metal")) LFCombo.setSelectedIndex(2); 
-    else if (lnf.equalsIgnoreCase("windows")) LFCombo.setSelectedIndex(3); 
-    else if (lnf.equalsIgnoreCase("motif")) LFCombo.setSelectedIndex(4); 
+	    config = Morpho.getConfiguration();
+	    metacataURLTextField.setText(config.get("metacat_url",0));
+	    if (config.get("log_file",0).equals("true")) {
+	      logYes.setSelected(true);
+	      logNo.setSelected(false);
+	    }
+	    else {
+	      logYes.setSelected(false);
+	      logNo.setSelected(true);
+	    }
+	    debugLevelTextField.setText(config.get("debug_level",0));
+	    
+	    String lnf = config.get("lookAndFeel", 0);
+	    if (lnf==null) LFCombo.setSelectedIndex(0);
+	    else if (lnf.equalsIgnoreCase("kunststoff")) LFCombo.setSelectedIndex(1); 
+	    else if (lnf.equalsIgnoreCase("metal")) LFCombo.setSelectedIndex(2); 
+	    else if (lnf.equalsIgnoreCase("windows")) LFCombo.setSelectedIndex(3); 
+	    else if (lnf.equalsIgnoreCase("motif")) LFCombo.setSelectedIndex(4); 
 	}
 
 	public void setVisible(boolean b)
@@ -170,28 +179,28 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 
 
 	//{{DECLARE_CONTROLS
-	javax.swing.JPanel CenterPanel = new javax.swing.JPanel();
-	javax.swing.JLabel aboutLabel = new javax.swing.JLabel();
-	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
-	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
-	javax.swing.JLabel metacatURLLabel = new javax.swing.JLabel();
-	javax.swing.JTextField metacataURLTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
-	javax.swing.JLabel loggingLabel = new javax.swing.JLabel();
-	javax.swing.JRadioButton logYes = new javax.swing.JRadioButton();
-	javax.swing.JRadioButton logNo = new javax.swing.JRadioButton();
-	javax.swing.JPanel JPanel4 = new javax.swing.JPanel();
-	javax.swing.JLabel debugLevelLabel = new javax.swing.JLabel();
-	javax.swing.JTextField debugLevelTextField = new javax.swing.JTextField();
-	javax.swing.JPanel JPanel5 = new javax.swing.JPanel();
-	javax.swing.JPanel JPanel6 = new javax.swing.JPanel();
-	javax.swing.JLabel LFLabel = new javax.swing.JLabel();
+	JPanel CenterPanel = new JPanel();
+	JLabel aboutLabel = new JLabel();
+	JPanel JPanel1 = new JPanel();
+	JPanel JPanel2 = new JPanel();
+	JLabel metacatURLLabel = new JLabel();
+	JTextField metacataURLTextField = new JTextField();
+	JPanel JPanel3 = new JPanel();
+	JLabel loggingLabel = new JLabel();
+	JRadioButton logYes = new JRadioButton();
+	JRadioButton logNo = new JRadioButton();
+	JPanel JPanel4 = new JPanel();
+	JLabel debugLevelLabel = new JLabel();
+	JTextField debugLevelTextField = new JTextField();
+	JPanel JPanel5 = new JPanel();
+	JPanel JPanel6 = new JPanel();
+	JLabel LFLabel = new JLabel();
 	javax.swing.JComboBox LFCombo = new javax.swing.JComboBox();
 
-	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
-	javax.swing.JButton setButton = new javax.swing.JButton();
-	javax.swing.JButton cancelButton = new javax.swing.JButton();
-  javax.swing.JButton clearButton = new javax.swing.JButton();
+	JPanel ControlPanel = new JPanel();
+	JButton setButton = new JButton();
+	JButton cancelButton = new JButton();
+	JButton clearButton = new JButton();
 	//}}
 
 	class SymWindow extends java.awt.event.WindowAdapter
@@ -284,9 +293,9 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
     
     morpho.getMetacatDataStoreService().setMetacatURL(config.get("metacat_url", 0));
 
-    morpho.initializeLogging(config);
+    Morpho.initializeLogging(config);
     // need to add  Look and Feel support
-    morpho.setLookAndFeel(config.get("lookAndFeel", 0));
+    Morpho.setLookAndFeel(config.get("lookAndFeel", 0));
 
 		setVisible(false);
     this.dispose();
