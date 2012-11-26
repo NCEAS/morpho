@@ -34,7 +34,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Stack;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -44,7 +43,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -69,44 +67,15 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   /** Store each row of the result set as a row in a Vector */
   protected Vector resultsVector = null;
 
-  /**
-   * a list of the desired return fields from the configuration file.
-   *
-   * NOTE: This info should really come from the query so that it can
-   * vary by query.
-   */
-  private Vector returnFields;
-
   /** A reference to the Morpho */
   private Morpho morpho = null;
 
-  /** The configuration options object reference from Morpho */
-  private ConfigXML config = null;
-
-  // this group of variables are temporary vars that are used while
-  // parsing the XML stream.  Ultimately the data ends up in the
-  // resultsVector above
-  private Stack elementStack = null;
   private String[] headers;
-  private String docid;
-  private String docname;
-  private String doctype;
-  private String createdate;
-  private String updatedate;
-  private String paramName;
-  private Hashtable params;
+  
   protected HashSet<String> incompleteDocidSet = new HashSet<String>();
-  //protected static final boolean alwaysShowingIncompleteDoc = true;
-  /**
-   * used to save package info for each doc returned during SAX parsing
-   * Hashtable has up to five fields with the following String keys:
-   * subject, subjectdoctype, relationship, object, objectdoctype
-   */
-  private Hashtable triple;
-  /** a collection of triple Hashtables, used during SAX parsing */
-  private Vector tripleList;
+
   // A hash table to store mapping between column name and resultSVector Index
-  private Hashtable mapColumnNameAndVectorIndex = new Hashtable();
+  private Hashtable<String, Integer> mapColumnNameAndVectorIndex = new Hashtable<String, Integer>();
 
   /** The icon for representing local storage. */
   protected static ImageIcon localIcon = null;
@@ -170,9 +139,6 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   
   /** Store the height fact for table row height */
   private static final int HEIGHTFACTOR = 2;
-
-  /** global for accumulating characters in SAX parser */
-  private String accumulatedCharacters = null;
 
   /**
    * Construct a ResultSet instance from a vector of vectors;
@@ -387,7 +353,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
    * This method will set a mapping table
    * @param hash Hashtable
    */
-  public void setMapping(Hashtable hash)
+  public void setMapping(Hashtable<String, Integer> hash)
   {
     mapColumnNameAndVectorIndex = hash;
   }
@@ -451,13 +417,13 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
    */
   private void createTableHeader()
   {
-    int cnt = (returnFields==null)? 0 : returnFields.size();
     // DFH - using the number of returnFields to setup the table creates problems
     // (especialy with column percent size array in 'ResultPanel' class)
     // And we may want to have returnFields that are not displayed (e.g. a field
     // to indicated whether data is included with the package).
     // Thus, for now, just fix the 'cnt' variable
-    cnt = 3;
+	//int cnt = (returnFields==null)? 0 : returnFields.size();
+    int cnt = 3;
     int numberFixedHeaders = 5;
     headers = new String[numberFixedHeaders+cnt];
     headers[0] = QueryRefreshInterface.HASDATA;
