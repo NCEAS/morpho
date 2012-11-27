@@ -49,6 +49,7 @@ import org.dataone.client.MNode;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -66,24 +67,42 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		setTitle(Language.getInstance().getMessage("MorphoPreferences"));
 		setModal(true);
 		getContentPane().setLayout(new BorderLayout(0, 0));
-		setSize(560, 400);
+		setSize(600, 400);
 		setVisible(false);
-		CenterPanel.setLayout(new GridLayout(7, 1, 0, 0));
+		CenterPanel.setLayout(new GridLayout(8, 1, 0, 0));
 		getContentPane().add(BorderLayout.CENTER, CenterPanel);
 		aboutLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		aboutLabel.setText(Language.getInstance().getMessage("MorphoPreferences"));
 		aboutLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 		CenterPanel.add(aboutLabel);
+		
+		// the CN
+		cnPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		coordinatingNodeURLLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
+		coordinatingNodeURLLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		coordinatingNodeURLLabel.setText(Language.getInstance().getMessage("CoordinatingNodeURL"));
+		coordinatingNodeURLLabel.setForeground(java.awt.Color.black);
+		coordinatingNodeURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		cnPanel.add(coordinatingNodeURLLabel);
+		coordinatingNodeURLTextField.setColumns(35);
+		// disable until we have something to do with it
+		coordinatingNodeURLTextField.setEnabled(false);
+		coordinatingNodeURLTextField.setEditable(false);
+		cnPanel.add(coordinatingNodeURLTextField);
+		CenterPanel.add(cnPanel);
+
+		// MN
 		JPanel2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		CenterPanel.add(JPanel2);
 		memberNodeURLLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
 		memberNodeURLLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		memberNodeURLLabel.setText(Language.getInstance().getMessage("MemberNodeURL"));
-		JPanel2.add(memberNodeURLLabel);
 		memberNodeURLLabel.setForeground(java.awt.Color.black);
 		memberNodeURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		JPanel2.add(memberNodeURLLabel);
 		memberNodeURLTextField.setColumns(35);
 		JPanel2.add(memberNodeURLTextField);
+		CenterPanel.add(JPanel2);
+
 		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		CenterPanel.add(JPanel3);
 		loggingLabel.setText(Language.getInstance().getMessage("LogMessages"));
@@ -150,7 +169,8 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		logNo.addItemListener(lSymItem);
 		// }}
 		config = Morpho.getConfiguration();
-		memberNodeURLTextField.setText(config.get("dataone_mnode_baseurl", 0));
+		coordinatingNodeURLTextField.setText(config.get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0));
+		memberNodeURLTextField.setText(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
 		if (config.get("log_file", 0).equals("true")) {
 			logYes.setSelected(true);
 			logNo.setSelected(false);
@@ -189,7 +209,10 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	JLabel aboutLabel = new JLabel();
 	JPanel JPanel1 = new JPanel();
 	JPanel JPanel2 = new JPanel();
+	JPanel cnPanel = new JPanel();
+	JLabel coordinatingNodeURLLabel = new JLabel();
 	JLabel memberNodeURLLabel = new JLabel();
+	JTextField coordinatingNodeURLTextField = new JTextField();
 	JTextField memberNodeURLTextField = new JTextField();
 	JPanel JPanel3 = new JPanel();
 	JLabel loggingLabel = new JLabel();
@@ -261,7 +284,8 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	}
 
 	void setButton_actionPerformed(java.awt.event.ActionEvent event) {
-		config.set("dataone_mnode_baseurl", 0, memberNodeURLTextField.getText());
+		config.set(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0, coordinatingNodeURLTextField.getText(), true);
+		config.set(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0, memberNodeURLTextField.getText());
 		if (logYes.isSelected()) {
 			config.set("log_file", 0, "true");
 		} else {
@@ -295,7 +319,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 
 		// set the active MN
 		// TODO: select based on the CN
-		MNode activeMNode = D1Client.getMN(config.get("dataone_mnode_baseurl", 0));
+		MNode activeMNode = D1Client.getMN(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
 		morpho.getDataONEDataStoreService().setActiveMNode(activeMNode );
 
 		Morpho.initializeLogging(config);

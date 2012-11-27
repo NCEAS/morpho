@@ -93,7 +93,8 @@ import edu.ucsb.nceas.utilities.Log;
 public class DataONEDataStoreService extends DataStoreService implements DataStoreServiceInterface {
 
   
-  private static final String MNODE_URL_ELEMENT_NAME = "dataone_mnode_baseurl";
+  public static final String MNODE_URL_ELEMENT_NAME = "dataone_mnode_baseurl";
+  public static final String CNODE_URL_ELEMENT_NAME = "dataone_cnode_baseurl";
   private static final String PATHQUERY = "pathquery";
   private static final String DOI = "doi";
   private static MNode activeMNode = null;
