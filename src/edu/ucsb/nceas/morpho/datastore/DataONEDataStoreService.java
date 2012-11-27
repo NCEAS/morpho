@@ -46,9 +46,12 @@ import java.util.Set;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
+import org.dataone.client.CNode;
+import org.dataone.client.D1Client;
 import org.dataone.client.D1Object;
 import org.dataone.client.MNode;
 import org.dataone.client.auth.CertificateManager;
+import org.dataone.configuration.Settings;
 import org.dataone.ore.ResourceMapFactory;
 import org.dataone.service.exceptions.IdentifierNotUnique;
 import org.dataone.service.exceptions.InsufficientResources;
@@ -62,6 +65,8 @@ import org.dataone.service.exceptions.ServiceFailure;
 import org.dataone.service.exceptions.UnsupportedType;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.Node;
+import org.dataone.service.types.v1.NodeList;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SystemMetadata;
@@ -82,7 +87,6 @@ import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.utilities.Log;
 
 /**
@@ -115,6 +119,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   private static void init() {
     String mNodeBaseURL = Morpho.getConfiguration().get(MNODE_URL_ELEMENT_NAME, 0);
     activeMNode = new MNode(mNodeBaseURL);
+    
   }
   /**
    * Get the active member node.
@@ -786,4 +791,22 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		return networkStatus;
 	}
  
+	/**
+	 * Retrieve a Node list from the currently configured CN
+	 * @return
+	 */
+	public List<Node> getNodes() {
+		try {
+			String cnURL = config.get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
+			Settings.getConfiguration().setProperty("D1Client.CN_URL", cnURL);
+			CNode cNode = D1Client.getCN();
+			NodeList nodes = cNode.listNodes();
+			return nodes.getNodeList();
+		} catch (Exception e) {
+			Log.debug(10, "Could not look up nodes from CN: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 }

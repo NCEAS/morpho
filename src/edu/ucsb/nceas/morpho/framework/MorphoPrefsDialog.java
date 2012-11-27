@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -34,18 +35,24 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 import org.dataone.client.D1Client;
 import org.dataone.client.MNode;
+import org.dataone.service.types.v1.Node;
+import org.dataone.service.types.v1.NodeType;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -90,18 +97,39 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		coordinatingNodeURLTextField.setEditable(false);
 		cnPanel.add(coordinatingNodeURLTextField);
 		CenterPanel.add(cnPanel);
-
-		// MN
-		JPanel2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		// the MN selection / edit box
+		JPanel mnSelectionPanel = new JPanel();
+		mnSelectionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		Vector options = null;
+		try {
+			List<Node> nodes = morpho.getDataONEDataStoreService().getNodes();
+			if (nodes != null) {
+				//options = nodes.toArray();
+				options = new Vector();
+				for (Node node: nodes) {
+					if (node.getType().equals(NodeType.MN)) {
+						options.add(new NodeItem(node));
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.debug(10, "Could not look up available Member Nodes from the CN: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		memberNodeComboBox = new JComboBox(options);
+		memberNodeComboBox.setEditable(true);
+		//memberNodeComboBox.setRenderer(new NodeListCellRenderer());
 		memberNodeURLLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
 		memberNodeURLLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		memberNodeURLLabel.setText(Language.getInstance().getMessage("MemberNodeURL"));
 		memberNodeURLLabel.setForeground(java.awt.Color.black);
 		memberNodeURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JPanel2.add(memberNodeURLLabel);
-		memberNodeURLTextField.setColumns(35);
-		JPanel2.add(memberNodeURLTextField);
-		CenterPanel.add(JPanel2);
+		mnSelectionPanel.add(memberNodeURLLabel);
+		mnSelectionPanel.add(memberNodeComboBox);
+		CenterPanel.add(mnSelectionPanel);
 
 		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		CenterPanel.add(JPanel3);
@@ -170,7 +198,8 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		// }}
 		config = Morpho.getConfiguration();
 		coordinatingNodeURLTextField.setText(config.get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0));
-		memberNodeURLTextField.setText(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
+		// does this work with our model?
+		memberNodeComboBox.setSelectedItem(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
 		if (config.get("log_file", 0).equals("true")) {
 			logYes.setSelected(true);
 			logNo.setSelected(false);
@@ -211,9 +240,9 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	JPanel JPanel2 = new JPanel();
 	JPanel cnPanel = new JPanel();
 	JLabel coordinatingNodeURLLabel = new JLabel();
-	JLabel memberNodeURLLabel = new JLabel();
 	JTextField coordinatingNodeURLTextField = new JTextField();
-	JTextField memberNodeURLTextField = new JTextField();
+	JLabel memberNodeURLLabel = new JLabel();
+	JComboBox memberNodeComboBox = null;
 	JPanel JPanel3 = new JPanel();
 	JLabel loggingLabel = new JLabel();
 	JRadioButton logYes = new JRadioButton();
@@ -285,7 +314,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 
 	void setButton_actionPerformed(java.awt.event.ActionEvent event) {
 		config.set(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0, coordinatingNodeURLTextField.getText(), true);
-		config.set(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0, memberNodeURLTextField.getText());
+		config.set(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0, memberNodeComboBox.getSelectedItem().toString());
 		if (logYes.isSelected()) {
 			config.set("log_file", 0, "true");
 		} else {
@@ -349,6 +378,59 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 			}
 		}
 	}
+  	
+  	/**
+  	 * Custom object for rendering a Node in the combobox
+  	 * Overrides the toString method to display something meaningful
+  	 * without loosing information about the node (e.g., nodeId)
+  	 * @author leinfelder
+  	 *
+  	 */
+  	class NodeItem {
+  		
+  		private Node node;
+  		
+  		public NodeItem(Node node) {
+  			this.node = node;
+  		}
+  		
+  		@Override
+  		public String toString() {
+  			String retVal = null;
+  			if (node != null) {
+  				//retVal = node.getName() + " (" + node.getBaseURL() +  ")";
+  				retVal = node.getBaseURL();
+  			}
+  			return retVal;
+  		}
+  	}
+  	
+  	/**
+  	 * Experimental cell renderer for Node objects. Not nearly as clean as
+  	 * a toString() override (UI looks sluggish) but does allow for more information
+  	 * per entry to be displayed.
+  	 * Does not work well with an editable combobox
+  	 * @author leinfelder
+  	 *
+  	 */
+  	class NodeListCellRenderer extends JLabel implements ListCellRenderer {
 
-  
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			// default is blank
+			setText(null);
+			if (value != null) {
+				if (value instanceof Node) {
+					Node node = (Node) value;
+					setText(node.getName() + "(" + node.getBaseURL() + ")" );
+					setToolTipText(node.getDescription());
+				} else {
+					setText(value.toString());
+				}
+			}
+			return this;
+		}	
+  	}
+  	
 }
