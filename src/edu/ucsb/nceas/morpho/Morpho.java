@@ -792,7 +792,7 @@ public class Morpho
 		} catch (Exception e) {
 			Log.debug(30, "couldn't get lastid from profile");
 		}
-		Log.debug(30, "the last id from profile " + lastid);
+		Log.debug(30, "For fragement: " + fragment + " the last id in profile is:" + lastid);
 
 		int id = lastid;
 
@@ -800,9 +800,12 @@ public class Morpho
 		String identifier = null;
 		boolean inUse = false;
 		do {
-			lastid++;
 			identifier = fragment + "." + lastid;
 			inUse = DataStoreServiceController.getInstance().exists(identifier, DataPackageInterface.NETWORK);
+			if (!inUse) {
+				break;
+			}
+			lastid++;
 		} while (inUse);
 
 		if (lastid > id) {
