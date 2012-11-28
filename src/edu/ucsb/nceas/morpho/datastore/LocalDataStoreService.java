@@ -403,18 +403,13 @@ public class LocalDataStoreService extends DataStoreService
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
 		boolean exists = this.exists(identifier);
-		List<String> existingRevisions = getRevisionManager().getAllRevisions(identifier);
-
-		// if we allow local overwrite, we reset confilcLocation. It will skip
-		// the code to handle conflict
-		boolean overwrite = false;
 		
 		// does the identifier exist already?
 		if (exists) {
-			Log.debug(30, "=============In existFlag and update branch");
+			Log.debug(30, "object already exists locally with this identifier: " + identifier);
 			// TODO: is this frame needed or can we just increase the revision silently?
-			DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, DataPackageInterface.LOCAL);
-			String choice = docidIncreaseDialog.showDialog();
+			DocidConflictHandler identifierConflictHandler = new DocidConflictHandler(identifier, DataPackageInterface.LOCAL);
+			String choice = identifierConflictHandler.showDialog();
 			// Log.debug(5, "choice is "+choice);
 			if (choice != null) {
 				String origId = identifier;
@@ -422,32 +417,30 @@ public class LocalDataStoreService extends DataStoreService
 					// generate a new identifier - separate from the original chain
 					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 					identifier = generateIdentifier(scope);
-					adp.setAccessionNumber(identifier);
-					adp.setPackageIDChanged(true);
 				} else {
-					// get next revision
+					// get next identifier (really just the same as generating a new one) 
 					String nextIdentifier = getNextIdentifier(identifier);
-					adp.setAccessionNumber(nextIdentifier);
-					adp.setPackageIDChanged(true);
 					Log.debug(30, "Original identifier: " + identifier + ", next revision: " + nextIdentifier);
 					// record this in revision manager
 					getRevisionManager().setObsoletes(nextIdentifier, identifier);
 					identifier = nextIdentifier;
 				}
+				adp.setAccessionNumber(identifier);
+				adp.setPackageIDChanged(true);
 				
 				// make sure the mdp has the latest ADP object/identifier
 				Identifier originalIdentifier = new Identifier();
 				originalIdentifier.setValue(origId);
 				mdp.remove(originalIdentifier);
 				mdp.addData(adp);
+				
 			} else {
-				// canceled the save
+				// canceled the save, so just return now
 				return identifier;
 			}
 		} else {
-			Log.debug(30, "==============In existFlag and insert revision 1 branch");
-			// since it is saving a new package, increase docid silently
-			//identifier = generateIdentifier(null);
+			Log.debug(30, "object identifier does not exist locally");
+			// since it is saving a new package, no need to do anything
 			adp.setAccessionNumber(identifier);
 			adp.setPackageIDChanged(false);
 
@@ -456,27 +449,28 @@ public class LocalDataStoreService extends DataStoreService
 		// now save doc to local file system, either for real or in incomplete directory
 		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
 		InputStream stringStream = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
+		File savedFile = null;
+
 		if (location.equals(DataPackageInterface.INCOMPLETE)) {
 			Log.debug(30, "Serialize metadata into incomplete dir with docid " + identifier);
-			File newFile = saveIncompleteFile(identifier, stringStream);
-			if (newFile != null) {
-				adp.setSerializeLocalSuccess(true);
-			} else {
-				adp.setSerializeLocalSuccess(false);
-			}
+			savedFile = saveIncompleteFile(identifier, stringStream);
+		} else {
+			savedFile = saveFile(adp.getAccessionNumber(), stringStream);
 		}
-		else {
-			File newFile = saveFile(adp.getAccessionNumber(), stringStream);
-			if (newFile != null) {
-				adp.setSerializeLocalSuccess(true);
-			} else {
-				adp.setSerializeLocalSuccess(false);
-			}
+		
+		// success?
+		if (savedFile != null) {
+			adp.setSerializeLocalSuccess(true);
+		} else {
+			// probably should not continue at this point
+			adp.setSerializeLocalSuccess(false);
+			return identifier;
 		}
 		
 		// save the SM for the science metadata
 		saveSystemMetadata(adp.getSystemMetadata());
 		
+		// check if we have a package
 	    Set<Identifier> identifiers = mdp.identifiers();
 	    //return now if we do not have data packages to save as ORE
 	    if (identifiers == null || identifiers.size() == 1) {
@@ -566,11 +560,16 @@ public class LocalDataStoreService extends DataStoreService
 					// if docid exists, we need to update the revision
 					String originalIdentifier = docid;
 					boolean updatedId = false;
-					if ( exists && isDirty) {
+					if (exists && isDirty) {
 						// get the next identifier in this series
 						docid = getNextIdentifier(docid);
 						// save the old one for reference later
 						original_new_id_map.put(docid, originalIdentifier);
+						// save the revision history
+						getRevisionManager().setObsoletes(docid, originalIdentifier);
+						Identifier obsoletes = new Identifier();
+						obsoletes.setValue(originalIdentifier);
+						entity.getSystemMetadata().setObsoletes(obsoletes);
 						// we changed the identifier
 						updatedId = true;
 						Log.debug(30, "The identifier "
