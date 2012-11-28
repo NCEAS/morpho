@@ -34,6 +34,8 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Vector;
@@ -93,8 +95,23 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		cnPanel.add(coordinatingNodeURLLabel);
 		coordinatingNodeURLTextField.setColumns(35);
 		// disable until we have something to do with it
-		coordinatingNodeURLTextField.setEnabled(false);
-		coordinatingNodeURLTextField.setEditable(false);
+//		coordinatingNodeURLTextField.setEnabled(false);
+//		coordinatingNodeURLTextField.setEditable(false);
+		coordinatingNodeURLTextField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusGained(FocusEvent event) {
+				// don't do anything
+				
+			}
+
+			@Override
+			public void focusLost(FocusEvent event) {
+				// refresh the MN list
+				refreshMemberNodeList();
+			}
+			
+		});
 		cnPanel.add(coordinatingNodeURLTextField);
 		CenterPanel.add(cnPanel);
 		
@@ -102,24 +119,9 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		JPanel mnSelectionPanel = new JPanel();
 		mnSelectionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		Vector options = null;
-		try {
-			List<Node> nodes = morpho.getDataONEDataStoreService().getNodes();
-			if (nodes != null) {
-				//options = nodes.toArray();
-				options = new Vector();
-				for (Node node: nodes) {
-					if (node.getType().equals(NodeType.MN)) {
-						options.add(new NodeItem(node));
-					}
-				}
-			}
-		} catch (Exception e) {
-			Log.debug(10, "Could not look up available Member Nodes from the CN: " + e.getMessage());
-			e.printStackTrace();
-		}
+		// load the MNs initially
+		refreshMemberNodeList();
 		
-		memberNodeComboBox = new JComboBox(options);
 		memberNodeComboBox.setEditable(true);
 		//memberNodeComboBox.setRenderer(new NodeListCellRenderer());
 		memberNodeURLLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -232,6 +234,33 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 
 		super.setVisible(b);
 	}
+	
+	private void refreshMemberNodeList() {
+		Object selectedItem = memberNodeComboBox.getSelectedItem();
+		memberNodeComboBox.removeAllItems();
+		Vector options = null;
+		try {
+			String cnURL = coordinatingNodeURLTextField.getText();
+			List<Node> nodes = morpho.getDataONEDataStoreService().getNodes(cnURL);
+			if (nodes != null) {
+				//options = nodes.toArray();
+				options = new Vector();
+				for (Node node: nodes) {
+					if (node.getType().equals(NodeType.MN)) {
+						NodeItem item = new NodeItem(node);
+						options.add(item);
+						memberNodeComboBox.addItem(item);
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.debug(10, "Could not look up available Member Nodes from the CN: " + e.getMessage());
+			e.printStackTrace();
+		}
+		if (selectedItem != null) {
+			memberNodeComboBox.setSelectedItem(selectedItem);
+		}
+	}
 
 	// {{DECLARE_CONTROLS
 	JPanel CenterPanel = new JPanel();
@@ -242,7 +271,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	JLabel coordinatingNodeURLLabel = new JLabel();
 	JTextField coordinatingNodeURLTextField = new JTextField();
 	JLabel memberNodeURLLabel = new JLabel();
-	JComboBox memberNodeComboBox = null;
+	JComboBox memberNodeComboBox = new JComboBox();
 	JPanel JPanel3 = new JPanel();
 	JLabel loggingLabel = new JLabel();
 	JRadioButton logYes = new JRadioButton();

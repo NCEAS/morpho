@@ -47,11 +47,9 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.dataone.client.CNode;
-import org.dataone.client.D1Client;
 import org.dataone.client.D1Object;
 import org.dataone.client.MNode;
 import org.dataone.client.auth.CertificateManager;
-import org.dataone.configuration.Settings;
 import org.dataone.ore.ResourceMapFactory;
 import org.dataone.service.exceptions.IdentifierNotUnique;
 import org.dataone.service.exceptions.InsufficientResources;
@@ -792,14 +790,19 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	}
  
 	/**
-	 * Retrieve a Node list from the currently configured CN
-	 * @return
+	 * Retrieve a Node list from the CN.
+	 * Uses the currently configured CN if the cnURL
+	 * parameter is null.
+	 * @param optional cnURL to use in cases where a value has not
+	 * been committed to the configuration file
+	 * @return list of nodes registered in the CN
 	 */
-	public List<Node> getNodes() {
+	public List<Node> getNodes(String cnURL) {
 		try {
-			String cnURL = config.get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
-			Settings.getConfiguration().setProperty("D1Client.CN_URL", cnURL);
-			CNode cNode = D1Client.getCN();
+			if (cnURL == null || cnURL.length() == 0) {
+				cnURL = config.get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
+			}
+			CNode cNode = new CNode(cnURL);
 			NodeList nodes = cNode.listNodes();
 			return nodes.getNodeList();
 		} catch (Exception e) {
