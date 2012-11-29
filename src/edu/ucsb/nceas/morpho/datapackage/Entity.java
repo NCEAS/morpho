@@ -26,21 +26,20 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.DOMImplementation;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.dataone.client.D1Object;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
-import edu.ucsb.nceas.utilities.*;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
- * class that represents a Entity
+ * A class that represents an Entity
+ * By extending D1Object, Entity inherits getData() and System Metadata
+ * about the entity
  */
 public  class Entity extends D1Object
 {
