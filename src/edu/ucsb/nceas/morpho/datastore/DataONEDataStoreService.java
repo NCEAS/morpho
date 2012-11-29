@@ -76,6 +76,7 @@ import org.dspace.foresite.OREParserException;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.DataONERevisionManager;
@@ -414,68 +415,180 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     return systemMetadata;
   }
   
-  /**
-   * Save the MorphoDataPackage object into the local data store.
-   * @param mdp - the object will be saved
-   * @return the identifier of saved object
-   * TODO: need to implement it.
-   */
-  @Override
-  public String save(MorphoDataPackage mdp) throws Exception {
-    AbstractDataPackage adp = mdp.getAbstractDataPackage();
-    if(adp == null) {
-      throw new IllegalActionException("DataONEDataStoreService.save - users is trying save an Morpho data package without setting metadata - the AbstractDatapackage");
-    }
-    Identifier metadataId = adp.getIdentifier();
-    Identifier oreId = new Identifier();
-    oreId.setValue("resourceMap_" + metadataId.getValue());
+  	/**
+	 * Save the MorphoDataPackage object into the local data store.
+	 * 
+	 * @param mdp - the object will be saved
+	 * @return the identifier of saved object TODO: need to implement it.
+	 */
+	@Override
+	public String save(MorphoDataPackage mdp) throws Exception {
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		if (adp == null) {
+			throw new IllegalActionException(
+					"DataONEDataStoreService.save - users is trying save an Morpho data package without setting metadata - the AbstractDatapackage");
+		}
+		Identifier metadataId = adp.getIdentifier();
 
-    Set<Identifier> identifiers = mdp.identifiers();
-    //save data objects first
-    if(identifiers != null && identifiers.size() > 0 ) {
-      for(Identifier identifier : identifiers) {
-        if(!identifier.equals(oreId) && !identifier.equals(metadataId)) {
-          save(mdp.get(identifier));
-        }
-      }
-      
-    }
-    //save metadata then
-    save(mdp.get(metadataId));
-    
-    adp.setSerializeMetacatSuccess(true);
-    
-    //return now if we do not have data packages to save as ORE
-    if (identifiers == null || identifiers.size() == 1) {
-    	return metadataId.getValue();
-    }
-    
-    //save ore document finally
-    D1Object oreD1Object = new D1Object();
-    mdp.setPackageId(oreId);
-    oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
-    
-    // generate ORE SM for the save
-    SystemMetadata resourceMapSysMeta = new SystemMetadata();
-    PropertyUtils.copyProperties(resourceMapSysMeta, adp.getSystemMetadata());
-    resourceMapSysMeta.setIdentifier(oreId);
-    Checksum oreChecksum = ChecksumUtil.checksum(new ByteArrayInputStream(oreD1Object.getData()), resourceMapSysMeta.getChecksum().getAlgorithm());
-	resourceMapSysMeta.setChecksum(oreChecksum);
-    ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
-    formatId.setValue("http://www.openarchives.org/ore/terms");
-	resourceMapSysMeta.setFormatId(formatId);
-	resourceMapSysMeta.setSize(BigInteger.valueOf(oreD1Object.getData().length));
+		// save data objects first
+		Set<Identifier> identifiers = mdp.identifiers();
+		if (identifiers != null && identifiers.size() > 0) {
+			serializeData(mdp);
+		}
+
+		// save metadata then
+		String identifier = metadataId.getValue();
+		boolean exists = exists(identifier);
+		// does the identifier exist already?
+		if (exists) {
+			Log.debug(30, "object already exists locally with this identifier: " + identifier);
+			// TODO: is this frame needed or can we just increase the revision silently?
+			DocidConflictHandler identifierConflictHandler = new DocidConflictHandler(identifier, DataPackageInterface.NETWORK);
+			String choice = identifierConflictHandler.showDialog();
+			// Log.debug(5, "choice is "+choice);
+			if (choice != null) {
+				String origId = identifier;
+				if (choice.equals(DocidConflictHandler.INCREASEID)) {
+					// generate a new identifier - separate from the original chain
+					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+					identifier = generateIdentifier(scope);
+				} else {
+					// get next identifier (really just the same as generating a new one) 
+					String nextIdentifier = getNextIdentifier(identifier);
+					Log.debug(30, "Original identifier: " + identifier + ", next revision: " + nextIdentifier);
+					// record this in revision manager
+					getRevisionManager().setObsoletes(nextIdentifier, identifier);
+					adp.getSystemMetadata().setObsoletes(metadataId);
+					identifier = nextIdentifier;
+				}
+				
+				metadataId.setValue(identifier);
+				adp.setAccessionNumber(identifier);
+				adp.setPackageIDChanged(true);
+				
+				// make sure the mdp has the latest ADP object/identifier
+				Identifier originalIdentifier = new Identifier();
+				originalIdentifier.setValue(origId);
+				mdp.remove(originalIdentifier);
+				mdp.addData(adp);
+				
+			} else {
+				// canceled the save, so just return now
+				return identifier;
+			}
+		} else {
+			Log.debug(30, "object identifier does not exist locally");
+			// since it is saving a new package, no need to do anything
+			adp.setAccessionNumber(identifier);
+			adp.setPackageIDChanged(false);
+
+		}
+		
+		// now save
+		save(mdp.get(metadataId));
+		adp.setSerializeMetacatSuccess(true);
+
+		// return now if we do not have data packages to save as ORE
+		if (identifiers == null || identifiers.size() == 1) {
+			return metadataId.getValue();
+		}
+
+		
+		// save ore document finally
+		Identifier oreId = new Identifier();
+		oreId.setValue("resourceMap_" + metadataId.getValue());
+		D1Object oreD1Object = new D1Object();
+		mdp.setPackageId(oreId);
+		oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
+
+		// generate ORE SM for the save
+		SystemMetadata resourceMapSysMeta = new SystemMetadata();
+		PropertyUtils.copyProperties(resourceMapSysMeta, adp
+				.getSystemMetadata());
+		resourceMapSysMeta.setIdentifier(oreId);
+		Checksum oreChecksum = ChecksumUtil.checksum(new ByteArrayInputStream(
+				oreD1Object.getData()), resourceMapSysMeta.getChecksum()
+				.getAlgorithm());
+		resourceMapSysMeta.setChecksum(oreChecksum);
+		ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
+		formatId.setValue("http://www.openarchives.org/ore/terms");
+		resourceMapSysMeta.setFormatId(formatId);
+		resourceMapSysMeta.setSize(BigInteger.valueOf(oreD1Object.getData().length));
+
+		// set the revision graph
+		resourceMapSysMeta.setObsoletes(null);
+		resourceMapSysMeta.setObsoletedBy(null);
+
+		// this is just weird to set in two different places
+		mdp.setSystemMetadata(resourceMapSysMeta);
+		oreD1Object.setSystemMetadata(mdp.getSystemMetadata());
+		save(oreD1Object);
+		return oreId.getValue();
+	}
+
+	private boolean serializeData(MorphoDataPackage mdp) throws Exception {
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		if (adp.getEntityArray() == null) {
+			Log.debug(30, "Entity array is null, no need to serialize data");
+			return true; 
+		}
+
+		for (int i = 0; i < adp.getEntityArray().length; i++) {
+			Entity entity = adp.getEntity(i);
+			String URLinfo = adp.getDistributionUrl(i, 0, 0);
+			String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
+			String objectName = adp.getPhysicalName(i, 0);
+			Log.debug(25, "object name is ===================== " + objectName);
+			if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
+
+				String docid = AbstractDataPackage.getUrlInfo(URLinfo);
+				Log.debug(30, "handle data file  with index " + i + "" + docid);
+				if (docid != null) {
+					boolean isDirty = adp.containsDirtyEntityIndex(i);
+					Log.debug(30, "url " + docid + " with index " + i + " is dirty " + isDirty);
+					
+					// check if the object exists already
+					boolean exists = exists(docid);
+
+					// if docid exists, we need to update the revision
+					String originalIdentifier = docid;
+					boolean updatedId = false;
+					if (exists && isDirty) {
+						// get the next identifier in this series
+						docid = getNextIdentifier(docid);
+						// save the revision history
+						getRevisionManager().setObsoletes(docid, originalIdentifier);
+						Identifier obsoletes = new Identifier();
+						obsoletes.setValue(originalIdentifier);
+						entity.getSystemMetadata().setObsoletes(obsoletes);
+						// we changed the identifier
+						updatedId = true;
+						Log.debug(30, "The identifier "
+								+ originalIdentifier
+								+ " exists and has unsaved data. The identifier for next revision is " + docid );
+
+					}
+
+					// save the data if it is new or has changes
+					if (isDirty || updatedId || !exists) {
+						save(entity);
+					}
+
+					
+					// newDataFile must have worked; thus update the package
+					String urlinfo = "ecogrid://knb/" + docid;
+					adp.setDistributionUrl(i, 0, 0, urlinfo);
+					// File was saved successfully, we need to remove the dirty flag
+					if (isDirty) {
+						adp.removeDirtyEntityIndex(i);
+					}
+				}
+			}
+		}
+		return true;
+	}
 	
-	// set the revision graph
-	resourceMapSysMeta.setObsoletes(null);
-	resourceMapSysMeta.setObsoletedBy(null);
-
-	// this is just weird to set in two different places
-    mdp.setSystemMetadata(resourceMapSysMeta);
-    oreD1Object.setSystemMetadata(mdp.getSystemMetadata());
-    save(oreD1Object);
-    return oreId.getValue();
-  }
+	
   
   /*
    * Save a d1Ojbect to the DataONE network. 
