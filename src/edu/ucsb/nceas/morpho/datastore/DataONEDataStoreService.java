@@ -101,6 +101,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   public static final String CNODE_URL_ELEMENT_NAME = "dataone_cnode_baseurl";
   private static final String PATHQUERY = "pathquery";
   private static final String DOI = "doi";
+  private static final String UUID = "uuid";
+  private static final String DEFAULT_IDENTIFIER_SCHEME = UUID;
   private static MNode activeMNode = null;
   private static String cnURLInConfig = null;
   
@@ -445,12 +447,12 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		// does the identifier exist already?
 		if (exists) {
 			Log.debug(30, "object already exists locally with this identifier: " + identifier);
+			Identifier originalIdentifier = new Identifier();
+			originalIdentifier.setValue(identifier);
 			// TODO: is this frame needed or can we just increase the revision silently?
 			DocidConflictHandler identifierConflictHandler = new DocidConflictHandler(identifier, DataPackageInterface.NETWORK);
 			String choice = identifierConflictHandler.showDialog();
-			// Log.debug(5, "choice is "+choice);
-			if (choice != null) {
-				String origId = identifier;
+			if (choice != null) {				
 				if (choice.equals(DocidConflictHandler.INCREASEID)) {
 					// generate a new identifier - separate from the original chain
 					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
@@ -461,17 +463,15 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 					Log.debug(30, "Original identifier: " + identifier + ", next revision: " + nextIdentifier);
 					// record this in revision manager
 					getRevisionManager().setObsoletes(nextIdentifier, identifier);
-					adp.getSystemMetadata().setObsoletes(metadataId);
+					adp.getSystemMetadata().setObsoletes(originalIdentifier);
 					identifier = nextIdentifier;
 				}
 				
-				metadataId.setValue(identifier);
+				// set the new id
 				adp.setAccessionNumber(identifier);
 				adp.setPackageIDChanged(true);
 				
 				// make sure the mdp has the latest ADP object/identifier
-				Identifier originalIdentifier = new Identifier();
-				originalIdentifier.setValue(origId);
 				mdp.remove(originalIdentifier);
 				mdp.addData(adp);
 				
@@ -486,6 +486,9 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 			adp.setPackageIDChanged(false);
 
 		}
+		
+		// id may have changed not
+		metadataId = adp.getIdentifier();
 		
 		// now save
 		save(mdp.get(metadataId));
@@ -776,16 +779,19 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   }
   
   /**
-   * Generate identifier from the dataone member node.
-   * @return
-   */
-  @Override
-  public String generateIdentifier(String fragment) throws InvalidToken, ServiceFailure, NotAuthorized,
-                                            NotImplemented, InvalidRequest {
-    String scheme = DOI;
-    Identifier identifier = activeMNode.generateIdentifier(scheme, fragment);
-    return identifier.getValue();
-  }
+	 * Generate identifier from the dataone member node.
+	 * 
+	 * @return
+	 */
+	@Override
+	public String generateIdentifier(String fragment) throws InvalidToken,
+			ServiceFailure, NotAuthorized, NotImplemented, InvalidRequest {
+
+		// TODO: use DOI or ARK scheme
+		String scheme = DEFAULT_IDENTIFIER_SCHEME;
+		Identifier identifier = activeMNode.generateIdentifier(scheme, fragment);
+		return identifier.getValue();
+	}
   
   /**
    * Generate identifier for next revision of given identifier
@@ -795,10 +801,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   @Override
   public String getNextIdentifier(String identifier) throws InvalidToken, ServiceFailure, NotAuthorized,
                                             NotImplemented, InvalidRequest {
-    throw new NotImplemented("", "This method is not yet implemented in DataONEDataStoreService");
-//	String scheme = DOI;
-//    Identifier nextIdentifier = activeMNode.generateIdentifier(scheme, identifier);
-//    return nextIdentifier.getValue();
+	  String fragment = morpho.getProfile().get("scope", 0);
+	  return generateIdentifier(fragment);
   }
   
   /** Send the given query to the Dataone member node, get back the XML InputStream
