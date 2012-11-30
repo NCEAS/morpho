@@ -36,7 +36,6 @@ import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * This singleton class allows callers to interact with data store services for
@@ -127,8 +126,12 @@ public class DataStoreServiceController {
 		// get an MDP from the desired source
 		MorphoDataPackage mdp = null;
 		try {
-			if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
+			if (location.equals(DataPackageInterface.LOCAL)) {
 				mdp = Morpho.thisStaticInstance.getLocalDataStoreService().read(docid);
+			} else if (location.equals(DataPackageInterface.BOTH)) {
+				mdp = Morpho.thisStaticInstance.getLocalDataStoreService().read(docid);
+				// indicate it exists in both locations
+				mdp.getAbstractDataPackage().setLocation(DataPackageInterface.BOTH);
 			}
 			else { 
 				// must be on network only
