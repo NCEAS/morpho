@@ -148,7 +148,8 @@ public class OpenPreviousVersionCommand implements Command
       localLoc = DataStoreServiceController.getInstance().exists(docId, DataPackageInterface.LOCAL);
       packageName = docId; // just use the given id as title
       try {
-		versions = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getAllRevisions(docId);
+    	  String location = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage().getLocation();
+    	  versions = DataStoreServiceController.getInstance().getAllRevisions(docId, location);
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
