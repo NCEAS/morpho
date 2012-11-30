@@ -288,10 +288,11 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 			InvalidRequest {
 
 	  // construct the package
+	  // TODO: handle OREs as packages
 		MorphoDataPackage mdp = new MorphoDataPackage();
 		Identifier packageId = new Identifier();
 		packageId.setValue(identifier);
-		mdp.setPackageId(packageId);
+		//mdp.setPackageId(packageId);
 
 		// parse the metadata/data identifiers and store the associated objects
 		// if they are accessible
@@ -761,15 +762,18 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   public boolean delete(MorphoDataPackage mdp) throws InvalidToken, ServiceFailure, 
                                             NotAuthorized, NotFound, NotImplemented {
     boolean success = false;
+    // check if there is an ORE package
     Identifier oreId = mdp.getPackageId();
-    activeMNode.delete(oreId);
+    if (oreId != null) {
+    	activeMNode.archive(oreId);
+    }
     Identifier metadataId = mdp.getAbstractDataPackage().getIdentifier();
-    activeMNode.delete(metadataId);
+    activeMNode.archive(metadataId);
     Set<Identifier> identifiers = mdp.identifiers();
     if(identifiers != null && identifiers.size() > 0 ) {
       for(Identifier identifier : identifiers) {
         if(!identifier.equals(oreId) && !identifier.equals(metadataId)) {
-          activeMNode.delete(identifier);
+          activeMNode.archive(identifier);
         }
 
       }
