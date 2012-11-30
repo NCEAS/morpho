@@ -67,6 +67,7 @@ import org.dataone.service.types.v1.Node;
 import org.dataone.service.types.v1.NodeList;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.Subject;
+import org.dataone.service.types.v1.SubjectInfo;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.types.v1.util.ChecksumUtil;
 import org.dataone.service.util.EncodingUtilities;
@@ -101,6 +102,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   private static final String PATHQUERY = "pathquery";
   private static final String DOI = "doi";
   private static MNode activeMNode = null;
+  private static String cnURLInConfig = null;
   
   
   /**
@@ -118,6 +120,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   private static void init() {
     String mNodeBaseURL = Morpho.getConfiguration().get(MNODE_URL_ELEMENT_NAME, 0);
     activeMNode = new MNode(mNodeBaseURL);
+    cnURLInConfig = Morpho.getConfiguration().get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
     
   }
   /**
@@ -913,7 +916,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	public List<Node> getNodes(String cnURL) {
 		try {
 			if (cnURL == null || cnURL.length() == 0) {
-				cnURL = config.get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
+				cnURL = cnURLInConfig;
 			}
 			CNode cNode = new CNode(cnURL);
 			NodeList nodes = cNode.listNodes();
@@ -924,5 +927,31 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		}
 		return null;
 		
+	}
+	
+	/**
+	 * Get the all identity information from the specified cnURL. If the cnURL is null,
+	 * the configured CN will be used.
+	 * @param cnURL
+	 * @return
+	 * @throws InvalidRequest
+	 * @throws ServiceFailure
+	 * @throws InvalidToken
+	 * @throws NotAuthorized
+	 * @throws NotImplemented
+	 */
+	public SubjectInfo getAllIdentityInfo(String cnURL) throws InvalidRequest, 
+	                ServiceFailure, InvalidToken, NotAuthorized, NotImplemented {
+	  SubjectInfo info = null;
+	  if (cnURL == null || cnURL.length() == 0) {
+      cnURL = cnURLInConfig;
+    }
+    CNode cNode = new CNode(cnURL);
+    String query = null;
+    String status = null;
+    int start = -1;
+    int count =-1;
+    info = cNode.listSubjects(query, status, start, count);
+	  return info;
 	}
 }
