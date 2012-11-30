@@ -412,7 +412,8 @@ public class LocalDataStoreService extends DataStoreService
 			String choice = identifierConflictHandler.showDialog();
 			// Log.debug(5, "choice is "+choice);
 			if (choice != null) {
-				String origId = identifier;
+				Identifier originalIdentifier = new Identifier();
+				originalIdentifier.setValue(identifier);
 				if (choice.equals(DocidConflictHandler.INCREASEID)) {
 					// generate a new identifier - separate from the original chain
 					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
@@ -423,14 +424,15 @@ public class LocalDataStoreService extends DataStoreService
 					Log.debug(30, "Original identifier: " + identifier + ", next revision: " + nextIdentifier);
 					// record this in revision manager
 					getRevisionManager().setObsoletes(nextIdentifier, identifier);
+					adp.getSystemMetadata().setObsoletes(originalIdentifier);
 					identifier = nextIdentifier;
 				}
+			
+				// set the new identifier
 				adp.setAccessionNumber(identifier);
 				adp.setPackageIDChanged(true);
 				
 				// make sure the mdp has the latest ADP object/identifier
-				Identifier originalIdentifier = new Identifier();
-				originalIdentifier.setValue(origId);
 				mdp.remove(originalIdentifier);
 				mdp.addData(adp);
 				
@@ -443,7 +445,6 @@ public class LocalDataStoreService extends DataStoreService
 			// since it is saving a new package, no need to do anything
 			adp.setAccessionNumber(identifier);
 			adp.setPackageIDChanged(false);
-
 		}
 		
 		// now save doc to local file system, either for real or in incomplete directory
