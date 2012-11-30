@@ -32,16 +32,12 @@ public class DocidConflictHandler
      
        public static final String INCREASEID = "increaseID";
        public static final String INCREASEREVISION = "increaseRevision";
-       public static final String LOCAL  = "local system";
        private static final int PADDING = 5;
        private static final int WIDTH = 580;
        private static final int HEIGHT = 280;
-       private static final int EXTRAL = 75;
        private static final int HEADER = 16;
        private static final int LEFTSPACE = 190;
        private static final  Dimension LABELDIMENSION = new Dimension(WIDTH,80);
-       private String docid = null;
-       private String location = null;
        private String userChoice = null;
        private static final String LABELINCEASEDOCID = "Generate new document id";
        private static final String LABELINCREASEREVISION = "Increment revision number";
@@ -60,8 +56,6 @@ public class DocidConflictHandler
        public DocidConflictHandler(String docid, String location)
        {
     	    //super(parent, true);
-    	    this.docid = docid;
-    	    this.location = location;
     	    this.userChoice = null;
     	    message =  "<html><font style=\"font-size: 9px;\" color=\"#666666\"><br>&#x0020;&#x0020;Document id "+docid +" already exists in "+location+
             ". <br>&#x0020;&#x0020;If the saving document is an updated version of the document, increment the revision number. "+ 
