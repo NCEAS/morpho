@@ -57,6 +57,7 @@ import org.dataone.service.types.v1.ObjectFormat;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.Permission;
 import org.dataone.service.types.v1.Subject;
+import org.dataone.service.types.v1.SubjectInfo;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.types.v1.util.ChecksumUtil;
 import org.dataone.service.util.Constants;
@@ -95,6 +96,7 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
   public static Test suite() throws Exception {
       TestSuite suite = new TestSuite();
       suite.addTest(new DataONEDataStoreServiceTest("initialize"));
+      suite.addTest(new DataONEDataStoreServiceTest("testGetAllIdentityInfo"));
       suite.addTest(new DataONEDataStoreServiceTest("testExists"));
       suite.addTest(new DataONEDataStoreServiceTest("testSave"));
       suite.addTest(new DataONEDataStoreServiceTest("testReadAndDelete"));
@@ -264,6 +266,13 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
     
   }
   
+  public void testGetAllIdentityInfo() throws Exception {
+    String cnURL = "https://cn-dev.test.dataone.org/cn";
+    SubjectInfo info = service.getAllIdentityInfo(cnURL);
+    System.out.println("the size of the persons "+info.sizePersonList());
+    System.out.println("the size of the groups "+info.sizeGroupList());
+  }
+  
   /**
    * Test the read action.
    * @throws Exception
@@ -411,5 +420,6 @@ public class DataONEDataStoreServiceTest extends MorphoTestCase {
     String id = "test-"+System.currentTimeMillis()+appendix;
     return id;
   }
+  
 }
 
