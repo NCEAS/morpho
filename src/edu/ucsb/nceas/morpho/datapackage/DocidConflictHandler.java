@@ -18,6 +18,7 @@ import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Util;
@@ -52,6 +53,7 @@ public class DocidConflictHandler
        private JRadioButton increaseDocid = null;
        private JDialog dialog = null;
        private JComboBox identifierScheme = null;
+       private String location = null;
        
        /**
         * Constructor
@@ -59,6 +61,7 @@ public class DocidConflictHandler
        public DocidConflictHandler(String docid, String location)
        {
     	    //super(parent, true);
+    	   this.location = location;
     	    this.userChoice = null;
     	    message =  "<html><font style=\"font-size: 9px;\" color=\"#666666\"><br>&#x0020;&#x0020;Document id "+docid +" already exists in "+location+
             ". <br>&#x0020;&#x0020;If the saving document is an updated version of the document, increment the revision number. "+ 
@@ -119,40 +122,44 @@ public class DocidConflictHandler
          messagePanel.add(messageLabel, BorderLayout.CENTER);
        }
        
-       /*
-        * Create a JPnale containing two radio buttons. It will be on the central position
-        */
-       private void createChoicePanel()
-       {
-         Box radioBox = Box.createVerticalBox();
-         radioBox.add(Box.createVerticalStrut(HEADER));
-         //Creates two radio button for options
-         increaseRevision = new JRadioButton(LABELINCREASEREVISION);
-         increaseRevision.setSelected(true);
-         increaseDocid = new JRadioButton(LABELINCEASEDOCID);       
-         ButtonGroup group = new ButtonGroup();
-         group.add(increaseRevision);
-         group.add(increaseDocid);
-         radioBox.add(increaseRevision);
-         radioBox.add(increaseDocid);
-         Box centerBox = Box.createHorizontalBox();
-         centerBox.add(Box.createHorizontalStrut(LEFTSPACE));
-         centerBox.add(radioBox);
-         centerBox.add(Box.createHorizontalGlue());
-         choicePanel = new JPanel();
-         choicePanel.setLayout(new BorderLayout());
-         choicePanel.add(centerBox, BorderLayout.CENTER);
-         
-         // the scheme
-         Box schemeBox = Box.createHorizontalBox();
-         identifierScheme = new JComboBox(IDENTIFIER_SCHEMES);
-         schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
-         schemeBox.add(new JLabel("Identifier Scheme:"));
-         schemeBox.add(identifierScheme);
-         centerBox.add(Box.createHorizontalGlue());
-         choicePanel.add(schemeBox, BorderLayout.SOUTH);
+	/*
+	 * Create a JPnale containing two radio buttons. It will be on the central
+	 * position
+	 */
+	private void createChoicePanel() {
+		Box radioBox = Box.createVerticalBox();
+		radioBox.add(Box.createVerticalStrut(HEADER));
+		// Creates two radio button for options
+		increaseRevision = new JRadioButton(LABELINCREASEREVISION);
+		increaseRevision.setSelected(true);
+		increaseDocid = new JRadioButton(LABELINCEASEDOCID);
+		ButtonGroup group = new ButtonGroup();
+		group.add(increaseRevision);
+		group.add(increaseDocid);
+		radioBox.add(increaseRevision);
+		radioBox.add(increaseDocid);
+		Box centerBox = Box.createHorizontalBox();
+		centerBox.add(Box.createHorizontalStrut(LEFTSPACE));
+		centerBox.add(radioBox);
+		centerBox.add(Box.createHorizontalGlue());
+		choicePanel = new JPanel();
+		choicePanel.setLayout(new BorderLayout());
+		choicePanel.add(centerBox, BorderLayout.CENTER);
 
-       }
+		// the scheme
+		Box schemeBox = Box.createHorizontalBox();
+		identifierScheme = new JComboBox(IDENTIFIER_SCHEMES);
+		schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
+		schemeBox.add(new JLabel("Identifier Scheme:"));
+		schemeBox.add(identifierScheme);
+		centerBox.add(Box.createHorizontalGlue());
+		choicePanel.add(schemeBox, BorderLayout.SOUTH);
+		// only applicable for network saves
+		if (location.equals(DataPackageInterface.LOCAL)) {
+			identifierScheme.setEnabled(false);
+		}
+
+	}
        
        
        /*
