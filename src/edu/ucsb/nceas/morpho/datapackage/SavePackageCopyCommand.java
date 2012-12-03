@@ -102,7 +102,7 @@ public class SavePackageCopyCommand implements Command
     String location = adp.getLocation();
     String oldid = adp.getAccessionNumber();
 
-    String nextid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+    String nextid = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
     adp.setAccessionNumber(nextid);
     mdp = new MorphoDataPackage();
     mdp.setAbstractDataPackage(adp);

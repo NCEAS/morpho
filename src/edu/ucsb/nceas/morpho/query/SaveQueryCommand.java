@@ -105,7 +105,7 @@ public class SaveQueryCommand implements Command
       String identifier = query.getIdentifier();
       if (identifier == null) {
     	  // get a local identifier
-        identifier = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+        identifier = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
         query.setIdentifier(identifier);
       }
       

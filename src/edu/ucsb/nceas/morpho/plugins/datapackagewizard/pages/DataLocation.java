@@ -1219,7 +1219,7 @@ public class DataLocation extends AbstractUIPage {
     //String id = an.getNextId();
     if (nextAvailableID == null)
     {
-    	nextAvailableID = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+    	nextAvailableID = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
     }
     try {
     	Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(nextAvailableID, new FileInputStream(f));

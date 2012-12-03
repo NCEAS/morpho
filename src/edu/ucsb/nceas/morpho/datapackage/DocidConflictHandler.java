@@ -9,6 +9,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -42,6 +43,7 @@ public class DocidConflictHandler
        private static final String LABELINCEASEDOCID = "Generate new document id";
        private static final String LABELINCREASEREVISION = "Increment revision number";
        private static final String TITLE = "Resolve Identifier Conflict";
+       private static String[] IDENTIFIER_SCHEMES = {"default", "doi"};
        private String message = null;
        private JPanel okButtonPanel = null;
        private JPanel choicePanel = null;
@@ -49,6 +51,7 @@ public class DocidConflictHandler
        private JRadioButton increaseRevision = null;
        private JRadioButton increaseDocid = null;
        private JDialog dialog = null;
+       private JComboBox identifierScheme = null;
        
        /**
         * Constructor
@@ -60,41 +63,47 @@ public class DocidConflictHandler
     	    message =  "<html><font style=\"font-size: 9px;\" color=\"#666666\"><br>&#x0020;&#x0020;Document id "+docid +" already exists in "+location+
             ". <br>&#x0020;&#x0020;If the saving document is an updated version of the document, increment the revision number. "+ 
             "<br>&#x0020;&#x0020;Otherwise, generate a new document id.<font></html>";
-    	    //intialGUI();
        }
        
-       /*
-        * Intializes the gui
+    /*
+     * Initializes the gui
+     */
+	public String showDialog() {
+		dialog = new JDialog();
+		dialog.setTitle(TITLE);
+		dialog.setModal(true);
+		dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		MorphoFrame parent = UIController.getInstance().getCurrentActiveWindow();
+		if (parent != null) {
+			int parentWidth = parent.getWidth();
+			int parentHeight = parent.getHeight();
+			double parentX = parent.getLocation().getX();
+			double parentY = parent.getLocation().getY();
+			double centerX = parentX + 0.5 * parentWidth;
+			double centerY = parentY + 0.5 * parentHeight;
+			int dialogX = (new Double(centerX - 0.5 * WIDTH)).intValue();
+			int dialogY = (new Double(centerY - 0.5 * HEIGHT)).intValue();
+			dialog.setLocation(dialogX, dialogY);
+		}
+		dialog.setSize(WIDTH, HEIGHT);
+		dialog.setLayout(new BorderLayout());
+		createMessagePanel();
+		createChoicePanel();
+		createOKButtonPanel();
+		dialog.getContentPane().add(messagePanel, BorderLayout.NORTH);
+		dialog.getContentPane().add(choicePanel, BorderLayout.CENTER);
+		dialog.getContentPane().add(okButtonPanel, BorderLayout.SOUTH);
+		dialog.setVisible(true);
+		return userChoice;
+	}
+       
+       /**
+        * 
+        * Get the selected scheme
+        * @return
         */
-       public String showDialog()
-       {
-         dialog = new JDialog();
-         dialog.setTitle(TITLE);
-         dialog.setModal(true);
-         dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-         MorphoFrame parent= UIController.getInstance().getCurrentActiveWindow();
-         if(parent != null)
-         {
-           int parentWidth = parent.getWidth();
-           int parentHeight = parent.getHeight();
-           double parentX = parent.getLocation().getX();
-           double parentY = parent.getLocation().getY();
-           double centerX = parentX + 0.5 * parentWidth;
-           double centerY = parentY + 0.5 * parentHeight;
-           int dialogX = (new Double(centerX - 0.5 * WIDTH)).intValue();
-           int dialogY = (new Double(centerY - 0.5 * HEIGHT)).intValue();
-           dialog.setLocation(dialogX, dialogY);
-         }        
-         dialog.setSize(WIDTH, HEIGHT);
-         dialog.setLayout(new BorderLayout());
-         createMessagePanel();
-         createChoicePanel();
-         createOKButtonPanel();
-         dialog.getContentPane().add(messagePanel, BorderLayout.NORTH);
-         dialog.getContentPane().add(choicePanel, BorderLayout.CENTER);
-         dialog.getContentPane().add(okButtonPanel, BorderLayout.SOUTH);
-    	   dialog.setVisible(true);
-    	   return userChoice;
+       public String getScheme() {
+    	   return (String) identifierScheme.getSelectedItem();
        }
        
        /*
@@ -133,8 +142,17 @@ public class DocidConflictHandler
          choicePanel = new JPanel();
          choicePanel.setLayout(new BorderLayout());
          choicePanel.add(centerBox, BorderLayout.CENTER);
+         
+         // the scheme
+         Box schemeBox = Box.createHorizontalBox();
+         identifierScheme = new JComboBox(IDENTIFIER_SCHEMES);
+         schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
+         schemeBox.add(new JLabel("Identifier Scheme:"));
+         schemeBox.add(identifierScheme);
+         centerBox.add(Box.createHorizontalGlue());
+         choicePanel.add(schemeBox, BorderLayout.SOUTH);
+
        }
-       
        
        
        /*

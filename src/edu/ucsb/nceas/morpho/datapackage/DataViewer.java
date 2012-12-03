@@ -1354,7 +1354,7 @@ public class DataViewer extends javax.swing.JPanel
 			String id = "";
 			//System.out.println("the file id is "+dataFileId);
 			if (dataFileId == null) {
-				id = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+				id = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
 			} else {
 				id = DataStoreServiceController.getInstance().getNextIdentifier(dataFileId, DataPackageInterface.LOCAL);
 			}
@@ -1383,7 +1383,7 @@ public class DataViewer extends javax.swing.JPanel
 			  if (!curid.equals("")) {
 				  newid = DataStoreServiceController.getInstance().getNextIdentifier(curid, DataPackageInterface.LOCAL);
 			  } else {
-				  newid = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+				  newid = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
 			  }
 			  adp.setAccessionNumber(newid);
       }

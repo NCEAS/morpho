@@ -91,7 +91,7 @@ public class ImportEMLFileCommand implements Command
           //serialize local data file into morpho first
           Morpho.thisStaticInstance.getLocalDataStoreService().serializeDataInImportExternalEMLFile(dataPackage);
           //given a new id to this dataPackage
-          String identifier = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+          String identifier = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
           dataPackage.setAccessionNumber(identifier);
           //serialize metadata to local 
           MorphoDataPackage mdp = new MorphoDataPackage();

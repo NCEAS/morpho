@@ -265,7 +265,7 @@ public class WizardContainerFrame
 	    	   autoSaveID = adp.getAccessionNumber();
 	    	   if(autoSaveID == null || autoSaveID.trim().equals(""))
 	    	   {
-	    	     autoSaveID = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+	    	     autoSaveID = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
 	    	     //manuallySaveID = NewPackageWizardListener.TEMPORARYID;
 	    		    	 
 	    	   }

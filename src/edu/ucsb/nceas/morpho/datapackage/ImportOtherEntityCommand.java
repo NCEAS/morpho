@@ -181,7 +181,7 @@ public class ImportOtherEntityCommand implements Command {
 	   */
 	  private String saveDataFileAsTemp(File f, String currentId) {
 	    if (currentId  == null) {
-	    	currentId = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+	    	currentId = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
 	    } else {
 	    	currentId = DataStoreServiceController.getInstance().getNextIdentifier(currentId, DataPackageInterface.LOCAL);
 	    }

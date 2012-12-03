@@ -453,11 +453,14 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 			// TODO: is this frame needed or can we just increase the revision silently?
 			DocidConflictHandler identifierConflictHandler = new DocidConflictHandler(identifier, DataPackageInterface.NETWORK);
 			String choice = identifierConflictHandler.showDialog();
-			if (choice != null) {				
+			if (choice != null) {
+				
+				String scheme = identifierConflictHandler.getScheme();
+				
 				if (choice.equals(DocidConflictHandler.INCREASEID)) {
 					// generate a new identifier - separate from the original chain
 					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
-					identifier = generateIdentifier(scope);
+					identifier = generateIdentifier(scheme, scope);
 				} else {
 					// get next identifier (really just the same as generating a new one) 
 					String nextIdentifier = getNextIdentifier(identifier);
@@ -788,11 +791,13 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	 * @return
 	 */
 	@Override
-	public String generateIdentifier(String fragment) throws InvalidToken,
+	public String generateIdentifier(String scheme, String fragment) throws InvalidToken,
 			ServiceFailure, NotAuthorized, NotImplemented, InvalidRequest {
 
 		// TODO: use DOI or ARK scheme
-		String scheme = DEFAULT_IDENTIFIER_SCHEME;
+		 if (scheme == null) {
+			 scheme = DEFAULT_IDENTIFIER_SCHEME;
+		 }
 		Identifier identifier = activeMNode.generateIdentifier(scheme, fragment);
 		return identifier.getValue();
 	}
@@ -806,7 +811,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   public String getNextIdentifier(String identifier) throws InvalidToken, ServiceFailure, NotAuthorized,
                                             NotImplemented, InvalidRequest {
 	  String fragment = morpho.getProfile().get("scope", 0);
-	  return generateIdentifier(fragment);
+	  return generateIdentifier(null, fragment);
   }
   
   /** Send the given query to the Dataone member node, get back the XML InputStream

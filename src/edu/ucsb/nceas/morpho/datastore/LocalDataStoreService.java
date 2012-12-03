@@ -414,10 +414,11 @@ public class LocalDataStoreService extends DataStoreService
 			if (choice != null) {
 				Identifier originalIdentifier = new Identifier();
 				originalIdentifier.setValue(identifier);
+				String scheme = null;
 				if (choice.equals(DocidConflictHandler.INCREASEID)) {
 					// generate a new identifier - separate from the original chain
 					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
-					identifier = generateIdentifier(scope);
+					identifier = generateIdentifier(scheme, scope);
 				} else {
 					// get next identifier (really just the same as generating a new one) 
 					String nextIdentifier = getNextIdentifier(identifier);
@@ -873,7 +874,7 @@ public class LocalDataStoreService extends DataStoreService
 	 * 
 	 */
   	@Override
-	public synchronized String generateIdentifier(String fragment) {
+	public synchronized String generateIdentifier(String scheme, String fragment) {
 		int lastid = -1;
 		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
 		
@@ -1082,7 +1083,7 @@ public class LocalDataStoreService extends DataStoreService
 		}
 		
 		// all we can do now is generate an identifier....
-		String nextIdentifier = generateIdentifier(fragment);
+		String nextIdentifier = generateIdentifier(null, fragment);
 		return nextIdentifier;
 	}
 	
@@ -1184,7 +1185,7 @@ public class LocalDataStoreService extends DataStoreService
 				}
 				if (localFile != null && localFile.isFile()) {
 					// now we copy the file into morpho
-					String identifier = DataStoreServiceController.getInstance().generateIdentifier(DataPackageInterface.LOCAL);
+					String identifier = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
 					try {
 						String objectName = adp.getEntityName(i);
 						newDataFile(identifier, localFile, objectName);

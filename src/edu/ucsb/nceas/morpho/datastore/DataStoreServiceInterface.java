@@ -103,7 +103,7 @@ public interface DataStoreServiceInterface
   
   public MorphoDataPackage read(String identifier) throws Exception;
   
-  public String generateIdentifier(String fragment) throws Exception;
+  public String generateIdentifier(String scheme, String fragment) throws Exception;
   
   public boolean exists(String identifer) throws Exception;
   

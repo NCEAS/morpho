@@ -609,7 +609,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 				
 				if (choice.equals(DocidConflictHandler.INCREASEID)) {
 					// increase to a new id
-					identifier = generateIdentifier(null);
+					identifier = generateIdentifier(null, null);
 					adp.setAccessionNumber(identifier);
 					adp.setPackageIDChanged(true);				
 				} else {
@@ -1181,7 +1181,7 @@ public class MetacatDataStoreService extends DataStoreService implements DataSto
 	 * @return
 	 */
 	@Override
-	public String generateIdentifier(String fragment) {
+	public String generateIdentifier(String scheme, String fragment) {
 		String identifier = null;
 		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
 		String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
