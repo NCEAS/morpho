@@ -396,8 +396,6 @@ public class LocalDataStoreService extends DataStoreService
 		}
 
 		// now save the metadata
-		adp.setSerializeLocalSuccess(false);
-		adp.setSerializeMetacatSuccess(false);
 		adp.setPackageIDChanged(false);
 		
 		// To check if this update or insert action
@@ -448,6 +446,9 @@ public class LocalDataStoreService extends DataStoreService
 			adp.setPackageIDChanged(false);
 		}
 		
+		// start as unsuccessful
+		adp.setSerializeLocalSuccess(false);
+
 		// now save doc to local file system, either for real or in incomplete directory
 		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
 		InputStream stringStream = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
