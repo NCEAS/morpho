@@ -102,7 +102,12 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   private static final String PATHQUERY = "pathquery";
   private static final String DOI = "doi";
   private static final String UUID = "uuid";
-  private static final String DEFAULT_IDENTIFIER_SCHEME = UUID;
+  private static final String DEFAULT_IDENTIFIER_SCHEME = "default";
+  /**
+   * TODO: the service should probably tell us what schemes it uses
+   * But for now we will hope for the best
+   */
+  public static final String[] IDENTIFIER_SCHEMES = {DEFAULT_IDENTIFIER_SCHEME, DOI, UUID};
   private static MNode activeMNode = null;
   private static String cnURLInConfig = null;
   

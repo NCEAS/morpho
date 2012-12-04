@@ -18,6 +18,7 @@ import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -44,7 +45,6 @@ public class DocidConflictHandler
        private static final String LABELINCEASEDOCID = "Generate new document id";
        private static final String LABELINCREASEREVISION = "Increment revision number";
        private static final String TITLE = "Resolve Identifier Conflict";
-       private static String[] IDENTIFIER_SCHEMES = {"default", "doi"};
        private String message = null;
        private JPanel okButtonPanel = null;
        private JPanel choicePanel = null;
@@ -148,7 +148,7 @@ public class DocidConflictHandler
 
 		// the scheme
 		Box schemeBox = Box.createHorizontalBox();
-		identifierScheme = new JComboBox(IDENTIFIER_SCHEMES);
+		identifierScheme = new JComboBox(DataONEDataStoreService.IDENTIFIER_SCHEMES);
 		schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
 		schemeBox.add(new JLabel("Identifier Scheme:"));
 		schemeBox.add(identifierScheme);
