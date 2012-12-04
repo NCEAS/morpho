@@ -376,9 +376,8 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		config.save();
 
 		// set the active MN
-		// TODO: select based on the CN
 		MNode activeMNode = D1Client.getMN(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
-		morpho.getDataONEDataStoreService().setActiveMNode(activeMNode );
+		morpho.getDataONEDataStoreService().setActiveMNode(activeMNode);
 
 		Morpho.initializeLogging(config);
 		// need to add Look and Feel support

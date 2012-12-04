@@ -96,20 +96,23 @@ import edu.ucsb.nceas.utilities.Log;
  */
 public class DataONEDataStoreService extends DataStoreService implements DataStoreServiceInterface {
 
-  
   public static final String MNODE_URL_ELEMENT_NAME = "dataone_mnode_baseurl";
   public static final String CNODE_URL_ELEMENT_NAME = "dataone_cnode_baseurl";
   private static final String PATHQUERY = "pathquery";
+  
+  /**
+   * TODO: the service should probably tell us what schemes it uses
+   * But for now we will hope for the best with these
+   */
   private static final String DOI = "doi";
   private static final String UUID = "uuid";
   private static final String DEFAULT_IDENTIFIER_SCHEME = "default";
-  /**
-   * TODO: the service should probably tell us what schemes it uses
-   * But for now we will hope for the best
-   */
   public static final String[] IDENTIFIER_SCHEMES = {DEFAULT_IDENTIFIER_SCHEME, DOI, UUID};
+  
+  /**
+   * The currently configured Member Node
+   */
   private static MNode activeMNode = null;
-  private static String cnURLInConfig = null;
   
   
   /**
@@ -127,7 +130,6 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   private static void init() {
     String mNodeBaseURL = Morpho.getConfiguration().get(MNODE_URL_ELEMENT_NAME, 0);
     activeMNode = new MNode(mNodeBaseURL);
-    cnURLInConfig = Morpho.getConfiguration().get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
     
   }
   /**
@@ -144,7 +146,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    * @param activeMNode - the node will be set.
    */
   public void setActiveMNode(MNode activeMNode) {
-    this.activeMNode = activeMNode;
+	  DataONEDataStoreService.activeMNode = activeMNode;
   }
   
   /**
@@ -613,20 +615,21 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
                ConfigurationException, IOException, IdentifierNotUnique, InvalidRequest, InvalidSystemMetadata, UnsupportedType {
     String action = null;
     
-    if(d1Object == null) {
+    if (d1Object == null) {
       throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't be null");
     }
     SystemMetadata sysMeta = d1Object.getSystemMetadata();
 	
+    if (sysMeta == null) {
+        throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't have the null SystemMetadata");
+      }
+    
     // TODO: better place to do this?
     String rightsHolderDN = CertificateManager.getInstance().getSubjectDN(CertificateManager.getInstance().loadCertificate());
     Subject rightsHolder = new Subject();
     rightsHolder.setValue(rightsHolderDN);
     sysMeta.setRightsHolder(rightsHolder );
     
-    if(sysMeta == null) {
-      throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't have the null SystemMetadata");
-    }
     Identifier identifier = d1Object.getIdentifier();
     if(identifier == null || identifier.getValue() == null || identifier.getValue().trim().equals("")) {
       throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't have a null identifier");
@@ -934,7 +937,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	public List<Node> getNodes(String cnURL) {
 		try {
 			if (cnURL == null || cnURL.length() == 0) {
-				cnURL = cnURLInConfig;
+				cnURL = Morpho.getConfiguration().get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
 			}
 			CNode cNode = new CNode(cnURL);
 			NodeList nodes = cNode.listNodes();
@@ -962,7 +965,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	                ServiceFailure, InvalidToken, NotAuthorized, NotImplemented {
 	  SubjectInfo info = null;
 	  if (cnURL == null || cnURL.length() == 0) {
-      cnURL = cnURLInConfig;
+      cnURL = Morpho.getConfiguration().get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);;
     }
     CNode cNode = new CNode(cnURL);
     String query = null;
