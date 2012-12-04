@@ -37,7 +37,7 @@ import org.dataone.service.exceptions.ServiceFailure;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.SystemMetadata;
 
-import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
+import edu.ucsb.nceas.morpho.Morpho;
 
 /**
  * Represent an object to manage the revision chains in the dataONE network.
@@ -121,7 +121,7 @@ public class DataONERevisionManager implements RevisionManagerInterface{
    */
   public String getObsoletes(String identifier) throws InvalidToken, ServiceFailure, 
                        NotAuthorized, NotFound, NotImplemented, InsufficientResources {
-    SystemMetadata metadata = DataONEDataStoreService.getSystemMetadataFromDataONE(identifier);
+    SystemMetadata metadata = Morpho.thisStaticInstance.getDataONEDataStoreService().getSystemMetadataFromDataONE(identifier);
     Identifier id =metadata.getObsoletes();
     if(id != null) {
       return id.getValue();
@@ -138,7 +138,7 @@ public class DataONERevisionManager implements RevisionManagerInterface{
    */
   public String getObsoletedBy(String identifier)  throws InvalidToken, ServiceFailure, 
   NotAuthorized, NotFound, NotImplemented, InsufficientResources {
-    SystemMetadata metadata = DataONEDataStoreService.getSystemMetadataFromDataONE(identifier);
+    SystemMetadata metadata = Morpho.thisStaticInstance.getDataONEDataStoreService().getSystemMetadataFromDataONE(identifier);
     Identifier id =metadata.getObsoletedBy();
     if(id != null) {
       return id.getValue();
