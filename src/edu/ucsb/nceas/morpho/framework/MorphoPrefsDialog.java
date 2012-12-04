@@ -199,7 +199,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		logNo.addItemListener(lSymItem);
 		// }}
 		config = Morpho.getConfiguration();
-		coordinatingNodeURLTextField.setText(config.get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0));
+		coordinatingNodeURLTextField.setText(morpho.getDataONEDataStoreService().getCNodeURL());
 		// does this work with our model?
 		memberNodeComboBox.setSelectedItem(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
 		if (config.get("log_file", 0).equals("true")) {
@@ -342,8 +342,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	}
 
 	void setButton_actionPerformed(java.awt.event.ActionEvent event) {
-		config.set(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0, coordinatingNodeURLTextField.getText(), true);
-		config.set(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0, memberNodeComboBox.getSelectedItem().toString());
+		
 		if (logYes.isSelected()) {
 			config.set("log_file", 0, "true");
 		} else {
@@ -373,11 +372,16 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		}
 		config.set("lookAndFeel", 0, lnf);
 
+		config.set(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0, memberNodeComboBox.getSelectedItem().toString());
+		
 		config.save();
 
 		// set the active MN
 		MNode activeMNode = D1Client.getMN(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
 		morpho.getDataONEDataStoreService().setActiveMNode(activeMNode);
+
+		// set the CN URL
+		morpho.getDataONEDataStoreService().setCNodeURL(coordinatingNodeURLTextField.getText());
 
 		Morpho.initializeLogging(config);
 		// need to add Look and Feel support

@@ -140,6 +140,22 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     return activeMNode;
   }
   
+  /**
+   * Retrieve the configured CN URL
+   * @return
+   */
+  public String getCNodeURL() {
+	  String cnURL = Morpho.getConfiguration().get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
+	  return cnURL;
+  }
+  
+  /**
+   * Set the configured CN URL
+   * @param cnURL
+   */
+  public void setCNodeURL(String cnURL) {
+	  Morpho.getConfiguration().set(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0, cnURL, true);
+  }
   
   /**
    * Set the specified node to be the active member node.
@@ -937,7 +953,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	public List<Node> getNodes(String cnURL) {
 		try {
 			if (cnURL == null || cnURL.length() == 0) {
-				cnURL = Morpho.getConfiguration().get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
+				cnURL = getCNodeURL();
 			}
 			CNode cNode = new CNode(cnURL);
 			NodeList nodes = cNode.listNodes();
@@ -961,18 +977,18 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	 * @throws NotAuthorized
 	 * @throws NotImplemented
 	 */
-	public SubjectInfo getAllIdentityInfo(String cnURL) throws InvalidRequest, 
-	                ServiceFailure, InvalidToken, NotAuthorized, NotImplemented {
-	  SubjectInfo info = null;
-	  if (cnURL == null || cnURL.length() == 0) {
-      cnURL = Morpho.getConfiguration().get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);;
-    }
-    CNode cNode = new CNode(cnURL);
-    String query = null;
-    String status = null;
-    int start = -1;
-    int count =-1;
-    info = cNode.listSubjects(query, status, start, count);
-	  return info;
+	public SubjectInfo getAllIdentityInfo(String cnURL) throws InvalidRequest,
+			ServiceFailure, InvalidToken, NotAuthorized, NotImplemented {
+		SubjectInfo info = null;
+		if (cnURL == null || cnURL.length() == 0) {
+			cnURL = getCNodeURL();
+		}
+		CNode cNode = new CNode(cnURL);
+		String query = null;
+		String status = null;
+		int start = -1;
+		int count = -1;
+		info = cNode.listSubjects(query, status, start, count);
+		return info;
 	}
 }
