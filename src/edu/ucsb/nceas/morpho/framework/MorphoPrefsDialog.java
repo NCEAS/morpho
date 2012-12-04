@@ -200,8 +200,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		// }}
 		config = Morpho.getConfiguration();
 		coordinatingNodeURLTextField.setText(morpho.getDataONEDataStoreService().getCNodeURL());
-		// does this work with our model?
-		memberNodeComboBox.setSelectedItem(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
+		memberNodeComboBox.setSelectedItem(morpho.getDataONEDataStoreService().getMNodeURL());
 		if (config.get("log_file", 0).equals("true")) {
 			logYes.setSelected(true);
 			logNo.setSelected(false);
@@ -371,14 +370,11 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 			lnf = "motif";
 		}
 		config.set("lookAndFeel", 0, lnf);
-
-		config.set(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0, memberNodeComboBox.getSelectedItem().toString());
 		
 		config.save();
 
 		// set the active MN
-		MNode activeMNode = D1Client.getMN(config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0));
-		morpho.getDataONEDataStoreService().setActiveMNode(activeMNode);
+		morpho.getDataONEDataStoreService().setMNodeURL(memberNodeComboBox.getSelectedItem().toString());
 
 		// set the CN URL
 		morpho.getDataONEDataStoreService().setCNodeURL(coordinatingNodeURLTextField.getText());

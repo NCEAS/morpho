@@ -112,7 +112,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   /**
    * The currently configured Member Node
    */
-  private static MNode activeMNode = null;
+  private MNode activeMNode = null;
   
   
   /**
@@ -127,8 +127,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   /*
    * Initialize the mnode.
    */
-  private static void init() {
-    String mNodeBaseURL = Morpho.getConfiguration().get(MNODE_URL_ELEMENT_NAME, 0);
+  private void init() {
+    String mNodeBaseURL = getMNodeURL();
     activeMNode = new MNode(mNodeBaseURL);
     
   }
@@ -141,11 +141,20 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   }
   
   /**
+   * Retrieve the configured MN URL
+   * @return
+   */
+  public String getMNodeURL() {
+	  String mnURL = config.get(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0);
+	  return mnURL;
+  }
+  
+  /**
    * Retrieve the configured CN URL
    * @return
    */
   public String getCNodeURL() {
-	  String cnURL = Morpho.getConfiguration().get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
+	  String cnURL = config.get(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0);
 	  return cnURL;
   }
   
@@ -154,15 +163,20 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    * @param cnURL
    */
   public void setCNodeURL(String cnURL) {
-	  Morpho.getConfiguration().set(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0, cnURL, true);
+	  config.set(DataONEDataStoreService.CNODE_URL_ELEMENT_NAME, 0, cnURL, true);
+	  config.save();
   }
   
   /**
-   * Set the specified node to be the active member node.
-   * @param activeMNode - the node will be set.
+   * Set the specified node URL to be the active member node.
+   * @param nodeBaseServiceUrl - the node will be set.
    */
-  public void setActiveMNode(MNode activeMNode) {
-	  DataONEDataStoreService.activeMNode = activeMNode;
+  public void setMNodeURL(String nodeBaseServiceUrl) {
+	  config.set(DataONEDataStoreService.MNODE_URL_ELEMENT_NAME, 0, nodeBaseServiceUrl, true);
+	  config.save();
+	  
+	  // make sure the MNode reflects this change
+	  activeMNode = new MNode(nodeBaseServiceUrl);
   }
   
   /**
@@ -409,7 +423,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   /*
    * Get the system metadata from the dataone for the id. It also caches it.
    */
-  public static SystemMetadata getSystemMetadataFromDataONE(String identifier) throws InvalidToken, ServiceFailure, 
+  public SystemMetadata getSystemMetadataFromDataONE(String identifier) throws InvalidToken, ServiceFailure, 
                                              NotAuthorized, NotFound, NotImplemented, InsufficientResources {
     if(activeMNode == null ) {
       init();
