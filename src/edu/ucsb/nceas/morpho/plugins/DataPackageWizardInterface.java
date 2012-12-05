@@ -64,6 +64,8 @@ public interface DataPackageWizardInterface {
   public static final String KEYWORDS           = "KEYWORDS";
   public static final String KEYWORDS_PAGE      = "KEYWORDS_PAGE";
 
+  public static final String REPLICATION_POLICY = "REPLICATION_POLICY";
+  
   public static final String PARTY_INTRO        = "PARTY_INTRO";
 
   //used to denote listings pages that launch dialogs

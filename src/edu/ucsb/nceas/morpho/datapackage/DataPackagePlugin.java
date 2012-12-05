@@ -531,6 +531,21 @@ public class DataPackagePlugin
         true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addAccessAction);
 
+    i++;
+    GUIAction editReplicationPolicyAction = new GUIAction(
+        Language.getInstance().getMessage("ReplicationPolicy") + Language.getInstance().getMessage("..."),
+        null, new EditReplicationPolicyCommand());
+    editReplicationPolicyAction.setToolTipText("Edit Replication Policy...");
+    editReplicationPolicyAction.setMenuItemPosition(i);
+    editReplicationPolicyAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    editReplicationPolicyAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    editReplicationPolicyAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(editReplicationPolicyAction);
+    
     // For data menu
     i = 0; // postition for menu item in data menu
 
@@ -854,6 +869,7 @@ public class DataPackagePlugin
     addTaxonomicCovAction.setEnabled(false);
     addMethodAction.setEnabled(false);
     addAccessAction.setEnabled(false);
+    editReplicationPolicyAction.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
     insertRowAfter.setEnabled(false);
     insertRowBefore.setEnabled(false);
