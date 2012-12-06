@@ -625,6 +625,27 @@ public class DataPackagePlugin
                    StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
                    true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(editDatatableAccess);
+    
+    i = i+2;
+    GUIAction editDataReplicationPolicy = new GUIAction(Language.getInstance().getMessage("EditDataReplicationPolicy"), null,
+                                                      new EditDataReplicationPolicyCommand());
+    editDataReplicationPolicy.setToolTipText("Edit Replication Policy for currently displayed data");
+    editDataReplicationPolicy.setMenuItemPosition(i);
+    editDataReplicationPolicy.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
+    //editDataReplicationPolicy.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    editDataReplicationPolicy.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    editDataReplicationPolicy.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    editDataReplicationPolicy.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    editDataReplicationPolicy.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+                   true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(editDataReplicationPolicy);
 
     i = i+2;
     GUIAction importOtherEntity = new GUIAction(Language.getInstance().getMessage("ImportOtherData"), null,
@@ -857,6 +878,7 @@ public class DataPackagePlugin
     importOtherEntity.setEnabled(false);
     deleteDatatable.setEnabled(false);
     editDatatableAccess.setEnabled(false);
+    editDataReplicationPolicy.setEnabled(false);
     addTitleAbstractAction.setEnabled(false);
     addKeywordAction.setEnabled(false);
     addCreatorAction.setEnabled(false);
