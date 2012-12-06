@@ -133,7 +133,7 @@ public class AccessPage
   protected JComboBox accessComboBox;
   private JScrollPane accessTreePane;
   protected AccessProgressThread pbt = null;
-  private String accessListFilePath = "./lib/accesslist.xml";
+  private String accessListFilePath = null;
   public JTreeTable treeTable = null;
   private QueryNetworkThread queryNetwork = null;
   private boolean queryCancelled;
@@ -843,11 +843,19 @@ public class AccessPage
         rowCount = treeTable.getRowCount();
         for (int count = 0; count < rowCount && !dnFound; count++) {
           Object o = treeTable.getValueAt(count, 0);
-          if (o instanceof AccessTreeNodeObject) {
-            AccessTreeNodeObject nodeOb = (AccessTreeNodeObject) o;
-            if ( (nodeOb.nodeType == WizardSettings.ACCESS_PAGE_GROUP ||
-                nodeOb.nodeType == WizardSettings.ACCESS_PAGE_USER) &&
-                nodeOb.getDN().compareTo(userDN) == 0) {
+          if (o instanceof Person) {
+            Person person = (Person) o;
+            if ( person != null && person.getSubject() != null && person.getSubject().getValue() != null &&
+                person.getSubject().getValue().compareTo(userDN) == 0) {
+              treeTable.setRowSelectionInterval(count, count);
+              treeTable.scrollRectToVisible(treeTable.getCellRect( ( (count - 5 >
+                  0) ? count - 5 : 0), 0, true));
+              dnFound = true;
+            }
+          } else if (o instanceof Group) {
+            Group group = (Group) o;
+            if ( group != null && group.getSubject() != null && group.getSubject().getValue() != null && 
+                group.getSubject().getValue().compareTo(userDN) == 0) {
               treeTable.setRowSelectionInterval(count, count);
               treeTable.scrollRectToVisible(treeTable.getCellRect( ( (count - 5 >
                   0) ? count - 5 : 0), 0, true));
@@ -944,17 +952,17 @@ public class AccessPage
 		  DefaultMutableTreeNode child = (DefaultMutableTreeNode) treeNode.getChildAt(i);
 		  // is this a leaf that we want?
 		  if (child.isLeaf()) {
-			  AccessTreeNodeObject childAccessObject = (AccessTreeNodeObject) child.getUserObject();
-			  if (childAccessObject.nodeType == WizardSettings.ACCESS_PAGE_USER) {
-				  return true;
-			  }
-		  } else {
+		    if( child.getUserObject() instanceof Person ) {
+		      return true;
+		    }
+			  
+			} else {
 			  return containsUserNode(child);
 		  }
 	  }
 	  // check this node
-	  AccessTreeNodeObject childAccessObject = (AccessTreeNodeObject) treeNode.getUserObject();
-	  if (childAccessObject.nodeType == WizardSettings.ACCESS_PAGE_USER) {
+	  Object childAccessObject =  treeNode.getUserObject();
+	  if (childAccessObject instanceof Person) {
 		  return true;
 	  }
 	  return false;
@@ -1111,34 +1119,36 @@ public class AccessPage
       int[] i = treeTable.getSelectedRows();
       if (i.length == 0) {
         warnLabel.setText(/*"Warning: Invalid input. Please make a selection."*/
-        					Language.getInstance().getMessage("Warning") + " : "
-        					+ Language.getInstance().getMessage("AccessPage.InvalidInput_1") + "! "
-        					+ Language.getInstance().getMessage("AccessPage.InvalidInput_2")
-        					);
+                  Language.getInstance().getMessage("Warning") + " : "
+                  + Language.getInstance().getMessage("AccessPage.InvalidInput_1") + "! "
+                  + Language.getInstance().getMessage("AccessPage.InvalidInput_2")
+                  );
         return false;
       }
       for (int j = 0; j < i.length; j++) {
         Object o = treeTable.getValueAt(i[j], 0);
-        if (o instanceof AccessTreeNodeObject) {
-          AccessTreeNodeObject nodeOb = (AccessTreeNodeObject) o;
-          if (nodeOb.nodeType == WizardSettings.ACCESS_PAGE_GROUP ||
-              nodeOb.nodeType == WizardSettings.ACCESS_PAGE_USER) {
-            warnLabel.setText(EMPTY_STRING);
-
-            if (userDN != null) {
-              userDN = nodeOb.getDN();
-            }
-
-            return true;
-          } else {
-            warnLabel.setText(
-                /*"Warning: Invalid input. Please select a user or a group."*/
-            	Language.getInstance().getMessage("Warning") + " : "
-            	+ Language.getInstance().getMessage("AccessPage.InvalidInput_1") + " "
-            	+ Language.getInstance().getMessage("AccessPage.InvalidInput_3")
-            	);
-            return false;
+        if (o instanceof Person) {
+          Person nodeOb = (Person) o;
+          warnLabel.setText(EMPTY_STRING);
+          if (userDN != null) {
+            userDN = nodeOb.getSubject().getValue();
           }
+          return true;
+        } else if (o instanceof Group) {
+          Group nodeOb = (Group) o;
+          warnLabel.setText(EMPTY_STRING);
+          if (userDN != null) {
+            userDN = nodeOb.getSubject().getValue();
+          }
+          return true;
+        }  else {
+          warnLabel.setText(
+              /*"Warning: Invalid input. Please select a user or a group."*/
+            Language.getInstance().getMessage("Warning") + " : "
+            + Language.getInstance().getMessage("AccessPage.InvalidInput_1") + " "
+            + Language.getInstance().getMessage("AccessPage.InvalidInput_3")
+            );
+          return false;
         }
       }
     } else {
@@ -1151,10 +1161,10 @@ public class AccessPage
       } else {
         warnLabel.setText(
             /*"Warning: Distinguished Name field can not be empty."*/
-        	Language.getInstance().getMessage("Warning") + " : "
-        	+ Language.getInstance().getMessage("DistinguishedName") + " "
-        	+ Language.getInstance().getMessage("AccessPage.DistinguishedNameEmpty") 
-        	);
+          Language.getInstance().getMessage("Warning") + " : "
+          + Language.getInstance().getMessage("DistinguishedName") + " "
+          + Language.getInstance().getMessage("AccessPage.DistinguishedNameEmpty") 
+          );
       }
     }
     return false;
@@ -1176,13 +1186,14 @@ public class AccessPage
         int[] i = treeTable.getSelectedRows();
         for (int j = 0; j < i.length; j++) {
           Object o = treeTable.getValueAt(i[j], 0);
-          if (o instanceof AccessTreeNodeObject) {
-            AccessTreeNodeObject nodeOb = (AccessTreeNodeObject) o;
-            if (nodeOb.nodeType == WizardSettings.ACCESS_PAGE_GROUP) {
+          
+            
+            if (o instanceof Group) {
+              Group nodeOb = (Group) o;
               List sub_surrogate = new ArrayList();
               sub_surrogate.add(" " + nodeOb.toString().trim());
 
-              String value = nodeOb.getDN();
+              String value = nodeOb.getSubject().getValue();
               if (value != null && value.indexOf("o=") > 0) {
                 value = value.substring(value.indexOf("o=") + 2);
                 value = value.substring(0, value.indexOf(","));
@@ -1190,28 +1201,29 @@ public class AccessPage
                 value = EMPTY_STRING;
               }
               sub_surrogate.add(" " + value);
-              if (nodeOb.getDescription() != null &&
+              /*if (nodeOb.getDescription() != null &&
                   nodeOb.getDescription().compareTo(EMPTY_STRING) != 0) {
                 sub_surrogate.add(" " + nodeOb.getDescription().trim());
               } else {
                 sub_surrogate.add(EMPTY_STRING);
-              }
+              }*/
               // Get access given to the user
               sub_surrogate.add(" " + userAccessType + "   " +
                   userAccess.trim());
               surrogate.add(sub_surrogate);
-            } else if (nodeOb.nodeType == WizardSettings.ACCESS_PAGE_USER) {
+            } else if (o instanceof Person) {
+              Person nodeOb = (Person) o;
               List sub_surrogate = new ArrayList();
-              sub_surrogate.add(" " + nodeOb.toString().trim());
-              if (nodeOb.getOrganization() != null &&
+              sub_surrogate.add(" " + nodeOb.getSubject().getValue().trim());
+              /*if (nodeOb.getOrganization() != null &&
                   nodeOb.getOrganization().compareTo(EMPTY_STRING) != 0) {
                 sub_surrogate.add(" " + nodeOb.getOrganization().trim());
               } else {
                 sub_surrogate.add(EMPTY_STRING);
-              }
-              if (nodeOb.getEmail() != null &&
-                  nodeOb.getEmail().compareTo(EMPTY_STRING) != 0) {
-                sub_surrogate.add(" " + nodeOb.getEmail().trim());
+              }*/
+              if (nodeOb.getEmail(0) != null &&
+                  nodeOb.getEmail(0).compareTo(EMPTY_STRING) != 0) {
+                sub_surrogate.add(" " + nodeOb.getEmail(0).trim());
               } else {
                 sub_surrogate.add(EMPTY_STRING);
               }
@@ -1220,8 +1232,8 @@ public class AccessPage
                   userAccess.trim());
               surrogate.add(sub_surrogate);
             }
-          }
-        }
+          
+        }//for
       }
     } else {
       List sub_surrogate = new ArrayList();
@@ -1278,10 +1290,14 @@ public class AccessPage
       int[] i = treeTable.getSelectedRows();
       for (int j = 0; j < i.length; j++) {
         Object o = treeTable.getValueAt(i[j], 0);
-        if (o instanceof AccessTreeNodeObject) {
-          AccessTreeNodeObject nodeOb = (AccessTreeNodeObject) o;
+        if (o instanceof Person) {
+          Person nodeOb = (Person) o;
           returnMap.put(xPathRoot + "/principal[" + (j + 1) + "]",
-              nodeOb.getDN());
+              nodeOb.getSubject().getValue());
+        } else if (o instanceof Group) {
+          Group nodeOb = (Group) o;
+          returnMap.put(xPathRoot + "/principal[" + (j + 1) + "]",
+              nodeOb.getSubject().getValue());
         }
       }
     } else {
@@ -1519,30 +1535,22 @@ class TreeSelectionAction
         accessPage.accessTree.getLastSelectedPathComponent();
 
     if (node != null &&
-        node.getUserObject() instanceof AccessTreeNodeObject) {
-
-      if ( ( (AccessTreeNodeObject) node.getUserObject()).nodeType ==
-          WizardSettings.ACCESS_PAGE_GROUP) {
-
-        accessPage.dnField.setText( ( (AccessTreeNodeObject) node.
+        node.getUserObject() instanceof Person) {
+        accessPage.dnField.setText( ( (Person) node.
             getUserObject()).
-            getDN());
+            getSubject().getValue());
 
         accessPage.typeComboBox.setEnabled(true);
         accessPage.accessComboBox.setEnabled(true);
-      } else if ( ( (AccessTreeNodeObject) node.getUserObject()).nodeType ==
-          WizardSettings.ACCESS_PAGE_USER) {
-
-        accessPage.dnField.setText( ( (AccessTreeNodeObject) node.
-            getUserObject()).
-            getDN());
-        accessPage.typeComboBox.setEnabled(true);
-        accessPage.accessComboBox.setEnabled(true);
-      } else {
-        accessPage.dnField.setText("");
-        accessPage.typeComboBox.setEnabled(false);
-        accessPage.accessComboBox.setEnabled(false);
-      }
+      
+      } else if (node != null &&
+            node.getUserObject() instanceof Group) {
+            accessPage.dnField.setText( ( (Group) node.
+                getUserObject()).
+                getSubject().getValue());
+            accessPage.typeComboBox.setEnabled(true);
+            accessPage.accessComboBox.setEnabled(true);
+        
 
     } else {
       accessPage.dnField.setText("");
