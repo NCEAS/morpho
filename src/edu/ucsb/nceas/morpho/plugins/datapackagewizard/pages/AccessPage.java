@@ -1221,7 +1221,7 @@ public class AccessPage
               } else {
                 sub_surrogate.add(EMPTY_STRING);
               }*/
-              if (nodeOb.getEmail(0) != null &&
+              if (nodeOb.getEmailList() != null && nodeOb.getEmailList().size() >0 && nodeOb.getEmail(0) != null &&
                   nodeOb.getEmail(0).compareTo(EMPTY_STRING) != 0) {
                 sub_surrogate.add(" " + nodeOb.getEmail(0).trim());
               } else {
