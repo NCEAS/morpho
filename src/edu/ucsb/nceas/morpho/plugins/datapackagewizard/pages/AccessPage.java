@@ -28,11 +28,14 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +46,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -69,6 +76,12 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.dataone.service.types.v1.Group;
+import org.dataone.service.types.v1.Person;
+import org.dataone.service.types.v1.SubjectInfo;
+import org.dataone.service.types.v1.comparators.GroupNameComparator;
+import org.dataone.service.types.v1.comparators.PersonFamilyNameComparator;
+import org.dataone.service.util.TypeMarshaller;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -76,6 +89,7 @@ import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
@@ -99,6 +113,9 @@ public class AccessPage
   private final String title = "Access Page";
   private final String subtitle = "";
   private final String EMPTY_STRING = "";
+  private final static String SUBJECTINFO = "subjectInfo";
+  private final static String ACCESSLIST = "accesslist";
+
 
   private JTextField treeFilterField;
   protected JTree accessTree;
@@ -264,8 +281,8 @@ public class AccessPage
    */
 
   public void generateAccessTree(boolean force) {
-    Document doc = getDocumentFromFile();
-    if (doc == null || force) {
+    SubjectInfo subjectInfo = getSubjectInfoFromFile();
+    if (subjectInfo == null || force) {
       pbt = new AccessProgressThread(this);
       pbt.start();
 
@@ -277,15 +294,20 @@ public class AccessPage
         }
       });
 
-      getDocumentFromNetwork();
+      getSubjectInfoFromNetwork();
     } else {
-      DefaultMutableTreeNode treeNode = getTreeFromDocument(doc);
+      DefaultMutableTreeNode treeNode = getTreeFromDocument(subjectInfo);
       displayTree(treeNode);
     }
   }
 
-  protected Document getDocumentFromFile() {
-
+  
+  
+  /*
+   * Get the SubjecInformation from the cached file.
+   */
+  private SubjectInfo getSubjectInfoFromFile() {
+    SubjectInfo subjectInfo= null;
     ConfigXML accessXML = null;
 
     try {
@@ -297,19 +319,17 @@ public class AccessPage
         Log.debug(45, "No server nodes found in " + accessListFilePath);
         return null;
       }
-
       Node cn = null;
       Node serverNode = null;
-
+      
       for (int i = 0; i < nl.getLength(); i++) {
         cn = nl.item(i).getFirstChild(); // assume 1st child is text node
         if ( (cn != null) && (cn.getNodeType() == Node.TEXT_NODE) &&
-            cn.getNodeValue().compareTo(Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
+            cn.getNodeValue().compareTo(Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
           serverNode = cn;
-          continue;
+          break;
         }
       }
-
       if (serverNode == null) {
         Log.debug(45,
             "No server nodes found with current metacat server name " +
@@ -317,16 +337,28 @@ public class AccessPage
         return null;
       }
 
-      serverNode = serverNode.getParentNode().getParentNode();
-
-      Node deepClone = serverNode.cloneNode(true);
-      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-      Document tempDoc = impl.createDocument(EMPTY_STRING, "principals", null);
-      Node importedClone = tempDoc.importNode(deepClone, true);
-      Node tempRoot = tempDoc.getDocumentElement();
-      tempRoot.appendChild(importedClone);
-
-      return tempDoc;
+      Node resultNode = serverNode.getParentNode().getParentNode();
+      NodeList resultChildren = resultNode.getChildNodes();
+      String xml = null;
+      if(resultChildren != null) {
+        for(int i=0; i<resultChildren.getLength(); i++) {
+          Node child = resultChildren.item(i);
+          if(child.getLocalName() != null && child.getLocalName().equals(SUBJECTINFO)) {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer serializer = tf.newTransformer();
+            StringWriter sw = new StringWriter();
+            serializer.transform(new DOMSource(child), new StreamResult(sw));
+            xml = sw.getBuffer().toString();
+            continue;
+          }
+        }
+      }
+     
+      if(xml != null) {
+        ByteArrayInputStream input = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+        subjectInfo = TypeMarshaller.unmarshalTypeFromStream(SubjectInfo.class, input);
+      }
+      return subjectInfo;
     }
     catch (FileNotFoundException e) {
       Log.debug(10, accessListFilePath + " not found");
@@ -361,7 +393,7 @@ public class AccessPage
     }
   }
 
-  protected void getDocumentFromNetwork() {
+  protected void getSubjectInfoFromNetwork() {
     if (pbt != null) {
       pbt.setProgressBarString(
           "Contacting Server for Access information....");
@@ -374,7 +406,12 @@ public class AccessPage
     return;
   }
 
-  private void insertDocInAccessList(Document doc) {
+  
+  
+  /*
+   * Insert the xml presentation of a SubjectInfo object into access list
+   */
+  private void insertSubjectInfoInAccessList(SubjectInfo subjectInfo) {
 
     ConfigXML accessXML = null;
     boolean fileExists = false;
@@ -408,6 +445,7 @@ public class AccessPage
               "Exception in AccessPage class in getDocumentfromFile(). "
               + "Exception:" + e1.getClass());
           Log.debug(45, e1.getMessage());
+          return;
         }
 
         accessXML = new ConfigXML(accessListFilePath);
@@ -418,7 +456,7 @@ public class AccessPage
       if (nl.getLength() < 1) {
         Log.debug(45, "No server nodes found in " + accessListFilePath
             + " Inserting new entry for current document in the document");
-        insertNewEntryInAccessList(accessXML, doc);
+        insertNewEntryInAccessList(accessXML, subjectInfo);
         return;
       }
 
@@ -429,16 +467,16 @@ public class AccessPage
         cn = nl.item(i).getFirstChild(); // assume 1st child is text node
         if ( (cn != null) && (cn.getNodeType() == Node.TEXT_NODE) &&
             cn.getNodeValue().compareTo(
-            		Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
+                Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
           serverNode = cn;
           continue;
         }
       }
 
       if (serverNode == null) {
-        insertNewEntryInAccessList(accessXML, doc);
+        insertNewEntryInAccessList(accessXML, subjectInfo);
       } else {
-        modifyOldEntryInAccessList(accessXML, doc);
+        modifyOldEntryInAccessList(accessXML, subjectInfo);
       }
 
     }
@@ -450,25 +488,29 @@ public class AccessPage
     }
   }
 
-  private void insertNewEntryInAccessList(ConfigXML accessXML, Document doc) {
+  
+  private void insertNewEntryInAccessList(ConfigXML accessXML, SubjectInfo subjectInfo) throws Exception {
     Log.debug(10, "Inserting a new entry in " + accessListFilePath);
-
+    
+    Node subjectInfoNode = createNodeForSubjectInfo(subjectInfo);
+    if (subjectInfoNode == null) {
+      return;
+    }
+    
     Document doc1 = accessXML.getDocument();
-    Node node = doc1.getFirstChild();
-
+    Node node = getAccessListNode(doc1);
+    if(node == null) {
+      node = doc1.createElement(ACCESSLIST);
+      doc1.appendChild(node);
+    }
     Node result = doc1.createElement("result");
     Node server = doc1.createElement("server");
     Node serverName = doc1.createTextNode(
-    		Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL());
+        Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL());
 
-    Node principalNode = doc.getDocumentElement();
+   
 
-    if (principalNode.getNodeName().compareTo("principals") != 0) {
-      return;
-    }
-
-    Node deepClone = principalNode.cloneNode(true);
-    Node principals = doc1.importNode(deepClone, true);
+    Node principals = doc1.importNode(subjectInfoNode, true);
 
     server.appendChild(serverName);
     result.appendChild(server);
@@ -480,61 +522,101 @@ public class AccessPage
     StateChangeMonitor.getInstance().notifyStateChange(new StateChangeEvent(this, StateChangeEvent.ACCESS_LIST_MODIFIED));
   }
 
-  private void modifyOldEntryInAccessList(ConfigXML accessXML, Document doc) {
+   
+  
+  private void modifyOldEntryInAccessList(ConfigXML accessXML, SubjectInfo subjectInfo) throws Exception{
 
     Log.debug(10, "Modifying an old entry in " + accessListFilePath);
 
     Document doc1 = accessXML.getDocument();
-
-    Node node = doc1.getFirstChild();
-
-    Node result = doc1.createElement("result");
-    Node server = doc1.createElement("server");
-    Node serverName = doc1.createTextNode(
-    		Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL());
-
-    Node principalNode = doc.getDocumentElement();
-
-    if (principalNode.getNodeName().compareTo("principals") != 0) {
-      return;
-    }
-
+    Node node = getAccessListNode(doc1);
     NodeList nl = doc1.getElementsByTagName("server");
 
     for (int count = 0; count < nl.getLength(); count++) {
       Node tempNode = nl.item(count);
       String value = tempNode.getFirstChild().getNodeValue();
       if (value != null && value.compareTo(
-    		  Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
-        Node listNode = tempNode.getParentNode();
-        listNode.getParentNode().removeChild(listNode);
+          Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
+        Node resultNode = tempNode.getParentNode();
+        resultNode.getParentNode().removeChild(resultNode);
       }
     }
 
-    Node deepClone = principalNode.cloneNode(true);
-    Node principals = doc1.importNode(deepClone, true);
+    Node result = doc1.createElement("result");
+    Node server = doc1.createElement("server");
+    Node serverName = doc1.createTextNode(
+        Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL());
 
     server.appendChild(serverName);
     result.appendChild(server);
-    result.appendChild(principals);
-    node.appendChild(result);
 
+    Node subjectInfoNode = createNodeForSubjectInfo(subjectInfo);
+    if(subjectInfoNode != null) {
+      Node principals = doc1.importNode(subjectInfoNode, true);
+      result.appendChild(principals);
+    }
+    node.appendChild(result);
     accessXML.save();
     
     StateChangeMonitor.getInstance().notifyStateChange(new StateChangeEvent(this, StateChangeEvent.ACCESS_LIST_MODIFIED));
 
   }
+  
+  /*
+   * Get the accesslist node from the doc. Null will be return if it can't be found.
+   */
+  private Node getAccessListNode(Document doc) {
+    Node node = null;
+    if(doc != null) {
+      NodeList children = doc.getChildNodes();
+      if(children != null) {
+        for(int i=0; i<children.getLength(); i++) {
+          Node child = children.item(i);
+          if(child != null && child.getLocalName() != null && child.getLocalName().equals(ACCESSLIST)) {
+            node= child;
+            break;
+          }
+        }
+      } 
+    }
+    return node;
+  }
+  
+  /*
+   * Create a node presentation for the subjectInfo object
+   */
+  private Node createNodeForSubjectInfo(SubjectInfo subjectInfo) throws Exception {
+    Node node = null;
+    if(subjectInfo != null && (subjectInfo.sizePersonList() >0 || subjectInfo.sizeGroupList() >0)) {
+      ByteArrayOutputStream output = new ByteArrayOutputStream();
+      TypeMarshaller.marshalTypeToOutputStream(subjectInfo, output);
+      String xml = output.toString("UTF-8");
+      DocumentBuilder parser = Morpho.createDomParser();
+      Document doc = parser.parse(xml);
+      NodeList nodeList = doc.getChildNodes(); 
+      if(nodeList != null) {
+        for(int i=0; i<nodeList.getLength(); i++) {
+          Node child = nodeList.item(i);
+          if(child != null && child.getLocalName() != null && child.getLocalName().equals(SUBJECTINFO)) {
+            node = child.cloneNode(true);
+            break;
+          }
+         
+        }
+      }
+    }
+    return node;
+  }
 
-  protected void parseInputStream(InputStream queryResult) {
+  protected void parseInputStream(SubjectInfo queryResult) {
     pbt.setProgressBarString(
         "Creating Access tree from information received....");
 
     try {
-      DocumentBuilder parser = Morpho.createDomParser();
-      Document doc = parser.parse(queryResult);
+      
 
-      DefaultMutableTreeNode treeNode = getTreeFromDocument(doc);
-      insertDocInAccessList(doc);
+      DefaultMutableTreeNode treeNode = getTreeFromDocument(queryResult);
+      insertSubjectInfoInAccessList(queryResult);
       displayTree(treeNode);
     }
     catch (Exception e) {
@@ -560,6 +642,8 @@ public class AccessPage
     // save doc to the file
 
   }
+  
+
 
   protected void displayDNPanel() {
     JPanel panel = null;
@@ -688,7 +772,7 @@ public class AccessPage
               cancelGetDocumentFromNetwork();
             }
           });
-          getDocumentFromNetwork();
+          getSubjectInfoFromNetwork();
         }
       });
 
@@ -905,17 +989,17 @@ public class AccessPage
 	  generateAccessTree(false);
   }
 
-  protected DefaultMutableTreeNode getTreeFromDocument(Document doc) {
+  protected DefaultMutableTreeNode getTreeFromDocument(SubjectInfo subjectInfo) {
     DefaultMutableTreeNode treeNode = null;
 
     DefaultMutableTreeNode topNode =
         new DefaultMutableTreeNode("Access Tree                        ");
     NodeList nl = null;
 
-    if (doc != null) {
-      nl = doc.getElementsByTagName("authSystem");
+    if (subjectInfo != null) {
+      //nl = doc.getElementsByTagName("authSystem");
 
-      if (nl != null) {
+      //if (nl != null) {
     	  // filter using the string given
     	  String filter = treeFilterField.getText();
     	  if (filter != null && filter.length() == 0) {
@@ -924,8 +1008,8 @@ public class AccessPage
     	  if (filter != null) {
     		  filter = ".*" + filter + ".*";
     	  }
-        createSubTree(nl, topNode, filter);
-      }
+        createSubTree(subjectInfo, topNode, filter);
+      //}
       //treeNode = topNode;
       treeNode = pruneTree(topNode);
     }
@@ -941,173 +1025,76 @@ public class AccessPage
     return Access.accessTreeNode;
   }
 
-  DefaultMutableTreeNode createSubTree(NodeList nl,
+  
+  
+  /*
+   * Create a tree from the SubjectInfo project
+   */
+  private DefaultMutableTreeNode createSubTree(SubjectInfo subjectInfo,
       DefaultMutableTreeNode top, String filter) {
-    Node tempNode;
-    AccessTreeNodeObject nodeObject = null;
-    DefaultMutableTreeNode tempTreeNode = null;
-    ArrayList userList = new ArrayList();
-    String org = null;
-
-    for (int count = 0; count < nl.getLength(); count++) {
-      tempNode = nl.item(count);
-      boolean done = false;
-
-      while (!done) {
-        if (tempNode.getNodeName().compareTo("authSystem") == 0) {
-          nodeObject = new AccessTreeNodeObject(
-              tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
-              WizardSettings.ACCESS_PAGE_AUTHSYS);
-
-          if (tempNode.getAttributes().getNamedItem("organization") != null) {
-            org = tempNode.getAttributes().getNamedItem("organization").getNodeValue();
-            nodeObject.setOrganization(org);
-
-            // check if the organization name exsists in the list of orgs in
-            // the config.xml....
-            if(!orgList.contains(org)){
-              config.insert("organization",org);
-            }
-          }
-
-          tempTreeNode = new DefaultMutableTreeNode();
-          tempTreeNode.setUserObject(nodeObject);
-
-          tempTreeNode = createSubTree(tempNode.getChildNodes(), tempTreeNode, filter);
-
-          top.add(tempTreeNode);
-          done = true;
-        } else if (tempNode.getNodeName().compareTo("group") == 0) {
-          DefaultMutableTreeNode tempUserNode = null;
-
-          NodeList nl2 = tempNode.getChildNodes();
-          nodeObject = null;
-          AccessTreeNodeObject groupNodeObject = new AccessTreeNodeObject(
-              WizardSettings.ACCESS_PAGE_GROUP);
-          tempTreeNode = new DefaultMutableTreeNode();
-          ArrayList userInGroupList = new ArrayList();
-          for (int i = 0; i < nl2.getLength(); i++) {
-            Node node = nl2.item(i);
-            if (node.getNodeName().compareTo("groupname") == 0) {
-              groupNodeObject.setDN(node.getFirstChild().getNodeValue());
-            } else if (node.getNodeName().compareTo("description") == 0) {
-              groupNodeObject.setDescription(node.getFirstChild().
-                  getNodeValue());
-            } else if (node.getNodeName().compareTo("user") == 0) {
-              NodeList nl3 = node.getChildNodes();
-              nodeObject = new AccessTreeNodeObject(
-                  WizardSettings.ACCESS_PAGE_USER);
-
-              for (int j = 0; j < nl3.getLength(); j++) {
-                Node node1 = nl3.item(j);
-                if (node1.getNodeName().compareTo("username") == 0) {
-                  nodeObject.setDN(node1.getFirstChild().getNodeValue());
-                } else if (node1.getNodeName().compareTo("name") == 0) {
-                  nodeObject.setName(node1.getFirstChild().getNodeValue());
-                } else if (node1.getNodeName().compareTo("email") == 0) {
-                  nodeObject.setEmail(node1.getFirstChild().getNodeValue());
-                } else if (node1.getNodeName().compareTo("organization") == 0) {
-                  if (node1.getFirstChild().getNodeValue().compareTo("null") !=
-                      0) {
-                    nodeObject.setOrganization(node1.getFirstChild().
-                        getNodeValue());
-                  } else {
-                    String value = nodeObject.getDN();
-                    if (value != null && value.indexOf("o=") > -1) {
-                      value = value.substring(value.indexOf("o=") + 2);
-                      value = value.substring(0, value.indexOf(","));
-                    } else {
-                      value = EMPTY_STRING;
-                    }
-                    nodeObject.setOrganization(value);
-                  }
+    List<Person> persons = subjectInfo.getPersonList();
+    List<Person> filteredPersons = new Vector<Person> ();
+    //handle persons
+    if(persons != null) {
+      if(filter != null && !filter.trim().equals(EMPTY_STRING)) {
+        filter = filter.toLowerCase();
+        for(Person person : persons) {
+          if (person.getFamilyName() != null && person.getFamilyName().toLowerCase().matches(filter)) {
+            //family name
+            filteredPersons.add(person);
+          } else if (person.getSubject() != null && person.getSubject().getValue() != null && person.getSubject().getValue().toLowerCase().matches(filter)) {
+            // subject
+            filteredPersons.add(person);
+          } else {
+            //first name
+            List<String> givenNames = person.getGivenNameList();
+            if(givenNames != null) {
+              for(String givenName : givenNames) {
+                if(givenName != null && givenName.toLowerCase().matches(filter)) {
+                  filteredPersons.add(person);
+                  break;
                 }
               }
-              userInGroupList.add(nodeObject);
-            }
-            tempTreeNode.setUserObject(groupNodeObject);
-          }
-
-          Collections.sort(userInGroupList);
-          Iterator it = userInGroupList.iterator();
-
-          while (it.hasNext()) {
-            nodeObject = (AccessTreeNodeObject) it.next();
-            // if we have a filter, apply it
-            if (filter != null) {
-            	if (nodeObject.toString() != null) {
-            		if (!nodeObject.toString().toLowerCase().matches(filter.toLowerCase())) {
-            			continue;
-            		}
-            	}
-            }
-            tempUserNode = new DefaultMutableTreeNode();
-            tempUserNode.setUserObject(nodeObject);
-            tempTreeNode.add(tempUserNode);
-          }
-          top.add(tempTreeNode);
-          done = true;
-        } else if (tempNode.getNodeName().compareTo("user") == 0) {
-          NodeList nl2 = tempNode.getChildNodes();
-          nodeObject = null;
-
-          nodeObject = new AccessTreeNodeObject(
-              WizardSettings.ACCESS_PAGE_USER);
-
-          for (int j = 0; j < nl2.getLength(); j++) {
-            Node node1 = nl2.item(j);
-            if (node1.getNodeName().compareTo("username") == 0) {
-              nodeObject.setDN(node1.getFirstChild().getNodeValue());
-            } else if (node1.getNodeName().compareTo("name") == 0) {
-              nodeObject.setName(node1.getFirstChild().getNodeValue());
-            } else if (node1.getNodeName().compareTo("email") == 0) {
-              nodeObject.setEmail(node1.getFirstChild().getNodeValue());
-            } else if (node1.getNodeName().compareTo("organization") == 0) {
-              if (node1.getFirstChild().getNodeValue().compareTo("null") != 0) {
-                nodeObject.setOrganization(node1.getFirstChild().
-                    getNodeValue());
-              } else {
-                String value = nodeObject.getDN();
-                if (value != null && value.indexOf("o=") > -1) {
-                  value = value.substring(value.indexOf("o=") + 2);
-                  if (value.indexOf(",") > -1) {
-                    value = value.substring(0, value.indexOf(","));
-                  }
-                } else {
-                  value = EMPTY_STRING;
-                }
-                nodeObject.setOrganization(value);
-              }
             }
           }
-
-          userList.add(nodeObject);
-          done = true;
-        } else if (tempNode.hasChildNodes()) {
-          tempNode = tempNode.getFirstChild();
-        } else {
-          done = true;
+          continue;
         }
+      } else {
+        filteredPersons = persons;
+      }
+      Collections.sort(filteredPersons, new PersonFamilyNameComparator());
+      //generate nodes
+      for(Person person : filteredPersons) {
+        DefaultMutableTreeNode tempTreeNode = new DefaultMutableTreeNode();
+        tempTreeNode.setUserObject(person);
+        top.add(tempTreeNode);
       }
     }
-
-    Collections.sort(userList);
-    Iterator it = userList.iterator();
-    while (it.hasNext()) {
-      nodeObject = (AccessTreeNodeObject) it.next();
-      // if we have a filter, apply it
-      if (filter != null) {
-      	if (nodeObject.toString() != null) {
-      		if (!nodeObject.toString().toLowerCase().matches(filter.toLowerCase())) {
-      			continue;
-      		}
-      	}
+    //handle groups
+    List<Group> groups = subjectInfo.getGroupList();
+    List<Group> filteredGroups = new Vector<Group>();
+    if(groups != null) {
+      if(filter != null && !filter.trim().equals(EMPTY_STRING)) {
+        filter = filter.toLowerCase();
+        for(Group group: groups) {
+          if(group.getGroupName() != null && group.getGroupName().toLowerCase().matches(filter)) {
+            filteredGroups.add(group);
+          } else if (group.getSubject() != null && group.getSubject().getValue() != null && group.getSubject().getValue().toLowerCase().matches(filter)) {
+            filteredGroups.add(group);
+          }
+          continue;
+        }
+      } else {
+        filteredGroups = groups;
       }
-      tempTreeNode = new DefaultMutableTreeNode();
-      tempTreeNode.setUserObject(nodeObject);
-      top.add(tempTreeNode);
+      Collections.sort(filteredGroups, new GroupNameComparator());
+      //generate nodes
+      for(Group group : filteredGroups) {
+        DefaultMutableTreeNode tempTreeNode = new DefaultMutableTreeNode();
+        tempTreeNode.setUserObject(group);
+        top.add(tempTreeNode);
+      }
     }
-
     return top;
   }
 
@@ -1604,7 +1591,7 @@ class QueryNetworkThread
     extends Thread {
 
   AccessPage accessPage;
-  InputStream queryResult;
+  SubjectInfo queryResult;
 
   public QueryNetworkThread(AccessPage accessPage) {
     this.accessPage = accessPage;
@@ -1615,8 +1602,9 @@ class QueryNetworkThread
     try {
       queryResult = null;
       //if (morpho.isConnected()) {
-      if (Morpho.thisStaticInstance.getMetacatDataStoreService().getNetworkStatus()) {
-        queryResult = Morpho.thisStaticInstance.getMetacatDataStoreService().getPrincipals();
+      if (Morpho.thisStaticInstance.getDataONEDataStoreService().getNetworkStatus()) {
+        String cnURL = null;//use the default in the config.xml
+        queryResult = Morpho.thisStaticInstance.getDataONEDataStoreService().getAllIdentityInfo(cnURL);
       }
       if (!accessPage.isQueryCancelled()) {
         accessPage.parseInputStream(queryResult);

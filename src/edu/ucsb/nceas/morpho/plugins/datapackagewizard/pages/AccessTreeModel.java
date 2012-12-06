@@ -42,6 +42,9 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import java.util.Enumeration;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.dataone.service.types.v1.Group;
+import org.dataone.service.types.v1.Person;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
@@ -60,7 +63,7 @@ public class AccessTreeModel
   // Names of the columns.
   static protected String[] cNames = {
       /*"Name"*/ Language.getInstance().getMessage("Name"),
-      /*"Email / Description / Distinguished Name"*/ Language.getInstance().getMessage("Email") + " / "+ Language.getInstance().getMessage("Description") + " / " + Language.getInstance().getMessage("DistinguishedName")
+      /*"Email / Description / Distinguished Name"*/ Language.getInstance().getMessage("DistinguishedName") + " / "+ Language.getInstance().getMessage("Description") + " / " +Language.getInstance().getMessage("Email") 
       };
 
   // Types of the columns.
@@ -122,44 +125,30 @@ public class AccessTreeModel
 
   public Object getValueAt(Object node, int column) {
     DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
-    if (treeNode.getUserObject() instanceof AccessTreeNodeObject) {
-      AccessTreeNodeObject treeNodeObject =
-          (AccessTreeNodeObject) treeNode.getUserObject();
+    if (treeNode.getUserObject() instanceof Person) {
+      Person person =
+          (Person) treeNode.getUserObject();
       switch (column) {
         case 0:
-          return treeNodeObject;
+          return person;
         case 1:
-          if (treeNodeObject.nodeType == WizardSettings.ACCESS_PAGE_GROUP) {
-            if (treeNodeObject.getDescription() != null) {
-              return "  " + treeNodeObject.getDescription();
+            if (person.getEmail(0) != null) {
+              return "  " + person.getEmail(0);
             }
-            if (treeNodeObject.getDN() != null) {
-             return "  " + treeNodeObject.getDN();
-           }
-            return "";
-          }
-          else if (treeNodeObject.nodeType ==
-                   WizardSettings.ACCESS_PAGE_USER) {
-            if (treeNodeObject.getEmail() != null) {
-              return "  " + treeNodeObject.getEmail();
+            if (person.getSubject() != null && person.getSubject().getValue() != null) {
+             return "  " + person.getSubject().getValue();
             }
-            if (treeNodeObject.getDN() != null) {
-             return "  " + treeNodeObject.getDN();
-           }
-            return "";
-          }
-          else {
-            return "";
-          }
-        case 2:
-          if (treeNodeObject.nodeType == WizardSettings.ACCESS_PAGE_GROUP ||
-              treeNodeObject.nodeType == WizardSettings.ACCESS_PAGE_USER) {
-            if (treeNodeObject.getDN() != null) {
-              return "  " + treeNodeObject.getDN();
-            }
-          }
-          return "";
+           
+        return "";
       }
+    } else if (treeNode.getUserObject() instanceof Group) {
+      Group group = (Group) treeNode.getUserObject();
+      switch (column) {
+      case 0:
+        return group;
+      case 1:
+      return "";
+     }
     }
     else {
       switch (column) {

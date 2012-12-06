@@ -34,6 +34,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import org.dataone.service.types.v1.Group;
+import org.dataone.service.types.v1.Person;
+
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 /**
@@ -85,28 +88,21 @@ public class AccessTreeCellRenderer
     if ( ( (DefaultMutableTreeNode) (value)).getUserObject() == null) {
       return this;
     }
-    AccessTreeNodeObject ni = null;
+    Object ni = null;
     try {
-      ni = (AccessTreeNodeObject) ( (DefaultMutableTreeNode) (value)).
-          getUserObject();
+      ni = ( (DefaultMutableTreeNode) (value)).getUserObject();
     }
     catch (Exception w) {
       return this;
     }
     if (ni != null) {
-      if (ni.nodeType == WizardSettings.ACCESS_PAGE_AUTHSYS) {
-        ImageIcon curicon = new ImageIcon(getClass()
-            .getResource("authsys.gif"));
-        if (curicon != null) {
-          setIcon(curicon);
-        }
-      } else if (ni.nodeType == WizardSettings.ACCESS_PAGE_GROUP) {
+      if (ni instanceof Group) {
         ImageIcon curicon = new ImageIcon(getClass()
             .getResource("group.gif"));
         if (curicon != null) {
           setIcon(curicon);
         }
-      } else if (ni.nodeType == WizardSettings.ACCESS_PAGE_USER) {
+      } else if (ni instanceof Person) {
         ImageIcon curicon = new ImageIcon(getClass()
             .getResource("user.gif"));
         if (curicon != null) {
