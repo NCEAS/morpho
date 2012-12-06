@@ -96,19 +96,28 @@ public class ReplicationPolicyPage extends AbstractUIPage{
     
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
     		"<p>" +
+    		Language.getInstance().getMessage("ReplicationPolicy.Desc1") +
+    		/*		
     		"The Replication Policy for an object defines if replication should be attempted for this object, and if so, how many replicas should be maintained. " +
     		"It also permits specification of preferred and blocked nodes as potential replication targets." +
+    		*/
     		"</p>" +
     		"<br/>" +
     		"<p>" +
+    		Language.getInstance().getMessage("ReplicationPolicy.Desc2") +
+    		/*
     		"Preferred Nodes are utilized over other nodes as replication targets, up to the number of replicas requested. " +
     		"If preferred nodes are unavailable, or if insufficient nodes are listed as preferred to meet the requested number of replicas, " +
     		"then the Coordinating Nodes will pick additional replica nodes for the content." +
+    		*/
     		"</p>" +
     		"<br/>" +
     		"<p>" +
+    		Language.getInstance().getMessage("ReplicationPolicy.Desc3") +
+    		/*
     		"The object MUST never be replicated to nodes listed as Blocked Member Nodes. " +
     		"Where there is a conflict between a Preferred Member Node and a Blocked Member Node entry, the Blocked Member Node entry prevails." +
+    		*/
     		"</p>", 8);
     vbox.add(titleDesc);
 
