@@ -217,26 +217,28 @@ public class ReplicationPolicyPage extends AbstractUIPage{
 	public void setReplicationPolicy(ReplicationPolicy replicationPolicy) {
 		
 		// set the fields
-		replicationAllowed.setSelected(replicationPolicy.getReplicationAllowed());
-		String numReplicas = null;
-		if (replicationPolicy.getNumberReplicas() != null) {
-			numReplicas = replicationPolicy.getNumberReplicas().toString();
-		}
-		numberReplicas.setText(numReplicas);
-		preferredMemberNodeList.removeAllRows();
-		if (replicationPolicy.getPreferredMemberNodeList() != null) {
-			for (NodeReference nodeRef: replicationPolicy.getPreferredMemberNodeList()) {
-				List<String> rowList = new ArrayList<String>();
-				rowList.add(nodeRef.getValue());
-				preferredMemberNodeList.addRow(rowList);
+		if (replicationPolicy != null) {
+			replicationAllowed.setSelected(replicationPolicy.getReplicationAllowed());
+			String numReplicas = null;
+			if (replicationPolicy.getNumberReplicas() != null) {
+				numReplicas = replicationPolicy.getNumberReplicas().toString();
 			}
-		}
-		blockedMemberNodeList.removeAllRows();
-		if (replicationPolicy.getBlockedMemberNodeList() != null) {
-			for (NodeReference nodeRef: replicationPolicy.getBlockedMemberNodeList()) {
-				List<String> rowList = new ArrayList<String>();
-				rowList.add(nodeRef.getValue());
-				blockedMemberNodeList.addRow(rowList);
+			numberReplicas.setText(numReplicas);
+			preferredMemberNodeList.removeAllRows();
+			if (replicationPolicy.getPreferredMemberNodeList() != null) {
+				for (NodeReference nodeRef: replicationPolicy.getPreferredMemberNodeList()) {
+					List<String> rowList = new ArrayList<String>();
+					rowList.add(nodeRef.getValue());
+					preferredMemberNodeList.addRow(rowList);
+				}
+			}
+			blockedMemberNodeList.removeAllRows();
+			if (replicationPolicy.getBlockedMemberNodeList() != null) {
+				for (NodeReference nodeRef: replicationPolicy.getBlockedMemberNodeList()) {
+					List<String> rowList = new ArrayList<String>();
+					rowList.add(nodeRef.getValue());
+					blockedMemberNodeList.addRow(rowList);
+				}
 			}
 		}
 	}
