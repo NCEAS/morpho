@@ -289,6 +289,22 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 					} else { // if import is not needed
 						
 						modifyAttribute();
+						// refresh the window
+						try
+						{
+							ServiceController services = ServiceController.getInstance();
+							ServiceProvider provider =
+							services.getServiceProvider(DataPackageInterface.class);
+							DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+							dataPackageInt.openNewDataPackage(mdp, null);
+						}
+						catch (ServiceNotHandledException snhe) {
+							Log.debug(6, snhe.getMessage());
+						}
+						UIController controller = UIController.getInstance();
+						morphoFrame.setVisible(false);
+						controller.removeWindow(morphoFrame);
+						morphoFrame.dispose();
 					}
 					
 				} // end of if USER_RESPONSE == OK_OPTION
