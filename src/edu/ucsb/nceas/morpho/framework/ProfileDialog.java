@@ -711,35 +711,25 @@ public class ProfileDialog extends JDialog implements StateChangeListener
           File incompleteSysMetaDir = new File(incompleteDir, File.separator+SYSTEMMETADATADIRNAME);
           success = incompleteSysMetaDir.mkdir();
 
-          // Copy sample data to the data directory
-          Hashtable tokens = new Hashtable();
-          tokens.put("SCOPE", profileName);
+          // set the profile to this new one
+          framework.setProfile(profile);
+          
+          // Copy sample data to the data directory for this new (now current!) profile
+          // TODO: retrieve from -config.jar (MBJ)
           String samplePath = config.get("samples_directory", 0);
           File sampleDir = new File(samplePath);
-//DFH          File[] samplesList = sampleDir.listFiles();
-
-          // MBJ commented out because samples are now in the -config.jar file
-          // Need to reimplement from the jar file
           File[] samplesList = listFiles(sampleDir);
           for (int n=0; n < samplesList.length; n++) {
             File srcFile = samplesList[n];
             if (srcFile.isFile()) {
-              String destDirName = dataPath + File.separator + "jscientist";
-              File destDir = new File(destDirName);
-              destDir.mkdirs();
-              String destName = destDirName + File.separator +
-                                srcFile.getName();
-              Log.debug(20, destName);
-              FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
+            	// use the file name as the identifier - it's the best we have in this case
+            	String identifier = srcFile.getName();
+            	InputStream is = new FileInputStream(srcFile);
+				Morpho.thisStaticInstance.getLocalDataStoreService().newFile(identifier, is );
+				Log.debug(20, identifier);
             }
           }
-
-
-          // Create a metacat user
-
-          // Log into metacat
-          framework.setProfile(profile);
-
+          
           //stop listening
           StateChangeMonitor.getInstance().removeStateChangeListener(StateChangeEvent.ACCESS_LIST_MODIFIED, this);
 
