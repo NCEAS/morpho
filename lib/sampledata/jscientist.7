@@ -65,7 +65,7 @@
 <electronicMailAddress>jsci@msi.ucsb.edu</electronicMailAddress>
 </contact>
 <dataTable>
-<entityName> ExampleData.txt</entityName>
+<entityName>ExampleData.txt</entityName>
 <physical>
 <objectName>jscientist.3</objectName>
 <size unit="bytes">1152</size>
@@ -89,7 +89,7 @@
 <attribute id="123456">
 <attributeName>lake</attributeName>
 <attributeLabel>lake</attributeLabel>
-<attributeDefinition>The name of the lake (but you could guess that couldn't you:)</attributeDefinition>
+<attributeDefinition>The name of the lake</attributeDefinition>
 <storageType>Text</storageType>
 <measurementScale>
 <nominal>
@@ -104,8 +104,8 @@
 <attribute>
 <attributeName>site</attributeName>
 <attributeLabel>site</attributeLabel>
-<attributeDefinition>Code indication specific site</attributeDefinition>
-<storageType> Text</storageType>
+<attributeDefinition>Code indicating specific site</attributeDefinition>
+<storageType>Text</storageType>
 <measurementScale>
 <nominal>
 <nonNumericDomain>
@@ -129,17 +129,11 @@
 </attribute>
 <attribute>
 <attributeName>sampdate</attributeName>
-<attributeLabel>sampdate</attributeLabel>
+<attributeLabel>sample date</attributeLabel>
 <attributeDefinition>the date of collection in MM/DD/YYYY format</attributeDefinition>
-<storageType>Text</storageType>
+<storageType>Date</storageType>
 <measurementScale>
-<nominal>
-<nonNumericDomain>
-<textDomain>
-<definition>*</definition>
-</textDomain>
-</nonNumericDomain>
-</nominal>
+<dateTime><formatString>MM/DD/YYYY</formatString></dateTime>
 </measurementScale>
 </attribute>
 <attribute>
@@ -165,9 +159,9 @@
 </attribute>
 <attribute>
 <attributeName>sampvol</attributeName>
-<attributeLabel>sampvol</attributeLabel>
-<attributeDefinition>sample volume</attributeDefinition>
-<storageType> Floating Point</storageType>
+<attributeLabel>sample volume</attributeLabel>
+<attributeDefinition>Volume of the sample</attributeDefinition>
+<storageType>float</storageType>
 <measurementScale>
 <ratio>
 <unit>
@@ -187,7 +181,7 @@
 <attribute>
 <attributeName>species</attributeName>
 <attributeLabel>species</attributeLabel>
-<attributeDefinition>Species Name</attributeDefinition>
+<attributeDefinition>species name</attributeDefinition>
 <storageType>Text</storageType>
 <measurementScale>
 <nominal>
@@ -222,7 +216,7 @@
 </attribute>
 </attributeList>
 <caseSensitive>no</caseSensitive>
-<numberOfRecords> 24</numberOfRecords>
+<numberOfRecords>24</numberOfRecords>
 </dataTable>
 </dataset>
 </eml:eml>
