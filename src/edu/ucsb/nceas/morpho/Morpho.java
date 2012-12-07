@@ -245,11 +245,6 @@ public class Morpho
     {
         setProfileDontLogin(newProfile, false);
 
-        if (initialFrame==null) {
-            mds.establishConnection();
-        } else if(!initialFrame.isShowing()) {
-            mds.establishConnection();
-        }
         fireConnectionChangedEvent();
     }
 
@@ -508,7 +503,6 @@ public class Morpho
             Vector dirty = controller.removeCleanWindows();
             if (dirty.size()<1) {
             // close the application
-              mds.logOutExit();
               config.save();
               System.exit(0);
             } else {
@@ -848,7 +842,7 @@ public class Morpho
         // FILE MENU ACTIONS
         Command connectCommand = new Command() {
             public void execute(ActionEvent e) {
-                mds.establishConnection();
+                //mds.establishConnection();
             }
         };
         GUIAction connectItemAction =
