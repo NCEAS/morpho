@@ -952,7 +952,7 @@ public class AccessPage
 		  DefaultMutableTreeNode child = (DefaultMutableTreeNode) treeNode.getChildAt(i);
 		  // is this a leaf that we want?
 		  if (child.isLeaf()) {
-		    if( child.getUserObject() instanceof Person ) {
+		    if( child.getUserObject() instanceof Person || child.getUserObject() instanceof Group) {
 		      return true;
 		    }
 			  
@@ -962,7 +962,7 @@ public class AccessPage
 	  }
 	  // check this node
 	  Object childAccessObject =  treeNode.getUserObject();
-	  if (childAccessObject instanceof Person) {
+	  if (childAccessObject instanceof Person ||childAccessObject instanceof Group) {
 		  return true;
 	  }
 	  return false;
@@ -1024,7 +1024,7 @@ public class AccessPage
 
     if (treeNode != null) {
       Access.accessTreeNode = treeNode;
-      Access.accessTreeMetacatServerName = Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL();
+      Access.accessTreeMetacatServerName = Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL();
     } else {
       Log.debug(1, "Unable to retrieve access tree. "
           + "The old list will be displayed again");
