@@ -26,22 +26,51 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.RefreshAccessCommand;
-import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeListener;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-
-import java.net.*;
-import java.nio.charset.Charset;
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 
 /**
  * A graphical window for creating a new user profile with user provided
@@ -76,9 +105,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   JTextField profileNameField = new JTextField();
   JTextField firstNameField = new JTextField();
   JTextField lastNameField = new JTextField();
-  JTextField userIdField = new JTextField();
   JTextField scopeField = new JTextField();
-  JList orgList = null;
   public static final String CORRECTIONEMLPROFILEPATH = "eml201corrected";
   public static final String IDFILEMAPUPDATEDPATH = "identifierUpdated";
   
@@ -105,7 +132,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     setModal(true);
     framework = cont;
 
-    numScreens = 3;
+    numScreens = 2;
     currentScreen = 0;
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -410,53 +437,6 @@ public class ProfileDialog extends JDialog implements StateChangeListener
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
       addKeyListenerToComponents(textFields);
     } else if (1 == currentScreen) {
-    	String helpText = 
-    		"<html><p>"
-    		/*+ "Enter the information you submitted when you registered for the Knowledge Network for Biocomplexity (KNB). "*/
-    		+ Language.getInstance().getMessage("NetworkAccountInformation.helpText_1")
-            /*+ "<br>If you have not registered for the KNB yet, go to: "*/
-    		+ "<br>" + Language.getInstance().getMessage("NetworkAccountInformation.helpText_2") + ":"
-            /*+ "<i>http://knb.ecoinformatics.org/</i>."*/
-    		+ "<i>" + Language.getInstance().getMessage("KNB_UEL") + "</i>"
-            /*+ " This will allow you to login to the network and collaborate with other researchers through the KNB."*/
-    		+ "<br>" + Language.getInstance().getMessage("NetworkAccountInformation.helpText_3")
-            + "</p></html>";
-        helpLabel.setText(helpText);
-        screenPanel.setBorder(BorderFactory.createTitledBorder(
-                              BorderFactory.createEmptyBorder(8,8,8,8),
-                              /*"Network Account Information"*/ Language.getInstance().getMessage("NetworkAccountInformation")));
-        JLabel usernameLabel = new JLabel();
-        JLabel orgLabel = new JLabel();
-        JLabel refreshLabel = new JLabel();
-        usernameLabel.setText(/*"Username: "*/ Language.getInstance().getMessage("Username") + ": ");
-        orgLabel.setText(/*"Organization: "*/ Language.getInstance().getMessage("Organization") + ": ");
-        refreshLabel.setText(/*"Refresh: "*/ Language.getInstance().getMessage("Refresh") + ": ");
-        usernameLabel.setForeground(Color.black);
-        orgLabel.setForeground(Color.black);
-        refreshLabel.setForeground(Color.black);
-        usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-        orgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-        refreshLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-        usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        refreshLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        userIdField.setColumns(15);
-        Vector orgs = config.get("organization");
-        String[] organizations = (String[])orgs.toArray(new String[0]);
-        orgList = new JList(organizations);
-        orgList.setSelectionMode(1);
-        orgList.setVisibleRowCount(3);
-        orgList.setSelectedIndex(0);
-        JButton refreshAccessButton = new JButton(
-  			  new GUIAction("Refresh", null, new RefreshAccessCommand()));
-        JScrollPane orgScrollPane = new JScrollPane(orgList);
-        JLabel[] labels = {usernameLabel, orgLabel, refreshLabel};
-        JComponent[] components = {userIdField,
-                              orgScrollPane, refreshAccessButton};
-        addLabelTextRows(labels, components, gridbag, screenPanel);
-        addKeyListenerToComponents(components);
-        userIdField.requestFocus();
-    } else if (2 == currentScreen) {
       String helpText = 
     	  "<html><p>"
     	  /*+ "Enter a short identifier prefix for this profile. "*/ 
@@ -487,7 +467,6 @@ public class ProfileDialog extends JDialog implements StateChangeListener
       scopeLabel.setForeground(Color.black);
       scopeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       scopeField.setColumns(15);
-      scopeField.setText(userIdField.getText());
       JLabel noteContent= new JLabel(
     		  							/*"Please do not use \"temporary\" because it is a reserved word."*/
     		  							Language.getInstance().getMessage("DataPackageIdentification.Note")
@@ -549,16 +528,6 @@ public class ProfileDialog extends JDialog implements StateChangeListener
       fieldsAreValid = false;
     }
 
-    if (userIdField.getText() == null || userIdField.getText().equals("")) {
-      fieldsAreValid = false;
-    }
-
-    String org = (String)orgList.getSelectedValue();
-    if (null == org) {
-        Log.debug(20, "org was initially null");
-        fieldsAreValid = false;
-      }
-
     if (scopeField.getText() == null || scopeField.getText().length() == 0) {
       fieldsAreValid = false;
     } else {
@@ -580,7 +549,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   {
     if (validateFieldContents()) {
       // Create a profile directory
-      String profileDirName = config.getConfigDirectory() + File.separator +
+      String profileDirName = ConfigXML.getConfigDirectory() + File.separator +
                                             config.get("profile_directory", 0);
       File profileDirFile = new File(profileDirName);
       if (!profileDirFile.exists()) {
@@ -593,8 +562,6 @@ public class ProfileDialog extends JDialog implements StateChangeListener
         }
       }
       String profileName = profileNameField.getText();
-      String username = userIdField.getText();
-      String org = (String)orgList.getSelectedValue();
       String scope = scopeField.getText();
       String profilePath = profileDirName + File.separator + profileName;
       String profileFileName = profilePath + File.separator +
@@ -652,12 +619,6 @@ public class ProfileDialog extends JDialog implements StateChangeListener
           if (! profile.set(PROFILENAMEELEMENTNAME, 0, profileName)) {
             success = profile.insert(PROFILENAMEELEMENTNAME, profileName);
           }
-          if (! profile.set("username", 0, username)) {
-            success = profile.insert("username", username);
-          }
-          if (! profile.set("organization", 0, org)) {
-            success = profile.insert("organization", org);
-          }
           if (! profile.set("firstname", 0, firstNameField.getText())) {
             success = profile.insert("firstname", firstNameField.getText());
           }
@@ -667,19 +628,9 @@ public class ProfileDialog extends JDialog implements StateChangeListener
           if (! profile.set("scope", 0, scope)) {
             success = profile.insert("scope", scope);
           }
-          StringBuffer dn = new StringBuffer();
-          String uidtag = config.get("uid_tag", 0);
-          String orgtag = config.get("org_tag", 0);
-          String ldapbase = config.get("ldapbase", 0);
-          dn.append(uidtag +"=" + username);
-          dn.append("," + orgtag +"=" + org);
-          dn.append("," + ldapbase);
-          if (! profile.set("dn", 0, dn.toString())) {
-            success = profile.insert("dn", dn.toString());
-          }
           if (! profile.set(CORRECTIONEMLPROFILEPATH, 0, "true")) {
               success = profile.insert(CORRECTIONEMLPROFILEPATH, "true");
-            }
+          }
           profile.save();
 
           // Create our directories for user data
