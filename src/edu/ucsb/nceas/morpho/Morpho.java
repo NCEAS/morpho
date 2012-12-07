@@ -162,7 +162,7 @@ public class Morpho
 
     /** The hardcoded XML configuration file */
     private static String configFile = "config.xml";
-    public static final String ACCESS_FILE_NAME = "accesslist.xml";
+    public static final String ACCESS_FILE_NAME = "dataone-subject-list.xml";
     private static String profileFileName = "currentprofile.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
