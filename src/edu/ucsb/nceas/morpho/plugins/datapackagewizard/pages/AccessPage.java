@@ -78,6 +78,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.dataone.service.types.v1.Group;
 import org.dataone.service.types.v1.Person;
+import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SubjectInfo;
 import org.dataone.service.types.v1.comparators.GroupNameComparator;
 import org.dataone.service.types.v1.comparators.PersonFamilyNameComparator;
@@ -1100,6 +1101,15 @@ public class AccessPage
       for(Group group : filteredGroups) {
         DefaultMutableTreeNode tempTreeNode = new DefaultMutableTreeNode();
         tempTreeNode.setUserObject(group);
+        List<Subject> memberList = group.getHasMemberList();
+        if(memberList != null) {
+          Collections.sort(memberList);
+          for(Subject subject : memberList) {
+            DefaultMutableTreeNode groupMemberNode = new DefaultMutableTreeNode();
+            groupMemberNode.setUserObject(subject);
+            tempTreeNode.add(groupMemberNode);
+          }
+        }
         top.add(tempTreeNode);
       }
     }
