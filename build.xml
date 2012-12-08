@@ -115,58 +115,17 @@
 
       <property name="izpackjar" 
 		            value="${libdir}/standalone-compiler.jar"/>
-      <property name="jcal"
-   	                value="${libdir}/jcalendar-1.3.2.jar" />
-      <property name="xml4j"
-                value="${libdir}/xml4j.jar" />
-      <property name="xerces"
-                value="${libdir}/xercesImpl.jar" />
-      <property name="apis"
-                value="${libdir}/xml-apis.jar" />
-      <property name="xalan"
-                value="${libdir}/xalan.jar" />
-      <property name="sym"
-                value="${libdir}/sym.jar" />
-      <property name="dtd"
-                value="${libdir}/dtdparser111.jar" />
-      <property name="dom"
-                value="${libdir}/dom4j.jar" />
       <property name="morpho"
                 value="${build.lib}/${name}.jar" />
-      <property name="jlf"
-                value="${libdir}/shippedIcons.jar" />
-      <property name="itisjar"
-                value="${libdir}/itislib.jar" />
-      <property name="jsse"
-                value="${libdir}/jsse.jar" />
-      <property name="jcert"
-                value="${libdir}/jcert.jar" />
-      <property name="jhelp"
-                value="${libdir}/jhall.jar" />
-      <property name="jnet"
-                value="${libdir}/jnet.jar" />
       <property name="help"
                 value="${libdir}/morphohelp.jar" />
-      <property name="lmap"
-                value="${libdir}/liveMap.jar" />
-      <property name="kunststoff"
-                value="${libdir}/kunststoff.jar" />
-      <property name="morpho-config"
-                value="${build.lib}/${name}-config.jar" />
       <property name="utilities"
                 value="${libdir}/utilities.jar" />
       <property name="index"
                 value="${libdir}/jhindexer.jar"/>
       <property name="axis"
    	                value="${libdir}/axis/axis.jar"/>
-      <property name="tar"
-                        value="${libdir}/tar.jar"/>
-      <property name="activation"
-                        value="${libdir}/activation.jar"/>
-	   <property name="PDF"
-                        value="${libdir}/PDFRenderer.jar"/>
-      <property name="cpath"
-	      value="${libdir}/jsse.jar:${libdir}/jcert.jar:${libdir}/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}:${PDF}"/>
+   	   	
       <property name="package.home" value="edu/ucsb/nceas" />
 	   
       <condition property="utilities.required">
@@ -289,15 +248,6 @@
       <mkdir dir="${build.dest}"/>
    	  <mkdir dir="${build.lib}"/>
       <mkdir dir="${build.javadocs}"/>
-
-       <!--
-      <copy todir="${build.src}" filtering="no">
-        <fileset dir="${srcdir}">
-          <exclude name="**/CVS*"/>
-          <exclude name="**/.#*"/>
-        </fileset>
-      </copy>
-       -->
    </target>
   
 	<target name="resolveD1" depends="init" description="retrieve DataONE dependencies with maven">
@@ -315,10 +265,6 @@
    <target name="emldoc" depends="prepare">
      <!-- checkout eml moduel -->
      <echo>Check out eml doc from SVN</echo>
-     <!--<cvs cvsRoot="${cvsroot}"
-          package="${eml-module}"
-          tag="${eml-tag}"
-          dest="${build.docs}" />-->
 	  <svn>
             <export srcUrl="${eml-doc-svn-url}"
                 destPath="${build.docs}/${eml-module}" />
@@ -409,12 +355,7 @@
 
 
    <target name="utilities" depends="prepare" if="utilities.required">
-     <!-- checkout utilities moduel -->
-     <!--<echo>Enter CVS password for utilities module (${cvsroot}) : </echo>
-     <cvs cvsRoot="${cvsroot}"
-          package="utilities"
-		  tag="${utilities-tag}"
-          dest="${build.dir}" />-->
+     <!-- checkout utilities module -->
 	  <echo message="Exporting utiities files from svn repository:" />
 	  <svn>
             <export srcUrl="${svn-utilitiesUrl}"
@@ -643,23 +584,6 @@
         	<include name="*.jar"/>
         </fileset>
    	</copy>
-   	
-<!--   	
-      <copy file="./lib/itislib.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/shippedIcons.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/morpho.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/jsse.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/jcert.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/jnet.jar" todir="${morpho.lib}"/>
-      <copy file="./lib//${name}-config.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/xercesImpl.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/kunststoff.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/xml-apis.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/liveMap.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/jhall.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/morphohelp.jar" todir="${morpho.lib}"/>
--->
 
       <delete file="${morpho.basedir}/lib/morpho-${release}.zip"/>
       <zip zipfile="${morpho.basedir}/lib/morpho-${release}.zip" basedir="${dist.dir}"/>
