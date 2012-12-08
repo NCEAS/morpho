@@ -67,7 +67,6 @@ import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStoreService;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
@@ -175,9 +174,6 @@ public class Morpho
     // for interacting with the local store service
     private LocalDataStoreService lds = null;
     
-    // for interacting with the Metacat services
-    private MetacatDataStoreService mds = null;
-    
     // for interacting with the DataONE services
     private DataONEDataStoreService dds = null;
 
@@ -196,18 +192,6 @@ public class Morpho
         connectionRegistry = new Vector();
         
         
-    }
-
-    /**
-     * Get a reference to the MetacatDataStoreService
-     * @return
-     */
-    public MetacatDataStoreService getMetacatDataStoreService() {
-    	return mds;
-    }
-    
-    public void setMetacatDataStoreService(MetacatDataStoreService mds) {
-    	this.mds = mds;
     }
     
     /**
@@ -675,9 +659,6 @@ public class Morpho
             
             // create the local data store
             morpho.setLocalDataStoreService(new LocalDataStoreService(morpho));
-            
-            // create the remote data store
-            morpho.setMetacatDataStoreService(new MetacatDataStoreService(morpho));
             
             // create the remote DataONE data store
             morpho.setDataONEDataStoreService(new DataONEDataStoreService(morpho));

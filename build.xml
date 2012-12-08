@@ -22,8 +22,7 @@
       <property name="release" value="2.0.0"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
-      <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
-      <property name="mpass" value="your-pw-goes-here"/>
+      <property name="certificateLocation" value="/tmp/yourcert.pem"/>
       <property name="utilities-tag" value="trunk" />
     <!--<property name="utilities-tag" value="tags/UTILITIES_1_1_0" />-->
 
@@ -49,8 +48,7 @@
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
-      <filter token="muser" value="${muser}"/>
-      <filter token="mpass" value="${mpass}"/>
+      <filter token="certificateLocation" value="${certificateLocation}"/>
        
       <filter token="server" value="http://knb.ecoinformatics.org"/>
       <filter token="docrooturl" value="/"/>

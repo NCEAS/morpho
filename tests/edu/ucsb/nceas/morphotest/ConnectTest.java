@@ -42,10 +42,13 @@ public class ConnectTest extends TestCase
 {
   // These need to be set to a valid metacat account for the test to work
   private static String configFile = "lib/config.xml";
-  private static String username = "@muser@";
-  private static String password = "@mpass@";
+  
+  private static String certificateLocation = "@certificateLocation@";
+  
+  private static String badCertificateLocation = "@certificateLocation@" + "bad";
 
   Morpho morpho = null;
+  
 
   /**
    * Constructor to build the test
@@ -127,9 +130,9 @@ public class ConnectTest extends TestCase
    */
   public void testValidLogin()
   {
-    boolean connected = morpho.getMetacatDataStoreService().logIn(username, password);
+    boolean connected = morpho.getDataONEDataStoreService().logIn(certificateLocation);
     assertTrue(connected);
-    assertTrue(morpho.getMetacatDataStoreService().isConnected());
+    assertTrue(morpho.getDataONEDataStoreService().isConnected());
   }
 
   /**
@@ -137,8 +140,8 @@ public class ConnectTest extends TestCase
    */
   public void testLogout()
   {
-    morpho.getMetacatDataStoreService().logOut();
-    assertTrue(morpho.getMetacatDataStoreService().isConnected() == false);
+    morpho.getDataONEDataStoreService().logOut();
+    assertTrue(morpho.getDataONEDataStoreService().isConnected() == false);
   }
 
   /**
@@ -146,8 +149,8 @@ public class ConnectTest extends TestCase
    */
   public void testInvalidLogin()
   {
-    boolean connected = morpho.getMetacatDataStoreService().logIn(username, "garbage");
+    boolean connected = morpho.getDataONEDataStoreService().logIn(badCertificateLocation);
     assertTrue(connected == false);
-    assertTrue(morpho.getMetacatDataStoreService().isConnected() == false);
+    assertTrue(morpho.getDataONEDataStoreService().isConnected() == false);
   }
 }

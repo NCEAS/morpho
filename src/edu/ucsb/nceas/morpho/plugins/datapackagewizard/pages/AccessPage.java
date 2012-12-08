@@ -251,7 +251,7 @@ public class AccessPage
     this.add(bottomPanel, BorderLayout.SOUTH);
 
     if (Access.accessTreeNode != null &&
-        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
+        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
 
       displayTree(Access.accessTreeNode);
     }
@@ -468,7 +468,7 @@ public class AccessPage
         cn = nl.item(i).getFirstChild(); // assume 1st child is text node
         if ( (cn != null) && (cn.getNodeType() == Node.TEXT_NODE) &&
             cn.getNodeValue().compareTo(
-                Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
+                Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
           serverNode = cn;
           continue;
         }
@@ -628,7 +628,7 @@ public class AccessPage
       //// File is not on harddisk and data is not avaiable from
       //// display a dn field to be entered by user...
       if (Access.accessTreeNode != null &&
-          Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
+          Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
         Log.debug(10,
             "Retrieving access information from server failed. "
             + "Displaying the old access information.");
@@ -800,7 +800,7 @@ public class AccessPage
   protected void cancelGetDocumentFromNetwork() {
 
     if (Access.accessTreeNode != null &&
-        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
+        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
       Log.debug(10,
           "Retrieving access information from server cancelled. "
           + "Using the old access tree.");
@@ -1634,7 +1634,7 @@ class QueryNetworkThread
 
       if (Access.accessTreeNode != null &&
           Access.accessTreeMetacatServerName.compareTo(Morpho.
-          thisStaticInstance.getMetacatDataStoreService().getMetacatURL()) == 0) {
+          thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
         Log.debug(10,
             "Retrieving access information from server failed. "
             + "Using the old access tree.");
