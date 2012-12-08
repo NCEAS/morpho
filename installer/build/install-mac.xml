@@ -120,7 +120,6 @@
 				<exclude name="lib/MemoryMonitor/"/>
 				<exclude name="lib/installer/"/>
 				<exclude name="lib/LiveMap/"/>
-				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 				<exclude name="build.xml"/>
 				<exclude name="morpho.bat"/>

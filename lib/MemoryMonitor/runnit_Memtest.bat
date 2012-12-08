@@ -19,7 +19,6 @@ SET   CFG=lib\morpho-config.jar
 SET   JLF=lib\shippedIcons.jar
 SET   JHELP=lib\jhall.jar
 SET   HELP=lib\morphohelp.jar
-SET   HTP=lib\httpclient.jar
 SET   ITS=lib\itislib.jar
 SET   JSE=lib\jsse.jar
 SET   JCE=lib\jcert.jar
@@ -28,7 +27,7 @@ SET   LAF=lib\kunststoff.jar
 SET   LMP=lib\liveMap.jar
 
 
-SET CPATH=.;%LMP%;%XMLP%;%API%;%XALAN%;%DMC%;%CFG%;%JLF%;%JHELP%;%HTP%;%ITS%;%JSE%;%JCE%;%JNE%;%LAF%;%HELP%;%JHELP%
+SET CPATH=.;%LMP%;%XMLP%;%API%;%XALAN%;%DMC%;%CFG%;%JLF%;%JHELP%;%ITS%;%JSE%;%JCE%;%JNE%;%LAF%;%HELP%;%JHELP%
 
 echo ----------------------------------
 

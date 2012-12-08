@@ -66,28 +66,6 @@ public class ConnectTest extends TestCase
   public void setUp()
   {
     try {
-      // Set system property to use HTTPClient or ssl protocol
-      System.setProperty("java.protocol.handler.pkgs","HTTPClient");
-      /*
-      java.net.URL.setURLStreamHandlerFactory(
-          new java.net.URLStreamHandlerFactory() {
-          public java.net.URLStreamHandler createURLStreamHandler(
-              final String protocol) 
-          {
-              if ("http".equals(protocol)) {
-                  try { 
-                      URLStreamHandler urlsh = new HTTPClient.http.Handler(); 
-                      return urlsh; 
-                  } catch (Exception e) {
-                      System.out.println("Error setting URL StreamHandler!");
-                      return null;
-                  }           
-              }
-              return null;
-          }
-      });
-      */
-
       ConfigXML config = new ConfigXML(configFile);
       config.set("debug_level", 0, "0");
       morpho = new Morpho(config);

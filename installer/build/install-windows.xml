@@ -122,7 +122,6 @@
 				<exclude name="lib/MemoryMonitor/"/>
 				<exclude name="lib/installer/"/>
 				<exclude name="lib/LiveMap/"/>
-				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 				<exclude name="morpho-@{version}-linux.jar"/>
                 <exclude name="morpho-@{version}-mac.jar"/>

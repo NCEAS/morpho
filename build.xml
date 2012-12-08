@@ -96,7 +96,6 @@
       <property name="morpho.lib.frames" value="${morpho.lib}/frames"/>
       <property name="morpho.lib.sampledata" value="${morpho.lib}/sampledata"/>
       <property name="morpho.lib.style" value="${morpho.lib}/style"/>
-      <property name="morpho.lib.HTTPClient" value="${morpho.lib}/HTTPClient"/>
       <property name="morpho.src" value="${morpho.dir}/src"/>
       <property name="morpho.docs" value="${morpho.dir}/docs"/>
       <property name="morpho.docs.dev" value="${morpho.docs}/dev"/>
@@ -148,8 +147,6 @@
                 value="${libdir}/jnet.jar" />
       <property name="help"
                 value="${libdir}/morphohelp.jar" />
-      <property name="httpclient"
-                value="${libdir}/httpclient.jar" />
       <property name="lmap"
                 value="${libdir}/liveMap.jar" />
       <property name="kunststoff"
@@ -169,7 +166,7 @@
 	   <property name="PDF"
                         value="${libdir}/PDFRenderer.jar"/>
       <property name="cpath"
-	      value="${libdir}/jsse.jar:${libdir}/jcert.jar:${libdir}/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}:${PDF}"/>
+	      value="${libdir}/jsse.jar:${libdir}/jcert.jar:${libdir}/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}:${PDF}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 	   
       <condition property="utilities.required">
@@ -519,10 +516,6 @@
    -->
    <target name="compile" depends="prepare, utilities, geteml210, geteml211, getstylesheets">
 
-      <jar jarfile="${morpho.basedir}/lib/httpclient.jar">
-        <fileset dir="${morpho.basedir}/lib" includes="HTTPClient/**/*.class"/>
-      </jar>
-
       <javac srcdir="${srcdir}"
              destdir="${build.dest}"
              debug="on"
@@ -556,11 +549,6 @@
          <fileset dir="${srcdir}/${package.home}/morpho/plugins/datapackagewizard/pages/images">
    </fileset>
       </copy>
-      <!--
-      <copy todir="${build.dest}" filtering="no">
-        <fileset dir="${libdir}" excludes="*.jar,HTTPClient/**,SchemaParser/**,*.zip,*.gz"/>
-      </copy>
-      -->
       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"
 	      includes="${package.home}/${name}/** com/** edu/tesc/**" >
 		  <manifest>
@@ -570,7 +558,7 @@
         </manifest>
 	  </jar>
       <jar jarfile="${build.dir}/${name}-config.jar" basedir="${build.lib}"
-           excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz,axis/**,launch4j/**">
+           excludes="*.jar,SchemaParser/**,LiveMap/**,*.zip,*.gz,axis/**,launch4j/**">
       		<metainf file="${build.lib}/mime.types"/>
       	</jar>
 	   <copy file="${build.dir}/${name}-config.jar" tofile="${libdir}/${name}-config.jar"/>
@@ -580,7 +568,7 @@
 	<target name="prepare-lib" depends="prepare">
 		<copy todir="${build.lib}" filtering="no">
 		        <fileset dir="${libdir}" 
-		        	excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz,maven/**"/>
+		        	excludes="*.jar,SchemaParser/**,LiveMap/**,*.zip,*.gz,maven/**"/>
 		</copy>
 		<copy todir="${build.lib}" filtering="no">
 		        <fileset dir="${libdir}" 
@@ -661,7 +649,6 @@
       <copy file="./lib/shippedIcons.jar" todir="${morpho.lib}"/>
       <copy file="./lib/morpho.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/httpclient.jar" todir="${morpho.lib}"/>
       <copy file="./lib/jsse.jar" todir="${morpho.lib}"/>
       <copy file="./lib/jcert.jar" todir="${morpho.lib}"/>
       <copy file="./lib/jnet.jar" todir="${morpho.lib}"/>
@@ -688,10 +675,6 @@
       <copy todir="${morpho.src}">
         <fileset dir="${morpho.basedir}/src"/>
       </copy>
-      <mkdir dir="${morpho.lib.HTTPClient}"/>
-      <copy todir="${morpho.lib.HTTPClient}">
-        <fileset dir="${morpho.basedir}/lib/HTTPClient"/>
-      </copy>
 
       <delete file="${morpho.basedir}/lib/morpho-src-${release}.zip"/>
       <zip zipfile="${morpho.basedir}/lib/morpho-src-${release}.zip" basedir="${dist.dir}"/>
@@ -715,7 +698,6 @@
        <delete dir="${schemadir}/eml-2.1.0" />
     	<delete dir="${schemadir}/eml-2.1.1" />
        <delete file="${utilities}" />
-    	<delete file="${httpclient}" />
 		<delete file="${xsldir}/eml201to210.xsl" />
 		<delete file="${xsldir}/eml201to211.xsl" />
 		<delete file="${xsldir}/eml210to211.xsl" />
@@ -776,7 +758,6 @@
      	<arg line="${morpho.args}"/>
        <jvmarg value="-Xmx512m"/>
        <jvmarg value="-Xss1m"/>
-       <jvmarg value="-Djava.protocol.handler.pkgs=HTTPClient"/>
      </java>
    </target>
 	
