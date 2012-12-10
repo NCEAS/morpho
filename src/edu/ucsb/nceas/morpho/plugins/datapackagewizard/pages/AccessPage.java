@@ -953,7 +953,7 @@ public class AccessPage
 		  DefaultMutableTreeNode child = (DefaultMutableTreeNode) treeNode.getChildAt(i);
 		  // is this a leaf that we want?
 		  if (child.isLeaf()) {
-		    if( child.getUserObject() instanceof Person || child.getUserObject() instanceof Group) {
+		    if( child.getUserObject() instanceof Person || child.getUserObject() instanceof Group || child.getUserObject() instanceof Subject) {
 		      return true;
 		    }
 			  
@@ -963,7 +963,7 @@ public class AccessPage
 	  }
 	  // check this node
 	  Object childAccessObject =  treeNode.getUserObject();
-	  if (childAccessObject instanceof Person ||childAccessObject instanceof Group) {
+	  if (childAccessObject instanceof Person ||childAccessObject instanceof Group || childAccessObject instanceof Subject) {
 		  return true;
 	  }
 	  return false;
