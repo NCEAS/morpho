@@ -36,6 +36,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.dataone.service.types.v1.Group;
 import org.dataone.service.types.v1.Person;
+import org.dataone.service.types.v1.Subject;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
@@ -103,6 +104,12 @@ public class AccessTreeCellRenderer
           setIcon(curicon);
         }
       } else if (ni instanceof Person) {
+        ImageIcon curicon = new ImageIcon(getClass()
+            .getResource("user.gif"));
+        if (curicon != null) {
+          setIcon(curicon);
+        }
+      } else if (ni instanceof Subject) {
         ImageIcon curicon = new ImageIcon(getClass()
             .getResource("user.gif"));
         if (curicon != null) {
