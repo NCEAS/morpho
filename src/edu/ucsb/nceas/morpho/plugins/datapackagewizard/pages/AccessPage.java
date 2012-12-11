@@ -1109,7 +1109,12 @@ public class AccessPage
           Collections.sort(memberList);
           for(Subject subject : memberList) {
             AccessTreeNode groupMemberNode = new AccessTreeNode();
-            groupMemberNode.setUserObject(subject);
+            Person matchedPerson = matchSubjectFromPersonList(subject, persons);
+            if(matchedPerson != null) {
+              groupMemberNode.setUserObject(matchedPerson);
+            } else {
+              groupMemberNode.setUserObject(subject);
+            }
             tempTreeNode.add(groupMemberNode);
           }
         }
@@ -1117,6 +1122,25 @@ public class AccessPage
       }
     }
     return top;
+  }
+  
+  /**
+   * Find a person which has the specified subject in the given list.
+   * @param subject the subject which will be found
+   * @param persons the search pool
+   * @return the matched person. The null will be returned if a person matches the subject
+   */
+  private Person matchSubjectFromPersonList(Subject subject, List<Person> persons) {
+    Person foundPerson = null;
+    if(subject != null && persons != null) {
+      for(Person person : persons) {
+        if(person.getSubject() != null && subject.equals(person.getSubject())) {
+          foundPerson = person;
+          break;
+        }
+      }
+    }
+    return foundPerson;
   }
 
   /**
