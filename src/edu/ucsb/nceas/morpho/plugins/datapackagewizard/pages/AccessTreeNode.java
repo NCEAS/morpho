@@ -32,6 +32,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.dataone.service.types.v1.Group;
 import org.dataone.service.types.v1.Person;
+import org.dataone.service.types.v1.Subject;
 
 /**
  * This class overwrite the toString method of the DefaultMutableTreeNode class.
@@ -57,6 +58,9 @@ public class AccessTreeNode extends DefaultMutableTreeNode {
     } else if (getUserObject() != null && getUserObject() instanceof Group) {
       Group group = (Group) getUserObject();
       str =  group.getGroupName();
+    } else if (getUserObject() != null && getUserObject() instanceof Subject) {
+      Subject subject = (Subject) getUserObject();
+      str =  subject.getValue();
     } else if (getUserObject() != null) {
       str = getUserObject().toString();
     }

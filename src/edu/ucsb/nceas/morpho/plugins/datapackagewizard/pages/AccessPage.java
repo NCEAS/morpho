@@ -1074,7 +1074,7 @@ public class AccessPage
       Collections.sort(filteredPersons, new PersonFamilyNameComparator());
       //generate nodes
       for(Person person : filteredPersons) {
-        DefaultMutableTreeNode tempTreeNode = new DefaultMutableTreeNode();
+        AccessTreeNode tempTreeNode = new AccessTreeNode();
         tempTreeNode.setUserObject(person);
         top.add(tempTreeNode);
       }
@@ -1099,13 +1099,13 @@ public class AccessPage
       Collections.sort(filteredGroups, new GroupNameComparator());
       //generate nodes
       for(Group group : filteredGroups) {
-        DefaultMutableTreeNode tempTreeNode = new DefaultMutableTreeNode();
+        AccessTreeNode tempTreeNode = new AccessTreeNode();
         tempTreeNode.setUserObject(group);
         List<Subject> memberList = group.getHasMemberList();
         if(memberList != null) {
           Collections.sort(memberList);
           for(Subject subject : memberList) {
-            DefaultMutableTreeNode groupMemberNode = new DefaultMutableTreeNode();
+            AccessTreeNode groupMemberNode = new AccessTreeNode();
             groupMemberNode.setUserObject(subject);
             tempTreeNode.add(groupMemberNode);
           }

@@ -44,6 +44,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.dataone.service.types.v1.Group;
 import org.dataone.service.types.v1.Person;
+import org.dataone.service.types.v1.Subject;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -149,8 +150,15 @@ public class AccessTreeModel
       case 1:
       return "";
      }
-    }
-    else {
+    }else if (treeNode.getUserObject() instanceof Subject) {
+      Subject subject = (Subject) treeNode.getUserObject();
+      switch (column) {
+      case 0:
+        return subject;
+      case 1:
+      return "";
+     }
+    }else {
       switch (column) {
         case 0:
           return treeNode.toString();
