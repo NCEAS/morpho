@@ -134,10 +134,10 @@ public class AccessTreeModel
           return person;
         case 1:
             if (person.getEmailList() != null && person.getEmailList().size() >0) {
-              return "  " + person.getEmail(0);
+              return person.getEmail(0);
             }
             if (person.getSubject() != null && person.getSubject().getValue() != null) {
-             return "  " + person.getSubject().getValue();
+             return person.getSubject().getValue().trim();
             }
            
         return "";
