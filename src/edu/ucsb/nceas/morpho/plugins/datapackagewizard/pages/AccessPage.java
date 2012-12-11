@@ -113,7 +113,7 @@ public class AccessPage
   private final String pageNumber = "";
   private final String title = "Access Page";
   private final String subtitle = "";
-  private final String EMPTY_STRING = "";
+  private final static String EMPTY_STRING = "";
   private final static String SUBJECTINFO = "subjectInfo";
   private final static String ACCESSLIST = "accesslist";
 
@@ -1151,7 +1151,14 @@ public class AccessPage
             userDN = nodeOb.getSubject().getValue();
           }
           return true;
-        }  else {
+        } else if (o instanceof Subject) {
+          Subject nodeOb = (Subject) o;
+          warnLabel.setText(EMPTY_STRING);
+          if (userDN != null) {
+            userDN = nodeOb.getValue();
+          }
+          return true;
+        } else {
           warnLabel.setText(
               /*"Warning: Invalid input. Please select a user or a group."*/
             Language.getInstance().getMessage("Warning") + " : "
@@ -1201,22 +1208,9 @@ public class AccessPage
             if (o instanceof Group) {
               Group nodeOb = (Group) o;
               List sub_surrogate = new ArrayList();
-              sub_surrogate.add(" " + nodeOb.toString().trim());
-
-              String value = nodeOb.getSubject().getValue();
-              if (value != null && value.indexOf("o=") > 0) {
-                value = value.substring(value.indexOf("o=") + 2);
-                value = value.substring(0, value.indexOf(","));
-              } else {
-                value = EMPTY_STRING;
-              }
-              sub_surrogate.add(" " + value);
-              /*if (nodeOb.getDescription() != null &&
-                  nodeOb.getDescription().compareTo(EMPTY_STRING) != 0) {
-                sub_surrogate.add(" " + nodeOb.getDescription().trim());
-              } else {
-                sub_surrogate.add(EMPTY_STRING);
-              }*/
+              sub_surrogate.add(" " + nodeOb.getGroupName().trim());
+              sub_surrogate.add(" " + EMPTY_STRING);
+              sub_surrogate.add(" " + EMPTY_STRING);
               // Get access given to the user
               sub_surrogate.add(" " + userAccessType + "   " +
                   userAccess.trim());
@@ -1224,19 +1218,24 @@ public class AccessPage
             } else if (o instanceof Person) {
               Person nodeOb = (Person) o;
               List sub_surrogate = new ArrayList();
-              sub_surrogate.add(" " + nodeOb.getSubject().getValue().trim());
-              /*if (nodeOb.getOrganization() != null &&
-                  nodeOb.getOrganization().compareTo(EMPTY_STRING) != 0) {
-                sub_surrogate.add(" " + nodeOb.getOrganization().trim());
-              } else {
-                sub_surrogate.add(EMPTY_STRING);
-              }*/
+              sub_surrogate.add(" " + getPersonName(nodeOb));
+              sub_surrogate.add(EMPTY_STRING);
               if (nodeOb.getEmailList() != null && nodeOb.getEmailList().size() >0 && nodeOb.getEmail(0) != null &&
                   nodeOb.getEmail(0).compareTo(EMPTY_STRING) != 0) {
                 sub_surrogate.add(" " + nodeOb.getEmail(0).trim());
               } else {
                 sub_surrogate.add(EMPTY_STRING);
               }
+              // Get access given to the user
+              sub_surrogate.add(" " + userAccessType + "   " +
+                  userAccess.trim());
+              surrogate.add(sub_surrogate);
+            } else if (o instanceof Subject) {
+              Subject nodeOb = (Subject) o;
+              List sub_surrogate = new ArrayList();
+              sub_surrogate.add(" " + nodeOb.getValue().trim());
+              sub_surrogate.add(EMPTY_STRING);
+              sub_surrogate.add(EMPTY_STRING);
               // Get access given to the user
               sub_surrogate.add(" " + userAccessType + "   " +
                   userAccess.trim());
@@ -1524,7 +1523,31 @@ public class AccessPage
     displayDNPanel();
     return returnVal;
   }
+  
+  /**
+   * Utility method to get person's name (combination of the first name and family name).
+   * Empty string will be returned if there is no name can't be found.
+   * @param person
+   * @return
+   */
+  public static String getPersonName(Person person) {
+    String name = null;
+    if (person != null) {
+      List<String> firstNames = person.getGivenNameList();
+      if (firstNames != null && firstNames.size() >0) {
+        name = person.getGivenName(0) +" "+person.getFamilyName();
+      } else {
+        name = person.getFamilyName();
+      }
+    }
+    if(name == null) {
+      name = EMPTY_STRING;
+    }
+    return name;
+  }
 }
+
+
 
 /**
  * TreeSelectionAction  Class
@@ -1567,6 +1590,8 @@ class TreeSelectionAction
     }
   }
 }
+
+
 
 /**
  * AccessProgressThread class

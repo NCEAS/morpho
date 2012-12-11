@@ -49,12 +49,7 @@ public class AccessTreeNode extends DefaultMutableTreeNode {
     String str = null;
     if(getUserObject() != null && getUserObject() instanceof Person ) {
       Person person = (Person) getUserObject();
-      List<String> firstNames = person.getGivenNameList();
-      if (firstNames != null && firstNames.size() >0) {
-        str = person.getGivenName(0) +" "+person.getFamilyName();
-      } else {
-        str = person.getFamilyName();
-      }
+      str = AccessPage.getPersonName(person);
     } else if (getUserObject() != null && getUserObject() instanceof Group) {
       Group group = (Group) getUserObject();
       str =  group.getGroupName();
