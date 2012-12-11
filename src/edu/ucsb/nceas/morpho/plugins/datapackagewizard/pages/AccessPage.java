@@ -1307,6 +1307,10 @@ public class AccessPage
           Group nodeOb = (Group) o;
           returnMap.put(xPathRoot + "/principal[" + (j + 1) + "]",
               nodeOb.getSubject().getValue());
+        } else if (o instanceof Subject) {
+          Subject nodeOb = (Subject) o;
+          returnMap.put(xPathRoot + "/principal[" + (j + 1) + "]",
+              nodeOb.getValue());
         }
       }
     } else {
