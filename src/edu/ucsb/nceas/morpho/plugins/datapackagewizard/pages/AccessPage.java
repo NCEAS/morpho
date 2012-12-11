@@ -87,6 +87,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -592,8 +593,10 @@ public class AccessPage
       ByteArrayOutputStream output = new ByteArrayOutputStream();
       TypeMarshaller.marshalTypeToOutputStream(subjectInfo, output);
       String xml = output.toString("UTF-8");
+      ///System.out.println("the xml file is "+xml);
+      //System.out.println(""+xml);
       DocumentBuilder parser = Morpho.createDomParser();
-      Document doc = parser.parse(xml);
+      Document doc = parser.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
       NodeList nodeList = doc.getChildNodes(); 
       if(nodeList != null) {
         for(int i=0; i<nodeList.getLength(); i++) {
