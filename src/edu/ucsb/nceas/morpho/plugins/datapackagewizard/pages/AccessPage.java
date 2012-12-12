@@ -1298,6 +1298,25 @@ public class AccessPage
     return surrogate;
   }
 
+  
+  /**
+   * A utility method to get the description for a person. First, it will get the email address.
+   * If there is no email address, it will get the subject value.
+   * @param person
+   * @return the email or subject. Empty string will return if nothing is found.
+   */
+  public static String getDescription(Person person) {
+    String description = EMPTY_STRING;
+    if(person != null) {
+      List<String> emails = person.getEmailList();
+      if(emails != null && emails.size() >0) {
+        description = person.getEmail(0);
+      } else if (person.getSubject()!= null ){
+        description = person.getSubject().getValue();
+      }
+    }
+    return description;
+  }
   /**
    *  gets the Map object that contains all the key/value paired
    *

@@ -64,7 +64,7 @@ public class AccessTreeModel
   // Names of the columns.
   static protected String[] cNames = {
       /*"Name"*/ Language.getInstance().getMessage("Name"),
-      /*"Email / Description / Distinguished Name"*/ Language.getInstance().getMessage("DistinguishedName") + " / "+ Language.getInstance().getMessage("Description") + " / " +Language.getInstance().getMessage("Email") 
+      /*"Email / Description / Distinguished Name"*/ Language.getInstance().getMessage("Email")+" /"+Language.getInstance().getMessage("DistinguishedName") + " / "+ Language.getInstance().getMessage("Description") + " / " 
       };
 
   // Types of the columns.
@@ -133,14 +133,8 @@ public class AccessTreeModel
         case 0:
           return person;
         case 1:
-            if (person.getEmailList() != null && person.getEmailList().size() >0) {
-              return person.getEmail(0);
-            }
-            if (person.getSubject() != null && person.getSubject().getValue() != null) {
-             return person.getSubject().getValue().trim();
-            }
+           return AccessPage.getDescription(person);
            
-        return "";
       }
     } else if (treeNode.getUserObject() instanceof Group) {
       Group group = (Group) treeNode.getUserObject();
