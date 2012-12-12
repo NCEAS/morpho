@@ -39,6 +39,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -97,10 +98,10 @@ public class Access
   private CustomList accessList;
 
   private String AUTHSYSTEM_VALUE = "knb";
-  private String orderValue = "allowFirst";
+  private final String orderValue = "allowFirst";
   private String[] orderValues = new String[] {
-	      /*"Allow First"*/ Language.getInstance().getMessage("AllowFirst"),
-	      /*"Deny First"*/ Language.getInstance().getMessage("DenyFirst")
+	      /*"Allow First"*/ Language.getInstance().getMessage("AllowFirst")//,
+	      /*"Deny First"*/ //Language.getInstance().getMessage("DenyFirst")
 	  };
 
   public static DefaultMutableTreeNode accessTreeNode = null;
@@ -191,12 +192,12 @@ public class Access
 
       public void actionPerformed(ActionEvent e) {
         Log.debug(45, "got orderradiobutton command: " + e.getActionCommand());
-        if (e.getActionCommand().equals(orderValues[0])) {
+        /*if (e.getActionCommand().equals(orderValues[0])) {
         	orderValue = "allowFirst";
         }
         if (e.getActionCommand().equals(orderValues[1])) {
         	orderValue = "denyFirst";
-        }
+        }*/
       }
     };
 
@@ -870,22 +871,26 @@ public class Access
   }
 
   private void setOrderValue(String value) {
-	  orderValue = value;
+	  //orderValue = value;
+    if(value.equals("denyFirst")) {
+      JOptionPane.showMessageDialog(this, "The EML document has \"denyFirst\" order type for the access rules. However, current Metacat release doesn't support it.\n"+
+     "Morpho changed the order type to \"allowFirst\". You have to check the access rules carefully.", "Warning", JOptionPane.WARNING_MESSAGE);
+    }
 	  JPanel innerPanel = ( (JPanel) (orderPanel.getComponent(1)));
       JRadioButton allowFirst = ( (JRadioButton) (innerPanel.
           getComponent(0)));
-      JRadioButton denyFirst = ( (JRadioButton) (innerPanel.
-          getComponent(1)));
+      /*JRadioButton denyFirst = ( (JRadioButton) (innerPanel.
+          getComponent(1)));*/
 	  if (orderValue.equals("allowFirst")) {
 		 allowFirst.setSelected(true);
-		 denyFirst.setSelected(false);
+		 //denyFirst.setSelected(false);
 	  }
-	  if (orderValue.equals("denyFirst")) {
+	  /*if (orderValue.equals("denyFirst")) {
 		 allowFirst.setSelected(false);
 		 denyFirst.setSelected(true);
-	  }
+	  }*/
 	  allowFirst.setEnabled( !(inherit && isEntity) );
-	  denyFirst.setEnabled( !(inherit && isEntity) );
+	  //denyFirst.setEnabled(false );
   }
   private int getFirstPredicate(String xpath, String firstSegment) {
 
