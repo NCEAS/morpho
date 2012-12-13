@@ -1514,10 +1514,57 @@ public class AccessPage
           ConfigXML accessXML = null;
           try {
             accessXML = new ConfigXML(accessListFilePath);
-
-            Vector username = accessXML.getValuesForPath("username[.='" +
-                (String) nextValObj + "']/../name");
-            if (username.size() > 0) {
+            NodeList persons = accessXML.getPathContent("//person[subject='" +
+                (String) nextValObj + "']");
+            if(persons!= null && persons.getLength() >0) {
+              String givenName ="";
+              String familyName = "";
+              String email = "";
+              String subject = "";
+              boolean hitGivenName = false;
+              Node person =persons.item(0);
+              NodeList children = person.getChildNodes();
+              if(children != null ) {
+                for(int i=0; i<children.getLength(); i++) {
+                  Node child = children.item(i);
+                  if(child.getNodeType() == Node.ELEMENT_NODE && child.getLocalName().equals("givenName") && !hitGivenName) {
+                    givenName = child.getFirstChild().getNodeValue();
+                    hitGivenName = true;
+                  } else if(child.getNodeType() == Node.ELEMENT_NODE && child.getLocalName().equals("familyName")) {
+                    familyName = child.getFirstChild().getNodeValue();
+                  }  else if(child.getNodeType() == Node.ELEMENT_NODE && child.getLocalName().equals("email")) {
+                    email = child.getFirstChild().getNodeValue();
+                  } else if(child.getNodeType() == Node.ELEMENT_NODE && child.getLocalName().equals("subject")) {
+                    subject = child.getFirstChild().getNodeValue();
+                  }
+                }
+                /*if(email.equals("")) {
+                  userEmail =  subject;
+                } else {
+                  userEmail = email;
+                }*/
+                userName = " "+givenName +" "+familyName;
+              }
+            } else {
+              NodeList groups = accessXML.getPathContent("//group[subject='" +
+                  (String) nextValObj + "']");
+              if(groups!= null && groups.getLength() >0) {
+                Node group = groups.item(0);
+                NodeList children = group.getChildNodes();
+                if(children != null ) {
+                  for(int i=0; i<children.getLength(); i++) {
+                    Node child = children.item(i);
+                    if(child.getNodeType() == Node.ELEMENT_NODE && child.getLocalName().equals("groupName")) {
+                      userName = " "+child.getFirstChild().getNodeValue();
+                      break;
+                    }
+                  }
+                }
+                
+              }
+            }
+            userOrg = "";
+            /*if (username.size() > 0) {
               userName = (String) username.get(0);
             }
             Vector useremail = accessXML.getValuesForPath("username[.='" +
@@ -1529,7 +1576,7 @@ public class AccessPage
                 (String) nextValObj + "']/../organization");
             if (userorg.size() > 0) {
               userOrg = (String) userorg.get(0);
-            }
+            }*/
 
           }
           catch (Exception e) {
