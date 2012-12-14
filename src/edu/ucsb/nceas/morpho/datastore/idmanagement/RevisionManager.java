@@ -290,7 +290,7 @@ public class RevisionManager implements RevisionManagerInterface {
    * @param newId - the new identifier which obsoletes the old one.
    * @param oldId - the old identifier which will be obsoleted by the new one.
    */
-  private synchronized void setObsoletesRelation(String newId, String oldId) throws IllegalArgumentException {
+  private void setObsoletesRelation(String newId, String oldId) throws IllegalArgumentException {
     if(newId == null || newId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the first parameter of this method can't be null or blank.");
     }
@@ -298,7 +298,9 @@ public class RevisionManager implements RevisionManagerInterface {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the second parameter of this method can't be null or blank.");
     }
     if(!newId.equals(oldId)) {
-      obsoletes.put(newId, oldId);
+      synchronized (obsoletes) {
+        obsoletes.put(newId, oldId);
+      } 
       modifyConfiguration(newId, OBSOLETES, oldId);
     }
     
@@ -312,7 +314,7 @@ public class RevisionManager implements RevisionManagerInterface {
    * @param oldId - the old identifier which will be obsoleted.
    * @param newId - the new identifier which obsoletes the old one.
    */
-  private synchronized void setObsoletedByRelation(String oldId, String newId) throws IllegalArgumentException {
+  private void setObsoletedByRelation(String oldId, String newId) throws IllegalArgumentException {
     if(newId == null || newId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the second parameter of this method can't be null or blank.");
     }
@@ -320,7 +322,9 @@ public class RevisionManager implements RevisionManagerInterface {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the first parameter of this method can't be null or blank.");
     }
     if(!oldId.equals(newId)) {
-      obsoletedBy.put(oldId, newId);
+      synchronized (obsoletedBy) {
+        obsoletedBy.put(oldId, newId);
+      }
       modifyConfiguration(oldId, OBSOLETEDBY, newId);
     }
    
