@@ -193,13 +193,19 @@ public class FileSystemDataStore {
   }
   
   /**
-   * Generate a unique file name for the identifier.
+   * Generate a unique file name for the identifier. If there is already a file associated 
+   * with the identifier, the file will be returned.
    */
   private File generateFile(String identifier) throws IOException {
     
     //String fileName = UUID.randomUUID().toString();
     //String fileName = (new Integer(identifier.hashCode())).toString();
-    File file = File.createTempFile(MORPHO, "", storeDirectory);
+    File file = null;
+    try {
+      file = idFileMap.getFile(identifier);
+    } catch (Exception e) {
+      file = File.createTempFile(MORPHO, "", storeDirectory);
+    }
     return file;
   }
   
