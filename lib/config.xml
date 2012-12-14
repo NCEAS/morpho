@@ -35,7 +35,7 @@
   <eastBCSearchPath>eastBoundingCoordinate</eastBCSearchPath>
   <taxonRankSearchPath>taxonomicClassification/taxonRankName</taxonRankSearchPath>
   <taxonValueSearchPath>taxonomicClassification/taxonRankValue</taxonValueSearchPath>
-  <updateIdFileMap>false</updateIdFileMap>
+  <updateIdFileMap>true</updateIdFileMap>
   <vocabularies>
   	<vocabulary>KNBRegistry</vocabulary>
   	<className>edu.ucsb.nceas.morpho.plugins.vocabulary.GenericTreeVocabularyPage</className>
