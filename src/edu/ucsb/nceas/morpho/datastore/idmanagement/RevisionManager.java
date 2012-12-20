@@ -149,7 +149,8 @@ public class RevisionManager implements RevisionManagerInterface {
             String obsoletesIdentifier = (String) obsoletesId;
             //System.out.println("the identifier is "+identifier);
             //System.out.println("the obsoletes id is "+obsoletesIdentifier);
-            setObsoletesRelation(identifier, obsoletesIdentifier);
+            boolean modifyConfigFile = false;
+            setObsoletesRelation(identifier, obsoletesIdentifier, modifyConfigFile);
           }
         }
         
@@ -159,7 +160,8 @@ public class RevisionManager implements RevisionManagerInterface {
             String obsoletedByIdentifier = (String) obsoletedById;
             //System.out.println("the identifier is "+identifier);
             //System.out.println("the obsoletedBy id is "+obsoletedByIdentifier);
-            setObsoletedByRelation(identifier, obsoletedByIdentifier);
+            boolean modifyConfigFile = false;
+            setObsoletedByRelation(identifier, obsoletedByIdentifier, modifyConfigFile);
           }
         }
       }
@@ -280,8 +282,9 @@ public class RevisionManager implements RevisionManagerInterface {
    * @param oldId - the old identifier which will be obsoleted by the new one.
    */
   public void setObsoletes(String newId, String oldId) throws IllegalArgumentException {
-    setObsoletedByRelation(oldId, newId);
-    setObsoletesRelation(newId, oldId);
+    boolean modifyConfigFile = true;
+    setObsoletedByRelation(oldId, newId, modifyConfigFile);
+    setObsoletesRelation(newId, oldId, modifyConfigFile);
   }
   
   
@@ -290,7 +293,7 @@ public class RevisionManager implements RevisionManagerInterface {
    * @param newId - the new identifier which obsoletes the old one.
    * @param oldId - the old identifier which will be obsoleted by the new one.
    */
-  private void setObsoletesRelation(String newId, String oldId) throws IllegalArgumentException {
+  private void setObsoletesRelation(String newId, String oldId, boolean modifyConfigFile) throws IllegalArgumentException {
     if(newId == null || newId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the first parameter of this method can't be null or blank.");
     }
@@ -300,8 +303,11 @@ public class RevisionManager implements RevisionManagerInterface {
     if(!newId.equals(oldId)) {
       synchronized (obsoletes) {
         obsoletes.put(newId, oldId);
-      } 
-      modifyConfiguration(newId, OBSOLETES, oldId);
+      }
+      if (modifyConfigFile) {
+        modifyConfiguration(newId, OBSOLETES, oldId);
+      }
+      
     }
     
   }
@@ -314,7 +320,7 @@ public class RevisionManager implements RevisionManagerInterface {
    * @param oldId - the old identifier which will be obsoleted.
    * @param newId - the new identifier which obsoletes the old one.
    */
-  private void setObsoletedByRelation(String oldId, String newId) throws IllegalArgumentException {
+  private void setObsoletedByRelation(String oldId, String newId, boolean modifyConfigFile) throws IllegalArgumentException {
     if(newId == null || newId.trim().equals("")) {
       throw new IllegalArgumentException("RevisionManager.setObsoletes - the second parameter of this method can't be null or blank.");
     }
@@ -325,7 +331,10 @@ public class RevisionManager implements RevisionManagerInterface {
       synchronized (obsoletedBy) {
         obsoletedBy.put(oldId, newId);
       }
-      modifyConfiguration(oldId, OBSOLETEDBY, newId);
+      if(modifyConfigFile) {
+        modifyConfiguration(oldId, OBSOLETEDBY, newId);
+      }
+      
     }
    
   }
@@ -406,8 +415,9 @@ public class RevisionManager implements RevisionManagerInterface {
         obsoletedBy.remove(identifier);
         obsoletedBy.remove(obsoletesId);
         configuration.clearTree(cleanXPath);
-        setObsoletedByRelation(obsoletesId, obsoletedById);
-        setObsoletesRelation(obsoletedById, obsoletesId);
+        boolean modifyConfigFile = true;
+        setObsoletedByRelation(obsoletesId, obsoletedById, modifyConfigFile);
+        setObsoletesRelation(obsoletedById, obsoletesId, modifyConfigFile);
         //obsoletes.put(obsoletedById,obsoletesId);
         //obsoletedBy.put(obsoletesId, obsoletedById);
         //System.out.println("obsoleted by "+obsoletedBy);
