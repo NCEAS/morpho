@@ -41,7 +41,6 @@ import java.util.Vector;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
-import org.dataone.client.ObjectFormatCache;
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
@@ -61,6 +60,7 @@ import org.xml.sax.InputSource;
 import com.ibm.icu.util.Calendar;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
@@ -344,8 +344,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 		sysmeta.setRightsHolder(rightsHolder);
 		BigInteger size = BigInteger.valueOf(getData().length);
 		sysmeta.setSize(size);
-		// TODO: access policy
-		AccessPolicy accessPolicy = null;
+		
+		// access policy from EML
+		AccessPolicy accessPolicy = AccessPolicyConverter.getAccessPolicy(this);
 		sysmeta.setAccessPolicy(accessPolicy);
 		
 	}

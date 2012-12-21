@@ -30,13 +30,16 @@ import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.dataone.service.types.v1.AccessPolicy;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
+import org.xml.sax.SAXException;
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -50,8 +53,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * Class to handle add access command
@@ -111,10 +112,11 @@ public class AddAccessCommand
 
 	      try {
 	        insertAccess();
+	        synchSystemMetadata();
 	        UIController.showNewPackage(mdp);
 	      }
 	      catch (Exception w) {
-	        Log.debug(15, "Exception trying to modify access DOM: " + w);
+	        Log.debug(15, "Exception trying to modify access: " + w);
 	        w.printStackTrace();
 	        Log.debug(5, "Unable to add access details!");
 	      }
@@ -192,6 +194,17 @@ public class AddAccessCommand
     return (dialog.USER_RESPONSE == ModalDialog.OK_OPTION);
   }
 
+  /**
+   * save the access rules defined in the EML into the SM
+   * @throws SAXException
+   * @throws IOException
+   */
+	private void synchSystemMetadata() throws SAXException, IOException {
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		AccessPolicy accessPolicy = AccessPolicyConverter.getAccessPolicy(adp);
+		adp.getSystemMetadata().setAccessPolicy(accessPolicy);
+	}
+  
   private void insertAccess() {
 
     OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
