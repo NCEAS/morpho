@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -35,6 +36,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
@@ -111,7 +115,7 @@ public class ConnectionFrame  extends JDialog
     jButtonGroupPanel1.add(instructPanel);
     JLabel instructLabel = new JLabel();
     instructLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-    instructLabel.setForeground(java.awt.Color.black);
+    instructLabel.setForeground(Color.black);
     instructLabel.setText(/*"Enter your Network password in order to log in."*/
     						Language.getInstance().getMessage("UISettings.RequirePassword")
     						);
@@ -143,7 +147,7 @@ public class ConnectionFrame  extends JDialog
     activityLabel.setHorizontalTextPosition(SwingConstants.LEFT);
     activityLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     jButtonGroupPanel1.add(activityLabel);
-    activityLabel.setForeground(java.awt.Color.black);
+    activityLabel.setForeground(Color.black);
 
     jPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
     getContentPane().add(BorderLayout.SOUTH,jPanel1);
@@ -285,7 +289,7 @@ public class ConnectionFrame  extends JDialog
    * enter buttons.  escape toggles the cancel button and enter toggles the
    * connect button
    */
-  class KeyPressActionListener extends java.awt.event.KeyAdapter
+  class KeyPressActionListener extends KeyAdapter
   {
     public KeyPressActionListener() { }
     
@@ -297,8 +301,8 @@ public class ConnectionFrame  extends JDialog
         if (e.getSource() instanceof JButton){
           ((JButton)e.getSource()).doClick();
         } else {
-          java.awt.event.ActionEvent event = new 
-                             java.awt.event.ActionEvent(connectButton, 0, "OK");
+          ActionEvent event = new 
+                             ActionEvent(connectButton, 0, "OK");
           connectButton_actionPerformed(event);
         }
       } else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -310,9 +314,9 @@ public class ConnectionFrame  extends JDialog
   /**
    * Listener used to detect button presses
    */
-  class SymAction implements java.awt.event.ActionListener
+  class SymAction implements ActionListener
   {
-    public void actionPerformed(java.awt.event.ActionEvent event)
+    public void actionPerformed(ActionEvent event)
     {
       
       Object object = event.getSource();
@@ -322,11 +326,11 @@ public class ConnectionFrame  extends JDialog
       }
       else if (object == disconnectButton)
       {
-        DisconnectButton_actionPerformed(event);
+        disconnectButton_actionPerformed(event);
       }
       else if (object == cancelButton)
       {
-        CancelButton_actionPerformed(event);
+        cancelButton_actionPerformed(event);
       }
     }
   }
@@ -334,12 +338,13 @@ public class ConnectionFrame  extends JDialog
   /**
    * Perform actions associated with the Connect button
    */
-  void connectButton_actionPerformed(java.awt.event.ActionEvent event)
+  void connectButton_actionPerformed(ActionEvent event)
   {
     activityLabel.setIcon(flapping);
     activityLabel.invalidate();
-    jPanel2.validate();
+    jPanel2.revalidate();
     jPanel2.paint(jPanel2.getGraphics());
+    
     
     new LoginCommand(container, this).execute(event);
   }
@@ -347,7 +352,7 @@ public class ConnectionFrame  extends JDialog
   /**
    * Perform actions associated with the Disconnect button
    */
-  void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
+  void disconnectButton_actionPerformed(ActionEvent event)
   {
     container.getDataONEDataStoreService().logOut();
     updateEnableDisable();
@@ -356,7 +361,7 @@ public class ConnectionFrame  extends JDialog
   /**
    * Perform actions associated with the Cancel button
    */
-  void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
+  void cancelButton_actionPerformed(ActionEvent event)
   {
     
     ConfigXML profile = container.getProfile();
