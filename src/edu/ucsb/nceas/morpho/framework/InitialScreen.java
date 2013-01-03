@@ -52,6 +52,7 @@ import javax.swing.DefaultComboBoxModel;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 
+import edu.ucsb.nceas.morpho.dataone.EcpAuthentication;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -372,45 +373,15 @@ public class InitialScreen extends JPanel
 
         
         //LOGIN BUTTON:
+        Command connectCommand = new Command() {
+            public void execute(ActionEvent e) {
+                EcpAuthentication.establishConnection();
+            }
+        };
         GUIAction loginAction = new GUIAction(
-        
             UISettings.INIT_SCR_LOGIN_BUTTON_TEXT, 
             null,
-            new LoginCommand(morpho, 
-                new LoginClientInterface() {
-                        
-                    public String getPassword()
-                    {
-                        parentFrame.setBusy(true);
-                        loginButton.setEnabled(false);
-                        passwordField.setEnabled(false);
-                        return new String(passwordField.getPassword());
-                    }
-                    
-                    public String getCertificateLocation()
-                    {
-                        parentFrame.setBusy(true);
-                        loginButton.setEnabled(false);
-                        certificateField.setEnabled(false);
-                        return new String(certificateField.getText());
-                    }
-
-                    public void setLoginSuccessful(boolean success)
-                    {
-                        parentFrame.setBusy(false);
-                        loginButton.setEnabled(true);
-                        certificateField.setEnabled(true);
-                        
-                        if (success) {
-                            updateLoginStatus(  loginMessageLabel, 
-                                                loginHeaderLabel, credentialLabel, 
-                                                certificateField, loginButton);
-                        } else {
-                            Log.debug(9, Language.getInstance().getMessage("LoginFailed") + "\n" + 
-                              Language.getInstance().getMessage("CheckCaps"));
-                        }
-                    }
-                }));
+            connectCommand);
         loginButton.setAction(loginAction);
         loginButton.setContentAreaFilled(false); 
         loginButton.setRolloverEnabled(true);
@@ -489,9 +460,9 @@ public class InitialScreen extends JPanel
             prevLoginStatus = true;
         } else {
             loginPanel.clearRow3();
-            loginPanel.addToRow3(passwordLabel);
-            passwordField.setText("");
-            loginPanel.addToRow3(passwordField);
+            //loginPanel.addToRow3(passwordLabel);
+            //passwordField.setText("");
+            //loginPanel.addToRow3(passwordField);
             loginPanel.addToRow3(Box.createHorizontalStrut(10));
             loginPanel.addToRow3(loginButton);
             loginPanel.addToRow3(Box.createHorizontalGlue());

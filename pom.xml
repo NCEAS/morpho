@@ -84,12 +84,18 @@
 					<groupId>xerces</groupId>
 					<artifactId>xercesImpl</artifactId>
 		        </exclusion>
+		        <!-- for ECP we need a newer xalan -->
+		        <exclusion>
+					<groupId>xalan</groupId>
+					<artifactId>xalan</artifactId>
+		        </exclusion>
 			</exclusions>
 		</dependency>
+		<!-- ECP support, now in dev-testing maven repo -->
 		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.7.1</version>
+			<groupId>ecp</groupId>
+			<artifactId>simple-ecp-client</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>

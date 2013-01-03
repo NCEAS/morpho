@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 
 import javax.swing.SwingUtilities;
 
@@ -36,6 +37,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Command;
 
+import edu.ucsb.nceas.morpho.dataone.EcpAuthentication;
 import edu.ucsb.nceas.morpho.framework.LoginClientInterface;
 
 
@@ -74,7 +76,20 @@ public class LoginCommand implements Command
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						ConfigXML profile = morpho.getProfile();
-						boolean connected = morpho.getDataONEDataStoreService().logIn(loginClient.getCertificateLocation());
+						// decide whether to use password or to use certificate location directly
+						String username = loginClient.getUsername();
+						String password = loginClient.getPassword();
+						String idp = loginClient.getIdentityProvider();
+						// try to authenticate with ECP
+						boolean connected = false;
+						try {
+							File certificateLocation = EcpAuthentication.authenticate(idp, username, password);
+							connected = morpho.getDataONEDataStoreService().logIn(certificateLocation.getAbsolutePath());
+						} catch (Exception e) {
+							// something didn't work...
+							Log.debug(10, "Could not authenticate: " + e.getMessage());
+							e.printStackTrace();
+						}
 						if (connected) {
 							profile.set("searchnetwork", 0, "true", true);
 							Log.debug(12, "LoginCommand: Login successful");

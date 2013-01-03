@@ -48,6 +48,18 @@ public interface LoginClientInterface
   public String getCertificateLocation();
   
   /**
+   * Retrieve the username for login
+   * @return
+   */
+  public String getUsername();
+  
+  /**
+   * Retrieve the identity provider being used
+   * @return
+   */
+  public String getIdentityProvider();
+  
+  /**
    *  notifies client whether login was successful or not
    *
    *  @return   boolean flag indicating whether login was successful (true) or 

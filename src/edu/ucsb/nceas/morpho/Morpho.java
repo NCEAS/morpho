@@ -64,6 +64,7 @@ import org.dataone.service.util.Constants;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
+import edu.ucsb.nceas.morpho.dataone.EcpAuthentication;
 import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
@@ -787,7 +788,7 @@ public class Morpho
         // FILE MENU ACTIONS
         Command connectCommand = new Command() {
             public void execute(ActionEvent e) {
-                //mds.establishConnection();
+                EcpAuthentication.establishConnection();
             }
         };
         GUIAction connectItemAction =

@@ -39,6 +39,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -50,6 +51,8 @@ import javax.swing.SwingConstants;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.dataone.EcpAuthentication;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -61,7 +64,7 @@ public class ConnectionFrame  extends JDialog
 {
 
   Morpho container = null;
-  javax.swing.ImageIcon still = null;
+  ImageIcon still = null;
   ImageIcon flapping = null;
 
   /**
@@ -97,20 +100,15 @@ public class ConnectionFrame  extends JDialog
     getContentPane().setLayout(new BorderLayout(0,0));
     //setSize(315,290);
     setVisible(false);
-    JLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-    JLabel1.setText(/*"Network Login"*/ Language.getInstance().getMessage("NetworkLogin"));
-    getContentPane().add(BorderLayout.NORTH,JLabel1);
-    JLabel1.setForeground(java.awt.Color.black);
-    JLabel1.setFont(new Font("Dialog", Font.BOLD, 14));
 
-    JPanel2.setLayout(new BorderLayout(0,0));
-    getContentPane().add(BorderLayout.CENTER,JPanel2);
-    JButtonGroupPanel1.setLayout(new GridLayout(4,1,0,0));
-    JPanel2.add(BorderLayout.NORTH,JButtonGroupPanel1);
+    jPanel2.setLayout(new BorderLayout(0,0));
+    getContentPane().add(BorderLayout.CENTER,jPanel2);
+    jButtonGroupPanel1.setLayout(new GridLayout(5,1,0,0));
+    jPanel2.add(BorderLayout.NORTH,jButtonGroupPanel1);
 
     JPanel instructPanel = new JPanel();
     instructPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-    JButtonGroupPanel1.add(instructPanel);
+    jButtonGroupPanel1.add(instructPanel);
     JLabel instructLabel = new JLabel();
     instructLabel.setFont(new Font("Dialog", Font.BOLD, 12));
     instructLabel.setForeground(java.awt.Color.black);
@@ -119,48 +117,54 @@ public class ConnectionFrame  extends JDialog
     						);
     instructPanel.add(instructLabel);
 
-    JPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-    JButtonGroupPanel1.add(JPanel3);
-    Name.setText(/*"Name"*/ Language.getInstance().getMessage("Name"));
-    JPanel3.add(Name);
-    Name.setForeground(java.awt.Color.black);
-    Name.setFont(new Font("Dialog", Font.PLAIN, 12));
-    JPanel3.add(NameLabel);
-    JPanel4.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-    JButtonGroupPanel1.add(JPanel4);
-    Password.setText(/*"Password"*/ Language.getInstance().getMessage("Password"));
-    JPanel4.add(Password);
-    Password.setForeground(java.awt.Color.black);
-    Password.setFont(new Font("Dialog", Font.PLAIN, 12));
-    PWTextField.setColumns(21);
-    addKeyListenerToComponent(PWTextField);
-    JPanel4.add(PWTextField);
-    ActivityLabel.setDoubleBuffered(true);
-    ActivityLabel.setHorizontalTextPosition(SwingConstants.LEFT);
-    ActivityLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-    JButtonGroupPanel1.add(ActivityLabel);
-    ActivityLabel.setForeground(java.awt.Color.black);
+    // identity provider dropdown
+    JPanel idpPanel = WidgetFactory.makePanel();
+    idpPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+    idpPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("Organization"), true));
+    identityProviders = WidgetFactory.makePickList(EcpAuthentication.getAvailableIdentityProviders(), true, 0, null);
+    WidgetFactory.setPrefMaxSizes(identityProviders, null);
+    idpPanel.add(identityProviders);
+    jButtonGroupPanel1.add(idpPanel);
+    
+    jPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+    jButtonGroupPanel1.add(jPanel3);
+    userNameLabel = WidgetFactory.makeLabel(/*"Name"*/ Language.getInstance().getMessage("Username"), true);
+    jPanel3.add(userNameLabel);
+    userName.setColumns(21);
+    jPanel3.add(userName);
+    jPanel4.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+    jButtonGroupPanel1.add(jPanel4);
+    passwordLabel = WidgetFactory.makeLabel(/*"Password"*/ Language.getInstance().getMessage("Password"), true);
+    jPanel4.add(passwordLabel);
+    passwordTextField.setColumns(21);
+    addKeyListenerToComponent(passwordTextField);
+    jPanel4.add(passwordTextField);
+    activityLabel.setDoubleBuffered(true);
+    activityLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+    activityLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+    jButtonGroupPanel1.add(activityLabel);
+    activityLabel.setForeground(java.awt.Color.black);
 
-    JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-    getContentPane().add(BorderLayout.SOUTH,JPanel1);
+    jPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+    getContentPane().add(BorderLayout.SOUTH,jPanel1);
     connectButton.setText(/*"Login"*/ Language.getInstance().getMessage("Login"));
     connectButton.setActionCommand("OK");
     connectButton.setMnemonic(KeyEvent.VK_L);
     addKeyListenerToComponent(connectButton);
-    JPanel1.add(connectButton);
+    jPanel1.add(connectButton);
     connectButton.isDefaultButton();
-    DisconnectButton.setText(/*"Logout"*/ Language.getInstance().getMessage("Logout"));
-    DisconnectButton.setActionCommand("Disconnect");
-    DisconnectButton.setMnemonic(KeyEvent.VK_O);
-    addKeyListenerToComponent(DisconnectButton);
-    DisconnectButton.setEnabled(false);
-    JPanel1.add(DisconnectButton);
-    CancelButton.setText(/*"Skip Login"*/ Language.getInstance().getMessage("SkipLogin"));
-    CancelButton.setActionCommand("Cancel");
-    CancelButton.setMnemonic(KeyEvent.VK_S);
-    addKeyListenerToComponent(CancelButton);
-    CancelButton.setEnabled(true);
-    JPanel1.add(CancelButton);
+    disconnectButton.setText(/*"Logout"*/ Language.getInstance().getMessage("Logout"));
+    disconnectButton.setActionCommand("Disconnect");
+    disconnectButton.setMnemonic(KeyEvent.VK_O);
+    addKeyListenerToComponent(disconnectButton);
+    disconnectButton.setEnabled(false);
+    jPanel1.add(disconnectButton);
+    cancelButton.setText(/*"Skip Login"*/ Language.getInstance().getMessage("SkipLogin"));
+    cancelButton.setActionCommand("Cancel");
+    cancelButton.setMnemonic(KeyEvent.VK_S);
+    addKeyListenerToComponent(cancelButton);
+    cancelButton.setEnabled(true);
+    jPanel1.add(cancelButton);
 
     //}}
 
@@ -171,18 +175,18 @@ public class ConnectionFrame  extends JDialog
         
     SymAction lSymAction = new SymAction();
     connectButton.addActionListener(lSymAction);
-    DisconnectButton.addActionListener(lSymAction);
-    CancelButton.addActionListener(lSymAction);
+    disconnectButton.addActionListener(lSymAction);
+    cancelButton.addActionListener(lSymAction);
     //}}
     
     if (container!=null) {
-      NameLabel.setText(container.getUserName());
+      userName.setText(container.getUserName());
     }
 
     // Example of loading icon as resource - DFH 
     try {
       still = new ImageIcon(getClass().getResource("Btfly.gif"));
-      ActivityLabel.setIcon(still);
+      activityLabel.setIcon(still);
       flapping = new ImageIcon(getClass().getResource("Btfly4.gif"));
     } catch (Exception w) {
       Log.debug(7, "Error in loading images");
@@ -203,12 +207,12 @@ public class ConnectionFrame  extends JDialog
   
   private void updateEnableDisable() {
 		boolean connected = container.getDataONEDataStoreService().isConnected();
-		DisconnectButton.setEnabled(connected);
+		disconnectButton.setEnabled(connected);
 		connectButton.setEnabled(!connected);
-		CancelButton.setEnabled(!connected);
-		PWTextField.setEnabled(!connected);
-		if (PWTextField.isEnabled()) {
-			PWTextField.requestFocus();
+		cancelButton.setEnabled(!connected);
+		passwordTextField.setEnabled(!connected);
+		if (passwordTextField.isEnabled()) {
+			passwordTextField.requestFocus();
 		}
 	}
   
@@ -240,21 +244,21 @@ public class ConnectionFrame  extends JDialog
   boolean frameSizeAdjusted = false;
 
   //{{DECLARE_CONTROLS
-  JLabel JLabel1 = new JLabel();
-  JPanel JPanel2 = new JPanel();
-  JPanel JButtonGroupPanel1 = new JPanel();
-  JPanel JPanel3 = new JPanel();
-  JLabel Name = new JLabel();
-  JLabel NameLabel = new JLabel();
-  JPanel JPanel4 = new JPanel();
-  JLabel Password = new JLabel();
-  JPasswordField PWTextField = new JPasswordField();
-  JTextField certificateLocationTextField = new JTextField();
-  JLabel ActivityLabel = new JLabel();
-  JPanel JPanel1 = new JPanel();
+  JPanel jPanel2 = new JPanel();
+  JPanel jButtonGroupPanel1 = new JPanel();
+  JPanel jPanel3 = new JPanel();
+  JComboBox identityProviders = null;
+  JLabel userNameLabel = new JLabel();
+  JTextField userName = WidgetFactory.makeOneLineShortTextField();
+  JPanel jPanel4 = new JPanel();
+  JLabel passwordLabel = new JLabel();
+  JPasswordField passwordTextField = new JPasswordField();
+  JTextField certificateLocationTextField = WidgetFactory.makeOneLineTextField();
+  JLabel activityLabel = new JLabel();
+  JPanel jPanel1 = new JPanel();
   JButton connectButton = new JButton();
-  JButton DisconnectButton = new JButton();
-  JButton CancelButton = new JButton();
+  JButton disconnectButton = new JButton();
+  JButton cancelButton = new JButton();
   KeyPressActionListener keyPressListener = new KeyPressActionListener();
   //}}
 
@@ -316,11 +320,11 @@ public class ConnectionFrame  extends JDialog
       {
         connectButton_actionPerformed(event);
       }
-      else if (object == DisconnectButton)
+      else if (object == disconnectButton)
       {
         DisconnectButton_actionPerformed(event);
       }
-      else if (object == CancelButton)
+      else if (object == cancelButton)
       {
         CancelButton_actionPerformed(event);
       }
@@ -332,10 +336,10 @@ public class ConnectionFrame  extends JDialog
    */
   void connectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-    ActivityLabel.setIcon(flapping);
-    ActivityLabel.invalidate();
-    JPanel2.validate();
-    JPanel2.paint(JPanel2.getGraphics());
+    activityLabel.setIcon(flapping);
+    activityLabel.invalidate();
+    jPanel2.validate();
+    jPanel2.paint(jPanel2.getGraphics());
     
     new LoginCommand(container, this).execute(event);
   }
@@ -366,9 +370,32 @@ public class ConnectionFrame  extends JDialog
    *
    *  @return   the user-entered password as a String
    */
+  @Override
   public String getPassword()
   {
-    return new String(PWTextField.getPassword());
+    return new String(passwordTextField.getPassword());
+  }
+  
+  /**
+   *  gets the user-entered password from the client
+   *
+   *  @return   the user-entered password as a String
+   */
+  @Override
+  public String getUsername()
+  {
+    return userName.getText();
+  }
+  
+  /**
+   *  gets the user-entered password from the client
+   *
+   *  @return   the user-entered password as a String
+   */
+  @Override
+  public String getIdentityProvider()
+  {
+    return (String) identityProviders.getSelectedItem();
   }
   
   /**
@@ -398,7 +425,7 @@ public class ConnectionFrame  extends JDialog
     		  	);
 //      DisconnectButton.setEnabled(false);
       updateEnableDisable();
-      ActivityLabel.setIcon(still);
+      activityLabel.setIcon(still);
     }
   }
   
