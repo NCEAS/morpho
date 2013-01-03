@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.dataone.security.CertificateFetcher;
@@ -18,16 +18,16 @@ public class EcpAuthentication {
 	// TODO: make this configurable
 	private static final String spURL = "https://ecp.cilogon.org:443/secure/getcert/";
 
-	public static String[] getAvailableIdentityProviders() {
-		Map<String, String> providers = new TreeMap<String, String>();
-		providers.put("https://login.ligo.org:443/idp/profile/SAML2/SOAP/ECP", "LIGO Scientific Collaboration");
-		providers.put("https://shib.lternet.edu:443/idp/profile/SAML2/SOAP/ECP", "LTER Network");
-		providers.put("https://idp.protectnetwork.org:443/protectnetwork-idp/profile/SAML2/SOAP/ECP", "ProtectNetwork");
-		providers.put("https://shibboleth2.uchicago.edu:443/idp/profile/SAML2/SOAP/ECP", "University of Chicago");
-		providers.put("https://idp.u.washington.edu:443/idp/profile/SAML2/SOAP/ECP", "University of Washington");
-		providers.put("https://login.wisc.edu:443/idp/profile/SAML2/SOAP/ECP", "University of Wisconsin-Madison");
+	public static IdentityProviderSelectionItem[] getAvailableIdentityProviders() {
+		List<IdentityProviderSelectionItem> providers = new ArrayList<IdentityProviderSelectionItem>();
+		providers.add(new IdentityProviderSelectionItem("https://login.ligo.org/idp/profile/SAML2/SOAP/ECP", "LIGO Scientific Collaboration"));
+		providers.add(new IdentityProviderSelectionItem("https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP", "LTER Network"));
+		providers.add(new IdentityProviderSelectionItem("https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP", "ProtectNetwork"));
+		providers.add(new IdentityProviderSelectionItem("https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP", "University of Chicago"));
+		providers.add(new IdentityProviderSelectionItem("https://idp.u.washington.edu/idp/profile/SAML2/SOAP/ECP", "University of Washington"));
+		providers.add(new IdentityProviderSelectionItem("https://login.wisc.edu/idp/profile/SAML2/SOAP/ECP", "University of Wisconsin-Madison"));
 		
-		return providers.keySet().toArray(new String[0]);
+		return providers.toArray(new IdentityProviderSelectionItem[0]);
 	}
 	
 	/** Launch the login window */

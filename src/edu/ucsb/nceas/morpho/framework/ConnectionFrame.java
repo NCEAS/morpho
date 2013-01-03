@@ -56,6 +56,7 @@ import javax.swing.SwingConstants;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.dataone.EcpAuthentication;
+import edu.ucsb.nceas.morpho.dataone.IdentityProviderSelectionItem;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -382,9 +383,9 @@ public class ConnectionFrame  extends JDialog
   }
   
   /**
-   *  gets the user-entered password from the client
+   *  gets the username from the client
    *
-   *  @return   the user-entered password as a String
+   *  @return   the username as a String
    */
   @Override
   public String getUsername()
@@ -393,14 +394,14 @@ public class ConnectionFrame  extends JDialog
   }
   
   /**
-   *  gets the user-entered password from the client
+   *  gets the IdP URL that was selected
    *
-   *  @return   the user-entered password as a String
+   *  @return   the IdP URL as a String
    */
   @Override
-  public String getIdentityProvider()
-  {
-    return (String) identityProviders.getSelectedItem();
+  public String getIdentityProvider() {
+	  IdentityProviderSelectionItem idp = (IdentityProviderSelectionItem) identityProviders.getSelectedItem();
+	  return idp.getUrl();
   }
   
   /**
