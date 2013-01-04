@@ -29,8 +29,6 @@ package edu.ucsb.nceas.morpho.framework;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-import javax.swing.SwingUtilities;
-
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 
@@ -70,44 +68,36 @@ public class LoginCommand implements Command
 	 * execute command
 	 */
 	public void execute(ActionEvent event) {
-		Thread worker = new Thread() {
-			public void run() {
 
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						ConfigXML profile = morpho.getProfile();
-						// decide whether to use password or to use certificate location directly
-						String username = loginClient.getUsername();
-						String password = loginClient.getPassword();
-						String idp = loginClient.getIdentityProvider();
-						// try to authenticate with ECP
-						boolean connected = false;
-						try {
-							File certificateLocation = EcpAuthentication.authenticate(idp, username, password);
-							connected = morpho.getDataONEDataStoreService().logIn(certificateLocation.getAbsolutePath());
-						} catch (Exception e) {
-							// something didn't work...
-							Log.debug(10, "Could not authenticate: " + e.getMessage());
-							e.printStackTrace();
-						}
-						if (connected) {
-							profile.set("searchnetwork", 0, "true", true);
-							Log.debug(12, "LoginCommand: Login successful");
-							loginClient.setLoginSuccessful(true);
-							UIController controller = UIController.getInstance();
-							if (controller != null) {
-								controller.updateAllStatusBars();
-							}
-							morpho.fireConnectionChangedEvent();
-							morpho.fireUsernameChangedEvent();
-						} else {
-							Log.debug(12, "LoginCommand: " + Language.getInstance().getMessage("LoginFailed"));
-							loginClient.setLoginSuccessful(false);
-						}
-					}
-				});
+		ConfigXML profile = morpho.getProfile();
+		// decide whether to use password or to use certificate location directly
+		String username = loginClient.getUsername();
+		String password = loginClient.getPassword();
+		String idp = loginClient.getIdentityProvider();
+		// try to authenticate with ECP
+		boolean connected = false;
+		try {
+			File certificateLocation = EcpAuthentication.authenticate(idp, username, password);
+			connected = morpho.getDataONEDataStoreService().logIn(certificateLocation.getAbsolutePath());
+		} catch (Exception e) {
+			// something didn't work...
+			Log.debug(10, "Could not authenticate: " + e.getMessage());
+			e.printStackTrace();
+		}
+		if (connected) {
+			profile.set("searchnetwork", 0, "true", true);
+			Log.debug(12, "LoginCommand: Login successful");
+			loginClient.setLoginSuccessful(true);
+			UIController controller = UIController.getInstance();
+			if (controller != null) {
+				controller.updateAllStatusBars();
 			}
-		};
-		worker.start();
+			morpho.fireConnectionChangedEvent();
+			morpho.fireUsernameChangedEvent();
+		} else {
+			Log.debug(12, "LoginCommand: " + Language.getInstance().getMessage("LoginFailed"));
+			loginClient.setLoginSuccessful(false);
+		}
+				
 	}
 }

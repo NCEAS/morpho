@@ -50,8 +50,10 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -68,9 +70,12 @@ public class ConnectionFrame  extends JDialog
                               implements LoginClientInterface
 {
 
-  Morpho container = null;
-  ImageIcon still = null;
-  ImageIcon flapping = null;
+  private Morpho container = null;
+  private ImageIcon still = null;
+  private ImageIcon flapping = null;
+  JLabel activityLabel = new JLabel();
+//  private JProgressBar progressBar = null;
+//  private int loginCount = 0;
 
   /**
    * Construct a frame and set the framework
@@ -144,6 +149,13 @@ public class ConnectionFrame  extends JDialog
     passwordTextField.setColumns(21);
     addKeyListenerToComponent(passwordTextField);
     jPanel4.add(passwordTextField);
+    
+    // the progress indicator
+//    progressBar = new JProgressBar();
+//    progressBar.setMinimum(0);
+//	jButtonGroupPanel1.add(progressBar);
+	    
+    // the butterfly as an indicator
     activityLabel.setDoubleBuffered(true);
     activityLabel.setHorizontalTextPosition(SwingConstants.LEFT);
     activityLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -259,7 +271,6 @@ public class ConnectionFrame  extends JDialog
   JLabel passwordLabel = new JLabel();
   JPasswordField passwordTextField = new JPasswordField();
   JTextField certificateLocationTextField = WidgetFactory.makeOneLineTextField();
-  JLabel activityLabel = new JLabel();
   JPanel jPanel1 = new JPanel();
   JButton connectButton = new JButton();
   JButton disconnectButton = new JButton();
@@ -296,14 +307,12 @@ public class ConnectionFrame  extends JDialog
     
     public void keyPressed(KeyEvent e)
     {
-      if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-        
+      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
         //if enter was pressed whilst a button was in focus, just click it
-        if (e.getSource() instanceof JButton){
+        if (e.getSource() instanceof JButton) {
           ((JButton)e.getSource()).doClick();
         } else {
-          ActionEvent event = new 
-                             ActionEvent(connectButton, 0, "OK");
+          ActionEvent event = new ActionEvent(connectButton, 0, "OK");
           connectButton_actionPerformed(event);
         }
       } else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -341,13 +350,38 @@ public class ConnectionFrame  extends JDialog
    */
   void connectButton_actionPerformed(ActionEvent event)
   {
-    activityLabel.setIcon(flapping);
-    activityLabel.invalidate();
-    jPanel2.revalidate();
-    jPanel2.paint(jPanel2.getGraphics());
+	// using the butterfly
+	activityLabel.setIcon(flapping);
     
+    // using the progress bar
+    //progressBar.setIndeterminate(true);
     
-    new LoginCommand(container, this).execute(event);
+    // execute in another thread so the progress bar can be seen while we login
+    final ConnectionFrame instance = this;
+    SwingWorker sw = new SwingWorker() {
+
+		@Override
+		protected Object doInBackground() throws Exception {
+			// do the login action, the event can be null since it is not used
+			new LoginCommand(container, instance).execute(null);
+			return null;
+		}
+		
+		@Override
+		protected void done() {
+			// butterfly
+		    activityLabel.setIcon(still);
+		    
+		    // progress bar
+			// slowly creep up the count each time they login/attempt to
+//			progressBar.setValue(loginCount++);
+//			progressBar.setIndeterminate(false);
+       }
+    	
+    };
+    sw.execute();
+	
+    
   }
   
   /**
@@ -429,9 +463,7 @@ public class ConnectionFrame  extends JDialog
     		  	/*"Login failed.\n"*/ Language.getInstance().getMessage("LoginFailed") + "\n"
     		  	+ /*"Please check the Caps Lock key and try again."*/ Language.getInstance().getMessage("CheckCaps")
     		  	);
-//      DisconnectButton.setEnabled(false);
       updateEnableDisable();
-      activityLabel.setIcon(still);
     }
   }
   
