@@ -131,7 +131,7 @@ public class ConnectionFrame  extends JDialog
     JPanel idpPanel = WidgetFactory.makePanel();
     idpPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
     idpPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("Organization"), true));
-    identityProviders = WidgetFactory.makePickList(EcpAuthentication.getAvailableIdentityProviders(), true, 0, null);
+    identityProviders = WidgetFactory.makePickList(EcpAuthentication.getInstance().getAvailableIdentityProviders(), true, 0, null);
     WidgetFactory.setPrefMaxSizes(identityProviders, null);
     idpPanel.add(identityProviders);
     jButtonGroupPanel1.add(idpPanel);

@@ -375,7 +375,7 @@ public class InitialScreen extends JPanel
         //LOGIN BUTTON:
         Command connectCommand = new Command() {
             public void execute(ActionEvent e) {
-                EcpAuthentication.establishConnection();
+                EcpAuthentication.getInstance().establishConnection();
             }
         };
         GUIAction loginAction = new GUIAction(

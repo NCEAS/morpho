@@ -77,7 +77,7 @@ public class LoginCommand implements Command
 		// try to authenticate with ECP
 		boolean connected = false;
 		try {
-			File certificateLocation = EcpAuthentication.authenticate(idp, username, password);
+			File certificateLocation = EcpAuthentication.getInstance().authenticate(idp, username, password);
 			connected = morpho.getDataONEDataStoreService().logIn(certificateLocation.getAbsolutePath());
 		} catch (Exception e) {
 			// something didn't work...
