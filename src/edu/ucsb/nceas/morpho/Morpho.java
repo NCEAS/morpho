@@ -38,7 +38,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.net.Socket;
-import java.net.URLStreamHandler;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
@@ -167,9 +166,6 @@ public class Morpho
     private static boolean debug = true;
     private static int debug_level = 9;
     private final static String LIBDIR = "lib/";
-    private final static String TRUSTKEYSTORE = "truststore";
-    private static String keystorePass = "changeit";
-    private static String userKeystore = "";
     public static Morpho thisStaticInstance;
     
     // for interacting with the local store service
@@ -589,16 +585,6 @@ public class Morpho
             
             // set up access list
             initializeAccessList();
-            
-             // setup keystore
-            initializeKeyStore();
-             //set up properties of 
-   		    System.setProperty("javax.net.ssl.trustStore", userKeystore);
-   	        System.setProperty("javax.net.ssl.trustStorePassword", keystorePass);
-   	        System.setProperty("security.provider.3", "com.sun.net.ssl.internal.ssl.Provider");
-   	        //System.setProperty("javax.net.debug","all");
-   	        //System.setProperty("java.security.policy","/home/rzheva/test/java.policy"); 
-
    	         
             // Create a new instance of our application
             Morpho morpho = new Morpho(config);
@@ -788,7 +774,7 @@ public class Morpho
         // FILE MENU ACTIONS
         Command connectCommand = new Command() {
             public void execute(ActionEvent e) {
-                EcpAuthentication.establishConnection();
+                EcpAuthentication.getInstance().establishConnection();
             }
         };
         GUIAction connectItemAction =
@@ -1251,41 +1237,6 @@ public class Morpho
             return s;
         }
         return s;
-    }
-    
-    /*
-     * Set up the keystore file during the startup.
-     * Keystore in the lib dir will be copied to ~/.morpho dir if the keystored 
-     * doesn't exist in the ~/.morpho dir. If the file is there, nothing will be done currently.
-     * In the next step, we should merge the two keystore if the ~/.morpho already has the keystore
-     */
-    private static void initializeKeyStore()
-    {
-    	//this method will be called after initializeConfiguration(), 
-    	// so we wouldn't worry about creating configDir (~/.morpho)
-    	try
-    	{
-    		 userKeystore = ConfigXML.getConfigDirectory()+"/"+TRUSTKEYSTORE;
-    		 File userStore = new File(userKeystore);
-    		 if (!userStore.exists()) 
-    		 {
-    			 // ~/.morpho doesn't has the keystore file, copy it.
-                 File morphoKeystore = new File(LIBDIR+TRUSTKEYSTORE);
-                 fileCopy(morphoKeystore, userStore);
-
-             } 
-    		 else 
-    		 {
-                 // now we do nothing
-    			 //TODO we need a smart mechanism to merge the two keystore
-             }
-    		 
-    	}
-    	catch(Exception e)
-    	{
-    		Log.debug(5, "You have to run morpho without secure connection to metacat since "+e.getMessage()
-    				           +".\n You may use file|setup preference menu to change the metacat url from \"https\" to \"http\"");
-    	}
     }
     
     private static void fileCopy(File src, File dest) throws Exception {
