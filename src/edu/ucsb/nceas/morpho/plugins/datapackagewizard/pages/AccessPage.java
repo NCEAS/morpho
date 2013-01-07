@@ -148,9 +148,8 @@ public class AccessPage
   private Vector<String> orgList;
 
   private final String[] accessTypeText = new String[] {
-      /*"  Allow"*/ " " + Language.getInstance().getMessage("Allow"),
-      /*"  Deny"*/ " " + Language.getInstance().getMessage("Deny")
-  };
+         /*"  Allow"*/ " " + Language.getInstance().getMessage("Allow")
+         };
 
   private final String[] accessText = new String[] {
       /*"  Read"*/ " " + Language.getInstance().getMessage("Read"),
@@ -692,22 +691,24 @@ public class AccessPage
       public void itemStateChanged(ItemEvent e) {
         Log.debug(45, "got itemStateChanged command in access type list");
 
-        if (e.getItem().toString().compareTo(accessTypeText[0]) == 0) {
+        userAccessType = accessTypeText[0];
+        accessIsAllow = true;
+        /*if (e.getItem().toString().compareTo(accessTypeText[0]) == 0) {
           userAccessType = accessTypeText[0];
           accessIsAllow = true;
         } else if (e.getItem().toString().compareTo(accessTypeText[1]) == 0) {
           userAccessType = accessTypeText[1];
           accessIsAllow = false;
-        }
+        }*/
       }
     };
 
     typeComboBox = WidgetFactory.makePickList(accessTypeText, false,
         0, accessTypeListener);
     typeComboBox.setEnabled(false);
-    if (userAccessType.compareTo(accessTypeText[1]) == 0) {
+    /*if (userAccessType.compareTo(accessTypeText[1]) == 0) {
       typeComboBox.setSelectedIndex(1);
-    }
+    }*/
 
     ItemListener accessListener = new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
@@ -1456,12 +1457,13 @@ public class AccessPage
     }
 
     int access = 0;
-
-    if (xPathRoot.indexOf("allow") > -1) {
+    
+    userAccessType = accessTypeText[0];
+    /*if (xPathRoot.indexOf("allow") > -1) {
       userAccessType = accessTypeText[0];
     } else {
       userAccessType = accessTypeText[1];
-    }
+    }*/
 
     List toDeleteList = new ArrayList();
     Iterator keyIt = map.keySet().iterator();
