@@ -34,6 +34,7 @@ import java.io.IOException;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.dataone.service.types.v1.AccessPolicy;
+import org.dataone.service.types.v1.SystemMetadata;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -65,6 +66,7 @@ public class AddAccessCommand
 
   //generic name for lookup in eml listings
   private final String ACCESS_SUBTREE_NODENAME = "/access/";
+  private final String EMLROOTPATH = "/eml:eml";
 
   public AddAccessCommand() {}
 
@@ -164,11 +166,20 @@ public class AddAccessCommand
 
     OrderedMap existingValuesMap = null;
     AbstractDataPackage adp = mdp.getAbstractDataPackage();
-    accessRoot = adp.getSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
+    SystemMetadata sysMeta = adp.getSystemMetadata();
+    AccessPolicy accessPolicy = sysMeta.getAccessPolicy();
+    /*accessRoot = adp.getSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
 
     if (accessRoot != null) {
       existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(accessRoot);
+    }*/
+    try {
+      existingValuesMap = AccessPolicyConverter.getOrderMapFromAccessPolicy(accessPolicy, EMLROOTPATH);
+    } catch (Exception e) {
+      Log.debug(16, e.getMessage());
+      e.printStackTrace();
     }
+    
     Log.debug(45,
               "sending previous data to accessPage -\n\n" + existingValuesMap);
 
