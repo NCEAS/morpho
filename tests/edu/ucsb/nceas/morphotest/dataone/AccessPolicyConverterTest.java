@@ -22,6 +22,7 @@ public class AccessPolicyConverterTest extends MorphoTestCase {
       TestSuite suite = new TestSuite();
       suite.addTest(new AccessPolicyConverterTest("initialize"));
       suite.addTest(new AccessPolicyConverterTest("testGetAccessPolicyFromOrderedMap"));
+      suite.addTest(new AccessPolicyConverterTest("testGetOrderMapFromAccessPolicy"));
       return suite;
   }
   
@@ -61,5 +62,36 @@ public class AccessPolicyConverterTest extends MorphoTestCase {
     assertTrue("The first permission should be READ", permission1.compareTo(Permission.READ) ==0);
   }
   
+  public void testGetOrderMapFromAccessPolicy() throws Exception {
+    AccessPolicy policy = null;
+    policy = new AccessPolicy();
+    OrderedMap map = AccessPolicyConverter.getOrderMapFromAccessPolicy(policy, "/eml:eml");
+    assertTrue("The map should be null since the policy is empty", map == null);
+    map = AccessPolicyConverter.getOrderMapFromAccessPolicy(policy, "/eml:eml");
+    assertTrue("The map should be null since the policy is empty", map == null);
+    AccessRule rule1 = new AccessRule();
+    Subject subject1= new Subject();
+    subject1.setValue("user1");
+    rule1.addSubject(subject1);
+    Subject subject2 = new Subject();
+    subject2.setValue("user2");
+    rule1.addSubject(subject2);
+    rule1.addPermission(Permission.READ);
+    rule1.addPermission(Permission.WRITE);
+    policy.addAllow(rule1);
+    AccessRule rule2 = new AccessRule();
+    Subject subject3 = new Subject();
+    subject3.setValue("user3");
+    rule2.addSubject(subject3);
+    rule2.addPermission(Permission.CHANGE_PERMISSION);
+    policy.addAllow(rule2);
+    map = AccessPolicyConverter.getOrderMapFromAccessPolicy(policy, "/eml:eml");
+    System.out.println(map.toString());
+    assertTrue("The size of map should be 7", map.size() == 7);
+    assertTrue("The value for /eml:eml/access/@order should be allowFirst", map.get("/eml:eml/access/@order").equals("allowFirst"));
+   
+    assertTrue("The value for /eml:eml/access/allow[1]/principal[2] should be user2", map.get("/eml:eml/access/allow[1]/principal[2]").equals("user2"));
+    
+  }
 
 }

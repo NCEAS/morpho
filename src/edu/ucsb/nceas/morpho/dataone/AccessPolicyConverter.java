@@ -7,13 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.AccessRule;
 import org.dataone.service.types.v1.Permission;
 import org.dataone.service.types.v1.Subject;
+import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -99,6 +105,49 @@ public class AccessPolicyConverter {
     }
     
     return accessPolicy;
+	}
+	
+	/**
+	 * Transform an AccessPolicy to an OrderedMap object with given root path
+	 * @param accessPolicy  the AccessPolicy needs to be transformed.
+	 * @return the OrderedMap of the AccessPolicy. Null will be returned if the accesPolicy is null.
+	 */
+	public static OrderedMap getOrderMapFromAccessPolicy(AccessPolicy accessPolicy, String path) throws ParserConfigurationException {
+	  OrderedMap map = null;
+	  if(accessPolicy != null) {
+	    List<AccessRule> accessRules = accessPolicy.getAllowList();
+	    if(accessRules != null && accessRules.size() >0) {
+	      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	      DocumentBuilder builder = factory.newDocumentBuilder();
+	      Document document = builder.newDocument();
+	      Element root = document.createElement(AccessControlInterface.ACCESS);
+	      Attr allowFirst = document.createAttribute(AccessControlInterface.ORDER);
+	      allowFirst.setValue(AccessControlInterface.ALLOWFIRST);
+	      root.setAttributeNode(allowFirst);
+	      document.appendChild(root);
+	      for(AccessRule rule : accessRules) {
+	        Element allowElement = document.createElement(AccessControlInterface.ALLOW);
+	        List<Subject> subjects = rule.getSubjectList();
+	        List<Permission> permissions = rule.getPermissionList();
+	        if(subjects == null || subjects.size() <=0 || permissions == null || permissions.size() <=0) {
+	          continue;
+	        }
+	        for(Subject subject : subjects) {
+	          Element subjectElement = document.createElement(AccessControlInterface.PRINCIPAL);
+	          subjectElement.appendChild(document.createTextNode(subject.getValue()));
+	          allowElement.appendChild(subjectElement);
+	        }
+	        for(Permission permission : permissions) {
+	          Element permissionElement = document.createElement(AccessControlInterface.PERMISSION);
+	          permissionElement.appendChild(document.createTextNode(permission.xmlValue()));
+	          allowElement.appendChild(permissionElement);
+	        }
+	        root.appendChild(allowElement);
+	      }
+	      map = XMLUtilities.getDOMTreeAsXPathMap(root, path);
+	    }
+	  }
+	  return map;
 	}
 	
 	/**
