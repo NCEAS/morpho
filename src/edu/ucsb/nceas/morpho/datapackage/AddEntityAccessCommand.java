@@ -32,9 +32,13 @@ import javax.xml.transform.TransformerException;
 import java.awt.event.ActionEvent;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.dataone.service.types.v1.AccessPolicy;
+import org.dataone.service.types.v1.SystemMetadata;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 //import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
@@ -172,7 +176,18 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 
 		OrderedMap existingValuesMap = null;
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
-		try {
+		Entity entity = adp.getEntity(entityIndex);
+		if(entity != null) {
+		  SystemMetadata sysMeta = entity.getSystemMetadata();
+		  AccessPolicy accessPolicy = sysMeta.getAccessPolicy();
+		  try {
+		    existingValuesMap = AccessPolicyConverter.getOrderMapFromAccessPolicy(accessPolicy, "");
+		  } catch (Exception e) {
+		    Log.debug(20, "Can't get the OrderedMap from the AccessPolicy");
+		  }
+		}
+		//System.out.println(existingValuesMap.toString());
+		/*try {
 			accessRoot = adp.getEntityAccess(entityIndex, 0, 0);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -180,7 +195,7 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 
 		if (accessRoot != null) {
 			existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(accessRoot);
-		}
+		}*/
 		Log.debug(45, "sending previous data to accessPage -\n\n"
 				+ existingValuesMap);
 
