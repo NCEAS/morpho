@@ -66,7 +66,7 @@ public class AddAccessCommand
 
   //generic name for lookup in eml listings
   private final String ACCESS_SUBTREE_NODENAME = "/access/";
-  private final String EMLROOTPATH = "/eml:eml";
+  
 
   public AddAccessCommand() {}
 
@@ -174,7 +174,7 @@ public class AddAccessCommand
       existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(accessRoot);
     }*/
     try {
-      existingValuesMap = AccessPolicyConverter.getOrderMapFromAccessPolicy(accessPolicy, EMLROOTPATH);
+      existingValuesMap = AccessPolicyConverter.getOrderMapFromAccessPolicy(accessPolicy, "");
     } catch (Exception e) {
       Log.debug(16, e.getMessage());
       e.printStackTrace();
