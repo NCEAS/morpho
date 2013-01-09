@@ -3457,8 +3457,16 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  Node newAccessSubtree = null;
 	  if (accessNode != null) {
 		  newAccessSubtree = thisDom.importNode(accessNode, true); // 'true' imports children
+		  try {
+		    Entity entity = getEntity(entityIndex);
+		    AccessPolicy policy = AccessPolicyConverter.getAccessPolicy(accessNode);
+		    entity.getSystemMetadata().setAccessPolicy(policy);
+		  } catch (Exception e){
+		    Log.debug(5, "exception in setting entity access: " + e.getMessage());
+		  }
 	  }
-	    
+	  //modify the system metadata in the entity.
+   
 	Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
     if (distNodes == null) {
       // this is the case where no distribution info exists; must create the subtree
@@ -3520,9 +3528,10 @@ public abstract class AbstractDataPackage extends MetadataObject
 		      child.getParentNode().removeChild(child);
 	      }
       }
+     
     }
     catch (Exception w) {
-      Log.debug(5, "exception in setting entity access: " + w.toString());
+      Log.debug(15, "exception in setting entity access: " + w.toString());
     }
   }
   
