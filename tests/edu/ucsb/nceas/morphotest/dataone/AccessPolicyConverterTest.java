@@ -1,9 +1,17 @@
 package edu.ucsb.nceas.morphotest.dataone;
 
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.AccessRule;
 import org.dataone.service.types.v1.Permission;
 import org.dataone.service.types.v1.Subject;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -11,6 +19,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
 import edu.ucsb.nceas.morphotest.MorphoTestCase;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.access.AccessControlInterface;
 
 
 public class AccessPolicyConverterTest extends MorphoTestCase {
@@ -45,16 +54,23 @@ public class AccessPolicyConverterTest extends MorphoTestCase {
   
   public void testGetAccessPolicyFromOrderedMap() throws Exception {
     OrderedMap map = new OrderedMap();
-    map.put("/eml:eml/access/@authSystem", "knb");
-    map.put("/eml:eml/access/@order", "allowFirst");
-    map.put("/eml:eml/access/allow[1]/principal", "public");
-    map.put("/eml:eml/access/allow[1]/permission", "read");
-    map.put("/eml:eml/access/allow[2]/principal[1]", "CN=Jim Basney A426,O=Google,C=US,DC=cilogon,DC=org");
-    map.put("/eml:eml/access/allow[2]/permission[1]", "read");
-    map.put("/eml:eml/access/allow[2]/permission[2]", "write");
-    map.put("/eml:eml/access/deny[1]/principal[1]", "CN=Giriprakash Palanisamy A613,O=Google,C=US,DC=cilogon,DC=org");
-    map.put("/eml:eml/access/deny[1]/permission", "read");
-    AccessPolicy policy = AccessPolicyConverter.getAccessPolicy(map);
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = factory.newDocumentBuilder();
+    Document document = builder.newDocument();
+    Element root = document.createElement(AccessControlInterface.ACCESS);
+    Attr allowFirst = document.createAttribute(AccessControlInterface.ORDER);
+    allowFirst.setValue(AccessControlInterface.ALLOWFIRST);
+    root.setAttributeNode(allowFirst);
+    document.appendChild(root);
+    Element allowElement = document.createElement(AccessControlInterface.ALLOW);
+    Element subjectElement = document.createElement(AccessControlInterface.PRINCIPAL);
+    subjectElement.appendChild(document.createTextNode("public"));
+    allowElement.appendChild(subjectElement);
+    Element permissionElement = document.createElement(AccessControlInterface.PERMISSION);
+    permissionElement.appendChild(document.createTextNode("read"));
+    allowElement.appendChild(permissionElement);
+    root.appendChild(allowElement);
+    AccessPolicy policy = AccessPolicyConverter.getAccessPolicy(root);
     AccessRule rule = policy.getAllow(0);
     Subject sub1 = rule.getSubject(0);
     assertTrue("The first subject should be public", sub1.getValue().equals("public"));

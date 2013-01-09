@@ -52,18 +52,16 @@ public class AccessPolicyConverter {
 	}
 	
 	/**
-	 * Get an AccessPolicy object from an OrderedMap object.
-	 * @param map  the orderedMap which contains the access information (it originates from the Access page)
+	 * Get an AccessPolicy object from a node
+	 * @param node  the node which contains the access information (it originates from the Access page)
 	 * @return the AccessPolicy
 	 * @throws IOException 
 	 * @throws TransformerException 
 	 * @throws DOMException 
 	 * @throws SAXException 
 	 */
-	public static AccessPolicy getAccessPolicy(OrderedMap map) throws IOException, DOMException, TransformerException, SAXException {
+	public static AccessPolicy getAccessPolicy(Node node) throws IOException, DOMException, TransformerException, SAXException {
 	  AccessPolicy accessPolicy = null;
-	  Node node = XMLUtilities.getXMLReaderAsDOMTreeRootNode(new StringReader("<eml:eml xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.1\"><access></access></eml:eml>"));
-	  XMLUtilities.getXPathMapAsDOMTree(map, node);
 	  return getAccessPolicy(new InputSource(new ByteArrayInputStream(XMLUtil.getDOMTreeAsString(node).getBytes("UTF-8"))));
 	}
 	
