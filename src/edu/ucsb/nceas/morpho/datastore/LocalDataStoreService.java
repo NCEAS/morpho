@@ -165,6 +165,8 @@ public class LocalDataStoreService extends DataStoreService
 					try {
 						PropertyUtils.copyProperties(entity.getSystemMetadata(), adp.getSystemMetadata());
 						entity.getSystemMetadata().setIdentifier(identifier);
+						entity.getSystemMetadata().setObsoletedBy(null);
+						entity.getSystemMetadata().setObsoletes(null);
 						ObjectFormatIdentifier dataFormatId = new ObjectFormatIdentifier();
 						dataFormatId.setValue(adp.getPhysicalFormat(entityIndex, 0));
 						entity.getSystemMetadata().setFormatId(dataFormatId);
