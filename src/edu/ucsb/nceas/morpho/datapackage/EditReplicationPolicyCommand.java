@@ -98,6 +98,9 @@ public class EditReplicationPolicyCommand implements Command,
 				// set the replication policy in the SM
 				ReplicationPolicy replicationPolicy = replicationPolicyPage.getReplicationPolicy();
 				mdp.getAbstractDataPackage().getSystemMetadata().setReplicationPolicy(replicationPolicy);
+				//indicate that this is a change to the package so it can be saved
+				// TODO: save SM independently from EML file
+				mdp.getAbstractDataPackage().setLocation("");
 				UIController.showNewPackage(mdp);
 			} catch (Exception w) {
 				Log.debug(15, "Exception trying to modify replication policy: "

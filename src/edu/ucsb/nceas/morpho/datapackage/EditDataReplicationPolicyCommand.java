@@ -105,6 +105,9 @@ public class EditDataReplicationPolicyCommand implements Command,
 				// set the replication policy in the SM for the data entity
 				ReplicationPolicy replicationPolicy = replicationPolicyPage.getReplicationPolicy();
 				mdp.getAbstractDataPackage().getEntity(entityIndex).getSystemMetadata().setReplicationPolicy(replicationPolicy);
+				// indicate the the entity SM has changed and should be saved
+				// TODO: save SM changes independently from data file
+				mdp.getAbstractDataPackage().addDirtyEntityIndex(entityIndex);
 				UIController.showNewPackage(mdp);
 			} catch (Exception w) {
 				Log.debug(15, "Exception trying to modify replication policy: "
