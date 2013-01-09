@@ -3420,7 +3420,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  This method returns the access for data for the indexed entity,
    *  physical object, and distribution object. 
    */
-  public Node getEntityAccess(int entityIndex, int physicalIndex,
+  /*public Node getEntityAccess(int entityIndex, int physicalIndex,
                                    int distIndex) {
     Node temp = null;
     Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
@@ -3445,7 +3445,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(50, "exception in getting entity access: " + w.toString());
     }
     return temp;
-  }
+  }*/
   
   /**
    *  This method sets the access for data for the indexed entity,
@@ -3461,6 +3461,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 		    Entity entity = getEntity(entityIndex);
 		    AccessPolicy policy = AccessPolicyConverter.getAccessPolicy(accessNode);
 		    entity.getSystemMetadata().setAccessPolicy(policy);
+		 // indicate the the entity SM has changed and should be saved
+        // TODO: save SM changes independently from data file
+		    addDirtyEntityIndex(entityIndex);
 		  } catch (Exception e){
 		    Log.debug(5, "exception in setting entity access: " + e.getMessage());
 		  }
