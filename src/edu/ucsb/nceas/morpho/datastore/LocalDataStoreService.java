@@ -552,10 +552,19 @@ public class LocalDataStoreService extends DataStoreService
 						boolean inRevisions = revisions.contains(docid);
 						if (inRevisions) {
 							// is it the latest revision?
-							String latestRevision = revisions.get(revisions.size() - 1);
+							//String latestRevision = revisions.get(revisions.size() - 1);
+						  Log.debug(25, "+++++++++++++++++++++ the revision is "+revisions);
+						  String latestRevision = revisions.get(0);
+						 
+						  /*if(revisions.size() >1) {
+						    //The latest revision should be the second one in the array since the first one is the one will be used in future.
+						    latestRevision = revisions.get(1);
+						  } else {
+						    latestRevision = docid;
+						  }*/
 							if (docid != latestRevision) {
 								// prompt to get the latest revision before saving an update?
-								Log.debug(5, "Should not update data identifier: " + docid + " because it is not the latest revsion (" + latestRevision + ")");
+								Log.debug(5, "Should not update data identifier: " + docid + " because it is not the latest revision (" + latestRevision + ")");
 								return false;
 							}
 							// otherwise we can continue
@@ -652,16 +661,22 @@ public class LocalDataStoreService extends DataStoreService
 			try {
 				dataFile = openIncompleteFile(oldDocid);
 			} catch (Exception e) {
-				// if a datafile is on metacat and one wants to save locally
-				try {
-					// open from network
-					dataFile = DataStoreServiceController.getInstance().openFile(oldDocid, DataPackageInterface.NETWORK);
-				} catch (Exception qqq) {
-					// some other problem has occurred
-					Log.debug(5, "Some problem with saving local data files has occurred! " + qqq.getMessage());
-					qq.printStackTrace();
-					return false;
-				}
+			  //try to open it from the local system
+			  try {
+			    dataFile = openFile(oldDocid);
+			  } catch (Exception eee) {
+			    // if a datafile is on metacat and one wants to save locally
+	        try {
+	          // open from network
+	          dataFile = DataStoreServiceController.getInstance().openFile(oldDocid, DataPackageInterface.NETWORK);
+	        } catch (Exception qqq) {
+	          // some other problem has occurred
+	          Log.debug(5, "Morpho couldn't find the source data file "+oldDocid+" in any location (the temp, incomplete, data directories and the network) for copying");
+	          qq.printStackTrace();
+	          return false;
+	        }
+			  }
+			
 			}
 		}
 		
