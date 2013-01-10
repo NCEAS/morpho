@@ -603,6 +603,9 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 					if (exists && isDirty) {
 						// get the next identifier in this series
 						docid = getNextIdentifier(docid);
+						Identifier newId = new Identifier();
+            newId.setValue(docid);
+            entity.getSystemMetadata().setIdentifier(newId);
 						// save the revision history
 						getRevisionManager().setObsoletes(docid, originalIdentifier);
 						Identifier obsoletes = new Identifier();

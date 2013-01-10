@@ -568,6 +568,9 @@ public class LocalDataStoreService extends DataStoreService
 					if (exists && isDirty) {
 						// get the next identifier in this series
 						docid = getNextIdentifier(docid);
+						Identifier newId = new Identifier();
+						newId.setValue(docid);
+					  entity.getSystemMetadata().setIdentifier(newId);
 						// save the old one for reference later
 						original_new_id_map.put(docid, originalIdentifier);
 						// save the revision history
