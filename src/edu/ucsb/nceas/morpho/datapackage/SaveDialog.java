@@ -302,6 +302,7 @@ public class SaveDialog extends JDialog {
 			if (id.indexOf(LocalDataStoreService.TEMP) > -1) {
 				String nextid = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
 				adp.setAccessionNumber(nextid);
+				mdp.updateIdentifier(id, nextid);
 			}
 
 		}

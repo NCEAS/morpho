@@ -479,7 +479,7 @@ public class LocalDataStoreService extends DataStoreService
 		saveSystemMetadata(adp.getSystemMetadata());
 		
 		//modify the resource map
-	  updateResourceMapIdentifier(mdp, originalId, identifier);
+	  mdp.updateIdentifier(originalId, identifier);
    
 		
 		// check if we have a package
@@ -629,7 +629,7 @@ public class LocalDataStoreService extends DataStoreService
 						if(!exists ) {
 						  addEntityIdToResourceMap(mdp, docid);
 						} else if (isDirty && updatedId) {
-						  updateResourceMapIdentifier(mdp, originalIdentifier, docid);
+						  mdp.updateIdentifier(originalIdentifier, docid);
 						}
 					}
 
@@ -650,43 +650,7 @@ public class LocalDataStoreService extends DataStoreService
 		return true;
 	}
 	
-	/*
-	 * Replace the old id by the new id in the data package. The ids can be metadata ids or entity ids.
-	 */
-	private void updateResourceMapIdentifier(MorphoDataPackage dataPackage, String oldId, String newId) {
-	  if(dataPackage != null && oldId != null && newId != null) {
-	    Map<Identifier, List<Identifier>> metadataMap = dataPackage.getMetadataMap();
-	    if(metadataMap != null) {
-	      Identifier oldIdentifier = new Identifier();
-	      oldIdentifier.setValue(oldId);
-	      Identifier newIdentifier = new Identifier();
-        newIdentifier.setValue(newId);
-	      List<Identifier> list = metadataMap.get(oldIdentifier);
-	      if(list != null) {
-	        //the oldId is a metadata id. update the key (metadata id) and keep the value (list)
-	        metadataMap.remove(oldIdentifier);
-	        metadataMap.put(newIdentifier, list);
-	        dataPackage.setMetadataMap(metadataMap);
-	        
-	      } else {
-	        // the oldId is not a metadata id
-	        AbstractDataPackage adp = dataPackage.getAbstractDataPackage();
-	        if(adp != null) {
-	          String metadataId = adp.getAccessionNumber();
-	          Identifier metadataIdentifier = new Identifier();
-	          metadataIdentifier.setValue(metadataId);
-	          list = metadataMap.get(metadataIdentifier);
-	          if(list != null) {
-	            if(list.contains(oldIdentifier)) {
-	              list.remove(oldIdentifier);
-	            }
-	            list.add(newIdentifier);
-	          }
-	        }
-	      }
-	    }
-	  }
-	}
+	
 	
 	/**
 	 * Add an entity id to the resource map

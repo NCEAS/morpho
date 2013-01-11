@@ -35,6 +35,7 @@ import java.util.Map;
 import org.dataone.client.D1Object;
 import org.dataone.client.DataPackage;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.SystemMetadata;
 
 /**
  * <p>A class that represents a data package in Morpho. This extends from DataONE's
@@ -92,6 +93,57 @@ public class MorphoDataPackage extends DataPackage {
 		// TODO: don't keep reference here
 		this.adp = adp;
 	}
+	
+	
+	/**
+	 * Update the resourceMap and d1Object's identifier
+	 * @param oldId
+	 * @param newId
+	 */
+  public void updateIdentifier(String oldId, String newId) {
+    if(oldId != null && newId != null) {
+      Identifier oldIdentifier = new Identifier();
+      oldIdentifier.setValue(oldId);
+      Identifier newIdentifier = new Identifier();
+      newIdentifier.setValue(newId);
+      //update metadata map first
+      Map<Identifier, List<Identifier>> metadataMap = getMetadataMap();
+      if(metadataMap != null) {
+       
+        List<Identifier> list = metadataMap.get(oldIdentifier);
+        if(list != null) {
+          //the oldId is a metadata id. update the key (metadata id) and keep the value (list)
+          metadataMap.remove(oldIdentifier);
+          metadataMap.put(newIdentifier, list);
+          setMetadataMap(metadataMap);
+          
+        } else {
+          // the oldId is not a metadata id
+          AbstractDataPackage adp = getAbstractDataPackage();
+          if(adp != null) {
+            String metadataId = adp.getAccessionNumber();
+            Identifier metadataIdentifier = new Identifier();
+            metadataIdentifier.setValue(metadataId);
+            list = metadataMap.get(metadataIdentifier);
+            if(list != null) {
+              if(list.contains(oldIdentifier)) {
+                list.remove(oldIdentifier);
+              }
+              list.add(newIdentifier);
+            }
+          }
+        }
+      }
+      // update D1Object as well.
+      D1Object d1Object = get(oldIdentifier);
+      if(d1Object != null ) {
+        SystemMetadata systeMetadata = d1Object.getSystemMetadata();
+        if(systeMetadata != null) {
+          systeMetadata.setIdentifier(newIdentifier);
+        }
+      }
+    }
+  }
 
 }
 
