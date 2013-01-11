@@ -38,8 +38,10 @@ import java.io.Reader;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -402,6 +404,7 @@ public class LocalDataStoreService extends DataStoreService
 		
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
+		String originalId = identifier;
 		boolean exists = this.exists(identifier);
 		
 		// does the identifier exist already?
@@ -475,10 +478,23 @@ public class LocalDataStoreService extends DataStoreService
 		// save the SM for the science metadata
 		saveSystemMetadata(adp.getSystemMetadata());
 		
+		//modify the resource map
+	  updateResourceMapIdentifier(mdp, originalId, identifier);
+   
+		
 		// check if we have a package
-	    Set<Identifier> identifiers = mdp.identifiers();
+	    Map<Identifier, List<Identifier>>map= mdp.getMetadataMap();
+	    boolean hasEntity = false;
+	    if(map != null) {
+	      Identifier id = new Identifier();
+	      id.setValue(identifier);
+	      List<Identifier> list = map.get(id);
+	      if(list != null && list.size() >0) {
+	        hasEntity = true;
+	      }
+	    }
 	    //return now if we do not have data packages to save as ORE
-	    if (identifiers == null || identifiers.size() == 1) {
+	    if (!hasEntity) {
 			return adp.getAccessionNumber();
 	    }
 	    
@@ -609,6 +625,12 @@ public class LocalDataStoreService extends DataStoreService
 						}
 						// save the SM
 						saveSystemMetadata(entity.getSystemMetadata());
+						//we need to update the identifier information in the DataPackage object
+						if(!exists ) {
+						  addEntityIdToResourceMap(mdp, docid);
+						} else if (isDirty && updatedId) {
+						  updateResourceMapIdentifier(mdp, originalIdentifier, docid);
+						}
 					}
 
 					// reset the map after finishing save. There is no need for
@@ -626,6 +648,77 @@ public class LocalDataStoreService extends DataStoreService
 			}
 		}
 		return true;
+	}
+	
+	/*
+	 * Replace the old id by the new id in the data package. The ids can be metadata ids or entity ids.
+	 */
+	private void updateResourceMapIdentifier(MorphoDataPackage dataPackage, String oldId, String newId) {
+	  if(dataPackage != null && oldId != null && newId != null) {
+	    Map<Identifier, List<Identifier>> metadataMap = dataPackage.getMetadataMap();
+	    if(metadataMap != null) {
+	      Identifier oldIdentifier = new Identifier();
+	      oldIdentifier.setValue(oldId);
+	      Identifier newIdentifier = new Identifier();
+        newIdentifier.setValue(newId);
+	      List<Identifier> list = metadataMap.get(oldIdentifier);
+	      if(list != null) {
+	        //the oldId is a metadata id. update the key (metadata id) and keep the value (list)
+	        metadataMap.remove(oldIdentifier);
+	        metadataMap.put(newIdentifier, list);
+	        dataPackage.setMetadataMap(metadataMap);
+	        
+	      } else {
+	        // the oldId is not a metadata id
+	        AbstractDataPackage adp = dataPackage.getAbstractDataPackage();
+	        if(adp != null) {
+	          String metadataId = adp.getAccessionNumber();
+	          Identifier metadataIdentifier = new Identifier();
+	          metadataIdentifier.setValue(metadataId);
+	          list = metadataMap.get(metadataIdentifier);
+	          if(list != null) {
+	            if(list.contains(oldIdentifier)) {
+	              list.remove(oldIdentifier);
+	            }
+	            list.add(newIdentifier);
+	          }
+	        }
+	      }
+	    }
+	  }
+	}
+	
+	/**
+	 * Add an entity id to the resource map
+	 * @param dataPackage
+	 * @param entityId
+	 */
+	private void addEntityIdToResourceMap(MorphoDataPackage dataPackage, String entityId) {
+	  if(dataPackage != null && entityId != null) {
+	    AbstractDataPackage adp = dataPackage.getAbstractDataPackage();
+	    if(adp != null) {
+	      String metadataId = adp.getAccessionNumber();
+	      Identifier metadataIdentifier = new Identifier();
+        metadataIdentifier.setValue(metadataId);
+	      Map<Identifier, List<Identifier>> metadataMap = dataPackage.getMetadataMap();
+	      if(metadataMap == null) {
+	        metadataMap = new HashMap<Identifier, List<Identifier>>();
+	        List<Identifier>list = new ArrayList<Identifier>();
+	        metadataMap.put(metadataIdentifier, list);
+	        dataPackage.setMetadataMap(metadataMap);        
+	      }   
+	      List<Identifier>list = metadataMap.get(metadataIdentifier);
+	      if(list == null ) {
+	        list  = new ArrayList<Identifier>();
+	        metadataMap.put(metadataIdentifier, list);
+	      }
+	      Identifier entityIdentifier = new Identifier();
+	      entityIdentifier.setValue(entityId);
+	      list.add(entityIdentifier);
+	      
+	    }
+	  }
+	 
 	}
 	
 	/**
