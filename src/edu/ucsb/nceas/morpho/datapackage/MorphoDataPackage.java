@@ -141,6 +141,9 @@ public class MorphoDataPackage extends DataPackage {
         if(systeMetadata != null) {
           systeMetadata.setIdentifier(newIdentifier);
         }
+        // replace in the object map
+        remove(oldIdentifier);
+        addData(d1Object);
       }
     }
   }
