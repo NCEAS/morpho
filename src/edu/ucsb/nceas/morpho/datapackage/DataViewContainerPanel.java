@@ -851,7 +851,7 @@ public void setTopPanel(JPanel jp) {
           // we just want the local id here
           int indx2 = urlinfo.indexOf("//");
           String protocol = urlinfo.substring(0,indx2);
-          if (protocol.equals("ecogrid:")) {
+          if (protocol.startsWith(AbstractDataPackage.ECOGRID)) {
             if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
             // now start should be just past the '//'
             indx2 = urlinfo.indexOf("/");

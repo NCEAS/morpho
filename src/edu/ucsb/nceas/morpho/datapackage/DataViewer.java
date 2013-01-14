@@ -76,6 +76,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -1375,7 +1376,7 @@ public class DataViewer extends javax.swing.JPanel
 			adp.setPhysicalSize(entityIndex, 0, sizeS);
 
 			adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
-			adp.setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+dataFileId);
+			adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + dataFileId);
 			adp.setLocation("");
 			if (changePackageId) {
 			  String curid = adp.getAccessionNumber();

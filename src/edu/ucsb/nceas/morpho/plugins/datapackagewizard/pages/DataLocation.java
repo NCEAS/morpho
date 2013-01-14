@@ -56,7 +56,7 @@ import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -96,7 +96,7 @@ public class DataLocation extends AbstractUIPage {
         + Language.getInstance().getMessage("DataLocaltion.FILE_LOCATOR_IMPORT_DESC_INLINE") + ":"
         +WizardSettings.HTML_TABLE_LABEL_CLOSING;
 
-  public static final String URN_ROOT = "ecogrid://knb/";
+  public static final String URN_ROOT = AbstractDataPackage.ECOGRID + "://knb/";
 
   public static final String OBJECTNAME_XPATH
       = "/eml:eml/dataset/dataTable/physical/objectName";

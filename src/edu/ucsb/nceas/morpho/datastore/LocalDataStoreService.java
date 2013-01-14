@@ -67,6 +67,7 @@ import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
 import edu.ucsb.nceas.morpho.query.Query;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
@@ -638,7 +639,7 @@ public class LocalDataStoreService extends DataStoreService
 					original_new_id_map = new Hashtable<String, String>();
 					
 					// newDataFile must have worked; thus update the package
-					String urlinfo = "ecogrid://knb/" + docid;
+					String urlinfo = DataLocation.URN_ROOT + docid;
 					adp.setDistributionUrl(i, 0, 0, urlinfo);
 					// File was saved successfully, we need to remove the dirty flag
 					if (isDirty) {
@@ -1268,7 +1269,7 @@ public class LocalDataStoreService extends DataStoreService
 						String objectName = adp.getEntityName(i);
 						newDataFile(identifier, localFile, objectName);
 						// now we can modify the online url in metadata.
-						String url = AbstractDataPackage.ECOGRID + "://knb/" + identifier;
+						String url = DataLocation.URN_ROOT + identifier;
 						adp.setDistributionUrl(i, 0, 0, url);
 
 					} catch (Exception e) {

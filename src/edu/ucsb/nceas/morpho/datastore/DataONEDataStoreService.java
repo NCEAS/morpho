@@ -87,6 +87,7 @@ import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManagerInterface;
 import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
 import edu.ucsb.nceas.utilities.Log;
 
 /**
@@ -627,7 +628,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 
 					
 					// newDataFile must have worked; thus update the package
-					String urlinfo = "ecogrid://knb/" + docid;
+					String urlinfo = DataLocation.URN_ROOT + docid;
 					adp.setDistributionUrl(i, 0, 0, urlinfo);
 					// File was saved successfully, we need to remove the dirty flag
 					if (isDirty) {
