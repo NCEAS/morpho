@@ -26,7 +26,8 @@ import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 public class EcpAuthentication {
 		
 	// TODO: make this configurable
-	private String spURL = "https://ecp.cilogon.org:443/secure/getcert/";
+	private String spURL = "https://test.cilogon.org:443/secure/getcert/";
+	//private String spURL = "https://ecp.cilogon.org:443/secure/getcert/";
 	private String IdPListURL = "https://cilogon.org/include/ecpidps.txt";
 	private List<IdentityProviderSelectionItem> providers = null;
 
@@ -40,7 +41,7 @@ public class EcpAuthentication {
 		
 		// then look up the available IdPs from CILogon
 		try {
-			providers = getRemoteIdPList();
+			//providers = getRemoteIdPList();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,6 +85,7 @@ public class EcpAuthentication {
 	 */
 	private List<IdentityProviderSelectionItem> getDefaultIdPList() {
 		List<IdentityProviderSelectionItem> providers = new ArrayList<IdentityProviderSelectionItem>();
+		providers.add(new IdentityProviderSelectionItem("https://mn-demo-5.test.dataone.org/idp/profile/SAML2/SOAP/ECP", "KNB - Ecoinformatics"));
 		providers.add(new IdentityProviderSelectionItem("https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP", "ProtectNetwork"));
 		providers.add(new IdentityProviderSelectionItem("https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP", "LTER Network"));
 		providers.add(new IdentityProviderSelectionItem("https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP", "University of Chicago"));
