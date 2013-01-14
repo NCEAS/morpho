@@ -513,8 +513,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 				adp.setPackageIDChanged(true);
 				
 				// make sure the mdp has the latest ADP object/identifier
-				mdp.remove(originalIdentifier);
-				mdp.addData(adp);
+				mdp.updateIdentifier(originalIdentifier.getValue(), adp.getAccessionNumber());
 				
 			} else {
 				// canceled the save, so just return now
@@ -611,6 +610,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 						Identifier obsoletes = new Identifier();
 						obsoletes.setValue(originalIdentifier);
 						entity.getSystemMetadata().setObsoletes(obsoletes);
+						//update the package with new id information
+						mdp.updateIdentifier(originalIdentifier, docid);
 						// we changed the identifier
 						updatedId = true;
 						Log.debug(30, "The identifier "
