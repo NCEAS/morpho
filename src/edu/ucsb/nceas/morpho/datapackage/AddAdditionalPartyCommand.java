@@ -27,9 +27,11 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
@@ -240,7 +242,7 @@ implements Command, DataPackageWizardListener {
     Iterator additionalPartyIt = map.keySet().iterator();
     Object nextXPathObj = null;
     String nextXPath = null;
-    HashMap additionalPartySetMap = new HashMap();
+    TreeMap<String, OrderedMap> additionalPartySetMap = new TreeMap<String, OrderedMap>();
 
     while (additionalPartyIt.hasNext()) {
       nextXPathObj = additionalPartyIt.next();
@@ -266,7 +268,10 @@ implements Command, DataPackageWizardListener {
       }
     }
 
-    Iterator additionalPartySetIt = additionalPartySetMap.keySet().iterator();
+    // reverse them to add them to the XML in order
+    List<String> keys = Arrays.asList(additionalPartySetMap.keySet().toArray(new String[0]));
+    Collections.reverse((keys));
+    Iterator<String> additionalPartySetIt = keys.iterator();
     while (additionalPartySetIt.hasNext()) {
       nextXPathObj = additionalPartySetIt.next();
       OrderedMap additionalPartyMap = (OrderedMap) additionalPartySetMap.get(
