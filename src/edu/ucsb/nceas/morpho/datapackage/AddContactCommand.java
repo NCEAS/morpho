@@ -38,7 +38,6 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -52,9 +51,12 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Class to handle add contact command
@@ -235,7 +237,7 @@ implements Command, DataPackageWizardListener {
     Iterator contactIt = map.keySet().iterator();
     Object nextXPathObj = null;
     String nextXPath = null;
-    HashMap contactSetMap = new HashMap();
+    TreeMap<String, OrderedMap> contactSetMap = new TreeMap<String, OrderedMap>();
 
     while (contactIt.hasNext()) {
       nextXPathObj = contactIt.next();
@@ -259,7 +261,10 @@ implements Command, DataPackageWizardListener {
       }
     }
 
-    Iterator contactSetIt = contactSetMap.keySet().iterator();
+    // reverse them to add them to the XML in order
+    List<String> keys = Arrays.asList(contactSetMap.keySet().toArray(new String[0]));
+    Collections.reverse((keys));
+    Iterator<String> contactSetIt = keys.iterator();
     while (contactSetIt.hasNext()) {
       nextXPathObj = contactSetIt.next();
       OrderedMap contactMap = (OrderedMap) contactSetMap.get(nextXPathObj);

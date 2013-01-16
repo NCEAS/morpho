@@ -26,19 +26,25 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeMap;
+
 import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
-
-import java.awt.event.ActionEvent;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
@@ -50,11 +56,6 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-import java.util.List;
-import java.util.Iterator;
-import java.util.HashMap;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * Class to handle add creator command
@@ -233,7 +234,8 @@ implements Command, DataPackageWizardListener {
     Iterator creatorIt = map.keySet().iterator();
     Object nextXPathObj = null;
     String nextXPath = null;
-    HashMap creatorSetMap = new HashMap();
+    // use a Map that maintains order
+    TreeMap<String, OrderedMap> creatorSetMap = new TreeMap<String, OrderedMap>();
 
     while (creatorIt.hasNext()) {
       nextXPathObj = creatorIt.next();
@@ -256,8 +258,11 @@ implements Command, DataPackageWizardListener {
         creatorSetMap.put(temp, creatorMap);
       }
     }
-
-    Iterator creatorSetIt = creatorSetMap.keySet().iterator();
+    
+    // reverse them to add them to the XML in order
+    List<String> keys = Arrays.asList(creatorSetMap.keySet().toArray(new String[0]));
+    Collections.reverse((keys));
+    Iterator<String> creatorSetIt = keys.iterator();
     while (creatorSetIt.hasNext()) {
       nextXPathObj = creatorSetIt.next();
       OrderedMap creatorMap = (OrderedMap) creatorSetMap.get(nextXPathObj);

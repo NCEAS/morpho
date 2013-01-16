@@ -26,10 +26,15 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeMap;
+
 import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
-
-import java.awt.event.ActionEvent;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
@@ -38,10 +43,9 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -52,11 +56,7 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-import java.util.List;
-import java.util.Iterator;
-import java.util.HashMap;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * Class to handle add additionalParty command
@@ -241,7 +241,7 @@ implements Command, DataPackageWizardListener {
     Iterator additionalPartyIt = map.keySet().iterator();
     Object nextXPathObj = null;
     String nextXPath = null;
-    HashMap additionalPartySetMap = new HashMap();
+    TreeMap<String, OrderedMap> additionalPartySetMap = new TreeMap<String, OrderedMap>();
 
     while (additionalPartyIt.hasNext()) {
       nextXPathObj = additionalPartyIt.next();
@@ -267,7 +267,10 @@ implements Command, DataPackageWizardListener {
       }
     }
 
-    Iterator additionalPartySetIt = additionalPartySetMap.keySet().iterator();
+    // reverse them to add them to the XML in order
+    List<String> keys = Arrays.asList(additionalPartySetMap.keySet().toArray(new String[0]));
+    Collections.reverse((keys));
+    Iterator<String> additionalPartySetIt = keys.iterator();
     while (additionalPartySetIt.hasNext()) {
       nextXPathObj = additionalPartySetIt.next();
       OrderedMap additionalPartyMap = (OrderedMap) additionalPartySetMap.get(
