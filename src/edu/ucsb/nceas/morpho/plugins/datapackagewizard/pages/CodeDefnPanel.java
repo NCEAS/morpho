@@ -1078,6 +1078,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
           int cnt = -1;
           while( st.hasMoreTokens() ) {
             token = st.nextToken().trim();
+            token = stripCSVQuotes(token);
             cnt++;
             int idx = -1;
             if((idx = colIndices.indexOf(new Integer(cnt))) >  -1) {
@@ -1100,6 +1101,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
           StringTokenizer st = new StringTokenizer(line, delimiter, true);
           while( st.hasMoreTokens() ) {
             token = st.nextToken().trim();
+            token = stripCSVQuotes(token);
             if (! (delimiter.indexOf(token) > -1) ) {
               cnt++;
               int idx = -1;
@@ -1162,7 +1164,21 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
 
 
-  public static List getOneColumnValue(File file, int colIndex, int numHeaderLines, String delimiter, int maxLinesNeeded) {
+  /**
+   * Removes matched single or double quotes surrounding the given string.
+   * @param token
+   * @return the token with quotes removed if they existed
+   * @see http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5783
+   */
+  private static String stripCSVQuotes(String token) {
+	if ( (token.startsWith("\"") && token.endsWith("\"")) 
+			|| (token.startsWith("'") && token.endsWith("'"))) {
+		token = token.substring(1, token.length()-1);
+	}
+	return token;
+  }
+
+public static List getOneColumnValue(File file, int colIndex, int numHeaderLines, String delimiter, int maxLinesNeeded) {
 
     List result = new ArrayList();
     String line;
