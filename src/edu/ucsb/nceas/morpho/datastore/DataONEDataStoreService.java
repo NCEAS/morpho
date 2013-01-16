@@ -546,6 +546,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		oreId.setValue("resourceMap_" + metadataId.getValue());
 		D1Object oreD1Object = new D1Object();
 		mdp.setPackageId(oreId);
+		//System.out.println("the serilziae page is ===== "+mdp.serializePackage());
 		oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
 
 		// generate ORE SM for the save
@@ -628,6 +629,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 
 					 if(!exists ) {
              mdp.addData(entity);
+             LocalDataStoreService.addEntityIdToResourceMap(mdp, docid);
            } else if (isDirty && updatedId) {
              mdp.updateIdentifier(originalIdentifier, docid);
            }

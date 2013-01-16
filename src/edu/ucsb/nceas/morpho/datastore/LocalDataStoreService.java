@@ -658,7 +658,7 @@ public class LocalDataStoreService extends DataStoreService
 	 * @param dataPackage
 	 * @param entityId
 	 */
-	private void addEntityIdToResourceMap(MorphoDataPackage dataPackage, String entityId) {
+	public static void addEntityIdToResourceMap(MorphoDataPackage dataPackage, String entityId) {
 	  if(dataPackage != null && entityId != null) {
 	    AbstractDataPackage adp = dataPackage.getAbstractDataPackage();
 	    if(adp != null) {
