@@ -487,22 +487,21 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI {
 				if (adp == null)
 					getADP();
 				Node[] attributes = adp.getAttributeArray(i);
-				OrderedMap maps[] = new OrderedMap[colsToExtract.size()];
+				OrderedMap maps[] = new OrderedMap[cols.length];
 				// char array to indicate if the attribute is nominal or ordinal
-				char measScale[] = new char[colsToExtract.size()];
+				char measScale[] = new char[cols.length];
 				Vector enumCols = new Vector();
 				Vector textCols = new Vector();
 
+				// populate information needed for the columns to extract
 				for (int k = 0; k < colsToExtract.size(); k++) {
 					int col = ((Integer) colsToExtract.get(k)).intValue();
-					maps[k] = XMLUtilities
-							.getDOMTreeAsXPathMap(attributes[col]);
-					measScale[k] = findMeasurementScale(maps[k], "/attribute");
-					if (measScale[k] == 'R' || measScale[k] == ' ') {
-					} else if (measScale[k] == 'n' || measScale[k] == 'o') {// text
-																			// values,
-																			// not
-																			// Enums
+					maps[col] = XMLUtilities.getDOMTreeAsXPathMap(attributes[col]);
+					measScale[col] = findMeasurementScale(maps[col], "/attribute");
+					if (measScale[col] == 'R' || measScale[col] == ' ') {
+						// do nothing
+					} else if (measScale[col] == 'n' || measScale[col] == 'o') {
+						// text values, not Enums
 						textCols.add(new Integer(col));
 					} else {
 						enumCols.add(new Integer(col));
