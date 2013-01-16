@@ -731,7 +731,7 @@ public class LocalDataStoreService extends DataStoreService
 	          // some other problem has occurred
 	          Log.debug(5, "Morpho couldn't find the source data file "+oldDocid+" in any location (the temp, incomplete, data directories and the network) for copying");
 	          qq.printStackTrace();
-	          return false;
+	          //return false;
 	        }
 			  }
 			
@@ -740,7 +740,12 @@ public class LocalDataStoreService extends DataStoreService
 		
 		// open old file name (if no file change, the old file name will be as same as docid).
 		try {
-			newDataFile(docid, dataFile, oldDocid);
+			if (dataFile != null) {
+				newDataFile(docid, dataFile, oldDocid);
+			} else {
+				// this is the case on EML import
+	 			newDataFile(docid, null);
+			}
 		} catch (FileNotFoundException e) {
 			// some other problem has occurred
 			Log.debug(5, "Problem with saving local data file: " + docid + ", Error: " + e.getMessage());
