@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.math.BigInteger;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.IOUtils;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
@@ -84,6 +85,7 @@ public class EntityWizardListener implements  DataPackageWizardListener
       //File dataFile = DataStoreServiceController.getInstance().openFile(identifier.getValue(), DataPackageInterface.LOCAL);
       //Here the data file hasn't been saved. So we have to open it from temp
       File dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openTempFile(identifier.getValue());
+      entity.setData(IOUtils.toByteArray(new FileInputStream(dataFile)));
       Checksum dataChecksum = ChecksumUtil.checksum(new FileInputStream(dataFile), entity.getSystemMetadata().getChecksum().getAlgorithm());
       entity.getSystemMetadata().setChecksum(dataChecksum);
       entity.getSystemMetadata().setSize(BigInteger.valueOf(dataFile.length()));
