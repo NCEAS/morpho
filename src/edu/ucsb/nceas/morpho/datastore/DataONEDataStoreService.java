@@ -626,6 +626,11 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 						save(entity);
 					}
 
+					 if(!exists ) {
+             mdp.addData(entity);
+           } else if (isDirty && updatedId) {
+             mdp.updateIdentifier(originalIdentifier, docid);
+           }
 					
 					// newDataFile must have worked; thus update the package
 					String urlinfo = DataLocation.URN_ROOT + docid;
