@@ -437,6 +437,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       initDPMetaView(false);
       return;
     }
+    
+    // moved out of loop since this is constant for each entity (BRL 20130117)
+    AbstractDataPackage adp = mdp.getAbstractDataPackage();
+    String id = adp.getAccessionNumber();
+    if ((id==null)||(id.equals(""))) id = "tempid";
+    
     entityFile = new File[entityItems.size()];
     for (int i=0;i<entityItems.size();i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
@@ -445,10 +451,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // id is the id of the Entity metadata module
       // code from here to 'end_setup' comment sets up the display for the
       // entity metadata
-      AbstractDataPackage adp = mdp.getAbstractDataPackage();
 //DFH      String id = getEntityIDForThisEntityName(item);
-      String id = adp.getAccessionNumber();
-        if ((id==null)||(id.equals(""))) id = "tempid";
 
 //      String location = dp.getLocation();
 
