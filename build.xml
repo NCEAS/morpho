@@ -32,7 +32,7 @@
 	   <property name="eml-svn-base-url" value="https://code.ecoinformatics.org/code/eml"/>
       <!-- the following two properties will be used to get newest eml doc-->
       <property name="eml-doc-tag" value="RELEASE_EML_2_1_1" />
-      <property name="eml.doc.dir" value="${morpho.basedir}/docs/eml-2.1.1" />
+      <property name="eml.doc.dir" value="docs/eml-2.1.1" />
 	  <property name="eml-doc-svn-url" value="${eml-svn-base-url}/tags/${eml-doc-tag}"/>
       <!-- the following property will be used to get eml210 schemas -->
       <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0" />
@@ -267,7 +267,7 @@
      <echo>Check out eml doc from SVN</echo>
 	  <svn>
             <export srcUrl="${eml-doc-svn-url}"
-                destPath="${build.docs}/${eml-module}" />
+                destPath="${build.docs}/${eml-module}" force="true" />
      </svn>
      <ant dir="${build.docs}/${eml-module}" target="docs" inheritAll="false"/>
      <mkdir dir="${java.help.doc.dir}" />
