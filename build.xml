@@ -384,6 +384,7 @@
           <exclude name="EMLHandbook.html"/>
           <exclude name="advanced/**" />
           <exclude name="EmlDocs/**" />
+          <exclude name="latex/**" />
         </fileset>
       </copy>
       <!-- copy metadata guide docs-->
