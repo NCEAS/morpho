@@ -450,6 +450,18 @@ public class LocalDataStoreService extends DataStoreService
 			// since it is saving a new package, no need to do anything
 			adp.setAccessionNumber(identifier);
 			adp.setPackageIDChanged(false);
+			//it may be updated during the saving process in the networking saving process
+			//so we need to check the revision chian.
+			SystemMetadata sys = adp.getSystemMetadata();
+			if(sys != null ) {
+			  Identifier old = sys.getObsoletes();
+			  if(old != null) {
+			    String oldId = old.getValue();
+			    if(oldId != null && ! oldId.trim().equals("") && this.exists(oldId)) {
+			      getRevisionManager().setObsoletes(identifier, oldId);
+			    }
+			  }
+			}
 		}
 		
 		// start as unsuccessful
