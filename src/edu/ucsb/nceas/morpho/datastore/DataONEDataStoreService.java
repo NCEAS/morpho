@@ -518,6 +518,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 				
 			} else {
 				// canceled the save, so just return now
+			    adp.setSerializeMetacatSuccess(false);
 				return identifier;
 			}
 		} else {

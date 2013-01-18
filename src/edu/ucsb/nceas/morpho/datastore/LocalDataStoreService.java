@@ -443,6 +443,7 @@ public class LocalDataStoreService extends DataStoreService
 				
 			} else {
 				// canceled the save, so just return now
+			    adp.setSerializeLocalSuccess(false);
 				return identifier;
 			}
 		} else {

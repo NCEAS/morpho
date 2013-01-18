@@ -321,7 +321,7 @@ public class SaveDialog extends JDialog {
 				} else if (adp.getSerializeMetacatSuccess()) {
 					adp.setLocation(DataPackageInterface.NETWORK);
 				} else {
-					adp.setLocation("");
+					adp.setLocation(adp.getLocation());
 				}
 			// LOCAL
 			} else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
@@ -336,7 +336,7 @@ public class SaveDialog extends JDialog {
             adp.setLocation(DataPackageInterface.LOCAL);
           }
 				} else {
-					adp.setLocation("");
+					adp.setLocation(adp.getLocation());
 				}
 			// METACAT
 			} else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
@@ -352,7 +352,7 @@ public class SaveDialog extends JDialog {
 				  }
 					
 				} else {
-					adp.setLocation("");
+					adp.setLocation(adp.getLocation());
 				}
 			// NOTHING	
 			} else {
