@@ -671,7 +671,13 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     String rightsHolderDN = CertificateManager.getInstance().getSubjectDN(CertificateManager.getInstance().loadCertificate());
     Subject rightsHolder = new Subject();
     rightsHolder.setValue(rightsHolderDN);
-    sysMeta.setRightsHolder(rightsHolder );
+    sysMeta.setRightsHolder(rightsHolder);
+    
+    // make sure serial version is set to something
+    BigInteger serialVersion = sysMeta.getSerialVersion();
+    if (serialVersion == null) {
+    	sysMeta.setSerialVersion(BigInteger.ZERO);
+    }
     
     Identifier identifier = d1Object.getIdentifier();
     if(identifier == null || identifier.getValue() == null || identifier.getValue().trim().equals("")) {
