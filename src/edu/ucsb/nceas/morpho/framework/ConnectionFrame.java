@@ -196,9 +196,11 @@ public class ConnectionFrame  extends JDialog
     cancelButton.addActionListener(lSymAction);
     //}}
     
-    if (container!=null) {
-      userName.setText(container.getUserName());
-    }
+	// force user to enter username each time
+	// see http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5791
+//    if (container != null) {
+//    	userName.setText(container.getUserName());
+//    }
 
     // Example of loading icon as resource - DFH 
     try {
