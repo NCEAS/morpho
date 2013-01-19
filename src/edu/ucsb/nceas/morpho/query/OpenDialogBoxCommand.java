@@ -71,6 +71,7 @@ public class OpenDialogBoxCommand implements Command
     // create ownerQuery depend on the suiation when it executed
     ownerQuery = new Query(getOwnerQuery(), morpho);
     ownerQuery.setSearchLocal(true);
+    ownerQuery.setSearchNetwork(true);
     // Get the current morphoFrame. Maybe change get open dialog parent
     MorphoFrame frame =
                     UIController.getInstance().getCurrentActiveWindow();
