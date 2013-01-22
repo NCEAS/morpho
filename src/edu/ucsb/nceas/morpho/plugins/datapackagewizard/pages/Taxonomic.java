@@ -962,11 +962,15 @@ public class Taxonomic extends AbstractUIPage {
         TaxonLevel level = (TaxonLevel)taxonLevels.get(i);
         String tRank = level.getRank();
         String tName = level.getName();
+        String tCommon = level.getCommonNamesDisplayString();
         //if(tRank.trim().equals("") || tName.trim().equals("")) continue;
-        if(Util.isBlank(tRank)|| Util.isBlank(tName)) continue;
+        if(Util.isBlank(tRank)|| (Util.isBlank(tName) && Util.isBlank(tCommon))) continue;
 
         result.put(prefix + "/taxonRankName",  tRank);
-        result.put(prefix + "/taxonRankValue",  tName);
+        if(!Util.isBlank(tName)) {
+            result.put(prefix + "/taxonRankValue",  tName);
+        }
+        
         String[] cn = level.getCommonNames();
         for(int j = 0; cn != null && j < cn.length; j++) {
           if(Util.isBlank(cn[j])) continue;
