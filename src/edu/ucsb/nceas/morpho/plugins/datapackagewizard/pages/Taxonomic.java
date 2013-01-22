@@ -895,7 +895,9 @@ public class Taxonomic extends AbstractUIPage {
         TaxonLevel level = (TaxonLevel) taxonLevels.get(j);
         String tRank = level.getRank();
         String tName = level.getName();
-        if (tRank.trim().equals("") || tName.trim().equals(""))continue;
+        String tCommon = level.getCommonNamesDisplayString();
+        //System.out.println("the tCommon is !!!!!!!!!!!!!!!!\n"+tCommon);
+        if (tRank.trim().equals("") || (tName.trim().equals("") && tCommon.trim().equals("")))continue;
         else {
           removeTaxonLevel = false;
         }
@@ -1046,8 +1048,7 @@ public class Taxonomic extends AbstractUIPage {
       }
     }
 
-
-
+   //System.out.println("==================\n"+result.toString());
     return result;
 
   }
