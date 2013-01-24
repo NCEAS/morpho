@@ -50,6 +50,8 @@ import java.io.FileInputStream;
 
 import javax.activation.FileDataSource;
 
+import org.dataone.service.types.v1.Identifier;
+
 
 /**
  * Class to handle import data file command
@@ -90,8 +92,6 @@ public class ReplaceDataCommand implements Command {
 			if (showDialog()) {
 			
 				OrderedMap dataTableMap = replaceDataPage.getPageData();
-
-				boolean useNewId = replaceDataPage.getNewId();
 				
 				// get the file they selected
 				String dataFilePath = (String) dataTableMap.get(DataLocation.ONLINE_URL_XPATH);
@@ -103,7 +103,14 @@ public class ReplaceDataCommand implements Command {
 				}
 				//save the data to local cache
 				File dataFile = new File(dataFilePath);
-				String nexDocId = saveDataFileAsTemp(dataFile, currentId, useNewId);
+				String nexDocId = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
+				try {
+					Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(nexDocId, new FileInputStream(dataFile));
+				} catch (Exception e) {
+					Log.debug(1, "Error saving replacement data file!");
+					e.printStackTrace();
+					return;
+				}
 				
 				//clear out the old distribution info
 				adp.removePhysicalDistribution(entityIndex, 0, 0);
@@ -112,6 +119,14 @@ public class ReplaceDataCommand implements Command {
 				adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + nexDocId);
 				String format = new FileDataSource(dataFile).getContentType();
 				adp.setPhysicalFormat(entityIndex, 0, format);
+				
+				// set revision history
+				boolean useNewId = replaceDataPage.getNewId();
+				if (!useNewId) {
+					Identifier oldIdentifier = new Identifier();
+					oldIdentifier.setValue(currentId);
+					adp.getEntity(entityIndex).getSystemMetadata().setObsoletes(oldIdentifier);
+				}
 				
 				// NOTE: this path includes "dataTable" as the entity, but since we don't actually use it in the EML,
 				// it's not a problem for otherEntity and other entity types
@@ -180,27 +195,5 @@ public class ReplaceDataCommand implements Command {
 		}
 		return false;
 	}
-	
-	  /*
-	   * increment revision or create a new id,
-	   * assign id to the data file and save it with that id
-	   */
-	  private String saveDataFileAsTemp(File f, String currentId, boolean useNewId) {
-	    // force new id generation
-	    if (useNewId) {
-	    	currentId = null;
-	    }
-	    if (currentId  == null) {
-	    	currentId = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
-	    } else {
-	    	currentId = DataStoreServiceController.getInstance().getNextIdentifier(currentId, DataPackageInterface.LOCAL);
-	    }
-	    try {
-	    	Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(currentId, new FileInputStream(f));
-	    } catch (Exception w) {
-	      Log.debug(1, "Error saving replacement data file!");
-	    }
-	    return currentId;
-	  }
 
 }

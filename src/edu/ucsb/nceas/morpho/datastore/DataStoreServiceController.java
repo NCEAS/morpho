@@ -24,13 +24,17 @@ import java.util.zip.ZipOutputStream;
 
 import javax.swing.JOptionPane;
 
+import org.dataone.service.types.v1.Identifier;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
 import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.util.IOUtil;
@@ -46,6 +50,15 @@ import edu.ucsb.nceas.morpho.util.XMLTransformer;
  */
 public class DataStoreServiceController {
 
+	/**
+	* TODO: the service should probably tell us what schemes it uses
+	* But for now we will hope for the best with these
+	*/
+	private static final String DOI = "doi";
+	private static final String UUID = "uuid";
+	public static final String DEFAULT_IDENTIFIER_SCHEME = "default";
+	public static final String[] IDENTIFIER_SCHEMES = {DEFAULT_IDENTIFIER_SCHEME, DOI, UUID};
+
 	private static DataStoreServiceController instance;
 	
 	private DataStoreServiceController() {
@@ -57,36 +70,6 @@ public class DataStoreServiceController {
 			instance = new DataStoreServiceController();
 		}
 		return instance;
-	}
-	
-	/**
-	 * Gets next revision for this identifier for the given location
-	 * @param identifier the current revision of the identifier
-	 * @param location of the doc
-	 * @return the identifier for the next revision at the given location
-	 * @throws Exception 
-	 */
-	public String getNextIdentifier(String docid, String location)
-	{
-		String nextIdentifier = null;
-		try {
-			if (location.equals(DataPackageInterface.LOCAL)) {
-				nextIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
-			}
-			if (location.equals(DataPackageInterface.NETWORK)) {
-				nextIdentifier = Morpho.thisStaticInstance.getDataONEDataStoreService().getNextIdentifier(docid);
-			}
-			if (location.equals(DataPackageInterface.BOTH)) {
-				String localNextRevision = Morpho.thisStaticInstance.getLocalDataStoreService().getNextIdentifier(docid);
-				String networkNextRevision = Morpho.thisStaticInstance.getDataONEDataStoreService().getNextIdentifier(docid);
-				// TODO: reconcile them?
-				nextIdentifier = localNextRevision;
-			}
-		} catch (Exception e) {
-			Log.debug(5, e.getMessage());
-		}
-		
-		return nextIdentifier;
 	}
 	
 	/**
@@ -108,8 +91,14 @@ public class DataStoreServiceController {
 				versions = Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().getAllRevisions(docid);
 			}
 			if (location.equals(DataPackageInterface.BOTH)) {
+				// merge the local and network list
 				versions  = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getAllRevisions(docid);
-				//versions = Morpho.thisStaticInstance.getMetacatDataStoreService().getAllRevisions(docid);
+				List<String> networkVersions =  Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().getAllRevisions(docid);
+				for (String version: networkVersions) {
+					if (!versions.contains(version)) {
+						versions.add(version);
+					}
+				}
 			}
 		} catch (Exception e) {
 			Log.debug(5, e.getMessage());
@@ -172,7 +161,7 @@ public class DataStoreServiceController {
 			String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 			return Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
 		}
-		if (location.equals(DataPackageInterface.NETWORK)) {
+		if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
 		  String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 			try {
 				return Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(scheme, fragment);
@@ -733,6 +722,8 @@ public class DataStoreServiceController {
 	 */
 	public void save(MorphoDataPackage mdp, String location, boolean overwrite) throws Exception {
 
+		// handle identifier conflicts
+		mdp = resolveAllIdentifierConflicts(mdp, location);
 
 		if (location.equals(DataPackageInterface.NETWORK)) {
 			Morpho.thisStaticInstance.getDataONEDataStoreService().save(mdp);
@@ -755,6 +746,139 @@ public class DataStoreServiceController {
 		if (location.equals(DataPackageInterface.INCOMPLETE)) {
 			Morpho.thisStaticInstance.getLocalDataStoreService().saveIncomplete(mdp);
 		}
+	}
+	
+	
+	private String resolveIdentifierConflict(String originalIdentifier, String location) throws Exception {
+
+		String newIdentifier = originalIdentifier;
+		// TODO provide these from input?
+		String scheme = DEFAULT_IDENTIFIER_SCHEME;
+		String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+		boolean local = false;
+		boolean network = false;
+		if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
+			network = Morpho.thisStaticInstance.getDataONEDataStoreService().exists(originalIdentifier);
+		}
+		if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
+			local = Morpho.thisStaticInstance.getLocalDataStoreService().exists(originalIdentifier);
+		}
+		
+		// check conflict on network
+		if (network) {
+			// generate network id
+			newIdentifier = Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(scheme, fragment);
+			// let this cascade to local
+			local = Morpho.thisStaticInstance.getLocalDataStoreService().exists(newIdentifier);
+			// TODO: what if it is already taken?
+		}
+		
+		// resolve conflict locally
+		if (local) {
+			// generate a local id
+			newIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
+		}
+		
+		return newIdentifier;
+	}
+	
+	/**
+	 * 
+	 * @param mdp
+	 * @param location
+	 */
+	private MorphoDataPackage resolveAllIdentifierConflicts(MorphoDataPackage mdp, String location) throws Exception {
+
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		String originalIdentifier = adp.getAccessionNumber();
+		String newIdentifier = resolveIdentifierConflict(originalIdentifier, location);
+		
+		// update the package to use new id if we need to
+		if (!newIdentifier.equals(originalIdentifier)) {
+			
+			// set the new id
+			adp.setAccessionNumber(newIdentifier);
+			adp.setPackageIDChanged(true);
+
+			// set the SM to reflect this change
+			Identifier originalIdentifierObject = new Identifier();
+			originalIdentifierObject.setValue(originalIdentifier);
+			adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
+			
+			// make sure the package reflects the updated IDs
+			mdp.updateIdentifier(originalIdentifier, newIdentifier);
+
+			// record this in revision manager (TODO: is this needed?)
+			if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
+				Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalIdentifier);
+			}
+			if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
+				Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalIdentifier);
+			}
+			
+		}
+		
+		// handle the data files
+		if (adp.getEntityArray() != null) {
+
+			for (int i = 0; i < adp.getEntityArray().length; i++) {
+				Entity entity = adp.getEntity(i);
+				String URLinfo = adp.getDistributionUrl(i, 0, 0);
+				String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
+				if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
+
+					String originalDataIdentifier = AbstractDataPackage.getUrlInfo(URLinfo);
+					Log.debug(30, "handle data file  with index " + i + "" + originalDataIdentifier);
+					if (originalDataIdentifier != null) {
+						boolean isDirty = adp.containsDirtyEntityIndex(i);
+						Log.debug(30, "url " + originalDataIdentifier + " with index " + i + " is dirty " + isDirty);
+
+						// if we need to save, then we check ID
+						// TODO: what about new packages?
+						if (isDirty) {
+							// see what the next identifier should be
+							String newDataIdentifier = resolveIdentifierConflict(originalDataIdentifier, location);
+							
+							// update the docid if a change is needed
+							if (!originalDataIdentifier.equals(newDataIdentifier)) {
+								// new id
+								Identifier newId = new Identifier();
+								newId.setValue(newDataIdentifier);
+								entity.getSystemMetadata().setIdentifier(newId);
+								// obsoletes chain
+								Identifier obsoletes = new Identifier();
+								obsoletes.setValue(originalDataIdentifier);
+								entity.getSystemMetadata().setObsoletes(obsoletes);
+								
+								// save the revision history
+								if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
+									Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newDataIdentifier, originalDataIdentifier);
+								}
+								if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
+									Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newDataIdentifier, originalDataIdentifier);
+								}
+								
+								// update the package with new id information
+								mdp.updateIdentifier(originalDataIdentifier, newDataIdentifier);
+								// we changed the identifier
+								Log.debug(30,
+										"The identifier "
+												+ originalDataIdentifier
+												+ " exists and has unsaved data. The identifier for next revision is "
+												+ newDataIdentifier);
+	
+								// update the EML with new id information
+								String urlinfo = DataLocation.URN_ROOT + newDataIdentifier;
+								adp.setDistributionUrl(i, 0, 0, urlinfo);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return mdp;
+
 	}
 
 	/**

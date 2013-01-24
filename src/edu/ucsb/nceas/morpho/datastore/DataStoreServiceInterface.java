@@ -110,7 +110,5 @@ public interface DataStoreServiceInterface
   public InputStream query(String query) throws Exception;
   
   public RevisionManagerInterface getRevisionManager();
-
-  public String getNextIdentifier(String identifier) throws Exception;
   
 }

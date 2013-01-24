@@ -42,7 +42,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -58,7 +57,6 @@ import org.dataone.service.util.TypeMarshaller;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
-import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
@@ -389,11 +387,11 @@ public class LocalDataStoreService extends DataStoreService
 	 */
 	private String save(MorphoDataPackage mdp, String location) throws Exception {
 		
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+
 		// save the data first
 		boolean dataStatus = serializeData(mdp, location);
 		
-		AbstractDataPackage adp = mdp.getAbstractDataPackage();
-
 		// only continue if that was successful
 		if (!dataStatus) {
 			adp.setSerializeLocalSuccess(false);
@@ -405,66 +403,7 @@ public class LocalDataStoreService extends DataStoreService
 		
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
-		String originalId = identifier;
-		boolean exists = this.exists(identifier);
-		
-		// does the identifier exist already?
-		if (exists) {
-			Log.debug(30, "object already exists locally with this identifier: " + identifier);
-			// TODO: is this frame needed or can we just increase the revision silently?
-			DocidConflictHandler identifierConflictHandler = new DocidConflictHandler(identifier, DataPackageInterface.LOCAL);
-			String choice = identifierConflictHandler.showDialog();
-			// Log.debug(5, "choice is "+choice);
-			if (choice != null) {
-				Identifier originalIdentifier = new Identifier();
-				originalIdentifier.setValue(identifier);
-				String scheme = null;
-				if (choice.equals(DocidConflictHandler.INCREASEID)) {
-					// generate a new identifier - separate from the original chain
-					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
-					identifier = generateIdentifier(scheme, scope);
-				} else {
-					// get next identifier (really just the same as generating a new one) 
-					String nextIdentifier = getNextIdentifier(identifier);
-					Log.debug(30, "Original identifier: " + identifier + ", next revision: " + nextIdentifier);
-					// record this in revision manager
-					getRevisionManager().setObsoletes(nextIdentifier, identifier);
-					adp.getSystemMetadata().setObsoletes(originalIdentifier);
-					identifier = nextIdentifier;
-				}
-			
-				// set the new identifier
-				adp.setAccessionNumber(identifier);
-				adp.setPackageIDChanged(true);
-				
-				// make sure the mdp has the latest ADP object/identifier
-				mdp.remove(originalIdentifier);
-				mdp.addData(adp);
-				
-			} else {
-				// canceled the save, so just return now
-			    adp.setSerializeLocalSuccess(false);
-				return identifier;
-			}
-		} else {
-			Log.debug(30, "object identifier does not exist locally");
-			// since it is saving a new package, no need to do anything
-			adp.setAccessionNumber(identifier);
-			adp.setPackageIDChanged(false);
-			//it may be updated during the saving process in the networking saving process
-			//so we need to check the revision chian.
-			SystemMetadata sys = adp.getSystemMetadata();
-			if(sys != null ) {
-			  Identifier old = sys.getObsoletes();
-			  if(old != null) {
-			    String oldId = old.getValue();
-			    if(oldId != null && ! oldId.trim().equals("") && this.exists(oldId)) {
-			      getRevisionManager().setObsoletes(identifier, oldId);
-			    }
-			  }
-			}
-		}
-		
+
 		// start as unsuccessful
 		adp.setSerializeLocalSuccess(false);
 
@@ -491,10 +430,6 @@ public class LocalDataStoreService extends DataStoreService
 		
 		// save the SM for the science metadata
 		saveSystemMetadata(adp.getSystemMetadata());
-		
-		//modify the resource map
-	  mdp.updateIdentifier(originalId, identifier);
-   
 		
 		// check if we have a package
 	    Map<Identifier, List<Identifier>>map= mdp.getMetadataMap();
@@ -557,7 +492,6 @@ public class LocalDataStoreService extends DataStoreService
 			return true; // there is no data!
 		}
 
-		adp.setDataIDChanged(false);
 		for (int i = 0; i < adp.getEntityArray().length; i++) {
 			Entity entity = adp.getEntity(i);
 			String URLinfo = adp.getDistributionUrl(i, 0, 0);
@@ -574,60 +508,10 @@ public class LocalDataStoreService extends DataStoreService
 					
 					// check if the object exists already
 					boolean exists = exists(docid);
-
-					// do we have any revisions for this object
-					List<String> revisions = getRevisionManager().getAllRevisions(docid);
-					if (revisions != null) {
-						// is it in the revision history?
-						boolean inRevisions = revisions.contains(docid);
-						if (inRevisions) {
-							// is it the latest revision?
-							//String latestRevision = revisions.get(revisions.size() - 1);
-						  Log.debug(25, "+++++++++++++++++++++ the revision is "+revisions);
-						  String latestRevision = revisions.get(0);
-						 
-						  /*if(revisions.size() >1) {
-						    //The latest revision should be the second one in the array since the first one is the one will be used in future.
-						    latestRevision = revisions.get(1);
-						  } else {
-						    latestRevision = docid;
-						  }*/
-							if (docid != latestRevision) {
-								// prompt to get the latest revision before saving an update?
-								Log.debug(5, "Should not update data identifier: " + docid + " because it is not the latest revision (" + latestRevision + ")");
-								return false;
-							}
-							// otherwise we can continue
-						}
-					}
 					
-					// if docid exists, we need to update the revision
-					String originalIdentifier = docid;
-					boolean updatedId = false;
-					if (exists && isDirty) {
-						// get the next identifier in this series
-						docid = getNextIdentifier(docid);
-						Identifier newId = new Identifier();
-						newId.setValue(docid);
-					  entity.getSystemMetadata().setIdentifier(newId);
-						// save the old one for reference later
-						original_new_id_map.put(docid, originalIdentifier);
-						// save the revision history
-						getRevisionManager().setObsoletes(docid, originalIdentifier);
-						Identifier obsoletes = new Identifier();
-						obsoletes.setValue(originalIdentifier);
-						entity.getSystemMetadata().setObsoletes(obsoletes);
-						// we changed the identifier
-						updatedId = true;
-						Log.debug(30, "The identifier "
-								+ originalIdentifier
-								+ " exists and has unsaved data. The identifier for next revision is " + docid );
-
-					}
-
 					// save the data if it is new or has changes
 					boolean status = false;
-					if (isDirty || updatedId || !exists) {
+					if (isDirty || !exists) {
 						if (dataDestination.equals(DataPackageInterface.INCOMPLETE)) {
 							handleIncompleteDir(docid);
 						} else {
@@ -640,10 +524,8 @@ public class LocalDataStoreService extends DataStoreService
 						// save the SM
 						saveSystemMetadata(entity.getSystemMetadata());
 						//we need to update the identifier information in the DataPackage object
-						if(!exists ) {
+						if (!exists ) {
 						  addEntityIdToResourceMap(mdp, docid);
-						} else if (isDirty && updatedId) {
-						  mdp.updateIdentifier(originalIdentifier, docid);
 						}
 					}
 
@@ -663,8 +545,6 @@ public class LocalDataStoreService extends DataStoreService
 		}
 		return true;
 	}
-	
-	
 	
 	/**
 	 * Add an entity id to the resource map
@@ -1013,9 +893,12 @@ public class LocalDataStoreService extends DataStoreService
 		String identifier = null;
 		boolean inUse = false;
 		do {
-			lastid++;
 			identifier = fragment + "." + lastid;
 			inUse = exists(identifier);
+			if (!inUse) {
+				break;
+			}
+			lastid++;
 		} while (inUse);
 		
 		return lastid;
@@ -1163,25 +1046,6 @@ public class LocalDataStoreService extends DataStoreService
 			}
 		}
 		return returnVector;
-	}
-  
-  /**
-	 * Current implementation does not inspect the given identifier for a "fragment"
-	 * and will simply use a new identifier for the current scope.
-	 * @throws Exception 
-	 */
-	public String getNextIdentifier(String identifier) throws Exception {
-		// default the fragment to be the current scope
-		String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
-		
-		// TODO: can we glean anything about the current identifier?
-		if (false) {
-			// get a meaningful fragment?
-		}
-		
-		// all we can do now is generate an identifier....
-		String nextIdentifier = generateIdentifier(null, fragment);
-		return nextIdentifier;
 	}
 	
 	/**

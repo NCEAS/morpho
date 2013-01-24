@@ -77,7 +77,6 @@ import org.dspace.foresite.OREParserException;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
-import edu.ucsb.nceas.morpho.datapackage.DocidConflictHandler;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.DataONERevisionManager;
@@ -100,15 +99,6 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   public static final String MNODE_URL_ELEMENT_NAME = "dataone_mnode_baseurl";
   public static final String CNODE_URL_ELEMENT_NAME = "dataone_cnode_baseurl";
   private static final String PATHQUERY = "pathquery";
-  
-  /**
-   * TODO: the service should probably tell us what schemes it uses
-   * But for now we will hope for the best with these
-   */
-  private static final String DOI = "doi";
-  private static final String UUID = "uuid";
-  private static final String DEFAULT_IDENTIFIER_SCHEME = "default";
-  public static final String[] IDENTIFIER_SCHEMES = {DEFAULT_IDENTIFIER_SCHEME, DOI, UUID};
   
   /**
    * The currently configured Member Node
@@ -479,58 +469,6 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		if (identifiers != null && identifiers.size() > 0) {
 			serializeData(mdp);
 		}
-
-		// save metadata then
-		String identifier = metadataId.getValue();
-		boolean exists = exists(identifier);
-		// does the identifier exist already?
-		if (exists) {
-			Log.debug(30, "object already exists locally with this identifier: " + identifier);
-			Identifier originalIdentifier = new Identifier();
-			originalIdentifier.setValue(identifier);
-			// TODO: is this frame needed or can we just increase the revision silently?
-			DocidConflictHandler identifierConflictHandler = new DocidConflictHandler(identifier, DataPackageInterface.NETWORK);
-			String choice = identifierConflictHandler.showDialog();
-			if (choice != null) {
-				
-				String scheme = identifierConflictHandler.getScheme();
-				
-				if (choice.equals(DocidConflictHandler.INCREASEID)) {
-					// generate a new identifier - separate from the original chain
-					String scope = Morpho.thisStaticInstance.getProfile().get("scope", 0);
-					identifier = generateIdentifier(scheme, scope);
-				} else {
-					// get next identifier (really just the same as generating a new one) 
-					String nextIdentifier = getNextIdentifier(identifier);
-					Log.debug(30, "Original identifier: " + identifier + ", next revision: " + nextIdentifier);
-					// record this in revision manager
-					getRevisionManager().setObsoletes(nextIdentifier, identifier);
-					adp.getSystemMetadata().setObsoletes(originalIdentifier);
-					identifier = nextIdentifier;
-				}
-				
-				// set the new id
-				adp.setAccessionNumber(identifier);
-				adp.setPackageIDChanged(true);
-				
-				// make sure the mdp has the latest ADP object/identifier
-				mdp.updateIdentifier(originalIdentifier.getValue(), adp.getAccessionNumber());
-				
-			} else {
-				// canceled the save, so just return now
-			    adp.setSerializeMetacatSuccess(false);
-				return identifier;
-			}
-		} else {
-			Log.debug(30, "object identifier does not exist locally");
-			// since it is saving a new package, no need to do anything
-			adp.setAccessionNumber(identifier);
-			adp.setPackageIDChanged(false);
-
-		}
-		
-		// id may have changed not
-		metadataId = adp.getIdentifier();
 		
 		// now save
 		save(mdp.get(metadataId));
@@ -540,7 +478,6 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		if (identifiers == null || identifiers.size() == 1) {
 			return metadataId.getValue();
 		}
-
 		
 		// save ore document finally
 		Identifier oreId = new Identifier();
@@ -599,41 +536,15 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 					// check if the object exists already
 					boolean exists = exists(docid);
 
-					// if docid exists, we need to update the revision
-					String originalIdentifier = docid;
-					boolean updatedId = false;
-					if (exists && isDirty) {
-						// get the next identifier in this series
-						docid = getNextIdentifier(docid);
-						Identifier newId = new Identifier();
-            newId.setValue(docid);
-            entity.getSystemMetadata().setIdentifier(newId);
-						// save the revision history
-						getRevisionManager().setObsoletes(docid, originalIdentifier);
-						Identifier obsoletes = new Identifier();
-						obsoletes.setValue(originalIdentifier);
-						entity.getSystemMetadata().setObsoletes(obsoletes);
-						//update the package with new id information
-						mdp.updateIdentifier(originalIdentifier, docid);
-						// we changed the identifier
-						updatedId = true;
-						Log.debug(30, "The identifier "
-								+ originalIdentifier
-								+ " exists and has unsaved data. The identifier for next revision is " + docid );
-
-					}
-
 					// save the data if it is new or has changes
-					if (isDirty || updatedId || !exists) {
+					if (isDirty || !exists) {
 						save(entity);
 					}
 
-					 if(!exists ) {
-             mdp.addData(entity);
-             LocalDataStoreService.addEntityIdToResourceMap(mdp, docid);
-           } else if (isDirty && updatedId) {
-             mdp.updateIdentifier(originalIdentifier, docid);
-           }
+					 if (!exists ) {
+			             mdp.addData(entity);
+			             LocalDataStoreService.addEntityIdToResourceMap(mdp, docid);
+					 }
 					
 					// newDataFile must have worked; thus update the package
 					String urlinfo = DataLocation.URN_ROOT + docid;
@@ -853,23 +764,11 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 
 		// TODO: use DOI or ARK scheme
 		 if (scheme == null) {
-			 scheme = DEFAULT_IDENTIFIER_SCHEME;
+			 scheme = DataStoreServiceController.DEFAULT_IDENTIFIER_SCHEME;
 		 }
 		Identifier identifier = activeMNode.generateIdentifier(scheme, fragment);
 		return identifier.getValue();
 	}
-  
-  /**
-   * Generate identifier for next revision of given identifier
-   * NOTE: DataONE really does not have a notion of this
-   * @return
-   */
-  @Override
-  public String getNextIdentifier(String identifier) throws InvalidToken, ServiceFailure, NotAuthorized,
-                                            NotImplemented, InvalidRequest {
-	  String fragment = morpho.getProfile().get("scope", 0);
-	  return generateIdentifier(null, fragment);
-  }
   
   /** Send the given query to the Dataone member node, get back the XML InputStream
    * @param the SOLR query 

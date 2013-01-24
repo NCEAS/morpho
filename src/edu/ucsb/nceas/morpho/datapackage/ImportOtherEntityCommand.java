@@ -101,7 +101,14 @@ public class ImportOtherEntityCommand implements Command {
 
 				//save the data to local cache
 				File dataFile = new File(dataFilePath);
-				String nexDocId = saveDataFileAsTemp(dataFile, null);
+				String nexDocId = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
+				try {
+					Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(nexDocId, new FileInputStream(dataFile));
+				} catch (Exception e) {
+					 Log.debug(5, "Unable to save data file in pakage!");
+					 e.printStackTrace();
+					 return;
+				}
 				dataTableMap.put(OtherEntityPage.ONLINE_URL_XPATH, DataLocation.URN_ROOT + nexDocId);
 				
 				// put it in the dom
@@ -174,23 +181,5 @@ public class ImportOtherEntityCommand implements Command {
 		}
 		return false;
 	}
-	
-	  /*
-	   * increment revision or create a new id,
-	   * assign id to the data file and save it with that id
-	   */
-	  private String saveDataFileAsTemp(File f, String currentId) {
-	    if (currentId  == null) {
-	    	currentId = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
-	    } else {
-	    	currentId = DataStoreServiceController.getInstance().getNextIdentifier(currentId, DataPackageInterface.LOCAL);
-	    }
-	    try {
-	    	Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(currentId, new FileInputStream(f));
-	    } catch (Exception w) {
-	      Log.debug(1, "Error saving replacement data file!");
-	    }
-	    return currentId;
-	  }
 
 }

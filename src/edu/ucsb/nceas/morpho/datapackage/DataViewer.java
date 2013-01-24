@@ -62,6 +62,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.dataone.service.types.v1.Identifier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -1345,20 +1346,21 @@ public class DataViewer extends javax.swing.JPanel
 	*	Method to save the current data table after a change has been made. This is
 	*	equivalent to the user pressing the 'Update' button, except that a new window is
 	*	not opened
-  *
-  * changePackageId of 'true' means to increment the package id
+	*
+	* changePackageId of 'true' means to increment the package id
 	*/
 
 	public void saveCurrentTable(boolean changePackageId) {
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
-		if (adp!=null) {  // new eml2.0.0 handling
-			String id = "";
+		if (adp != null) { 
 			//System.out.println("the file id is "+dataFileId);
-			if (dataFileId == null) {
-				id = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
-			} else {
-				id = DataStoreServiceController.getInstance().getNextIdentifier(dataFileId, DataPackageInterface.LOCAL);
+			if (dataFileId != null) {
+				Identifier originalDataIdentifier = new Identifier();
+				originalDataIdentifier.setValue(dataFileId);
+				adp.getEntity(entityIndex).getSystemMetadata().setObsoletes(originalDataIdentifier);
 			}
+			// generate new identifier
+			String id = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
 			dataFileId = id;  // update to new value
 			//System.out.println("reset the dataFileId "+dataFileId);
 			
@@ -1377,17 +1379,25 @@ public class DataViewer extends javax.swing.JPanel
 
 			adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
 			adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + dataFileId);
+			// set the identifier for the entity now that it has been updated
+			Identifier dataIdentifier = new Identifier();
+			dataIdentifier.setValue(dataFileId);
+			adp.getEntity(entityIndex).getSystemMetadata().setIdentifier(dataIdentifier);
+			
+			// mark the package as unsaved
 			adp.setLocation("");
+			
+			// change the entire package id?
 			if (changePackageId) {
 			  String curid = adp.getAccessionNumber();
-			  String newid = null;
+			  String newid = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);;
 			  if (!curid.equals("")) {
-				  newid = DataStoreServiceController.getInstance().getNextIdentifier(curid, DataPackageInterface.LOCAL);
-			  } else {
-				  newid = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
+				  Identifier obsoletes = new Identifier();
+				  obsoletes.setValue(curid);
+				  adp.getSystemMetadata().setObsoletes(obsoletes );
 			  }
 			  adp.setAccessionNumber(newid);
-      }
+			}
 		}
 
 	}
