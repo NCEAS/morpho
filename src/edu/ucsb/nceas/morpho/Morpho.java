@@ -633,9 +633,6 @@ public class Morpho
 
    	        // Set up the User Interface controller (UIController)
              UIController controller = UIController.initialize(morpho);
-             
-            // Load the current profile and log in
-            morpho.loadProfile(morpho);
             
             // create the local data store
             morpho.setLocalDataStoreService(new LocalDataStoreService(morpho));
@@ -643,6 +640,9 @@ public class Morpho
             // create the remote DataONE data store
             morpho.setDataONEDataStoreService(new DataONEDataStoreService(morpho));
          
+            // Load the current profile and log in
+            morpho.loadProfile(morpho);
+            
             // Correct the invalid eml 201 documents
             CorrectEML201DocsFrame correctFrame = new CorrectEML201DocsFrame(morpho);
             correctFrame.doCorrection();
