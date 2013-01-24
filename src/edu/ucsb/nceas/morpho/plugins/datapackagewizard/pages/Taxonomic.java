@@ -1230,13 +1230,21 @@ public class Taxonomic extends AbstractUIPage {
       else if (name.equals("taxonRankName")) {
         String rankName = child.getFirstChild().getNodeValue();
         String rankVal = "";
+        boolean hasRankValue = false;
         Node value = child.getNextSibling();
         if (value != null && value.getNodeName().equals("taxonRankValue")) {
           rankVal = value.getFirstChild().getNodeValue();
+          hasRankValue = true;
           i++;
         }
         String cns[] = null;
-        Node curr = value;
+        Node curr = null;
+        if (hasRankValue) {
+            curr = value;
+        } else {
+            curr =child;
+        }
+        
         List cn = new ArrayList();
         int cnt = 0;
         while (true) {
@@ -1822,7 +1830,7 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
       List cr = (List)rows.get(0);
       String rank = (String) cr.get(0);
       int rankIndex = WizardSettings.getIndexOfTaxonRank(rank);
-      if(rankIndex == WizardSettings.NUMBER_OF_TAXON_RANKS - 1) {
+      //if(rankIndex == WizardSettings.NUMBER_OF_TAXON_RANKS - 1) {
 
         res.add(""); // for ancestor
         res.add(""); // for parent rank
@@ -1830,7 +1838,7 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
         res.add(rank);
         res.add((String)cr.get(1));
         res.add((String)cr.get(2));
-      } else {
+      /*} else {
 
         res.add(""); // for ancestor
         res.add(rank);
@@ -1838,7 +1846,7 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
         res.add(""); // for lowest rank
         res.add(""); // for lowest name
         res.add(""); // for lowest rank's common names
-      }
+      }*/
     }
 
     this.editedAlready = true;
