@@ -60,6 +60,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.dataone.client.auth.CertificateManager;
 import org.dataone.service.util.Constants;
 
+import com.apple.eawt.AboutHandler;
+import com.apple.eawt.AppEvent.AboutEvent;
+import com.apple.eawt.Application;
+
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
@@ -184,6 +188,7 @@ public class Morpho
         this.config = config;
         this.profile = null;
         checkJavaVersion();
+        initMacApplication();
 
         // Create the connection registry
         connectionRegistry = new Vector();
@@ -549,6 +554,30 @@ public class Morpho
                     +"later, which is available with the Morpho distribution");
             }
         }
+    }
+    
+    /**
+     * Alter the application bar to show Morpho's "about" window
+     * For cross-platform compilation, we include the stubs
+     * @see:
+     * https://developer.apple.com/library/mac/#/legacy/mac/library/samplecode/AppleJavaExtensions/Introduction/Intro.html
+     */
+    private void initMacApplication() {
+    	try {
+	    	Application a = Application.getApplication();
+	        AboutHandler handler = new AboutHandler() {
+				@Override
+				public void handleAbout(AboutEvent event) {
+	                SplashFrame sf = new SplashFrame();
+	                sf.setVisible(true);
+				}
+	        };
+			a.setAboutHandler(handler);
+		} catch (Exception e) {
+			// this only works in OS X and any errors can be ignored
+			Log.debug(20, "Cannot load OS X application customizations");
+			e.printStackTrace();
+		}
     }
 
     /**
