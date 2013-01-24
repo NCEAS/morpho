@@ -75,6 +75,7 @@ import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.dataone.EcpAuthentication;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
@@ -462,6 +463,15 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 			throw new IllegalActionException(
 					"DataONEDataStoreService.save - users is trying save an Morpho data package without setting metadata - the AbstractDatapackage");
 		}
+		
+		// check if we are logged in first
+		if (!isConnected()) {
+			EcpAuthentication.getInstance().establishConnection();
+		}
+		if (!isConnected()) {
+			return null;
+		}
+		
 		Identifier metadataId = adp.getIdentifier();
 
 		// save data objects first
