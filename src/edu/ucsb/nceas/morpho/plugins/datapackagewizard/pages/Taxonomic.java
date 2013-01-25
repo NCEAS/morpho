@@ -1829,8 +1829,10 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
       if(rows.size() == 0) return res;
       List cr = (List)rows.get(0);
       String rank = (String) cr.get(0);
+      String commonNames = (String)cr.get(2);
       int rankIndex = WizardSettings.getIndexOfTaxonRank(rank);
-      //if(rankIndex == WizardSettings.NUMBER_OF_TAXON_RANKS - 1) {
+      //if it has common name, we need move it to the place having column 
+      if((rankIndex == WizardSettings.NUMBER_OF_TAXON_RANKS - 1) || (commonNames != null && !commonNames.trim().equals(""))) {
 
         res.add(""); // for ancestor
         res.add(""); // for parent rank
@@ -1838,7 +1840,7 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
         res.add(rank);
         res.add((String)cr.get(1));
         res.add((String)cr.get(2));
-      /*} else {
+      } else {
 
         res.add(""); // for ancestor
         res.add(rank);
@@ -1846,7 +1848,7 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
         res.add(""); // for lowest rank
         res.add(""); // for lowest name
         res.add(""); // for lowest rank's common names
-      }*/
+      }
     }
 
     this.editedAlready = true;
