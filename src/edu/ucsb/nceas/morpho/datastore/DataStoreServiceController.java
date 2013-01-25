@@ -919,7 +919,7 @@ public class DataStoreServiceController {
 			try {
 				exists = Morpho.thisStaticInstance.getDataONEDataStoreService().exists(docid);
 			} catch (Exception e) {
-				Log.debug(5, e.getMessage());
+				Log.debug(5, "error looking up object");
 				e.printStackTrace();
 			}
 		}
