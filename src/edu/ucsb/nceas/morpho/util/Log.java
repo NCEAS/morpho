@@ -26,11 +26,17 @@
 
 package edu.ucsb.nceas.morpho.util;
 
+import java.awt.Dimension;
+
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 
 /**
  * The Log is a utility class for logging messages to stdout, stderr,
@@ -87,6 +93,17 @@ public class Log
         debugLevel = level;
         debug(20, "Debug level set to: " + debugLevel);
   }
+  
+  private static JPanel getScrollPanel(String message) {
+	  
+	  JPanel panel = WidgetFactory.makePanel(10);
+	  WidgetFactory.setPrefMaxSizes(panel, new Dimension(400, 200));
+	  JTextArea textArea = WidgetFactory.makeTextArea(message, 10, false);
+	  JScrollPane scrollPane = new JScrollPane(textArea);
+	  panel.add(scrollPane);
+	  
+	  return panel;
+  }
 
   /**
    * Print debugging messages based on severity level, where severity level 1
@@ -115,10 +132,10 @@ public class Log
 			  }
     	  }
         if (severity < 5) {
-          JOptionPane.showMessageDialog(frame, message, "Error!",
+          JOptionPane.showMessageDialog(frame, getScrollPanel(message), "Error!",
                                         JOptionPane.ERROR_MESSAGE);
         } else if (severity < 10) {
-          JOptionPane.showMessageDialog(frame, message, Language.getInstance().getMessage("Warning"),
+          JOptionPane.showMessageDialog(frame, getScrollPanel(message), Language.getInstance().getMessage("Warning"),
                                         JOptionPane.WARNING_MESSAGE);
         }
 
