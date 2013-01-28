@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -24,7 +25,15 @@ import java.util.zip.ZipOutputStream;
 
 import javax.swing.JOptionPane;
 
+import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.NodeReference;
+import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.Subject;
+import org.dataone.service.types.v1.SystemMetadata;
+import org.dataone.service.types.v1.util.ChecksumUtil;
+
+import com.ibm.icu.util.Calendar;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -724,6 +733,9 @@ public class DataStoreServiceController {
 
 		// handle identifier conflicts
 		mdp = resolveAllIdentifierConflicts(mdp, location);
+		
+		// make sure the size and checksum are correct
+		calculateStats(mdp);
 
 		if (location.equals(DataPackageInterface.NETWORK)) {
 			Morpho.thisStaticInstance.getDataONEDataStoreService().save(mdp);
@@ -747,6 +759,43 @@ public class DataStoreServiceController {
 		}
 	}
 	
+	/**
+	 * Calculates crucial SystemMetadata fields before saving. These include:
+	 * size (bytes)
+	 * checksum
+	 * formatId (in cases where the EML version was updated since initial open)
+	 * owner (login changed)
+	 * authoritative MN (switched MN preference)
+	 * @throws Exception
+	 */
+	private void calculateStats(MorphoDataPackage mdp) throws Exception {
+		// calculate and set crucial fields that may have changed
+		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		SystemMetadata sysmeta = adp.getSystemMetadata();
+		
+		// checksum and size
+		Checksum checksum = ChecksumUtil.checksum(adp.getData(), "MD5");
+		sysmeta.setChecksum(checksum);
+		BigInteger size = BigInteger.valueOf(adp.getData().length);
+		sysmeta.setSize(size);
+		sysmeta.setDateSysMetadataModified(Calendar.getInstance().getTime());
+		ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
+		formatId.setValue(adp.getXMLNamespace());	
+		sysmeta.setFormatId(formatId);
+		// set owner as the current user
+		Subject rightsHolder = new Subject();
+		rightsHolder.setValue(Morpho.thisStaticInstance.getUserName());
+		sysmeta.setRightsHolder(rightsHolder);
+				
+		// try to set authoritative MN
+		String authMnString = Morpho.thisStaticInstance.getDataONEDataStoreService().getActiveMNode().getNodeId();
+		if (authMnString != null) {
+			NodeReference authMn = new NodeReference();
+			authMn.setValue(authMnString);
+			sysmeta.setAuthoritativeMemberNode(authMn);
+		}
+
+	}
 	
 	private String resolveIdentifierConflict(String originalIdentifier, String location) throws Exception {
 
