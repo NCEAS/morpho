@@ -735,11 +735,10 @@ public class DataStoreServiceController {
 		}
 		
 		if (location.equals(DataPackageInterface.BOTH)) {
+			// save locally
+			Morpho.thisStaticInstance.getLocalDataStoreService().save(mdp);
 			// save to network
 			Morpho.thisStaticInstance.getDataONEDataStoreService().save(mdp);
-			// then save locally (Ids may have changed
-			Morpho.thisStaticInstance.getLocalDataStoreService().save(mdp);
-
 		}
 		
 		// special case
