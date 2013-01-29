@@ -993,5 +993,28 @@ public class DataStoreServiceController {
 		}
 		return success;
 	}
+	
+	/**
+	 * Set the AccessPolicy for the given object at the given location
+	 * @param d1Object
+	 * @param location
+	 * @return
+	 */
+	public boolean setAccessPolicy(D1Object d1Object, String location) throws Exception {
+		boolean success = false;
+		// try local first -- this should go off without a hitch
+		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
+			success = Morpho.thisStaticInstance.getLocalDataStoreService().setAccessPolicy(d1Object.getSystemMetadata());
+		}
+		if ((location.equals(DataPackageInterface.NETWORK)) || (location.equals(DataPackageInterface.BOTH))) {
+			success = success && Morpho.thisStaticInstance.getDataONEDataStoreService().setAccessPolicy(d1Object.getSystemMetadata());		
+		}
+		// TODO: allow this? save change locally so they are not lost?
+		if (location.equals(DataPackageInterface.TEMPLOCATION)) {
+			//success = Morpho.thisStaticInstance.getLocalDataStoreService().setAccessPolicy(d1Object.getSystemMetadata());
+			throw new Exception("Cannot set AccessPolicy on unsaved object");
+		}
+		return success;
+	}
 
 }

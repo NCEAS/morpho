@@ -44,8 +44,6 @@ public class AccessPolicyConverter {
 	 * @throws IOException
 	 */
 	public static AccessPolicy getAccessPolicy(AbstractDataPackage adp) throws SAXException, IOException {
-		// access policy
-		AccessPolicy accessPolicy = null;
 		// parse the EML
 		return getAccessPolicy(new InputSource(new ByteArrayInputStream(adp.getData())));
 		
@@ -69,7 +67,7 @@ public class AccessPolicyConverter {
 	/*
 	 * Get an AccessPolicy from an input source (xml format)
 	 */
-	private static AccessPolicy getAccessPolicy(InputSource source) throws SAXException, IOException {
+	public static AccessPolicy getAccessPolicy(InputSource source) throws SAXException, IOException {
 	  AccessPolicy accessPolicy = null;
 	  DocInfoHandler dih = new DocInfoHandler();
     XMLReader docinfoParser = XMLUtilities.initParser(dih, null);

@@ -945,6 +945,42 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	}
 	
 	/**
+	 * Set the AccessPolicy on the CN 
+	 * Note that this can fail if called before the CN is able to synchronize
+	 * content with the MN that hosts the original object.
+	 * In this case, the call will have to be made again at a later time.
+	 * @param sysMeta the SystemMetadata that contains the AccessPolicy to be used
+	 * @param sysMeta
+	 * @return
+	 * @throws NotImplemented 
+	 * @throws NotFound 
+	 * @throws NotAuthorized 
+	 * @throws ServiceFailure 
+	 * @throws InvalidToken 
+	 * @throws VersionMismatch 
+	 * @throws InvalidRequest 
+	 */
+	public boolean setAccessPolicy(SystemMetadata sysMeta) throws InvalidToken, ServiceFailure, NotAuthorized, NotFound, NotImplemented, InvalidRequest, VersionMismatch {
+		boolean result = false;
+		String cnURL = getCNodeURL();
+		CNode cNode = new CNode(cnURL);
+		
+		// TODO: have a better refresh/merge solution
+		long serialVersion = 0;
+		if (sysMeta.getSerialVersion() != null) {
+			serialVersion = sysMeta.getSerialVersion().longValue();
+		} else {
+			// get the latest serialVersion from CN
+			Log.debug(20, "Looking up SystemMetadata.serialVersion from CN before setting ReplicationPolicy for: " + sysMeta.getIdentifier().getValue());
+			SystemMetadata cnSysMeta = cNode.getSystemMetadata(sysMeta.getIdentifier());
+			serialVersion = cnSysMeta.getSerialVersion().longValue();
+		}
+		result = cNode.setAccessPolicy(sysMeta.getIdentifier(), sysMeta.getAccessPolicy(), serialVersion);
+		
+		return result;
+	}
+	
+	/**
 	 * Get the all identity information from the specified cnURL. If the cnURL is null,
 	 * the configured CN will be used.
 	 * @param cnURL

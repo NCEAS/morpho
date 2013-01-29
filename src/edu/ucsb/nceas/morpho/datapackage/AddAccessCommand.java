@@ -33,14 +33,18 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.dataone.service.exceptions.NotFound;
+import org.dataone.service.exceptions.VersionMismatch;
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -102,28 +106,60 @@ public class AddAccessCommand
   
   }
   
-  /**
-   * Method from DataPackageWizardListener.
-   * When correction wizard finished, it will show the dialog.
-   */
-  public void wizardComplete(Node newDOM, String autoSavedID)
-  {
-	  mdp = UIController.getInstance().getCurrentAbstractDataPackage();
+	/**
+	 * Method from DataPackageWizardListener. When correction wizard finished,
+	 * it will show the dialog.
+	 */
+	public void wizardComplete(Node newDOM, String autoSavedID) {
+		mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
-	    if (showAccessDialog()) {
+		if (showAccessDialog()) {
+			
+			AbstractDataPackage adp = mdp.getAbstractDataPackage();
+			String identifier = adp.getAccessionNumber();
+			String message = "Could not set Access Policy for " + identifier;
+			boolean success = false;
+			try {
 
-	      try {
-	        insertAccess();
-	        synchSystemMetadata();
-	        UIController.showNewPackage(mdp);
-	      }
-	      catch (Exception w) {
-	        Log.debug(15, "Exception trying to modify access: " + w);
-	        w.printStackTrace();
-	        Log.debug(5, "Unable to add access details!");
-	      }
-	    }
-  }
+				// get the access rule from the page
+				Node accessNode = getAccessPageNode();
+				// set the access policy in the system metadata
+				synchSystemMetadata(accessNode);
+				
+				// save the access policy to the correct location
+				success = DataStoreServiceController.getInstance().setAccessPolicy(adp, adp.getLocation());
+				message = "Successfully set Access Policy for " + identifier;
+			} catch (NotFound e) {
+				message = identifier + " not found on the Coordinating Node. Cannot set Access Policy until it has been synchronized. Please try again later.";
+				e.printStackTrace();
+				success = false;
+			} catch (VersionMismatch e) {
+				message = e.getMessage();
+				//message = identifier + " exists on the Coordinating Node with a newer serialVersion. Please try again later.";
+				e.printStackTrace();
+				success = false;
+			} catch (Exception w) {
+				message = "Error modifying Access Policy: " + w.getMessage();
+				w.printStackTrace();
+				success = false;
+			}
+				
+			// show message 
+			Log.debug(5, message);
+			
+			// refresh if we changed the EML
+			if (success) {
+				// edit EML once if there is an access block for it
+				Node existingAccess = adp.getSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
+				if (existingAccess !=  null) {
+					// delete existing access from EML tree
+					adp.deleteSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
+					// refresh window and show that it is unsaved
+					UIController.showNewPackage(mdp);
+				}
+			}
+		}
+	}
   
   /**
    * Method from DataPackageWizardListener. Do nothing.
@@ -149,12 +185,10 @@ public class AddAccessCommand
     DataPackageWizardInterface dpwPlugin = null;
     try {
       sc = ServiceController.getInstance();
-      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(
-          DataPackageWizardInterface.class);
+      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(DataPackageWizardInterface.class);
 
     }
     catch (ServiceNotHandledException se) {
-
       Log.debug(6, se.getMessage());
       se.printStackTrace();
     }
@@ -205,63 +239,51 @@ public class AddAccessCommand
     return (dialog.USER_RESPONSE == ModalDialog.OK_OPTION);
   }
 
-  /**
-   * save the access rules defined in the EML into the SM
-   * @throws SAXException
-   * @throws IOException
-   */
-	private void synchSystemMetadata() throws SAXException, IOException {
+	/**
+	 * save the access rules defined in the EML into the SM
+	 * 
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	private void synchSystemMetadata(Node accessNode) throws SAXException, IOException {
+		InputSource accessNodeInputSource = new InputSource(XMLUtilities.getDOMTreeAsReader(accessNode, true));
+		AccessPolicy accessPolicy = AccessPolicyConverter.getAccessPolicy(accessNodeInputSource);
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
-		AccessPolicy accessPolicy = AccessPolicyConverter.getAccessPolicy(adp);
 		adp.getSystemMetadata().setAccessPolicy(accessPolicy);
 	}
   
-  private void insertAccess() {
+	private Node getAccessPageNode() {
 
-    OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
-    AbstractDataPackage adp = mdp.getAbstractDataPackage();
-    Log.debug(45, "\n insertAccess() Got access details from Access page -\n"
-              + map);
+		Node accessRoot = null;
+		OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
+		Log.debug(45, "\n insertAccess() Got access details from Access page -\n"
+						+ map);
 
-    if (map == null || map.isEmpty()) {
-    	Log.debug(30, "removing access rules from top level!");
-    	adp.deleteSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
-        return;
-    }
+		if (map == null || map.isEmpty()) {
+			Log.debug(30, "removing access rules from top level!");
+			return accessRoot;
+		}
 
-    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-    Document doc = impl.createDocument("", "access", null);
+		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+		Document doc = impl.createDocument("", "access", null);
+		accessRoot = doc.getDocumentElement();
 
-    accessRoot = doc.getDocumentElement();
+		try {
+			XMLUtilities.getXPathMapAsDOMTree(map, accessRoot);
+		} catch (TransformerException w) {
+			Log.debug(5, "Unable to add access details to package!");
+			Log.debug(
+					15,
+					"TransformerException ("
+							+ w
+							+ ") calling "
+							+ "XMLUtilities.getXPathMapAsDOMTree(map, accessRoot) with \n"
+							+ "map = " + map + " and accessRoot = "
+							+ accessRoot);
+		}
+		return accessRoot;
+	}
 
-    try {
-      XMLUtilities.getXPathMapAsDOMTree(map, accessRoot);
-
-    }
-    catch (TransformerException w) {
-      Log.debug(5, "Unable to add access details to package!");
-      Log.debug(15, "TransformerException (" + w + ") calling "
-                + "XMLUtilities.getXPathMapAsDOMTree(map, accessRoot) with \n"
-                + "map = " + map
-                + " and accessRoot = " + accessRoot);
-      return;
-    }
-    //delete old access from datapackage
-    adp.deleteSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
-
-    // add to the datapackage
-    Node check = adp.insertSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, accessRoot,
-                                   0);
-
-    if (check != null) {
-      Log.debug(45, "added new access details to package...");
-    }
-    else {
-      Log.debug(5, "** ERROR: Unable to add new access details to package **");
-    }
-  }
-
-  private Node accessRoot;
-  private MorphoDataPackage mdp;
-  private AbstractUIPage accessPage;
+	private MorphoDataPackage mdp;
+	private AbstractUIPage accessPage;
 }

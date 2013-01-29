@@ -1204,7 +1204,7 @@ public class LocalDataStoreService extends DataStoreService
 	    Log.debug(20, "done");
 	  }
 
-	  /**
+	/**
 	 * Saves the SystemMetadata.ReplicationPolicy locally
 	 * @param sysMeta the SystemMetadata that contains the ReplicationPolicy to be saved
 	 * @return true if successful
@@ -1214,7 +1214,24 @@ public class LocalDataStoreService extends DataStoreService
 		try {
 			result = saveSystemMetadata(sysMeta);
 		} catch (Exception e) {
-			Log.debug(10, "Could not set replication policy: " + e.getMessage());
+			Log.debug(10, "Could not set Replication Policy: " + e.getMessage());
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
+
+	/**
+	 * Saves the SystemMetadata.AccessPolicy locally
+	 * @param sysMeta the SystemMetadata that contains the AccessPolicy to be saved
+	 * @return true if successful
+	 */
+	public boolean setAccessPolicy(SystemMetadata sysMeta) {
+		boolean result = false;
+		try {
+			result = saveSystemMetadata(sysMeta);
+		} catch (Exception e) {
+			Log.debug(10, "Could not set Access Policy: " + e.getMessage());
 			e.printStackTrace();
 			result = false;
 		}
