@@ -30,10 +30,13 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
+import org.dataone.service.exceptions.NotFound;
+import org.dataone.service.exceptions.VersionMismatch;
 import org.dataone.service.types.v1.ReplicationPolicy;
 import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -94,20 +97,41 @@ public class EditReplicationPolicyCommand implements Command,
 
 		if (showDialog()) {
 
+			boolean success = false;
+			String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
+			String message = "Unable to edit Replication Policy for " + identifier;
 			try {
 				// set the replication policy in the SM
 				ReplicationPolicy replicationPolicy = replicationPolicyPage.getReplicationPolicy();
 				mdp.getAbstractDataPackage().getSystemMetadata().setReplicationPolicy(replicationPolicy);
-				//indicate that this is a change to the package so it can be saved
-				// TODO: save SM independently from EML file
-				mdp.getAbstractDataPackage().setLocation("");
-				UIController.showNewPackage(mdp);
+
+				// save SM independently from EML file
+				success = DataStoreServiceController.getInstance().setReplicationPolicy(mdp.getAbstractDataPackage(), mdp.getAbstractDataPackage().getLocation());
+				
+			} catch (NotFound e) {
+				message = identifier + " not found on the Coordinating Node. Cannot set Replication Policy until it has been synchronized. Please try again later.";
+				e.printStackTrace();
+				success = false;
+			} catch (VersionMismatch e) {
+				message = e.getMessage();
+				//message = identifier + " exists on the Coordinating Node with a newer serialVersion. Please try again later.";
+				e.printStackTrace();
+				success = false;
 			} catch (Exception w) {
-				Log.debug(15, "Exception trying to modify replication policy: "
-						+ w);
+				message = "Error modifying replication policy: " + w.getMessage();
 				w.printStackTrace();
-				Log.debug(5, "Unable to add replication policy details!");
+				success = false;
 			}
+			
+			if (success) {
+				message = "Successfully set Replication Policy for " + identifier;
+			}
+			Log.debug(5, message);
+			
+			//indicate that this is a change to the package so it can be saved
+			//mdp.getAbstractDataPackage().setLocation("");
+			//UIController.showNewPackage(mdp);
+			
 		}
 	}
 

@@ -1203,4 +1203,21 @@ public class LocalDataStoreService extends DataStoreService
 	    }
 	    Log.debug(20, "done");
 	  }
+
+	  /**
+	 * Saves the SystemMetadata.ReplicationPolicy locally
+	 * @param sysMeta the SystemMetadata that contains the ReplicationPolicy to be saved
+	 * @return true if successful
+	 */
+	public boolean setReplicationPolicy(SystemMetadata sysMeta) {
+		boolean result = false;
+		try {
+			result = saveSystemMetadata(sysMeta);
+		} catch (Exception e) {
+			Log.debug(10, "Could not set replication policy: " + e.getMessage());
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
 }

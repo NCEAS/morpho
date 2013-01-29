@@ -25,6 +25,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.swing.JOptionPane;
 
+import org.dataone.client.D1Object;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.NodeReference;
@@ -973,6 +974,24 @@ public class DataStoreServiceController {
 		}
 		return exists;
 		
+	}
+
+	/**
+	 * Set the ReplicationPolicy for the given object at the given location
+	 * @param d1Object
+	 * @param location
+	 * @return
+	 */
+	public boolean setReplicationPolicy(D1Object d1Object, String location) throws Exception {
+		boolean success = false;
+		// try local first -- this should go off without a hitch
+		if ((location .equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
+			success = Morpho.thisStaticInstance.getLocalDataStoreService().setReplicationPolicy(d1Object.getSystemMetadata());
+		}
+		if ((location .equals(DataPackageInterface.NETWORK)) || (location.equals(DataPackageInterface.BOTH))) {
+			success = success && Morpho.thisStaticInstance.getDataONEDataStoreService().setReplicationPolicy(d1Object.getSystemMetadata());		
+		}
+		return success;
 	}
 
 }

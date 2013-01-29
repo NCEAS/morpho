@@ -61,6 +61,7 @@ import org.dataone.service.exceptions.NotFound;
 import org.dataone.service.exceptions.NotImplemented;
 import org.dataone.service.exceptions.ServiceFailure;
 import org.dataone.service.exceptions.UnsupportedType;
+import org.dataone.service.exceptions.VersionMismatch;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.Node;
@@ -906,6 +907,41 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		}
 		return null;
 		
+	}
+	
+	/**
+	 * Set the ReplicationPolicy CN 
+	 * Note that this can fail if called before the CN is able to synchronize
+	 * content with the MN that hosts the original object.
+	 * In this case, the call will have to be made again at a later time.
+	 * @param sysMeta the SystemMetadata that contains the ReplicationPolicy to be used
+	 * @return true if successful
+	 * @throws VersionMismatch 
+	 * @throws InvalidToken 
+	 * @throws InvalidRequest 
+	 * @throws ServiceFailure 
+	 * @throws NotAuthorized 
+	 * @throws NotFound 
+	 * @throws NotImplemented 
+	 */
+	public boolean setReplicationPolicy(SystemMetadata sysMeta) throws NotImplemented, NotFound, NotAuthorized, ServiceFailure, InvalidRequest, InvalidToken, VersionMismatch {
+		boolean result = false;
+		String cnURL = getCNodeURL();
+		CNode cNode = new CNode(cnURL);
+		
+		// TODO: have a better refresh/merge solution
+		long serialVersion = 0;
+		if (sysMeta.getSerialVersion() != null) {
+			serialVersion = sysMeta.getSerialVersion().longValue();
+		} else {
+			// get the latest serialVersion from CN
+			Log.debug(20, "Looking up SystemMetadata.serialVersion from CN before setting ReplicationPolicy for: " + sysMeta.getIdentifier().getValue());
+			SystemMetadata cnSysMeta = cNode.getSystemMetadata(sysMeta.getIdentifier());
+			serialVersion = cnSysMeta.getSerialVersion().longValue();
+		}
+		result = cNode.setReplicationPolicy(sysMeta.getIdentifier(), sysMeta.getReplicationPolicy(), serialVersion);
+		
+		return result;
 	}
 	
 	/**
