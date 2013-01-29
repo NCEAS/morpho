@@ -30,15 +30,21 @@ import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.dataone.service.exceptions.NotFound;
+import org.dataone.service.exceptions.VersionMismatch;
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 //import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
@@ -60,9 +66,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  * Class to handle add access command
  */
 public class AddEntityAccessCommand implements Command, DataPackageWizardListener {
-
-	// generic name for lookup in eml listings
-	private final String DATAPACKAGE_ACCESS_GENERIC_NAME = "entityAccess";
 
 	// generic name for lookup in eml listings
 	private final String ACCESS_SUBTREE_NODENAME = "/access/";
@@ -98,7 +101,6 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 				return;
 		 }
 
-		
 	}
 	
 	/**
@@ -123,17 +125,74 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 			mdp = UIController.getInstance().getCurrentAbstractDataPackage();
 
 			if (showAccessDialog(entityIndex)) {
-
+				
+				AbstractDataPackage adp = mdp.getAbstractDataPackage();
+				Entity entity = adp.getEntity(entityIndex);
+				String identifier = entity.getIdentifier().getValue();
+				String message = "Could not set Access Policy for " + identifier;
+				boolean success = false;
 				try {
-					insertAccess(entityIndex);
-					UIController.showNewPackage(mdp);
+					// get the access rule from the page
+					Node accessNode = getAccessPageNode(entityIndex);
+					
+					// set the access policy in the system metadata
+					if (accessNode != null) {
+						synchSystemMetadata(accessNode, entity);
+					} else {
+						// clear out the access policy if the page has no rules
+						entity.getSystemMetadata().setAccessPolicy(null);
+						// TODO: distinguish between this and "inheriting" access
+					}
+					
+					// save the access policy to the correct location
+					success = DataStoreServiceController.getInstance().setAccessPolicy(entity, adp.getLocation());
+					message = "Successfully set Access Policy for " + identifier;
+					
+				} catch (NotFound e) {
+					message = identifier + " not found on the Coordinating Node. Cannot set Access Policy until it has been synchronized. Please try again later.";
+					e.printStackTrace();
+					success = false;
+				} catch (VersionMismatch e) {
+					message = e.getMessage();
+					//message = identifier + " exists on the Coordinating Node with a newer serialVersion. Please try again later.";
+					e.printStackTrace();
+					success = false;
 				} catch (Exception w) {
-					Log.debug(15, "Exception trying to modify access DOM: " + w);
+					message = "Error modifying Access Policy: " + w.getMessage();
 					w.printStackTrace();
-					Log.debug(5, "Unable to add access details!");
+					success = false;
+				}	
+				
+				// show message 
+				Log.debug(5, message);
+				
+				// refresh if we changed the EML
+				if (success) {
+					// edit EML once if there is an access block for it
+					Node existingAccess = adp.getEntityAccess(entityIndex, 0, 0);
+					if (existingAccess !=  null) {
+						// delete existing access from EML
+						adp.setEntityAccess(entityIndex, 0, 0, null);
+						// mark as unsaved because we have edited the EML
+						UIController.showNewPackage(mdp);
+					}
 				}
+
 			}
 	  }
+	  
+	/**
+	 * save the access rules defined in the EML access block into the SM
+	 * for the given entity
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	private void synchSystemMetadata(Node accessNode, Entity entity)
+			throws SAXException, IOException {
+		InputSource accessNodeInputSource = new InputSource(XMLUtilities.getDOMTreeAsReader(accessNode, true));
+		AccessPolicy accessPolicy = AccessPolicyConverter.getAccessPolicy(accessNodeInputSource);
+		entity.getSystemMetadata().setAccessPolicy(accessPolicy);
+	}
 	  
 	  /**
 	   * Method from DataPackageWizardListener. Do nothing.
@@ -223,17 +282,15 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 		return (dialog.USER_RESPONSE == ModalDialog.OK_OPTION);
 	}
 
-	private void insertAccess(int entityIndex) {
+	private Node getAccessPageNode(int entityIndex) {
 
+		Node accessRoot = null;
 		OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
-		AbstractDataPackage adp = mdp.getAbstractDataPackage();
-		Log.debug(45,
-				"\n insertAccess() Got access details from Access page");
+		Log.debug(45,"\n getAccessPageNode() Got access details from Access page");
 
 		if (map == null || map.isEmpty()) {
-			Log.debug(30, "removing access rules from data entity!");
-			adp.setEntityAccess(entityIndex, 0, 0, null);
-			return;
+			Log.debug(30, "No access rules for data entity!");
+			return accessRoot;
 		}
 
 		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
@@ -243,28 +300,23 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 
 		try {
 			XMLUtilities.getXPathMapAsDOMTree(map, accessRoot);
-
 		} catch (TransformerException w) {
 			Log.debug(5, "Unable to add access details to package!");
-			Log
-					.debug(
-							15,
-							"TransformerException ("
-									+ w
-									+ ") calling "
-									+ "XMLUtilities.getXPathMapAsDOMTree(map, accessRoot) with \n"
-									+ "map = " + map + " and accessRoot = "
-									+ accessRoot);
-			return;
+			Log.debug(15,
+						"TransformerException ("
+						+ w
+						+ ") calling "
+						+ "XMLUtilities.getXPathMapAsDOMTree(map, accessRoot) with \n"
+						+ "map = " + map + " and accessRoot = "
+						+ accessRoot);
+			return accessRoot;
 		}
 		
-		adp.setEntityAccess(entityIndex, 0, 0, accessRoot);
-
 		Log.debug(45, "added new access details to package...");
 		
+		return accessRoot;
 	}
 
-	private Node accessRoot;
 	private MorphoDataPackage mdp;
 	private AbstractUIPage accessPage;
 }

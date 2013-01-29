@@ -3419,8 +3419,12 @@ public abstract class AbstractDataPackage extends MetadataObject
   /**
    *  This method returns the access for data for the indexed entity,
    *  physical object, and distribution object. 
+   *  @deprecated This should be used only to find EML with embedded 
+   *  access rules in order to remove those rules from the EML.
+   *  Note that SystemMetadata.AccessPolicy is the definitive source 
+   *  for access control rules.
    */
-  /*public Node getEntityAccess(int entityIndex, int physicalIndex,
+  public Node getEntityAccess(int entityIndex, int physicalIndex,
                                    int distIndex) {
     Node temp = null;
     Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
@@ -3445,7 +3449,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(50, "exception in getting entity access: " + w.toString());
     }
     return temp;
-  }*/
+  }
   
   /**
    *  This method sets the access for data for the indexed entity,
