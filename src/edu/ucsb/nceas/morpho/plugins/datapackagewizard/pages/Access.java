@@ -77,7 +77,6 @@ public class Access
   protected boolean isEntity = false;
 
   private boolean publicReadAccess = true;
-  private boolean inherit = false;
   private String[] buttonsText = new String[] {
       /*"Yes, give read-only access to public."*/ Language.getInstance().getMessage("Access.PublicYes"),
       /*"No."*/ Language.getInstance().getMessage("No")
@@ -126,12 +125,10 @@ public class Access
 
     JLabel desc = null; 
     if (isEntity) {	
-    	inherit = true;
     	buttonsText = 
     		new String[] {
     		      /*"Yes, give read-only access to public."*/ Language.getInstance().getMessage("Access.PublicYes"),
-    		      /*"No."*/ Language.getInstance().getMessage("No"),
-    		      /*"Same as Metadata."*/ Language.getInstance().getMessage("SameAsMetadata")
+    		      /*"No."*/ Language.getInstance().getMessage("No")
     		  };
     	desc =
     		WidgetFactory.makeHTMLLabel(
@@ -156,17 +153,11 @@ public class Access
         Log.debug(45, "got radiobutton command: " + e.getActionCommand());
         if (e.getActionCommand().equals(buttonsText[0])) {
           publicReadAccess = true;
-          inherit = false;
         }
         if (e.getActionCommand().equals(buttonsText[1])) {
           publicReadAccess = false;
-          inherit = false;
         }
-        if (isEntity) {
-	        if (e.getActionCommand().equals(buttonsText[2])) {
-	            inherit = true;
-            }
-        }
+        
         //force the order section to update
         setOrderValue(orderValue);
       }
@@ -423,11 +414,6 @@ public class Access
     OrderedMap nextNVPMap = null;
     AccessPage nextAccessPage = null;
     boolean addedAuthSystem = false;
-
-    if (isEntity && inherit) {
-    	//we are removing everything
-    	return null;
-    }
     
     List rowLists = accessList.getListOfRowLists();
     
@@ -561,22 +547,11 @@ public class Access
 	  JRadioButton denyReadAccess = 
 		  ( (JRadioButton) (innerPanel.getComponent(1)));
 	  
-	  if (isEntity) {  
-		  JRadioButton inheritAccess = 
-			  ( (JRadioButton) (innerPanel.getComponent(2)));
-		  allowReadAccess.setSelected(false);
-		  denyReadAccess.setSelected(false);
-		  inheritAccess.setSelected(true);
-		  publicReadAccess = false;
-		  inherit = true;
-	  }
-	  else {
-		  allowReadAccess.setSelected(false);
-		  denyReadAccess.setSelected(true);
-		  publicReadAccess = false;
-		  inherit = false;
-	  }
-    accessList.removeAllRows();
+	  allowReadAccess.setSelected(false);
+	  denyReadAccess.setSelected(true);
+	  publicReadAccess = false;
+	  
+	  accessList.removeAllRows();
   }
 
   OrderedMap publicMap = null;
@@ -790,12 +765,10 @@ public class Access
             allowReadAccess.setSelected(true);
             denyReadAccess.setSelected(false);
             publicReadAccess = true;
-            inherit = false;
           } else {
             allowReadAccess.setSelected(false);
             denyReadAccess.setSelected(true);
             publicReadAccess = false;
-            inherit = false;
           }
 
         } else if (nextVal.compareTo("public") == 0) {
@@ -818,7 +791,6 @@ public class Access
         allowReadAccess.setSelected(false);
         denyReadAccess.setSelected(true);
         publicReadAccess = false;
-        inherit = false;
     }
 
     //force the order to refresh
@@ -889,7 +861,6 @@ public class Access
 		 allowFirst.setSelected(false);
 		 denyFirst.setSelected(true);
 	  }*/
-	  allowFirst.setEnabled( !(inherit && isEntity) );
 	  //denyFirst.setEnabled(false );
   }
   private int getFirstPredicate(String xpath, String firstSegment) {
