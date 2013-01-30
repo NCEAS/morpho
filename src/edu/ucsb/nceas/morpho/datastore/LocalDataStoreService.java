@@ -200,6 +200,25 @@ public class LocalDataStoreService extends DataStoreService
 		return file;
 	}
   
+  
+  /**
+   * Open a file from cache directory.
+   * @param identifier
+   * @return
+   * @throws FileNotFoundException
+   */
+  public File openCacheFile(String identifier) throws FileNotFoundException {
+      File file = null;
+      try {
+          file = FileSystemDataStore.getInstance(getCacheDir()).get(identifier);
+      } catch (Exception e) {
+          FileNotFoundException fnfe = new FileNotFoundException(e.getMessage());
+          fnfe.initCause(e);
+          throw fnfe;
+      }
+      return file;
+  }
+  
   /**
    * opens a file with the given name from incomplete dir.  the name should be in the form
    * scope.accnum where the scope is unique to this machine.  The file will
@@ -300,6 +319,14 @@ public class LocalDataStoreService extends DataStoreService
   public File saveTempDataFile(String name, InputStream file)
   {
     return saveFile(name, file, getTempDir());
+  }
+  
+  /**
+   * If InputStream is null, it will create empty file in the cache.
+   */
+  public File saveCacheDataFile(String name, InputStream file)
+  {
+    return saveFile(name, file, getCacheDir());
   }
   
   /**
