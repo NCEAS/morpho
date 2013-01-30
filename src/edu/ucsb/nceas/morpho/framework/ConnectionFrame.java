@@ -230,9 +230,8 @@ public class ConnectionFrame  extends JDialog
 		connectButton.setEnabled(!connected);
 		cancelButton.setEnabled(!connected);
 		passwordTextField.setEnabled(!connected);
-		if (passwordTextField.isEnabled()) {
-			passwordTextField.requestFocus();
-		}
+		userName.requestFocus();
+		
 	}
   
   /**
