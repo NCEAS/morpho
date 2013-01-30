@@ -66,7 +66,7 @@ public class AddAccessCommand
     implements Command, DataPackageWizardListener {
 
   //generic name for lookup in eml listings
-  private final String DATAPACKAGE_ACCESS_GENERIC_NAME = "access";
+  public static final String DATAPACKAGE_ACCESS_GENERIC_NAME = "access";
 
   //generic name for lookup in eml listings
   private final String ACCESS_SUBTREE_NODENAME = "/access/";

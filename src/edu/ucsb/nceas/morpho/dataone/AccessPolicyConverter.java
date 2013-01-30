@@ -2,7 +2,6 @@ package edu.ucsb.nceas.morpho.dataone;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -12,16 +11,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xerces.dom.DOMImplementationImpl;
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.AccessRule;
 import org.dataone.service.types.v1.Permission;
 import org.dataone.service.types.v1.Subject;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -144,6 +144,23 @@ public class AccessPolicyConverter {
 	    }
 	  }
 	  return map;
+	}
+	
+	public AccessPolicy getAccessPolicyFromOrderedMap(OrderedMap map) throws DOMException, TransformerException, IOException, SAXException {
+
+		AccessPolicy accessPolicy = null;
+
+		if (map != null && map.isEmpty()) {
+			
+			DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+			Document doc = impl.createDocument("", "access", null);
+			Node accessRoot = doc.getDocumentElement();
+	
+			XMLUtilities.getXPathMapAsDOMTree(map, accessRoot);
+			accessPolicy = getAccessPolicy(accessRoot);
+		}
+		
+		return accessPolicy;
 	}
 	
 	/**

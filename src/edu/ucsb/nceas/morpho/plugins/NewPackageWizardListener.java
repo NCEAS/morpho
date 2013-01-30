@@ -27,9 +27,13 @@
  */
 
 package edu.ucsb.nceas.morpho.plugins;
+
+import org.dataone.service.types.v1.AccessPolicy;
 import org.w3c.dom.Node;
 
+import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AddAccessCommand;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -72,6 +76,18 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
       Log.debug(30, "AbstractDataPackage complete");
       adp.setAutoSavedID(autoSavedID);
       adp.setLocation(DataPackageInterface.TEMPLOCATION);
+      
+	try {
+		// make sure to take out the access section from EML
+		// see: http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5829
+		AccessPolicy accessPolicy= AccessPolicyConverter.getAccessPolicy(adp);
+		adp.getSystemMetadata().setAccessPolicy(accessPolicy);
+		adp.deleteSubtree(AddAccessCommand.DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
+	} catch (Exception e) {
+		Log.debug(10, "Could not transfer access block to AccessPolicy: " + e.getMessage());
+		e.printStackTrace();
+	}
+
       MorphoDataPackage mdp = new MorphoDataPackage();
       mdp.setAbstractDataPackage(adp);
       openMorphoFrameForDataPackage(mdp);
