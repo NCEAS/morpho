@@ -1354,14 +1354,16 @@ public class DataViewer extends javax.swing.JPanel
 
 	public void saveCurrentTable(boolean changePackageId) {
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
-		D1Object d1Object = null;
+		//D1Object d1Object = null;
+		Entity entity = null;
 		if (adp != null) { 
 			//System.out.println("the file id is "+dataFileId);
 			if (dataFileId != null) {
 				Identifier originalDataIdentifier = new Identifier();
 				originalDataIdentifier.setValue(dataFileId);
-				d1Object = mdp.get(originalDataIdentifier);
-				adp.getEntity(entityIndex).getSystemMetadata().setObsoletes(originalDataIdentifier);
+				//d1Object = mdp.get(originalDataIdentifier);
+				entity = adp.getEntity(entityIndex);
+				entity.getSystemMetadata().setObsoletes(originalDataIdentifier);
 			}
 			// generate new identifier
 			String id = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
@@ -1371,9 +1373,9 @@ public class DataViewer extends javax.swing.JPanel
 			// use null for the input stream since we write to the file in the next step
 			File newDataFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(id, null);
 			ptm.getPersistentVector().writeObjects(newDataFile);
-			if(d1Object != null) {
+			if(entity != null) {
 			    try {
-			        d1Object.setData(IOUtils.toByteArray(new FileInputStream(newDataFile)));
+			        entity.setData(IOUtils.toByteArray(new FileInputStream(newDataFile)));
 			    } catch (Exception e) {
 			        Log.debug(15, e.getMessage());
 			    }

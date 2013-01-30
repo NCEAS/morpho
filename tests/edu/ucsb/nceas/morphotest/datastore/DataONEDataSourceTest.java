@@ -75,7 +75,7 @@ public class DataONEDataSourceTest extends MorphoTestCase {
     }
     
     public void testReadAndSet() throws Exception {
-       
+        //read data from the dataone mnode.
         MNode node = new MNode(MNURL);
         Identifier id = new Identifier();
         id.setValue(ID);
