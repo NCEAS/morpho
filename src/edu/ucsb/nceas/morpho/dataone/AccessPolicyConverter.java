@@ -146,11 +146,11 @@ public class AccessPolicyConverter {
 	  return map;
 	}
 	
-	public AccessPolicy getAccessPolicyFromOrderedMap(OrderedMap map) throws DOMException, TransformerException, IOException, SAXException {
+	public static AccessPolicy getAccessPolicyFromOrderedMap(OrderedMap map) throws DOMException, TransformerException, IOException, SAXException {
 
 		AccessPolicy accessPolicy = null;
 
-		if (map != null && map.isEmpty()) {
+		if (map != null && !map.isEmpty()) {
 			
 			DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 			Document doc = impl.createDocument("", "access", null);

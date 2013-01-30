@@ -26,27 +26,20 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import javax.swing.JOptionPane;
-import javax.xml.transform.TransformerException;
-
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
-import org.apache.xerces.dom.DOMImplementationImpl;
+import javax.swing.JOptionPane;
+
 import org.dataone.service.exceptions.NotFound;
 import org.dataone.service.exceptions.VersionMismatch;
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.SystemMetadata;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -58,9 +51,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * Class to handle add access command
@@ -133,16 +124,15 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 				boolean success = false;
 				try {
 					// get the access rule from the page
-					Node accessNode = getAccessPageNode(entityIndex);
-					
+					OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
+					AccessPolicy accessPolicy = null;
 					// set the access policy in the system metadata
-					if (accessNode != null) {
-						synchSystemMetadata(accessNode, entity);
+					if (map != null) {
+						accessPolicy = AccessPolicyConverter.getAccessPolicyFromOrderedMap(map);
 					} else {
-						// clear out the access policy if the page has no rules
-						entity.getSystemMetadata().setAccessPolicy(null);
 						// TODO: distinguish between this and "inheriting" access
 					}
+					entity.getSystemMetadata().setAccessPolicy(accessPolicy);
 					
 					// save the access policy to the correct location
 					success = DataStoreServiceController.getInstance().setAccessPolicy(entity, adp.getLocation());
@@ -180,19 +170,6 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 
 			}
 	  }
-	  
-	/**
-	 * save the access rules defined in the EML access block into the SM
-	 * for the given entity
-	 * @throws SAXException
-	 * @throws IOException
-	 */
-	private void synchSystemMetadata(Node accessNode, Entity entity)
-			throws SAXException, IOException {
-		InputSource accessNodeInputSource = new InputSource(XMLUtilities.getDOMTreeAsReader(accessNode, true));
-		AccessPolicy accessPolicy = AccessPolicyConverter.getAccessPolicy(accessNodeInputSource);
-		entity.getSystemMetadata().setAccessPolicy(accessPolicy);
-	}
 	  
 	  /**
 	   * Method from DataPackageWizardListener. Do nothing.
@@ -281,42 +258,7 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 
 		return (dialog.USER_RESPONSE == ModalDialog.OK_OPTION);
 	}
-
-	private Node getAccessPageNode(int entityIndex) {
-
-		Node accessRoot = null;
-		OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
-		Log.debug(45,"\n getAccessPageNode() Got access details from Access page");
-
-		if (map == null || map.isEmpty()) {
-			Log.debug(30, "No access rules for data entity!");
-			return accessRoot;
-		}
-
-		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-		Document doc = impl.createDocument("", "access", null);
-
-		accessRoot = doc.getDocumentElement();
-
-		try {
-			XMLUtilities.getXPathMapAsDOMTree(map, accessRoot);
-		} catch (TransformerException w) {
-			Log.debug(5, "Unable to add access details to package!");
-			Log.debug(15,
-						"TransformerException ("
-						+ w
-						+ ") calling "
-						+ "XMLUtilities.getXPathMapAsDOMTree(map, accessRoot) with \n"
-						+ "map = " + map + " and accessRoot = "
-						+ accessRoot);
-			return accessRoot;
-		}
-		
-		Log.debug(45, "added new access details to package...");
-		
-		return accessRoot;
-	}
-
+	
 	private MorphoDataPackage mdp;
 	private AbstractUIPage accessPage;
 }
