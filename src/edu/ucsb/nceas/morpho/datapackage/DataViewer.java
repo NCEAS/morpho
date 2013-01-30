@@ -62,6 +62,8 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.commons.io.IOUtils;
+import org.dataone.client.D1Object;
 import org.dataone.service.types.v1.Identifier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -1352,11 +1354,13 @@ public class DataViewer extends javax.swing.JPanel
 
 	public void saveCurrentTable(boolean changePackageId) {
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		D1Object d1Object = null;
 		if (adp != null) { 
 			//System.out.println("the file id is "+dataFileId);
 			if (dataFileId != null) {
 				Identifier originalDataIdentifier = new Identifier();
 				originalDataIdentifier.setValue(dataFileId);
+				d1Object = mdp.get(originalDataIdentifier);
 				adp.getEntity(entityIndex).getSystemMetadata().setObsoletes(originalDataIdentifier);
 			}
 			// generate new identifier
@@ -1367,6 +1371,14 @@ public class DataViewer extends javax.swing.JPanel
 			// use null for the input stream since we write to the file in the next step
 			File newDataFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(id, null);
 			ptm.getPersistentVector().writeObjects(newDataFile);
+			if(d1Object != null) {
+			    try {
+			        d1Object.setData(IOUtils.toByteArray(new FileInputStream(newDataFile)));
+			    } catch (Exception e) {
+			        Log.debug(15, e.getMessage());
+			    }
+			    
+			}
 
 			long newDataFileLength = newDataFile.length();
 
