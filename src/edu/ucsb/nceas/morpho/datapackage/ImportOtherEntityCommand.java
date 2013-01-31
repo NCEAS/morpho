@@ -30,8 +30,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 
-import javax.xml.transform.TransformerException;
-
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -121,13 +119,14 @@ public class ImportOtherEntityCommand implements Command {
 				      XMLUtilities.getXPathMapAsDOMTree(dataTableMap, otherEntityRoot);
 				      Entity newEntity = new Entity(otherEntityRoot);
 					  adp.insertEntity(newEntity, entityIndex);
+			    	  adp.initializeEntitySystemMetadata(entityIndex, dataFile);
 				    }
-				    catch (TransformerException w) {
+				    catch (Exception w) {
 				      Log.debug(5, "Unable to add otherEntity to package!");
 				      w.printStackTrace();
 				      return;
 				    }
-				
+				    
 				// refresh the window
 				adp.setLocation(""); // we've changed it and not yet saved
 				mdp.setAbstractDataPackage(adp);

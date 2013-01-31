@@ -27,6 +27,8 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.Reader;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -38,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
@@ -349,6 +353,28 @@ public abstract class AbstractDataPackage extends MetadataObject
 		AccessPolicy accessPolicy = AccessPolicyConverter.getAccessPolicy(this);
 		sysmeta.setAccessPolicy(accessPolicy);
 		
+	}
+	
+	public void initializeEntitySystemMetadata(int entityIndex, File dataFile) throws Exception {
+		Entity entity = this.getEntity(entityIndex);
+		if (entity != null) {
+			PropertyUtils.copyProperties(entity.getSystemMetadata(), this.getSystemMetadata());
+			entity.getSystemMetadata().setObsoletedBy(null);
+			entity.getSystemMetadata().setObsoletes(null);
+			String URLinfo = this.getDistributionUrl(entityIndex, 0, 0);
+			String dataId = AbstractDataPackage.getUrlInfo(URLinfo);
+			Identifier identifier = new Identifier();
+			identifier.setValue(dataId);
+			entity.getSystemMetadata().setIdentifier(identifier);
+			ObjectFormatIdentifier dataFormatId = new ObjectFormatIdentifier();
+			dataFormatId.setValue(this.getPhysicalFormat(entityIndex, 0));
+			entity.getSystemMetadata().setFormatId(dataFormatId);
+			entity.setData(IOUtils.toByteArray(new FileInputStream(dataFile)));
+			Checksum dataChecksum = ChecksumUtil.checksum(new FileInputStream(dataFile), entity.getSystemMetadata().getChecksum().getAlgorithm());
+			entity.getSystemMetadata().setChecksum(dataChecksum);
+			entity.getSystemMetadata().setSize(BigInteger.valueOf(dataFile.length()));
+		}
+
 	}
 	
 	abstract public String getXMLNamespace();
@@ -2163,15 +2189,15 @@ public abstract class AbstractDataPackage extends MetadataObject
         par.insertBefore(newEntityNode, (entityArray[pos]).getNode());
         // now in DOM; need to insert in EntityArray
         //Commenting out these lines and adding a call to getEntityArray below
-        //Entity[] newEntArray = new Entity[entityArray.length + 1];
-        //for (int i = 0; i < pos; i++) {
-        //  newEntArray[i] = entityArray[i];
-        //}
-        //newEntArray[pos] = new Entity(newEntityNode, this);
-        //for (int i = pos + 1; i < entityArray.length; i++) {
-        //  newEntArray[i] = entityArray[i];
-        //}
-        //entityArray = newEntArray;
+        Entity[] newEntArray = new Entity[entityArray.length + 1];
+        for (int i = 0; i < pos; i++) {
+          newEntArray[i] = entityArray[i];
+        }
+        newEntArray[pos] = new Entity(newEntityNode, this);
+        for (int i = pos + 1; i < entityArray.length; i++) {
+          newEntArray[i] = entityArray[i];
+        }
+        entityArray = newEntArray;
 
       }
       else { // insert at end of other entities
@@ -2179,15 +2205,16 @@ public abstract class AbstractDataPackage extends MetadataObject
         par1.appendChild(newEntityNode);
         // now in DOM; need to insert in EntityArray
         // Commenting out these lines and adding a call to getEntityArray below
-        //Entity[] newEntArray = new Entity[entityArray.length + 1];
-        //for (int i = 0; i < entityArray.length; i++) {
-        //  newEntArray[i] = entityArray[i];
-        //}
-        //newEntArray[entityArray.length] = new Entity(newEntityNode, this);
-        //entityArray = newEntArray;
+        Entity[] newEntArray = new Entity[entityArray.length + 1];
+        for (int i = 0; i < entityArray.length; i++) {
+          newEntArray[i] = entityArray[i];
+        }
+        newEntArray[entityArray.length] = new Entity(newEntityNode, this);
+        entityArray = newEntArray;
       }
-      entityArray = null;
-      entityArray = getEntityArray();
+      // DO NOT throw out the existing Entity[]!
+//      entityArray = null;
+//      entityArray = getEntityArray();
     }
     // must handle case where there are no existing entities!!!
     else {

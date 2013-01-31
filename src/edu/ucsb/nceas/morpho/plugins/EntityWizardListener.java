@@ -1,23 +1,12 @@
 package edu.ucsb.nceas.morpho.plugins;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.math.BigInteger;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.io.IOUtils;
-import org.dataone.service.types.v1.Checksum;
-import org.dataone.service.types.v1.Identifier;
-import org.dataone.service.types.v1.ObjectFormatIdentifier;
-import org.dataone.service.types.v1.util.ChecksumUtil;
 import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -51,9 +40,12 @@ public class EntityWizardListener implements  DataPackageWizardListener
       adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
       adp.setLocation("");  // we've changed it and not yet saved
       try {
-        initializeSystemMetadata(nextEntityIndex, adp);
+    	  String URLinfo = adp.getDistributionUrl(nextEntityIndex, 0, 0);
+    	  String dataId = AbstractDataPackage.getUrlInfo(URLinfo);
+    	  File dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openTempFile(dataId);
+    	  adp.initializeEntitySystemMetadata(nextEntityIndex, dataFile);
       } catch (Exception e) {
-        Log.debug(20, "Can't generate system metadata for the entity with the index "+nextEntityIndex);
+        Log.debug(20, "Can't generate system metadata for the entity with the index " + nextEntityIndex);
       }
 
     }
@@ -66,31 +58,6 @@ public class EntityWizardListener implements  DataPackageWizardListener
       oldMorphoFrame.dispose();
     }
 
-  }
-  
-  private void initializeSystemMetadata(int entityIndex, AbstractDataPackage adp) throws Exception {
-    Entity entity = adp.getEntity(entityIndex);
-    if(entity != null) {
-      PropertyUtils.copyProperties(entity.getSystemMetadata(), adp.getSystemMetadata());
-      entity.getSystemMetadata().setObsoletedBy(null);
-      entity.getSystemMetadata().setObsoletes(null);
-      String URLinfo = adp.getDistributionUrl(entityIndex, 0, 0);
-      String dataId = AbstractDataPackage.getUrlInfo(URLinfo);
-      Identifier identifier = new Identifier();
-      identifier.setValue(dataId);
-      entity.getSystemMetadata().setIdentifier(identifier);
-      ObjectFormatIdentifier dataFormatId = new ObjectFormatIdentifier();
-      dataFormatId.setValue(adp.getPhysicalFormat(entityIndex, 0));
-      entity.getSystemMetadata().setFormatId(dataFormatId);
-      //File dataFile = DataStoreServiceController.getInstance().openFile(identifier.getValue(), DataPackageInterface.LOCAL);
-      //Here the data file hasn't been saved. So we have to open it from temp
-      File dataFile = Morpho.thisStaticInstance.getLocalDataStoreService().openTempFile(identifier.getValue());
-      entity.setData(IOUtils.toByteArray(new FileInputStream(dataFile)));
-      Checksum dataChecksum = ChecksumUtil.checksum(new FileInputStream(dataFile), entity.getSystemMetadata().getChecksum().getAlgorithm());
-      entity.getSystemMetadata().setChecksum(dataChecksum);
-      entity.getSystemMetadata().setSize(BigInteger.valueOf(dataFile.length()));
-    }
-   
   }
 
    public void wizardCanceled() 
