@@ -64,10 +64,9 @@ public class DataStoreServiceController {
 	* TODO: the service should probably tell us what schemes it uses
 	* But for now we will hope for the best with these
 	*/
-	private static final String DOI = "doi";
-	private static final String UUID = "uuid";
-	public static final String DEFAULT_IDENTIFIER_SCHEME = "default";
-	public static final String[] IDENTIFIER_SCHEMES = {DEFAULT_IDENTIFIER_SCHEME, DOI, UUID};
+	public static final String DOI = "doi";
+	public static final String UUID = "uuid";
+	public static final String[] IDENTIFIER_SCHEMES = {UUID, DOI};
 
 	private static DataStoreServiceController instance;
 	
@@ -802,7 +801,7 @@ public class DataStoreServiceController {
 
 		String newIdentifier = originalIdentifier;
 		// TODO provide these from input?
-		String scheme = DEFAULT_IDENTIFIER_SCHEME;
+		String scheme = UUID;
 		String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 		boolean local = false;
 		boolean network = false;

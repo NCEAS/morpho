@@ -807,7 +807,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 
 		// TODO: use DOI or ARK scheme
 		 if (scheme == null) {
-			 scheme = DataStoreServiceController.DEFAULT_IDENTIFIER_SCHEME;
+			 scheme = DataStoreServiceController.UUID;
 		 }
 		Identifier identifier = activeMNode.generateIdentifier(scheme, fragment);
 		return identifier.getValue();
