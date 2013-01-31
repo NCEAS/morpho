@@ -283,7 +283,12 @@ public class DataPackageWizardPlugin implements PluginInterface,
   {
     boolean running  = false;
     String docid  = null;
-    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage().getAbstractDataPackage();
+    AbstractDataPackage adp = null;
+    MorphoDataPackage morphoPackage = UIController.getInstance().getCurrentAbstractDataPackage();
+    if(morphoPackage != null) {
+        adp = morphoPackage.getAbstractDataPackage();
+    }
+   
     if(adp != null)
     {
       docid = adp.getAccessionNumber();
