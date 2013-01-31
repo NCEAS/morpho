@@ -501,6 +501,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		    File metadataFile = null;
 		    try {
 		        metadataFile = morpho.getLocalDataStoreService().lookUpLocalFile(metadataId.getValue());
+		        metadataD1Object.setDataSource(new FileDataSource(metadataFile));
 		    } catch (FileNotFoundException e) {
 		        metadataFile = null;
 		    }
