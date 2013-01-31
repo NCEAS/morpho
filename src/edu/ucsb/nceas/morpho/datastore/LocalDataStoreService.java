@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.activation.FileDataSource;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.dataone.client.D1Object;
@@ -155,8 +157,9 @@ public class LocalDataStoreService extends DataStoreService
 				Identifier identifier = new Identifier();
 				identifier.setValue(dataId);
 				dataIds.add(identifier);
-				byte[] data = IOUtils.toByteArray(new FileInputStream(openFile(identifier.getValue())));
-				entity.setData(data);
+				//byte[] data = IOUtils.toByteArray(new FileInputStream(openFile(identifier.getValue())));
+				//entity.setData(data);
+				entity.setDataSource(new FileDataSource(openFile(identifier.getValue())));
 				// set the SM if we have it
 				SystemMetadata sysmeta = getSystemMetadata(identifier.getValue());
 				if (sysmeta != null) {
@@ -171,9 +174,9 @@ public class LocalDataStoreService extends DataStoreService
 						ObjectFormatIdentifier dataFormatId = new ObjectFormatIdentifier();
 						dataFormatId.setValue(adp.getPhysicalFormat(entityIndex, 0));
 						entity.getSystemMetadata().setFormatId(dataFormatId);
-						Checksum dataChecksum = ChecksumUtil.checksum(entity.getData(), entity.getSystemMetadata().getChecksum().getAlgorithm());
+						Checksum dataChecksum = ChecksumUtil.checksum(entity.getDataSource().getInputStream(), entity.getSystemMetadata().getChecksum().getAlgorithm());
 						entity.getSystemMetadata().setChecksum(dataChecksum);
-						entity.getSystemMetadata().setSize(BigInteger.valueOf(entity.getData().length));
+						entity.getSystemMetadata().setSize(BigInteger.valueOf(openFile(identifier.getValue()).length()));
 					} catch (Exception e) {
 						Log.debug(10, "Error setting SystemMetadata for entity " + entityIndex);
 						e.printStackTrace();
@@ -479,18 +482,20 @@ public class LocalDataStoreService extends DataStoreService
 	    oreId.setValue("resourceMap_" + adp.getIdentifier().getValue());
 	    D1Object oreD1Object = new D1Object();
 	    mdp.setPackageId(oreId);
-	    oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
+	    //save oreFile
+	    File oreFile = saveFile(mdp.getPackageId().getValue(), new ByteArrayInputStream(mdp.serializePackage().getBytes(IdentifierFileMap.UTF8)));
+	    //oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
 	    
 	    // generate ORE SM for the save
 	    SystemMetadata resourceMapSysMeta = new SystemMetadata();
 	    PropertyUtils.copyProperties(resourceMapSysMeta, adp.getSystemMetadata());
 	    resourceMapSysMeta.setIdentifier(oreId);
-	    Checksum oreChecksum = ChecksumUtil.checksum(new ByteArrayInputStream(oreD1Object.getData()), resourceMapSysMeta.getChecksum().getAlgorithm());
+	    Checksum oreChecksum = ChecksumUtil.checksum(new FileInputStream(oreFile), resourceMapSysMeta.getChecksum().getAlgorithm());
 		resourceMapSysMeta.setChecksum(oreChecksum);
 	    ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
 	    formatId.setValue("http://www.openarchives.org/ore/terms");
 		resourceMapSysMeta.setFormatId(formatId);
-		resourceMapSysMeta.setSize(BigInteger.valueOf(oreD1Object.getData().length));
+		resourceMapSysMeta.setSize(BigInteger.valueOf(oreFile.length()));
 		
 		// set the revision graph
 		resourceMapSysMeta.setObsoletes(null);
@@ -500,9 +505,9 @@ public class LocalDataStoreService extends DataStoreService
 	    mdp.setSystemMetadata(resourceMapSysMeta);
 	    oreD1Object.setSystemMetadata(mdp.getSystemMetadata());
 	    
-	    // save the ORE
+	    // save the ORE system metadata
 	    saveSystemMetadata(oreD1Object.getSystemMetadata());
-	    saveFile(mdp.getPackageId().getValue(), new ByteArrayInputStream(oreD1Object.getData()));
+	    
 		
 	    // return the ORE package id. (not yet used)
 		return oreId.getValue();
@@ -632,18 +637,9 @@ public class LocalDataStoreService extends DataStoreService
 		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~eventually old id is  " + oldDocid);
 		
 		try {
-			// try to get the temp file for old id
-			dataFile = openTempFile(oldDocid);
+			// try to get the file from local stores. for old id
+			dataFile = lookUpLocalFile(oldDocid);
 		} catch (Exception qq) {
-			// try to open incomplete file
-			try {
-				dataFile = openIncompleteFile(oldDocid);
-			} catch (Exception e) {
-			  //try to open it from the local system
-			  try {
-			    dataFile = openFile(oldDocid);
-			  } catch (Exception eee) {
-			    // if a datafile is on metacat and one wants to save locally
 	        try {
 	          // open from network
 	          dataFile = DataStoreServiceController.getInstance().openFile(oldDocid, DataPackageInterface.NETWORK);
@@ -653,9 +649,7 @@ public class LocalDataStoreService extends DataStoreService
 	          qq.printStackTrace();
 	          //return false;
 	        }
-			  }
-			
-			}
+			  
 		}
 		
 		// open old file name (if no file change, the old file name will be as same as docid).
@@ -675,6 +669,40 @@ public class LocalDataStoreService extends DataStoreService
 		
 		// if we get here it was successful
 		return true;
+	}
+	
+	/**
+	 * Get a local file for the specified id from the data, temp, cache and incomplete stores.
+	 * @param id
+	 * @return the File
+	 * @throws FileNotFoundException if no file found
+	 */
+	public File lookUpLocalFile(String id) throws FileNotFoundException {
+	    File dataFile = null;
+	    try {
+            // try to get the local file for id
+	        dataFile = openFile(id);
+        } catch (Exception qq) {
+            // try to open from temp system
+            try {
+                dataFile = openTempFile(id);
+            } catch (Exception e) {
+              //try to open it from the cache system
+              try {
+                  dataFile = openCacheFile(id);
+              } catch (Exception eee) {
+                // try to open from the incomplete system
+                  try {
+                      dataFile = openIncompleteFile(id);
+                  } catch (Exception eeee) {
+                    // if a datafile is on metacat and one wants to save locally
+                      throw new FileNotFoundException(eeee.getMessage());
+                  }
+              }
+            
+            }
+        }
+	    return dataFile;
 	}
 	
 	/**

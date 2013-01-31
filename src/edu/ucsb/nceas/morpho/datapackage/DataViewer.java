@@ -41,6 +41,7 @@ import java.util.EventObject;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.activation.FileDataSource;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -1375,7 +1376,9 @@ public class DataViewer extends javax.swing.JPanel
 			ptm.getPersistentVector().writeObjects(newDataFile);
 			if(entity != null) {
 			    try {
-			        entity.setData(IOUtils.toByteArray(new FileInputStream(newDataFile)));
+			        //entity.setData(IOUtils.toByteArray(new FileInputStream(newDataFile)));
+			        FileDataSource fileSource = new FileDataSource(newDataFile);
+			        entity.setDataSource(fileSource);
 			    } catch (Exception e) {
 			        Log.debug(15, e.getMessage());
 			    }

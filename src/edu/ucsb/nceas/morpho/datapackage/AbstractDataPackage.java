@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.activation.FileDataSource;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.xerces.dom.DOMImplementationImpl;
@@ -369,7 +371,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 			ObjectFormatIdentifier dataFormatId = new ObjectFormatIdentifier();
 			dataFormatId.setValue(this.getPhysicalFormat(entityIndex, 0));
 			entity.getSystemMetadata().setFormatId(dataFormatId);
-			entity.setData(IOUtils.toByteArray(new FileInputStream(dataFile)));
+			//entity.setData(IOUtils.toByteArray(new FileInputStream(dataFile)));
+
+		    entity.setDataSource(new FileDataSource(dataFile));
 			Checksum dataChecksum = ChecksumUtil.checksum(new FileInputStream(dataFile), entity.getSystemMetadata().getChecksum().getAlgorithm());
 			entity.getSystemMetadata().setChecksum(dataChecksum);
 			entity.getSystemMetadata().setSize(BigInteger.valueOf(dataFile.length()));

@@ -25,11 +25,13 @@
  */
 package edu.ucsb.nceas.morpho.datastore;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
@@ -42,6 +44,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.activation.FileDataSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.configuration.ConfigurationException;
@@ -89,6 +93,7 @@ import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.Log;
 
 /**
@@ -271,13 +276,15 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
                                     identifier+" which Morpho currently doesn't support.");
       }
       // parse the metadata/data identifiers and store the associated objects if they are accessible
-      byte[] metadata;
+      //byte[] metadata;
       for (Identifier scienceMetadataId : mdMap.keySet()) {
         //System.out.println("The scienceMetadataId is ======= "+scienceMetadataId.getValue());
         //dp.addAndDownloadData(scienceMetadataId);
-        metadata = IOUtils.toByteArray(getDataFromDataONE(scienceMetadataId.getValue()));
-        AbstractDataPackage adp = DataPackageFactory.getDataPackage(new StringReader(new String(metadata,IdentifierFileMap.UTF8)));
-        adp.setData(metadata);
+        DataONEDataSource metadataSource = new DataONEDataSource(activeMNode, scienceMetadataId);
+        //metadata = IOUtils.toByteArray(getDataFromDataONE(scienceMetadataId.getValue()));
+        AbstractDataPackage adp = DataPackageFactory.getDataPackage(new BufferedReader(new InputStreamReader(metadataSource.getInputStream(),IdentifierFileMap.UTF8)));
+        //adp.setData(metadata);
+        adp.setDataSource(metadataSource);
         adp.setSystemMetadata(getSystemMetadataFromDataONE(scienceMetadataId.getValue()));
         adp.setLocation(DataPackageInterface.NETWORK);
         dp.addData(adp);
@@ -288,8 +295,10 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
           //System.out.println("the data id is ==== "+dataId.getValue());
           Entity entity = adp.getEntity(dataId.getValue());
           if (entity != null) {
-            byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataId.getValue()));
-            entity.setData(data);
+            //byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataId.getValue()));
+            //entity.setData(data);
+            DataONEDataSource dataSource = new DataONEDataSource(activeMNode, dataId);
+            entity.setDataSource(dataSource);
             entity.setSystemMetadata(getSystemMetadataFromDataONE(dataId.getValue()));
             dp.addData(entity);
           } else {
@@ -326,12 +335,14 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 
 		// parse the metadata/data identifiers and store the associated objects
 		// if they are accessible
-		byte[] metadata;
+		//byte[] metadata;
 		// the science metadata id is the package id in this case
 		Identifier scienceMetadataId = packageId;
-		metadata = IOUtils.toByteArray(getDataFromDataONE(scienceMetadataId.getValue()));
-		AbstractDataPackage adp = DataPackageFactory.getDataPackage(new StringReader(new String(metadata, IdentifierFileMap.UTF8)));
-		adp.setData(metadata);
+		DataONEDataSource metadataSource = new DataONEDataSource(activeMNode, scienceMetadataId);
+		//metadata = IOUtils.toByteArray(getDataFromDataONE(scienceMetadataId.getValue()));
+		AbstractDataPackage adp = DataPackageFactory.getDataPackage(new BufferedReader(new InputStreamReader(metadataSource.getInputStream(),IdentifierFileMap.UTF8)));
+		//adp.setData(metadata);
+		adp.setDataSource(metadataSource);
 		adp.setSystemMetadata(getSystemMetadataFromDataONE(scienceMetadataId.getValue()));
 		adp.setLocation(DataPackageInterface.NETWORK);
 		mdp.addData(adp);
@@ -346,10 +357,12 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 				String dataId = AbstractDataPackage.getUrlInfo(URLinfo);
 				Identifier dataIdentifier = new Identifier();
 				dataIdentifier.setValue(dataId);
+				DataONEDataSource dataSource = new DataONEDataSource(activeMNode, dataIdentifier);
 				dataIds.add(dataIdentifier);
 				if (entity != null) {
-					byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataIdentifier.getValue()));
-					entity.setData(data);
+					//byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataIdentifier.getValue()));
+					//entity.setData(data);
+				    entity.setDataSource(dataSource);
 					entity.setSystemMetadata(getSystemMetadataFromDataONE(dataIdentifier.getValue()));
 					mdp.addData(entity);
 				} else {
@@ -482,7 +495,23 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		}
 		
 		// now save
-		save(mdp.get(metadataId));
+		D1Object metadataD1Object = mdp.get(metadataId);
+		if(metadataD1Object.getDataSource() == null) {
+		    //no DataSource has been set. we need set now.
+		    File metadataFile = null;
+		    try {
+		        metadataFile = morpho.getLocalDataStoreService().lookUpLocalFile(metadataId.getValue());
+		    } catch (FileNotFoundException e) {
+		        metadataFile = null;
+		    }
+		    if(metadataFile == null) {
+		        String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+		        File metadataCacheFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveCacheDataFile(metadataId.getValue(), new ByteArrayInputStream(temp.getBytes(IdentifierFileMap.UTF8)));
+		        metadataD1Object.setDataSource(new FileDataSource(metadataCacheFile));
+		    }
+		   
+		}
+		save(metadataD1Object);
 		adp.setSerializeMetacatSuccess(true);
 
 		// return now if we do not have data packages to save as ORE
@@ -496,21 +525,23 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		D1Object oreD1Object = new D1Object();
 		mdp.setPackageId(oreId);
 		//System.out.println("the serilziae page is ===== "+mdp.serializePackage());
-		oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
+		//save cache first
+		File oreCacheFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveCacheDataFile(oreId.getValue(), new ByteArrayInputStream((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8)));
+		//oreD1Object.setData((mdp.serializePackage()).getBytes(IdentifierFileMap.UTF8));
+		oreD1Object.setDataSource(new FileDataSource(oreCacheFile));
 
 		// generate ORE SM for the save
 		SystemMetadata resourceMapSysMeta = new SystemMetadata();
 		PropertyUtils.copyProperties(resourceMapSysMeta, adp
 				.getSystemMetadata());
 		resourceMapSysMeta.setIdentifier(oreId);
-		Checksum oreChecksum = ChecksumUtil.checksum(new ByteArrayInputStream(
-				oreD1Object.getData()), resourceMapSysMeta.getChecksum()
+		Checksum oreChecksum = ChecksumUtil.checksum(oreD1Object.getDataSource().getInputStream(), resourceMapSysMeta.getChecksum()
 				.getAlgorithm());
 		resourceMapSysMeta.setChecksum(oreChecksum);
 		ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
 		formatId.setValue("http://www.openarchives.org/ore/terms");
 		resourceMapSysMeta.setFormatId(formatId);
-		resourceMapSysMeta.setSize(BigInteger.valueOf(oreD1Object.getData().length));
+		resourceMapSysMeta.setSize(BigInteger.valueOf(oreCacheFile.length()));
 
 		// set the revision graph
 		resourceMapSysMeta.setObsoletes(null);
@@ -609,10 +640,10 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     adjustObsoletedBy(sysMeta);
     if(!hasObsoletes) {
       //create action
-      activeMNode.create(d1Object.getIdentifier(), new ByteArrayInputStream(d1Object.getData()), sysMeta);
+      activeMNode.create(d1Object.getIdentifier(), d1Object.getDataSource().getInputStream(), sysMeta);
     } else {
       //update action
-      activeMNode.update(sysMeta.getObsoletes(), new ByteArrayInputStream(d1Object.getData()), d1Object.getIdentifier(), sysMeta);
+      activeMNode.update(sysMeta.getObsoletes(), d1Object.getDataSource().getInputStream(), d1Object.getIdentifier(), sysMeta);
     }
   }
   
