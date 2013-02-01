@@ -627,6 +627,7 @@ public class LocalDataStoreService extends DataStoreService
 		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local " + docid);
 		File dataFile = null;
 		String oldDocid = null;
+
 		// if morpho serialized data into local store and docid was changed,
 		// we need to get the old docid and find the it in temp dir
 		if (!original_new_id_map.isEmpty()) {
@@ -701,12 +702,17 @@ public class LocalDataStoreService extends DataStoreService
                   dataFile = openCacheFile(id);
               } catch (Exception eee) {
                 // try to open from the incomplete system
-                  try {
-                      dataFile = openIncompleteFile(id);
-                  } catch (Exception eeee) {
-                    // if a datafile is on metacat and one wants to save locally
-                      throw new FileNotFoundException(eeee.getMessage());
-                  }
+                  /*if(includeIncomplete) {
+                      try {
+                          dataFile = openIncompleteFile(id);
+                      } catch (Exception eeee) {
+                        // if a datafile is on metacat and one wants to save locally
+                          throw new FileNotFoundException(eeee.getMessage());
+                      }
+                  } else {
+                      throw new FileNotFoundException(eee.getMessage());
+                  }*/
+                  throw new FileNotFoundException(eee.getMessage());
               }
             
             }
