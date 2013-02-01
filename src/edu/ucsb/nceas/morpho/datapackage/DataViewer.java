@@ -35,7 +35,9 @@ import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.EventObject;
 import java.util.StringTokenizer;
@@ -65,7 +67,10 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.io.IOUtils;
 import org.dataone.client.D1Object;
+import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.SystemMetadata;
+import org.dataone.service.types.v1.util.ChecksumUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -1357,6 +1362,7 @@ public class DataViewer extends javax.swing.JPanel
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		//D1Object d1Object = null;
 		Entity entity = null;
+		SystemMetadata systemMeta = null;
 		if (adp != null) { 
 			//System.out.println("the file id is "+dataFileId);
 			if (dataFileId != null) {
@@ -1364,7 +1370,20 @@ public class DataViewer extends javax.swing.JPanel
 				originalDataIdentifier.setValue(dataFileId);
 				//d1Object = mdp.get(originalDataIdentifier);
 				entity = adp.getEntity(entityIndex);
-				entity.getSystemMetadata().setObsoletes(originalDataIdentifier);
+				if(entity != null) {
+				   systemMeta = entity.getSystemMetadata();
+				   if(systemMeta == null) {
+				       systemMeta = new SystemMetadata();
+				       try {
+				           entity.setSystemMetadata(systemMeta);
+				       } catch (Exception e) {
+				           Log.debug(15, e.getMessage());
+				       }
+				       
+				   }
+				   entity.getSystemMetadata().setObsoletes(originalDataIdentifier);
+				}
+				
 			}
 			// generate new identifier
 			String id = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
@@ -1379,6 +1398,9 @@ public class DataViewer extends javax.swing.JPanel
 			        //entity.setData(IOUtils.toByteArray(new FileInputStream(newDataFile)));
 			        FileDataSource fileSource = new FileDataSource(newDataFile);
 			        entity.setDataSource(fileSource);
+			        entity.getSystemMetadata().setSize(BigInteger.valueOf(newDataFile.length()));
+			        Checksum checksum = ChecksumUtil.checksum(fileSource.getInputStream(), "MD5");
+			        entity.getSystemMetadata().setChecksum(checksum);
 			    } catch (Exception e) {
 			        Log.debug(15, e.getMessage());
 			    }
