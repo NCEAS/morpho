@@ -373,12 +373,17 @@ public class Morpho
     public String getUserName()
     {
         String subjectDN = null;
-        String clientCertificateLocation = profile.get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
-        CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
-        X509Certificate clientCert = CertificateManager.getInstance().loadCertificate();
-		if (clientCert != null) {
-			subjectDN = CertificateManager.getInstance().getSubjectDN(clientCert);
-		}
+        // if we have a valid certificate, use it to find the username
+        if (dds.isConnected()) {
+	        String clientCertificateLocation = profile.get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+	        CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
+	        X509Certificate clientCert = CertificateManager.getInstance().loadCertificate();
+			if (clientCert != null) {
+				subjectDN = CertificateManager.getInstance().getSubjectDN(clientCert);
+			}
+        } else {
+        	dds.logOut();
+        }
         String userName = (subjectDN != null) ? subjectDN : Constants.SUBJECT_PUBLIC;
 		return userName;
     }    
