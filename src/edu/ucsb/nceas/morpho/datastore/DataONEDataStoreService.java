@@ -496,22 +496,6 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		
 		// now save
 		D1Object metadataD1Object = mdp.get(metadataId);
-		if(metadataD1Object.getDataSource() == null) {
-		    //no DataSource has been set. we need set now.
-		    File metadataFile = null;
-		    try {
-		        metadataFile = morpho.getLocalDataStoreService().lookUpLocalFile(metadataId.getValue());
-		        metadataD1Object.setDataSource(new FileDataSource(metadataFile));
-		    } catch (FileNotFoundException e) {
-		        metadataFile = null;
-		    }
-		    if(metadataFile == null) {
-		        String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
-		        File metadataCacheFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveCacheDataFile(metadataId.getValue(), new ByteArrayInputStream(temp.getBytes(IdentifierFileMap.UTF8)));
-		        metadataD1Object.setDataSource(new FileDataSource(metadataCacheFile));
-		    }
-		   
-		}
 		save(metadataD1Object);
 		adp.setSerializeMetacatSuccess(true);
 

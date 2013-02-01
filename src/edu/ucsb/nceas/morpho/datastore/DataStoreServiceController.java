@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.activation.FileDataSource;
 import javax.swing.JOptionPane;
 
 import org.dataone.client.D1Object;
@@ -41,6 +42,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
+import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -50,6 +52,7 @@ import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * This singleton class allows callers to interact with data store services for
@@ -771,6 +774,21 @@ public class DataStoreServiceController {
 	private void calculateStats(MorphoDataPackage mdp) throws Exception {
 		// calculate and set crucial fields that may have changed
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		
+            File metadataFile = null;
+            try {
+                metadataFile = Morpho.thisStaticInstance.getLocalDataStoreService().lookUpLocalFile(adp.getIdentifier().getValue());
+                adp.setDataSource(new FileDataSource(metadataFile));
+            } catch (FileNotFoundException e) {
+                metadataFile = null;
+            }
+            if(metadataFile == null) {
+                String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+                File metadataCacheFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveCacheDataFile(adp.getIdentifier().getValue(), new ByteArrayInputStream(temp.getBytes(IdentifierFileMap.UTF8)));
+                adp.setDataSource(new FileDataSource(metadataCacheFile));
+            }
+           
+      
 		SystemMetadata sysmeta = adp.getSystemMetadata();
 		
 		// checksum and size
