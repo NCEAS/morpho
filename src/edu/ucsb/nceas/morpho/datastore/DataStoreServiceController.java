@@ -64,8 +64,8 @@ public class DataStoreServiceController {
 	* TODO: the service should probably tell us what schemes it uses
 	* But for now we will hope for the best with these
 	*/
-	public static final String DOI = "doi";
-	public static final String UUID = "uuid";
+	public static final String DOI = "DOI";
+	public static final String UUID = "UUID";
 	public static final String[] IDENTIFIER_SCHEMES = {UUID, DOI};
 
 	private static DataStoreServiceController instance;
