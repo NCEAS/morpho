@@ -227,7 +227,13 @@ public class QueryDialog extends JDialog
     if (!searchNetwork) {
       searchLocal = true;
     }
-
+    
+    // make sure we can actually query the network
+    if (!Morpho.thisStaticInstance.getDataONEDataStoreService().isQueryEngineSupported()) {
+        catalogSearchCheckBox.setEnabled(false);
+        searchNetwork = false;
+    }
+    
     untitledCounter++;
 
     // Instantiate the list of subject text panels and taxon panels

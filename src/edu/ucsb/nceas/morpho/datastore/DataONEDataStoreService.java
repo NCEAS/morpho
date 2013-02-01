@@ -74,6 +74,7 @@ import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SubjectInfo;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.types.v1.util.ChecksumUtil;
+import org.dataone.service.types.v1_1.QueryEngineList;
 import org.dataone.service.util.EncodingUtilities;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
@@ -92,7 +93,7 @@ import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
-import edu.ucsb.nceas.utilities.Log;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * Implements the DataStoreServiceInterface to access the files on the DataOne service
@@ -797,16 +798,51 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		return identifier.getValue();
 	}
   
-  /** Send the given query to the Dataone member node, get back the XML InputStream
-   * @param the SOLR query 
-   * @return the result of the query
-   */
-  @Override
-  public InputStream query(String query) throws InvalidToken, ServiceFailure, NotAuthorized, 
-                                         InvalidRequest, NotImplemented, NotFound {
-	String encodedQuery = EncodingUtilities.encodeUrlPathSegment(query);
-    return activeMNode.query(PATHQUERY, encodedQuery);
-  }
+	/**
+	 * Send the given query to the Dataone member node, get back the InputStream.
+	 * Note that Morpho only supports "pathquery" as the engine.
+	 * We plan to include support for SOLR syntax in subsequent releases.
+	 * @param the query
+	 * @return the result of the query
+	 */
+	@Override
+	public InputStream query(String query) throws InvalidToken, ServiceFailure,
+			NotAuthorized, InvalidRequest, NotImplemented, NotFound {
+
+		boolean engineSupported = isQueryEngineSupported( ); 
+		if (!engineSupported) {
+			Log.debug(5, "The '" + PATHQUERY + "' syntax is not supported on this MN");
+			return null;
+		}
+		// made it here so we submit the query
+		String encodedQuery = EncodingUtilities.encodeUrlPathSegment(query);
+		return activeMNode.query(PATHQUERY, encodedQuery);
+	}
+
+	/**
+	 * Check if the MN supports the default queryEngine
+	 * @param engineToUse
+	 * @return
+	 */
+	public boolean isQueryEngineSupported() {
+		// check if this MN supports our query syntax
+		String engineToUse = PATHQUERY;
+		boolean engineSupported = false;
+		try {
+			QueryEngineList queryEngines = activeMNode.listQueryEngines();
+			if (queryEngines != null && queryEngines.getQueryEngineList() != null) {
+				for (String qe: queryEngines.getQueryEngineList()) {
+					if (qe.equalsIgnoreCase(engineToUse)) {
+						engineSupported = true;
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			engineSupported = false;
+		}
+		return engineSupported;
+	}
 
 	@Override
 	public RevisionManagerInterface getRevisionManager() {
