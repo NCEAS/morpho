@@ -883,9 +883,11 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	public boolean logOut() {
 		// remove the certificate file
 		String certificateLocation = Morpho.thisStaticInstance.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
-		File certFile = new File(certificateLocation);
-		if (certFile.exists()) {
-			certFile.delete();
+		if (certificateLocation != null) {
+			File certFile = new File(certificateLocation);
+			if (certFile.exists()) {
+				certFile.delete();
+			}
 		}
 		
 		// clear out the certificate config
