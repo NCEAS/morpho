@@ -69,13 +69,11 @@ import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.dataone.EcpAuthentication;
 import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
-import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
 import edu.ucsb.nceas.morpho.framework.IdentifierUpdaterFrame;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
@@ -252,17 +250,14 @@ public class Morpho
         this.profile = newProfile;
 
         // load the certificate/identity for the given profile
-		String userName = getUserName();
         fireUsernameChangedEvent();
 
         // Load basic profile information
         String profilename = profile.get("profilename", 0);
-        String scope = profile.get("scope", 0);
         if (!profileConfig.set("current_profile", 0, profilename)) {
             boolean success = profileConfig.insert("current_profile", profilename);
         }
         profileConfig.save();
-        setLastID(scope);
 
         if (doFireConnectionChangedEvent) fireConnectionChangedEvent();
     }
@@ -727,47 +722,6 @@ public class Morpho
 
         return parser;
     }
-    
-    /**
-     * Sets the LastId attribute for the current profile for the given scope
-     *
-     * @param scope  the scope 
-     */
-    public void setLastID(String fragment) {
-    	
-		// look up last remote id
-		if (Morpho.thisStaticInstance.getDataONEDataStoreService() == null) {
-			return;
-		}
-
-		int lastid = 1;
-		String lastidS = getProfile().get("lastId", 0);
-		try {
-			lastid = Integer.parseInt(lastidS);
-		} catch (Exception e) {
-			Log.debug(30, "couldn't get lastid from profile");
-		}
-		Log.debug(30, "For fragement: " + fragment + " the last id in profile is:" + lastid);
-
-		int id = lastid;
-
-		// check if we have used that one in the network, find one we haven't
-		String identifier = null;
-		boolean inUse = false;
-		do {
-			identifier = fragment + "." + lastid;
-			inUse = DataStoreServiceController.getInstance().exists(identifier, DataPackageInterface.NETWORK);
-			if (!inUse) {
-				break;
-			}
-			lastid++;
-		} while (inUse);
-
-		if (lastid > id) {
-			Morpho.thisStaticInstance.getProfile().set("lastId", 0, String.valueOf(lastid));
-			Morpho.thisStaticInstance.getProfile().save();
-		}
-	}
 
     /**
      * Load all of the plugins specified in the configuration file. The plugins
@@ -1027,10 +981,6 @@ public class Morpho
       MorphoPrefsDialog1.setModal(true);
       MorphoPrefsDialog1.setVisible(true);
       UIController.getInstance().updateAllStatusBars();
-      // when preference change, the lastID should be change too.
-      // since the remote server may have different max docid
-      String scope = profile.get("scope", 0);
-      setLastID(scope);
 
     }
 
