@@ -794,11 +794,6 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	@Override
 	public String generateIdentifier(String scheme, String fragment) throws InvalidToken,
 			ServiceFailure, NotAuthorized, NotImplemented, InvalidRequest {
-
-		// TODO: use DOI or ARK scheme
-		 if (scheme == null) {
-			 scheme = DataStoreServiceController.UUID;
-		 }
 		Identifier identifier = activeMNode.generateIdentifier(scheme, fragment);
 		return identifier.getValue();
 	}

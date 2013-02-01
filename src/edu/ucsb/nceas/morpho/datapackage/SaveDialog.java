@@ -41,7 +41,6 @@ import javax.swing.JPanel;
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
-import edu.ucsb.nceas.morpho.datastore.LocalDataStoreService;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -50,7 +49,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SaveEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-import edu.ucsb.nceas.morpho.util.Util;
 
 /**
  * A dialog box for user choice of export options
@@ -295,14 +293,6 @@ public class SaveDialog extends JDialog {
 				ex.printStackTrace();
 				Log.debug(30, "Problem setting new EML version: "
 						+ ex.toString());
-			}
-
-			// make id for temp id?
-			// TODO: remove this and put else where in the save process?
-			if (id.indexOf(LocalDataStoreService.TEMP) > -1) {
-				String nextid = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
-				adp.setAccessionNumber(nextid);
-				mdp.updateIdentifier(id, nextid);
 			}
 
 		}

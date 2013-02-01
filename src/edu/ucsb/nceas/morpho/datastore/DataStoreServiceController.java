@@ -169,6 +169,10 @@ public class DataStoreServiceController {
 	 * 
 	 */
 	public synchronized String generateIdentifier(String scheme, String location) {
+		// default to UUID
+		if (scheme == null) {
+			scheme = DataStoreServiceController.UUID;
+		}
 		if (location.equals(DataPackageInterface.LOCAL)) {
 			String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 			return Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);

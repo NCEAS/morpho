@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Vector;
 
 import javax.activation.FileDataSource;
@@ -79,8 +80,9 @@ public class LocalDataStoreService extends DataStoreService
                                  implements DataStoreServiceInterface
 {
 	public final static String INCOMPLETEDIR = "incomplete";
-	public static final String TEMP = "temporary";
-	private static final String TEMPIDNAME = "lastTempId";
+	
+	private static final String UUID_PREFIX = "urn:uuid:";
+
 	
 	// store the map between new data id and old data id
 	private Hashtable<String, String> original_new_id_map = new Hashtable<String, String>(); 
@@ -914,23 +916,33 @@ public class LocalDataStoreService extends DataStoreService
 	 */
   	@Override
 	public synchronized String generateIdentifier(String scheme, String fragment) {
-		int lastid = -1;
-		String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
 		
-		// Get last id found
-		lastid = getLastDocid(fragment);
-		
-		// scope.X
-		String identifier = fragment + separator + lastid;
+		String identifier = null;
 
-		// set to the next in local for he next time we call this
-		lastid++;
-		if (!Morpho.thisStaticInstance.getProfile().set("lastId", 0, String.valueOf(lastid))) {
-			Log.debug(1, "Error incrementing the locally stored docid");
-			identifier = null;
+		// for UUID
+		if (scheme.equalsIgnoreCase(DataStoreServiceController.UUID)) {
+			UUID uuid = UUID.randomUUID();
+            identifier = UUID_PREFIX + uuid.toString();
 		} else {
-			Morpho.thisStaticInstance.getProfile().save();
-			Log.debug(30, "the next id is " + identifier);
+			// scope.X format
+	  		int lastid = -1;
+			String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
+			
+			// Get last id found
+			lastid = getLastDocid(fragment);
+			
+			// scope.X
+			identifier = fragment + separator + lastid;
+	
+			// set to the next in local for he next time we call this
+			lastid++;
+			if (!Morpho.thisStaticInstance.getProfile().set("lastId", 0, String.valueOf(lastid))) {
+				Log.debug(1, "Error incrementing the locally stored docid");
+				identifier = null;
+			} else {
+				Morpho.thisStaticInstance.getProfile().save();
+				Log.debug(30, "the next id is " + identifier);
+			}
 		}
 		Log.debug(30, "generated  local identifier: " + identifier);
 
@@ -965,51 +977,6 @@ public class LocalDataStoreService extends DataStoreService
 		
 		return lastid;
 	}
-	
-	  /**
-	   * Gets the next available temp id from profile file.
-	   * @return the next available id
-	   */
-	  public synchronized String getNextTempID()
-	  {
-	    long startID = 1;
-	    long lastid = -1;
-	    //Gets last id from profile
-	    String lastidS = Morpho.thisStaticInstance.getProfile().get(TEMPIDNAME, 0);
-	    String separator = Morpho.thisStaticInstance.getProfile().get("separator", 0);
-	    try
-	    {
-	        lastid = (new Long(lastidS)).longValue();
-	    }
-	    catch(Exception e)
-	    {
-	      Log.debug(30, "couldn't get lastid for temp from profile");
-	      lastid = startID;
-	    }
-	    String identifier = TEMP + separator + lastid;
-	    lastid++;
-	    String s = "" + lastid;
-	    if (!Morpho.thisStaticInstance.getProfile().set(TEMPIDNAME, 0, s))
-	    {
-	      
-	      boolean success = Morpho.thisStaticInstance.getProfile().insert(TEMPIDNAME, s);
-	      if (success) {
-	    	  Morpho.thisStaticInstance.getProfile().save();
-	    	  return identifier + ".1"; 
-	      }
-	      else
-	      {
-	        Log.debug(1, "Error incrementing the accession number id");
-	        return null;
-	      }
-	    }
-	    else
-	    {
-	    	Morpho.thisStaticInstance.getProfile().save();
-	      Log.debug(30, "the next id is "+identifier+".1");
-	      return identifier + ".1"; 
-	    }
-	  }
   
   /**
    * Gets a data file from all local source. It will looks file in data dir, then in temporary dir, 
