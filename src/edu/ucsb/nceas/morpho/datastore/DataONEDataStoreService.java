@@ -873,9 +873,20 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		return isConnected();
 	}
 	
+	/**
+	 * Log out by deleting the client certificate and configuring the 
+	 * client certificate location to null.
+	 * We delete the file because the certificate may be valid for hours after it 
+	 * has been issued and we want to ensure that it is not misused.
+	 * @return
+	 */
 	public boolean logOut() {
-		//String certificateLocation = Morpho.thisStaticInstance.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
-		// TODO: remove file?
+		// remove the certificate file
+		String certificateLocation = Morpho.thisStaticInstance.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+		File certFile = new File(certificateLocation);
+		if (certFile.exists()) {
+			certFile.delete();
+		}
 		
 		// clear out the certificate config
 		Morpho.thisStaticInstance.getProfile().set(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0, null, true);
