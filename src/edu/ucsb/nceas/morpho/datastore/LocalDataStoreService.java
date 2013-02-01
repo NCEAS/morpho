@@ -439,15 +439,16 @@ public class LocalDataStoreService extends DataStoreService
 		adp.setSerializeLocalSuccess(false);
 
 		// now save doc to local file system, either for real or in incomplete directory
-		String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
-		InputStream stringStream = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
+		//String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
+		//InputStream stringStream = new ByteArrayInputStream(temp.getBytes(Charset.forName("UTF-8")));
 		File savedFile = null;
 
 		if (location.equals(DataPackageInterface.INCOMPLETE)) {
-			Log.debug(30, "Serialize metadata into incomplete dir with docid " + identifier);
-			savedFile = saveIncompleteFile(identifier, stringStream);
+		    //We already save it in the DataStoreServiceController.calculateStats. So do nothing
+			//Log.debug(30, "Serialize metadata into incomplete dir with docid " + identifier);
+			//savedFile = saveIncompleteFile(identifier, stringStream);
 		} else {
-			savedFile = saveFile(adp.getAccessionNumber(), stringStream);
+			savedFile = saveFile(adp.getAccessionNumber(), adp.getDataSource().getInputStream());
 		}
 		
 		// success?
