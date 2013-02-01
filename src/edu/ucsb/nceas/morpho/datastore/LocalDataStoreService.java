@@ -47,7 +47,6 @@ import java.util.Vector;
 import javax.activation.FileDataSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.io.IOUtils;
 import org.dataone.client.D1Object;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
@@ -479,7 +478,7 @@ public class LocalDataStoreService extends DataStoreService
 	    
 		// save ore document finally
 		Identifier oreId = new Identifier();
-	    oreId.setValue("resourceMap_" + adp.getIdentifier().getValue());
+	    oreId.setValue(RESOURCE_MAP_ID_PREFIX + adp.getIdentifier().getValue());
 	    D1Object oreD1Object = new D1Object();
 	    mdp.setPackageId(oreId);
 	    //save oreFile
@@ -500,6 +499,14 @@ public class LocalDataStoreService extends DataStoreService
 		// set the revision graph
 		resourceMapSysMeta.setObsoletes(null);
 		resourceMapSysMeta.setObsoletedBy(null);
+		// assume naming convention for ORE maps to obsolete the old one
+		// see: http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5798
+		Identifier obsoleteMetadataId = adp.getSystemMetadata().getObsoletes();
+		if (obsoleteMetadataId != null) {
+			Identifier obsoleteOreId = new Identifier();
+			obsoleteOreId.setValue(RESOURCE_MAP_ID_PREFIX + obsoleteMetadataId.getValue());
+			resourceMapSysMeta.setObsoletes(obsoleteOreId);
+		}
 
 		// this is just weird to set in two different places
 	    mdp.setSystemMetadata(resourceMapSysMeta);

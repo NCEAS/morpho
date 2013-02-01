@@ -32,7 +32,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -93,7 +92,6 @@ import edu.ucsb.nceas.morpho.exception.IllegalActionException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.Log;
 
 /**
@@ -506,7 +504,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		
 		// save ore document finally
 		Identifier oreId = new Identifier();
-		oreId.setValue("resourceMap_" + metadataId.getValue());
+		oreId.setValue(RESOURCE_MAP_ID_PREFIX + metadataId.getValue());
 		D1Object oreD1Object = new D1Object();
 		mdp.setPackageId(oreId);
 		//System.out.println("the serilziae page is ===== "+mdp.serializePackage());
@@ -531,6 +529,14 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		// set the revision graph
 		resourceMapSysMeta.setObsoletes(null);
 		resourceMapSysMeta.setObsoletedBy(null);
+		// assume naming convention for ORE maps to obsolete the old one
+		// see: http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5798
+		Identifier obsoleteMetadataId = adp.getSystemMetadata().getObsoletes();
+		if (obsoleteMetadataId != null) {
+			Identifier obsoleteOreId = new Identifier();
+			obsoleteOreId.setValue(RESOURCE_MAP_ID_PREFIX + obsoleteMetadataId.getValue());
+			resourceMapSysMeta.setObsoletes(obsoleteOreId);
+		}
 
 		// this is just weird to set in two different places
 		mdp.setSystemMetadata(resourceMapSysMeta);

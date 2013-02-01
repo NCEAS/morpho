@@ -38,8 +38,10 @@ import edu.ucsb.nceas.morpho.framework.ProfileDialog;
  */
 public abstract class DataStoreService implements DataStoreServiceInterface
 {
-  protected Morpho morpho;
-  protected ConfigXML config;
+  
+	protected static final String RESOURCE_MAP_ID_PREFIX = "resourceMap_";
+	protected Morpho morpho;
+	protected ConfigXML config;
   
   /**
    * create a new FileSystemDataStore for a Morpho
