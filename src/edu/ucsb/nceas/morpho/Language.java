@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import edu.ucsb.nceas.utilities.Log;
+import edu.ucsb.nceas.morpho.util.Log;
 
 public class Language {
 	

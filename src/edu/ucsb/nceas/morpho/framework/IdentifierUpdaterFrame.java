@@ -39,7 +39,7 @@ import javax.swing.JProgressBar;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.update.IdentifierFileMapUpdater;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.update.RevisionUpdater;
-import edu.ucsb.nceas.utilities.Log;
+import edu.ucsb.nceas.morpho.util.Log;
 
 public class IdentifierUpdaterFrame extends JFrame{
   private static final String TITLE = "Generating the identifier-fileName mapping and the revision properties.";
