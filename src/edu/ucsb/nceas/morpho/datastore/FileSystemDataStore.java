@@ -167,8 +167,9 @@ public class FileSystemDataStore {
 	      buffOut = new BufferedOutputStream(out);
 	       
 	      int d = -1;
-	      while((d =buffData.read()) != -1) {
-	        buffOut.write(d); //write out everything in the reader    
+	      byte[] b = new byte[1024*100];
+	      while((d =buffData.read(b)) != -1) {
+	        buffOut.write(b,0,d); //write out everything in the reader    
 	      }
 	      buffOut.flush();
 	    } finally {
