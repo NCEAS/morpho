@@ -345,8 +345,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 		ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
 		formatId.setValue(getXMLNamespace());	
 		sysmeta.setFormatId(formatId);
+		// do not set to 'public' otherwise the object is writable by everyone
 		Subject rightsHolder = new Subject();
-		rightsHolder.setValue(Morpho.thisStaticInstance.getUserName());
+		rightsHolder.setValue("TBD");
 		sysmeta.setRightsHolder(rightsHolder);
 		BigInteger size = BigInteger.valueOf(getData().length);
 		sysmeta.setSize(size);

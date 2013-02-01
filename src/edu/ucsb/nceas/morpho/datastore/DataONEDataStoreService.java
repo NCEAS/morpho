@@ -600,7 +600,6 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   private void save(D1Object d1Object) throws NullPointerException, InvalidToken, ServiceFailure, NotAuthorized, 
               NotFound, NotImplemented, InsufficientResources, IllegalActionException, IllegalArgumentException, 
                ConfigurationException, IOException, IdentifierNotUnique, InvalidRequest, InvalidSystemMetadata, UnsupportedType {
-    String action = null;
     
     if (d1Object == null) {
       throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't be null");
@@ -611,7 +610,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
         throw new NullPointerException("DataONEDataStoreService.save - the D1Object which will be saved can't have the null SystemMetadata");
       }
     
-    // TODO: better place to do this?
+    // NOTE: the submitter may not be the official rightsHolderr, but we want to set a value here that will not lock out the user
     String rightsHolderDN = CertificateManager.getInstance().getSubjectDN(CertificateManager.getInstance().loadCertificate());
     Subject rightsHolder = new Subject();
     rightsHolder.setValue(rightsHolderDN);
