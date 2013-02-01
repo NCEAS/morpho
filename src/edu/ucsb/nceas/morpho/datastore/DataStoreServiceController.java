@@ -742,7 +742,7 @@ public class DataStoreServiceController {
 		mdp = resolveAllIdentifierConflicts(mdp, location);
 		
 		// make sure the size and checksum are correct
-		calculateStats(mdp);
+		calculateStats(mdp, location);
 
 		if (location.equals(DataPackageInterface.NETWORK)) {
 			Morpho.thisStaticInstance.getDataONEDataStoreService().save(mdp);
@@ -775,24 +775,32 @@ public class DataStoreServiceController {
 	 * authoritative MN (switched MN preference)
 	 * @throws Exception
 	 */
-	private void calculateStats(MorphoDataPackage mdp) throws Exception {
+	private void calculateStats(MorphoDataPackage mdp, String location) throws Exception {
 		// calculate and set crucial fields that may have changed
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
+		File metadataFile = null;
 		
-            File metadataFile = null;
-            try {
+		if(location != null && location.equals(DataPackageInterface.INCOMPLETE)) {
+		    //actually we saved the incomplete metadata here
+		    metadataFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveIncompleteDataFile(adp.getIdentifier().getValue(), new ByteArrayInputStream(adp.getData()));
+		    adp.setDataSource(new FileDataSource(metadataFile));
+		} else {
+		    try {
+		        //lookUpLocalFile doesn't include the incomplete directory 
                 metadataFile = Morpho.thisStaticInstance.getLocalDataStoreService().lookUpLocalFile(adp.getIdentifier().getValue());
                 adp.setDataSource(new FileDataSource(metadataFile));
             } catch (FileNotFoundException e) {
                 metadataFile = null;
             }
             if(metadataFile == null) {
-                String temp = XMLUtil.getDOMTreeAsString(adp.getMetadataNode().getOwnerDocument());
-                File metadataCacheFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveCacheDataFile(adp.getIdentifier().getValue(), new ByteArrayInputStream(temp.getBytes(IdentifierFileMap.UTF8)));
-                adp.setDataSource(new FileDataSource(metadataCacheFile));
+                metadataFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveCacheDataFile(adp.getIdentifier().getValue(), new ByteArrayInputStream(adp.getData()));
+                adp.setDataSource(new FileDataSource(metadataFile));
             }
+		}
            
-      
+            
+           
+        //System.out.println("the metadata file location is =========================="+metadataFile.getAbsolutePath());
 		SystemMetadata sysmeta = adp.getSystemMetadata();
 		
 		// checksum and size
