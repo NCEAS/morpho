@@ -797,16 +797,15 @@ public class DataStoreServiceController {
                 adp.setDataSource(new FileDataSource(metadataFile));
             }
 		}
-           
-            
+              
            
         //System.out.println("the metadata file location is =========================="+metadataFile.getAbsolutePath());
 		SystemMetadata sysmeta = adp.getSystemMetadata();
 		
 		// checksum and size
-		Checksum checksum = ChecksumUtil.checksum(adp.getData(), "MD5");
+		Checksum checksum = ChecksumUtil.checksum(new FileInputStream(metadataFile), "MD5");
 		sysmeta.setChecksum(checksum);
-		BigInteger size = BigInteger.valueOf(adp.getData().length);
+		BigInteger size = BigInteger.valueOf(metadataFile.length());
 		sysmeta.setSize(size);
 		sysmeta.setDateSysMetadataModified(Calendar.getInstance().getTime());
 		ObjectFormatIdentifier formatId = new ObjectFormatIdentifier();
