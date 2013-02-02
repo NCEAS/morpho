@@ -8,6 +8,8 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import org.dataone.service.types.v1.Identifier;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -127,6 +129,7 @@ public class EMLTransformToNewestVersionDialog
 		{
 			if (eml200Package != null)
 			{
+			    Identifier orgId = eml200Package.getIdentifier();
 				//TODO transform the datapakcage to the newest version
 				String newString = null;
 				boolean hasError = false;
@@ -152,6 +155,9 @@ public class EMLTransformToNewestVersionDialog
 		                //String newid = an.incRev(id);
 		                //eml200Package.setAccessionNumber(newid);
 		                eml200Package.setLocation("");//not save it yet
+		                if(orgId != null) {
+		                    eml200Package.setAccessionNumber(orgId.getValue());
+		                }
 		                MorphoDataPackage mdp = new MorphoDataPackage();
 	                    mdp.setAbstractDataPackage(eml200Package);
 		                 if(hasError)
