@@ -122,15 +122,17 @@ public class Log
   {
     if (debug) {
       if (debugLevel > 0 && severity <= debugLevel) {
-        // Show a dialog for severe errors
+    	  // Show a dialog for severe errors
     	  MorphoFrame frame = null;
-    	  if (severity < 10) {
-	    	  try {
-	    		  frame = UIController.getInstance().getCurrentActiveWindow();
-	    	  } catch (Exception e) {
-	    		  System.err.println("No active window for logging severe messages");
-			  }
-    	  }
+    	  // Do not use the MorphoFrame as parent
+    	  // see: http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5844
+//    	  if (severity < 10) {
+//	    	  try {
+//	    		  frame = UIController.getInstance().getCurrentActiveWindow();
+//	    	  } catch (Exception e) {
+//	    		  System.err.println("No active window for logging severe messages");
+//			  }
+//    	  }
         if (severity < 5) {
           JOptionPane.showMessageDialog(frame, getScrollPanel(message), "Error!",
                                         JOptionPane.ERROR_MESSAGE);
