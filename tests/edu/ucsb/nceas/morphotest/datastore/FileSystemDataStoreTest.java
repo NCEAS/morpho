@@ -51,6 +51,7 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
   private static final String id2 = "tao.222";
   private static final String id3 = "jing.123";
   private static final String id4 = "jing.321";
+  private static final String doi = "doi:10.6085/AA/YBHX00_XXXITBDXMMR01_20040720.50.5";
   private static final String filePath1 = "tests/testfiles/eml201-reference-system.xml";
   private static final String filePath2 = "tests/testfiles/eml201withadditionalMetacat.xml";
   /**
@@ -88,6 +89,7 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
     FileSystemDataStore fileStore = FileSystemDataStore.getInstance(objectStorePath1);
     fileStore.set(id1, new FileInputStream(new File(filePath1)));
     fileStore.set(id2, new FileInputStream(new File(filePath2)));
+    fileStore.set(doi, new FileInputStream(new File(filePath2)));
     assertTrue("FileSystemDataStore.testSet - the directory should be "+objectStorePath1+ 
         " rather than "+fileStore.getDirectory(), fileStore.getDirectory().endsWith(objectStorePath1));
 
@@ -118,6 +120,22 @@ public class FileSystemDataStoreTest extends MorphoTestCase {
     output.close();
     assertTrue("The file "+f1.getAbsolutePath()+" should have the same size of file "+filePath1, 
         f1.length() == (new File(filePath1).length()));
+    
+    
+    File inDOIFile = fileStore.get(doi);
+    InputStream inDOI = new FileInputStream(inDOIFile);
+    File temp = File.createTempFile("test", null);
+    FileOutputStream outputDOI = new FileOutputStream(temp);
+    byte[] arrayDOI = new byte[8*1024];
+    while ((index = inDOI.read(arrayDOI)) != -1) {
+      outputDOI.write(arrayDOI, 0, index);
+    }
+    inDOI.close();
+    outputDOI.close();
+    assertTrue("The file "+temp.getAbsolutePath()+" should have the same size of file "+filePath2, 
+        temp.length() == (new File(filePath2).length()));
+    
+    
     // switch directory
     fileStore = FileSystemDataStore.getInstance(objectStorePath2);
     boolean inException = false;
