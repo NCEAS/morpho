@@ -984,6 +984,10 @@ public class DataPackagePlugin
       return;
     }
     MorphoDataPackage mdp = DataStoreServiceController.getInstance().read(identifier, location);
+    if(mdp == null) {
+        Log.debug(5, "Morpho couldn't open the package at this location - "+location);
+        return;
+    }
     adp = mdp.getAbstractDataPackage();
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());

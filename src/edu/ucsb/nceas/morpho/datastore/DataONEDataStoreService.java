@@ -352,24 +352,30 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		if (adp.getEntityArray() != null) {
 			int entityIndex = 0;
 			for (Entity entity: adp.getEntityArray()) {
-				String URLinfo = adp.getDistributionUrl(entityIndex, 0, 0);
-				String dataId = AbstractDataPackage.getUrlInfo(URLinfo);
-				Identifier dataIdentifier = new Identifier();
-				dataIdentifier.setValue(dataId);
-				DataONEDataSource dataSource = new DataONEDataSource(activeMNode, dataIdentifier);
-				dataIds.add(dataIdentifier);
-				if (entity != null) {
-					//byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataIdentifier.getValue()));
-					//entity.setData(data);
-				    entity.setDataSource(dataSource);
-					entity.setSystemMetadata(getSystemMetadataFromDataONE(dataIdentifier.getValue()));
-					mdp.addData(entity);
-				} else {
-					throw new OREException(
-							"DataONEDataStoreService.read - the data object "
-									+ dataIdentifier.getValue()
-									+ "could not be found on the system");
-				}
+			    String dataId = null;
+			    try {
+			        String URLinfo = adp.getDistributionUrl(entityIndex, 0, 0);
+	                dataId = AbstractDataPackage.getUrlInfo(URLinfo);
+	                Identifier dataIdentifier = new Identifier();
+	                dataIdentifier.setValue(dataId);
+	                DataONEDataSource dataSource = new DataONEDataSource(activeMNode, dataIdentifier);
+	                dataIds.add(dataIdentifier);
+	                if (entity != null) {
+	                    //byte[] data = IOUtils.toByteArray(getDataFromDataONE(dataIdentifier.getValue()));
+	                    //entity.setData(data);
+	                    entity.setDataSource(dataSource);
+	                    entity.setSystemMetadata(getSystemMetadataFromDataONE(dataIdentifier.getValue()));
+	                    mdp.addData(entity);
+	                } else {
+	                    throw new OREException(
+	                            "DataONEDataStoreService.read - the data object "
+	                                    + dataIdentifier.getValue()
+	                                    + "could not be found on the system");
+	                }
+			    } catch (Exception e) {
+			       Log.debug(7, "Morpho couldn't read the entity "+dataId+" from the network:\n"+e.getMessage()); 
+			    }
+				
 			}
 		}
 		
