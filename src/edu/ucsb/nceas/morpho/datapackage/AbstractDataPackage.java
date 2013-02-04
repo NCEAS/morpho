@@ -234,7 +234,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  ids do not agree! (even though they should). This value remains null if there
    *  is no intial ID
    */
-  protected String initialId = null;
+  //protected String initialId = null;
 
   protected Entity[] entityArray;
 
@@ -387,17 +387,17 @@ public abstract class AbstractDataPackage extends MetadataObject
   /**
    *  sets the initialId variable
    */
-  public void setInitialId(String initId) {
+  /*public void setInitialId(String initId) {
     this.initialId = initId;
-  }
+  }*/
   
 
   /**
    *  gets the initialId variable
    */
-  public String getInitialId() {
+  /*public String getInitialId() {
     return initialId;
-  }
+  }*/
 
 
   /**
@@ -452,16 +452,19 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return String
    */
   public String getAccessionNumber() {
-    String initId = getInitialId();
+    //String initId = getInitialId();
     String temp = getGenericValue(
         "/xpathKeyMap/contextNode[@name='package']/accessionNumber");
-    if (initId != null) {
+    /*if (initId != null) {
       if (!initId.equals(temp)) {
         Log.debug(10,"Internal Id DOES NOT match Storage Id!!!");
       }
       temp = initId;
+    }*/
+    if (getIdentifier() != null && getIdentifier().getValue() != null && !getIdentifier().getValue().trim().equals("")) {
+        temp = getIdentifier().getValue();
     }
-
+    //System.out.println("The final id is  ==================== is "+temp);
     return temp;
   }
 
@@ -473,7 +476,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public void setAccessionNumber(String id) {
     setGenericValue("/xpathKeyMap/contextNode[@name='package']/accessionNumber", id);
-    setInitialId(null);
+    //setInitialId(null);
     
     // save it in the SM
     Identifier identifier = new Identifier();
