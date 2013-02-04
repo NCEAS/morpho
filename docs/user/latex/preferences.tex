@@ -1,6 +1,7 @@
 \section{Setting Preferences} \label{sec:preferences}
 
-Use Morpho preferences to set a Metacat URL, customize the look and feel
+Use Morpho preferences to set a DataONE Coordinating Node, select a 
+Member Node, customize the look and feel
 of the application, and adjust settings that affect logging and
 debugging. Select ``Set preferences...'' under the File menu to open the
 Morpho Preferences screen (\autoref{fig:dialog-preferences}).
@@ -12,10 +13,18 @@ Morpho Preferences screen (\autoref{fig:dialog-preferences}).
   \label{fig:dialog-preferences}
 \end{figure}
 
-\paragraph{Metacat URL} The Metacat URL contains the URL of the network (a Metacat
-server) where data are stored. By default, the Metacat URL points to the
-KNB Metacat server. Change the default only if you are using a custom
-server.
+\paragraph{Coordinating Node URL} The Coordinating Node URL contains the URL 
+of the DataONE Coordinating Node that is instrumental in managing data replication, 
+user accounts, and other essential DataONE infrastructure requirements.
+where data are stored. By default, the Coordinating Node URL points to the
+production DataONE environment. Change the default only if you are testing a new feature or 
+are an advanced user.
+
+\paragraph{Member Node URL} The Member Node URL contains the URL of the specific
+DataONE Member Node to which data and metadata will be uploaded. By default, the 
+Member Node URL points to the KNB Member Node which accepts user-submitted 
+data packages from a wide variety of disciplines. Select a different Member Node 
+if your content should primarily be housed on that specific node.
 
 \paragraph{Log Messages} The Log Messages preference, when set to ``yes'' (the
 default), specifies that error messages be written to a log file. The

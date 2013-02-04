@@ -27,10 +27,10 @@ common Morpho functions.
 \label{sec:panel-profile}
 
 The Current Profile panel (\autoref{fig:panel-profile}) contains
-information about your current user profile as well as the KNB login
-information associated with that profile. Your KNB username is the name
-appearing after the ``uid='' just below the title bar of the ``Current
-Profile'' panel. 
+information about your current user profile as well as the authentication
+identity currently in use with that profile. Your DataONE identity is the name
+appearing just below the title bar of the ``Current
+Profile'' panel and will be used thorughout the DataONE network. 
 
 \begin{figure}
   \centering
@@ -53,8 +53,8 @@ projects, for example.
 \label{sec:panel-network-status}
 
 The Network Status panel displays the current network status and allows
-you to log in and out of the KNB network. The panel offers different
-options depending on whether or not you are logged in to the network
+you to log in and out of the network. The panel offers different
+options depending on whether or not you have authenticated 
 (\autoref{fig:panel-network-status}).
 
 \begin{figure}
@@ -62,17 +62,17 @@ options depending on whether or not you are logged in to the network
     \includegraphics[width=0.7\textwidth]{images/panel-network-status.jpg}
   \caption{The Network Status panel from the Main Morpho screen. The
     image on the left displays the panel as it appears when not logged
-    in to the KNB network. The image on the right displays the panel as
+    in to the network. The image on the right displays the panel as
     it appears when logged in to the network.}
   \label{fig:panel-network-status}
 \end{figure}
 
-If you are not logged in to the KNB network, you can log in by typing
-your KNB password in the ``Password'' field and clicking the ``Login''
-button. You will be logged in with the KNB username associated with the
-current profile (the KNB account information is displayed in the
-``Current Profile'' panel). Note that the KNB username is not necessarily
-the same as your user profile name. Log out at any time by clicking 
+If you have not authenticated with your identity provider, you can do so 
+by clicking the ``Login''button. 
+You will be prompted for your username for the identity provider selected and 
+that username password. The DataONE identity is displayed in the
+``Current Profile'' panel upon successful authentication. Note that the DataONE identity is not necessarily
+the same as your username or user profile name. Log out at any time by clicking 
 ``Logout from network.''
 
 \subsubsection[Work with your data\ldots]{Work with Your Data Panel}
@@ -83,7 +83,7 @@ allows you to easily access the most common features of Morpho. Click
 any of the links \hyperref[sec:creating]{Create a new data package},
 \hyperref[sec:viewing]{Open an existing data package}, or
 \hyperref[sec:searching]{Search for an existing data package} (both
-locally and on the KNB network) to start working. Detailed descriptions
+locally and on the DataONE network) to start working. Detailed descriptions
 of these functions are provided later in the guide.
 
 \begin{figure}
@@ -103,7 +103,7 @@ Data, Window, and Help -- is discussed in more detail below.
 \subsubsection{File menu} \label{sec:menu-file}
 
 Use the File menu (\autoref{fig:menu-file}) to create a new data
-package, open an existing data package, log in and out of the KNB
+package, open an existing data package, log in and out of the DataONE 
 network, create a new user profile, save a data package, delete a data
 package, print documentation, set preferences, and exit Morpho, among
 other options. 
@@ -238,11 +238,11 @@ will display the purpose of the button.
   \hline
   \includegraphics[scale=0.7]{images/button-search.png} &
   The ``Search for data'' button begins the data package search process.
-  If logged in to the KNB, you can search both locally and on the KNB
+  If logged in to DataONE, you can search both locally and on the 
   network. \\
   \hline
   \includegraphics[scale=0.7]{images/button-bar-search.png} &
-  The ``Refresh…'', ``Save search,'' and ``Revise search'' buttons are
+  The ``Refresh'', ``Save search,'' and ``Revise search'' buttons are
   enabled only when the screen contains search results. \\
   \hline
   \end{tabular}

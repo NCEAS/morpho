@@ -43,8 +43,8 @@ Note that Morpho will search and display older EML packages (e.g., 2.0
 or Beta 6) as EML 2.0. If a package does not use the latest EML format,
 Morpho will prompt users to transform the EML to the latest version. If
 you choose to upgrade the EML to the latest version, you must save the
-data package to preserve the changes, at which time the revision number
-of the document will be incremented. If a user chooses to upgrade the
+data package to preserve the changes, at which time a revision of the 
+document will be created. If a user chooses to upgrade the
 EML and the upgraded EML document is invalid (e.g., a required metadata
 field is blank), a correction wizard opens to allow users to fix the
 problem. For more information, please see \autoref{sec:upgrading-eml}.
@@ -57,19 +57,18 @@ to create multiple user profiles to manage different collections of
 data, or use one profile for all your Morpho work. 
 
 In order to take advantage of Morpho's useful network functionality, you
-must also register for the KNB network.  Because you are prompted to
-enter information about your KNB account when you create a user profile,
-we recommend that you first register with the KNB Network before
-creating a user profile.
+must register your identity with DataONE.  Because you are prompted to
+login with your account when you create a user profile,
+we recommend that you first register before creating a user profile.
 
-\subsubsection{Register for the KNB Network} \label{sec:register}
+\subsubsection{Register for the DataONE Network} \label{sec:register}
 
-Registering with the KNB network allows you to take advantage of the
+Registering with the DataONE network allows you to take advantage of the
 advanced storage, access, and querying capabilities provided by the
-Metacat server. If you do not have access to the Internet, or you do not
-want to register for the KNB, Morpho will still work, but you will only
+DataONE infrastructure. If you do not have access to the Internet, or you do not
+want to register with DataONE, Morpho will still work, but you will only
 be able to store your metadata files locally, and will not be able to
-log in to the KNB to create or edit data sets that are stored remotely.
+to create or edit data sets that are stored remotely.
 
 To register for the KNB network, go to
 \url{http://knb.ecoinformatics.org/}, select the 'Create new account'
@@ -87,8 +86,8 @@ create a Morpho user profile.
 \subsubsection{Create a User Profile}
 
 The user profile allows you to use Morpho locally on your personal
-computer and, once registered for the KNB (see \ref{sec:register}), to
-create, access, edit, and search for metadata and data on the KNB. 
+computer and, once registered with DataONE (see \ref{sec:register}), to
+create, access, edit, and search for metadata and data in DataONE. 
 
 First-time users will automatically be prompted to create a new profile
 when they open Morpho. Users upgrading Morpho from a previous version
@@ -115,26 +114,13 @@ your old profile existed.
     \label{fig:new-profile-name}
   \end{figure}
 
-  \item On the ``Network Account Information'' screen
-    (\autoref{fig:new-profile-account}), enter your KNB username and the
-    organization you selected when you
-    \hyperref[sec:register]{registered for the KNB}. If your
-    organization is not listed, click the Refresh button to look up the
-    most recent account information. Click ``Next.'' 
-
-  \begin{figure}
-    \centering
-      \includegraphics[width=0.7\textwidth]{images/new-profile-account.png}
-    \caption{Step 2: Enter your KNB username and organization.}
-    \label{fig:new-profile-account}
-  \end{figure}
-
   \item On the ``Data Package Identification'' screen
     (\autoref{fig:new-profile-prefix}), enter a short identifier prefix.
-    The identifier prefix will be used to create IDs for metadata
+    Depending on the identifier scheme used at various Member Nodes, 
+    the identifier prefix may be used to create IDs for metadata
     documents you create in Morpho, and for data tables or other data
     files you import using Morpho. For example, specifying the prefix
-    ``jane\_doe'' will result in document IDs like jane\_doe.1.1,
+    ``jane\_doe'' may result in document IDs like jane\_doe.1.1,
     jane\_doe.2.1, etc. \emph{\textbf{Do not use the reserved prefix
     ``temporary''.}} Other non-alphanumeric characters like periods, 
     commas, and quotation marks are also not allowed in the prefix.
@@ -156,7 +142,7 @@ your old profile existed.
    \textbf{However, if you delete a profile, you also
   delete all local copies of data packages created or saved using that
   profile}. Unless you first extract the data packages and save them
-  elsewhere on your computer (or to a network server, like Metacat), you
+  elsewhere on your computer (or to a Member Node, like Metacat), you
   may lose data.
 \end{shaded}
 
@@ -164,12 +150,12 @@ your old profile existed.
 
 After you have created a user profile (see
 \autoref{sec:before-you-begin}), you will see the Main Morpho screen.
-Enter your KNB password in the ``Network Status'' panel and click
+Login using the ``Network Status'' panel by clicking
 ``Login'' (\autoref{fig:panel-login}). If you choose not to log in, you
 will be able to create, edit, search, access, and manage data that are
-stored locally, and may search for public data sets on the KNB network.
-However, you will not be allowed to create or edit data sets on the KNB
-network.
+stored locally, and may search for public data sets on the DataONE network.
+However, you will not be allowed to create or edit data sets on the DataONE
+Member Node.
 
 \begin{figure}
   \centering
