@@ -430,7 +430,7 @@ public class LocalDataStoreService extends DataStoreService
 		}
 
 		// now save the metadata
-		adp.setPackageIDChanged(false);
+		//adp.setPackageIDChanged(false);
 		
 		// To check if this update or insert action
 		String identifier = adp.getAccessionNumber();
