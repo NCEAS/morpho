@@ -1,0 +1,77 @@
+\section{What's new in version 2.0.0}
+
+Morpho 2.0.0 represents a major change in how the software operates. 
+Most notably, there is support for using Morpho with any 
+DataONE Member Node, one of which continues to be Metacat.
+These changes include:
+\begin{itemize}
+ \item Support for any data package identifier, not just the legacy format
+ \item Client certificate-based authentication mechanism using InCommon Identity providers
+ \item Mutable access control rules on a per-revision basis
+ \item Mutable replication policies on a per-object-revision basis
+\end{itemize}
+
+\subsection{Identifiers}
+
+Morpho will no longer generate data and datapackage identifiers
+ in the format ``scope.id.rev''. Instead, an opaque and more universally unique
+UUID will be generated. 
+Previous versions of Morpho and Metacat used
+a prescribed identifier format that encoded information about the object
+within the identifier - namely, the revision history of the object.
+Morpho now tracks this information independently from the object identifier
+in the ``System Metadata'' for each object. Morpho continues to track the revision
+history, but no attempt should be made to ``interpret'' any meaning from the identifiers used.
+
+For example, a current data package with two previous revisions will look like this:
+\begin{itemize}
+ \item ``urn:uuid:d7440f1b-390c-4ea7-99c7-1e353e22cd23'' obsoletes ``urn:uuid:e41ba25a-6719-4dfa-b349-1ac208522647''
+ \item ``urn:uuid:d7440f1b-390c-4ea7-99c7-1e353e22cd23''  obsoletedBy ``urn:uuid:05f182f9-134b-4560-8cc8-0d6ca62bc573'' 
+\end{itemize}
+
+In the future, Member Nodes may use utilize different identifier generation schemes
+such as DOI, ARK, LSID, etc.
+
+\subsection{Authentication}
+
+Authentication will now be handled by distributed Identity Providers 
+that are part of the CILogon federation. This includes InCommon providers
+as well as some OpenId providers.
+
+PLEASE NOTE: You will be using a new identity for all interactions with 
+the Member Node and the DataONE network.
+
+For existing KNB, NCEAS, and other closely-affiliated organizational accounts, the user id 
+and password will still be utililized for authentication. There may be special considerations 
+for user accounts that exist with multiple affiliations, but those will be converted case by 
+case.
+
+LTER-affiliated users can authenticate using their LTER Identity Provider credentials
+as instructed by the network office.
+
+All other users can either create a free ProtectNetwork account, or request an affiliated 
+KNB-managed account from NCEAS.
+
+\subsection{Access Control Policies}
+
+Morpho now allows access control policies to be managed outside of the EML
+file. Existing packages will utilize the EML-defined access control rules initially.
+If modifcations are made to the access policy for the metadata object, they will be set
+directly on the Coordinating Node which is responsible for broadcasting the change
+throughout the network. In cases where the Member Node content has not been synchronized
+to the Coordinating Node, modifications to the access policy cannot be performed.
+
+Access control for data objects is controlled similarly. Newly imported data obejcts
+will initially ``inherit'' the policy from the metadat object, but subsequent modifications
+to the metadata's access policy will not cascade to the data obejcts. Access policies for 
+metadata and data will be handled completely independently from that point forward.
+
+\subsection{Replication Policies}
+
+DataONE has introduced a granular replication policy that is applied to each 
+revision of each object. These policies can be used to specify if metadata and 
+data should be replicated throughout the DataONE network and, if so, how many 
+replicas and on which Member Nodes those replicas should be stored. 
+Changes to the replication policy of an object do not represent an ``update'' to 
+the object and only serve to instruct the Coordinating Node how best to 
+manage the object[s] in question.
