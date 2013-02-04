@@ -12,6 +12,7 @@ import org.dataone.service.types.v1.Identifier;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -129,7 +130,7 @@ public class EMLTransformToNewestVersionDialog
 		{
 			if (eml200Package != null)
 			{
-			    Identifier orgId = eml200Package.getIdentifier();
+			    //Identifier orgId = eml200Package.getIdentifier();
 				//TODO transform the datapakcage to the newest version
 				String newString = null;
 				boolean hasError = false;
@@ -155,9 +156,11 @@ public class EMLTransformToNewestVersionDialog
 		                //String newid = an.incRev(id);
 		                //eml200Package.setAccessionNumber(newid);
 		                eml200Package.setLocation("");//not save it yet
-		                if(orgId != null) {
-		                    eml200Package.setAccessionNumber(orgId.getValue());
-		                }
+		                String scheme = DataStoreServiceController.UUID;
+		                String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+		                String newId = Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
+		                eml200Package.setAccessionNumber(newId);
+		                
 		                MorphoDataPackage mdp = new MorphoDataPackage();
 	                    mdp.setAbstractDataPackage(eml200Package);
 		                 if(hasError)
