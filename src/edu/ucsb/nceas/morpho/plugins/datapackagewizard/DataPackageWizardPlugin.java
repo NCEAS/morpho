@@ -316,9 +316,26 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startCorrectionWizard(MorphoDataPackage mdp, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener)
   {
-	  CorrectionWizardController controller = new CorrectionWizardController(errorPathes, mdp, frame);  
-	  controller.setExternalListener(listener);
- 	  controller.startWizard();
+      boolean isSaveProcess = false;
+      startCorrectionWizard(mdp, errorPathes, frame, listener, isSaveProcess);
+  }
+  /**
+   * 
+   * start a correction invalid eml document wizard. This wizard always be used to
+   * correct in valid eml document which was transformed from old eml version.
+   *
+   * @param dataPackage  the datapackage will be corrected
+   * @param errorPathes    the list of path which has valid value
+   * @param frame            the old frame which need be disposed after correction is done
+   * @param listener         the listener will handle some another action after the wizard is done, e.g .AddAccessCommand
+   * @param isSaveProcess    if the correction happens during the save process.  
+   */
+  public void startCorrectionWizard(MorphoDataPackage mdp, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener, boolean isSaveProcess)
+  {
+      CorrectionWizardController controller = new CorrectionWizardController(errorPathes, mdp, frame);  
+      controller.setIsSavingProcess(isSaveProcess);
+      controller.setExternalListener(listener);
+      controller.startWizard();
   }
 
 

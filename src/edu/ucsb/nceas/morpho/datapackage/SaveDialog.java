@@ -29,6 +29,9 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Window;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -38,17 +41,24 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.dataone.service.types.v1.SystemMetadata;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SaveEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * A dialog box for user choice of export options
@@ -273,33 +283,68 @@ public class SaveDialog extends JDialog {
 		
 		if (upgradeEml.isSelected()) {
 				    String newString = null;
-				    boolean hasError = false;
+				    boolean hasWarn = false;
+				    boolean success = true;
+				    SystemMetadata sysmeta = adp.getSystemMetadata();
+				    EML200DataPackage eml200Package = (EML200DataPackage) adp;
 					// change the XML
 				    try
 	                {
-				        EML200DataPackage eml200Package = (EML200DataPackage) adp;
 	                    newString = eml200Package.transformToLastestEML();
 	                }
 	                catch(EMLVersionTransformationException e)
 	                {
-	                    hasError = true;
-	                    //newString = e.getNewEMLOutput();//this part of exception is eml output.
+	                    hasWarn = true;
+	                    newString = e.getNewEMLOutput();//this part of exception is eml output.
+	                } catch(Exception e) {
+	                    success = false;
 	                }
-					if (newString != null) {
-						
-						// create a new data package instance with the altered
-						// XML
-						adp = (EML200DataPackage) DataPackageFactory.getDataPackage(new java.io.StringReader(newString));
-						((EML200DataPackage) adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
-						adp.setLocation("");
-					} else {
-						JOptionPane.showMessageDialog(
+				    //we need correction the error
+				    if(success) {
+				        eml200Package = (EML200DataPackage) DataPackageFactory.getDataPackage(new java.io.StringReader(newString));
+				        eml200Package.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+				        if(hasWarn) {
+				            try {
+	                            Reader xml = new StringReader(newString);
+	                            EML210Validate validate = new EML210Validate();
+	                            validate.parse(xml);
+	                            xml.close();
+	                            Vector errorPathList = validate.getInvalidPathList();
+	                            ServiceController services = ServiceController.getInstance();
+	                            ServiceProvider provider =
+	                                services.getServiceProvider(DataPackageWizardInterface.class);
+	                            DataPackageWizardInterface wizard = (DataPackageWizardInterface)provider;
+	                            //we pass the listener to correction wizard and let it handle the listener.
+	                            adp.setMetadataNode(eml200Package.getMetadataNode());
+	                            //System.out.println("\n\n********** after setting to mdp");
+	                            this.dispose();
+	                            //System.out.println(XMLUtil.getDOMTreeAsString(mdp.getAbstractDataPackage().getMetadataNode()));
+	                            DataPackageWizardListener listener = null;
+	                            boolean isSaveProcess = true;
+	                            wizard.startCorrectionWizard(mdp, errorPathList, morphoFrame, listener, isSaveProcess);
+	                            
+	                        } catch (Exception e) {
+	                            success = false;
+	                        }
+				        } else {
+                            try {
+                                adp.setMetadataNode(eml200Package.getMetadataNode());
+                            } catch (Exception e){
+                                Log.debug(30, "Can't set the system metadata "+e.getMessage());
+                            }
+                            
+				        }
+				    }
+                        
+					if(!success) {
+					    JOptionPane.showMessageDialog(
 										morphoFrame,
 										Language.getInstance().getMessage("SaveDialog.couldNotUpgrade"),
 										Language.getInstance().getMessage("Information"),
 										JOptionPane.INFORMATION_MESSAGE);
 						return;
 					}
+					
 				    
 		}
 		

@@ -66,6 +66,8 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  */
 public class TreeEditorCorrectionController 
 {
+    
+    private boolean isSaveProcess =  false;
 	private MorphoDataPackage mdp = null;
 	private Vector xPathList = null; //There is no predicates in the path
 	private EditorInterface editor = null;
@@ -135,6 +137,14 @@ public class TreeEditorCorrectionController
 		this.externalListener = externalListener;
 	}
 	
+	/**
+     * Set the process is a saving process or not. The default value is not a saving process.
+     * @param isSaveProcess true if it is a saving process; otherwise is false.
+     */
+    public void setIsSavingProcess(boolean isSaveProcess) {
+        this.isSaveProcess = isSaveProcess;
+    }
+	
 	/*
 	 * display tree editor 
 	 */
@@ -183,7 +193,10 @@ public class TreeEditorCorrectionController
 		            ServiceProvider provider =
 		                services.getServiceProvider(DataPackageInterface.class);
 		            DataPackageInterface dataPackageInterface = (DataPackageInterface)provider;
-		            dataPackageInterface.openNewDataPackage(mdp, null);
+		            if(!isSaveProcess) {
+		                dataPackageInterface.openNewDataPackage(mdp, null);
+		            }
+		           
 		            if(oldFrame != null)
 			        {
 		        		    Log.debug(40,  " in the if statement to  close the old frame is "+oldFrame);

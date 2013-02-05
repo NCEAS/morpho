@@ -174,6 +174,20 @@ public interface DataPackageWizardInterface {
    */
   public void startCorrectionWizard(MorphoDataPackage mdp, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener);
   
+  
+  /**
+   * 
+   * start a correction invalid eml document wizard. This wizard always be used to
+   * correct in valid eml document which was transformed from old eml version.
+   *
+   * @param dataPackage  the datapackage will be corrected
+   * @param errorPathes    the list of path which has valid value
+   * @param frame            the old frame which need be disposed after correction is done
+   * @param listener          the listener will handle some another action  after the wizard is done, e.g .AddAccessCommand
+   * @param isSaveProcess    if the correction happens during the save process.  
+   */
+  public void startCorrectionWizard(MorphoDataPackage mdp, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener, boolean isSaveProcess);
+  
   /**
    * Load (open) an incomplete document into new package wizard /text import wizard
    * @param dataPackage the incomplete data package

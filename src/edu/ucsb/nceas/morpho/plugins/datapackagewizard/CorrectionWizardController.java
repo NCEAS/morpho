@@ -97,6 +97,8 @@ public class CorrectionWizardController
 	MorphoDataPackage mdp = null;
 	// the old frame need to be disposed.
 	private MorphoFrame oldFrame = null;
+	
+	private boolean isSaveProcess =  false;
 	//private Document metadataDoc = null;
 	private DataPackageWizardListener listener = new CorrectionDataPackageWizardListener(); //this listener is for controller itself.
 	private DataPackageWizardListener externalListener = null; //this listener will do some other action  after the wizard is done, e.g. AddSthCommand.
@@ -182,6 +184,14 @@ public class CorrectionWizardController
 	}
 	
 	/**
+	 * Set the process is a saving process or not. The default value is not a saving process.
+	 * @param isSaveProcess true if it is a saving process; otherwise is false.
+	 */
+	public void setIsSavingProcess(boolean isSaveProcess) {
+	    this.isSaveProcess = isSaveProcess;
+	}
+	
+	/**
 	 * Start to run the wizard.
 	 * It has 3 scenarios:
 	 * 1. Run both wizard pages and tree editors.
@@ -221,6 +231,7 @@ public class CorrectionWizardController
 			try
 			{
 				TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(mdp, pathListForTreeEditor, oldFrame);
+				treeEditorController.setIsSavingProcess(isSaveProcess);
 				treeEditorController.setExternalListener(externalListener);
 				treeEditorController.startCorrection();
 			}
@@ -484,6 +495,7 @@ public class CorrectionWizardController
 					{
 						Log.debug(30, "assign the old frame to tree controler "+oldFrame);
 						TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(mdp, pathListForTreeEditor, oldFrame);
+						treeEditorController.setIsSavingProcess(isSaveProcess);
 						treeEditorController.setExternalListener(externalListener);
 						treeEditorController.startCorrection();
 					}
@@ -503,7 +515,7 @@ public class CorrectionWizardController
 			            DataPackageInterface dataPackage = (DataPackageInterface)provider;
 			            dataPackage.openNewDataPackage(mdp, null);
 			            //dispose old frame
-			            if(oldFrame != null)
+			            if(oldFrame != null && !isSaveProcess)
 			            {
 			            	oldFrame.setVisible(false);                
 			            	UIController controller = UIController.getInstance();
