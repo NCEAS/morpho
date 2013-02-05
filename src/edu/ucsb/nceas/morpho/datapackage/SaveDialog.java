@@ -269,33 +269,42 @@ public class SaveDialog extends JDialog {
 		String id = adp.getAccessionNumber();
 		// initial id
 		saveEvent.setInitialId(id);
-		if (location.equals("")) { // only update version if new
-			try {
-				if (upgradeEml.isSelected()) {
+		//if (location.equals("")) { // only update version if new
+		
+		if (upgradeEml.isSelected()) {
+				    String newString = null;
+				    boolean hasError = false;
 					// change the XML
-					String newString = ((EML200DataPackage) adp).transformToLastestEML();
+				    try
+	                {
+				        EML200DataPackage eml200Package = (EML200DataPackage) adp;
+	                    newString = eml200Package.transformToLastestEML();
+	                }
+	                catch(EMLVersionTransformationException e)
+	                {
+	                    hasError = true;
+	                    //newString = e.getNewEMLOutput();//this part of exception is eml output.
+	                }
 					if (newString != null) {
 						
 						// create a new data package instance with the altered
 						// XML
 						adp = (EML200DataPackage) DataPackageFactory.getDataPackage(new java.io.StringReader(newString));
 						((EML200DataPackage) adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+						adp.setLocation("");
 					} else {
 						JOptionPane.showMessageDialog(
 										morphoFrame,
 										Language.getInstance().getMessage("SaveDialog.couldNotUpgrade"),
 										Language.getInstance().getMessage("Information"),
 										JOptionPane.INFORMATION_MESSAGE);
+						return;
 					}
-
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				Log.debug(30, "Problem setting new EML version: "
-						+ ex.toString());
-			}
-
+				    
 		}
+		
+
+		//}
 
 		try {
 			// BOTH
