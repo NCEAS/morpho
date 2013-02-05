@@ -594,8 +594,26 @@ the following levels:
   \item All  (same as Read and Write and Change Permissions)
 \end{itemize}
 
-Once you have defined the appropriate access level, click Next to
-continue to Step 15, the Summary.
+\subsubsection{Replication Policy} \label{sec:wizard-dp-replication}
+
+By specifying a replication policy, you control how your data
+and metadata are backed up in the DataONE network (\autoref{fig:wizard-dp-replication}). 
+For example, you can specify that 4 copies of the metadata be kept 
+at various Member Nodes but that only 2 copies of the data table[s] be stored elsewhere.
+
+Like the access rules, replication policies specified in the wizard apply 
+to all metadata and data tables subsequently imported into the package. 
+You can choose to set a different replication policy for each table using 
+the ``Edit Replication Policy'' option in
+the Data menu. For example, you may want a specific Member Node to house a 
+large data object because there is surplus space at that node.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/wizard-dp-replication.jpg}
+  \caption{Set the replication policy for a data package.}
+  \label{fig:wizard-dp-replication}
+\end{figure}
 
 \subsubsection{Summary} \label{sec:wizard-dp-summary}
 
