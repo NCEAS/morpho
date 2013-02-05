@@ -1110,9 +1110,10 @@ paste the new data.
 
 \subsubsection{Setting Access Control} \label{sec:edit-table-access}
 
-By default, the \hyperref[sec:wizard-dp-access]{access information
-specified for the data package} applies to all data tables in that
-package. To specify different permissions for a specific data table,
+Initially, the \hyperref[sec:wizard-dp-access]{access information
+specified for the data package} applies to all data tables that
+are imported to the package. To specify different permissions for a 
+specific data table after the data has been imported,
 select ``Edit Data Table Access'' from the Data menu
 (\autoref{fig:edit-table-access}).
 
@@ -1125,10 +1126,9 @@ select ``Edit Data Table Access'' from the Data menu
 
 The access customization screen opens
 (\autoref{fig:dialog-access-table}), allowing you to specify read,
-write, change permissions access to individual users or groups. By
-default, access to the data entity is the same as that granted to the
-metadata. The settings will apply only to the table, and will override
-the default settings specified for the data package. For more
+write, change permissions access to individual users or groups. 
+The settings will apply only to this single table, and will override
+the settings that were originally inherited from the data package. For more
 information about access permissions, see
 \nameref{sec:wizard-dp-access}.
 
