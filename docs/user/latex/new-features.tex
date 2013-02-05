@@ -56,14 +56,14 @@ KNB-managed account from NCEAS.
 
 Morpho now allows access control policies to be managed outside of the EML
 file. Existing packages will utilize the EML-defined access control rules initially.
-If modifcations are made to the access policy for the metadata object, they will be set
+If modifications are made to the access policy for the metadata object, they will be set
 directly on the DataONE Coordinating Node which is responsible for broadcasting the change
 throughout the network. In cases where the Member Node content has not been synchronized
 to the Coordinating Node, modifications to the access policy cannot be performed.
 
 Access control for data objects is controlled similarly. Newly imported data obejcts
-will initially ``inherit'' the policy from the metadat object, but subsequent modifications
-to the metadata's access policy will not cascade to the data obejcts. Access policies for 
+will initially ``inherit'' the policy from the metadata object, but subsequent modifications
+to the metadata's access policy will not cascade to the data objects. Access policies for 
 metadata and data will be handled completely independently from that point forward.
 
 \subsection{Replication Policies}
