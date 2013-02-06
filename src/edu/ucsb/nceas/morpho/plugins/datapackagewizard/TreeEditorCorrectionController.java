@@ -432,8 +432,12 @@ public class TreeEditorCorrectionController
 		  {
 			  Log.debug(30, "couldn't put the xml string into a node "+e.getMessage());
 		  }
-	      AbstractDataPackage newadp = DataPackageFactory.getDataPackage(rootNode);
-	      mdp.setAbstractDataPackage(newadp);		 
+	      //AbstractDataPackage newadp = DataPackageFactory.getDataPackage(rootNode);
+	      //mdp.setAbstractDataPackage(newadp);	
+		  AbstractDataPackage adp = mdp.getAbstractDataPackage();
+	      if (adp != null) {
+	             adp.setMetadataNode(rootNode);
+	      } 
 		  // then open the editor again base on the new dataPackage value
 		  displayTreeEditor();
 	  }
