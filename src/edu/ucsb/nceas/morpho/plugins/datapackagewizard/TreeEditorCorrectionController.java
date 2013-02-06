@@ -81,7 +81,8 @@ public class TreeEditorCorrectionController
 	private Hashtable fullpathPosition = new Hashtable();// this hashtable keeps track of fullpath and positions
 	                                                     // has been display in tree editor. It will be used 
 	                                                     //how to determine index if fullpath is same
-	private final static String CONFORMATION = "Morpho has successfully upgraded your data package to the newest EML version.\n Note: These changes will not become permanent until you save the document.";
+	private final static String CONFORMATION1 = "Morpho has successfully upgraded your data package to the newest EML version.";
+	private final static String CONFORMATION2 = "\nNote: These changes will not become permanent until you save the document.";
 	private final static String WESTBOUNDING = "westBoundingCoordinate";
 	private final static String EASTBOUNDING  = "eastBoundingCoordinate";
 	private final static String SOUTHBOUNDING = "southBoundingCoordinate";
@@ -186,9 +187,14 @@ public class TreeEditorCorrectionController
 		          Log.debug(45, XMLUtil.getDOMTreeAsString(dataPackage.getMetadataNode()));
 		          try 
 		          {
-		        	 
-		        	 JOptionPane.showMessageDialog(oldFrame, CONFORMATION, Language.getInstance().getMessage("Warning"),
-		                      JOptionPane.WARNING_MESSAGE);
+		        	 if(isSaveProcess) {
+		        	     JOptionPane.showMessageDialog(oldFrame, CONFORMATION1, Language.getInstance().getMessage("Warning"),
+		                                 JOptionPane.WARNING_MESSAGE);
+		        	 } else {
+		        	     JOptionPane.showMessageDialog(oldFrame, CONFORMATION1+CONFORMATION2, Language.getInstance().getMessage("Warning"),
+                                         JOptionPane.WARNING_MESSAGE);
+		        	 }
+		        	
 		            ServiceController services = ServiceController.getInstance();
 		            ServiceProvider provider =
 		                services.getServiceProvider(DataPackageInterface.class);
