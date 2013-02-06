@@ -961,10 +961,14 @@ public class UIController
   }
   
   private static void showNewPackage_base(MorphoDataPackage mdp) {
+    Point pos = null;
+    Dimension size = null;
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    Point pos = morphoFrame.getLocation();
-    Dimension size = morphoFrame.getSize();
-
+    if(morphoFrame != null) {
+        pos = morphoFrame.getLocation();
+        size = morphoFrame.getSize();
+    }
+    
     try {
       ServiceController services = ServiceController.getInstance();
       ServiceProvider provider =
@@ -973,17 +977,28 @@ public class UIController
       dataPackage.openHiddenNewDataPackage(mdp, null);
       UIController controller = UIController.getInstance();
       MorphoFrame newMorphoFrame = controller.getCurrentActiveWindow();
-      newMorphoFrame.setLocation(pos);
-      newMorphoFrame.setSize(size);
+      if(pos != null) {
+          newMorphoFrame.setLocation(pos);
+      }
+      if(size != null) {
+          newMorphoFrame.setSize(size);
+      }
+      
       newMorphoFrame.setVisible(true);
-      morphoFrame.setVisible(false);
+      if(morphoFrame != null) {
+          morphoFrame.setVisible(false);
 
-      controller.removeWindow(morphoFrame);
-      morphoFrame.dispose();
+          controller.removeWindow(morphoFrame);
+          morphoFrame.dispose();
+      }
+     
     }
     catch (ServiceNotHandledException snhe) {
       Log.debug(6, snhe.getMessage());
-      morphoFrame.setVisible(true);
+      if(morphoFrame != null) {
+          morphoFrame.setVisible(true);
+      }
+     
     }
   }
 
