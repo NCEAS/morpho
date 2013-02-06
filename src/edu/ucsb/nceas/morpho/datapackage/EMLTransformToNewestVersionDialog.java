@@ -114,7 +114,7 @@ public class EMLTransformToNewestVersionDialog
                 JOptionPane.PLAIN_MESSAGE,//messageTye
                 null ,
                 choices,
-                null);
+                choices[0]);
  	
  		   
  		
