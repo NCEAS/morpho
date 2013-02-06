@@ -140,8 +140,11 @@ public class IdentifierFileMapUpdater {
                       if(fileList != null) {
                         for(int j=0; j<fileList.length; j++) {
                           File file = fileList[j];
-                          String id = scopeDir.getName()+LocalIdentifierGenerator.DOT+file.getName();
-                          map.setMap(id, file);
+                          if(file.isFile() && !file.isHidden()) {
+                              String id = scopeDir.getName()+LocalIdentifierGenerator.DOT+file.getName();
+                              map.setMap(id, file);
+                          }
+                          
                         }
                       }
                   }
