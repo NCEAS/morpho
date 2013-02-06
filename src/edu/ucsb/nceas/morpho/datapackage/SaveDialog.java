@@ -42,6 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.dataone.service.types.v1.SystemMetadata;
+import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -63,7 +64,7 @@ import edu.ucsb.nceas.morpho.util.XMLUtil;
 /**
  * A dialog box for user choice of export options
  */
-public class SaveDialog extends JDialog {
+public class SaveDialog extends JDialog implements DataPackageWizardListener {
 
 	/** Control button */
 	private JButton executeButton = null;
@@ -95,6 +96,8 @@ public class SaveDialog extends JDialog {
 
 	/** the MorphoDataPackage object to be saved */
 	MorphoDataPackage mdp = null;
+	
+	SaveEvent saveEvent = null;
 
 	/**
 	 * Construct a new instance of the dialog where parent is morphoframe
@@ -272,10 +275,10 @@ public class SaveDialog extends JDialog {
 		}
 
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
-		boolean problem = false;
-		String location = adp.getLocation();
+		boolean runCorrectionWizard = false;
+		//String location = adp.getLocation();
 		// track the save event
-		SaveEvent saveEvent = new SaveEvent(this, StateChangeEvent.SAVE_DATAPACKAGE);
+		saveEvent = new SaveEvent(this, StateChangeEvent.SAVE_DATAPACKAGE);
 		String id = adp.getAccessionNumber();
 		// initial id
 		saveEvent.setInitialId(id);
@@ -319,9 +322,10 @@ public class SaveDialog extends JDialog {
 	                            //System.out.println("\n\n********** after setting to mdp");
 	                            this.dispose();
 	                            //System.out.println(XMLUtil.getDOMTreeAsString(mdp.getAbstractDataPackage().getMetadataNode()));
-	                            DataPackageWizardListener listener = null;
+	                            
 	                            boolean isSaveProcess = true;
-	                            wizard.startCorrectionWizard(mdp, errorPathList, morphoFrame, listener, isSaveProcess);
+	                            runCorrectionWizard = true;
+	                            wizard.startCorrectionWizard(mdp, errorPathList, morphoFrame, this, isSaveProcess);
 	                            
 	                        } catch (Exception e) {
 	                            success = false;
@@ -349,29 +353,45 @@ public class SaveDialog extends JDialog {
 		}
 		
 
-		//}
+		//If there is no correction wizard involved, save the package.
+        //If there is a correction wizard involved, the save method will be called during the DataPackageWizardListener.wizardComplete method. So
+        //we skip here.
+        if(!runCorrectionWizard) {
+            save();
+        }
 
-		try {
-			// BOTH
-		  //System.out.println("the location is ======================="+adp.getLocation());
-			if ((localLoc.isSelected()) && (localLoc.isEnabled())
-					&& (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.BOTH);
-				if (adp.getSerializeLocalSuccess()
-						&& adp.getSerializeMetacatSuccess()) {
-					adp.setLocation(DataPackageInterface.BOTH);
-				} else if (adp.getSerializeLocalSuccess()) {
-					adp.setLocation(DataPackageInterface.LOCAL);
-				} else if (adp.getSerializeMetacatSuccess()) {
-					adp.setLocation(DataPackageInterface.NETWORK);
-				} else {
-					adp.setLocation(adp.getLocation());
-				}
-			// LOCAL
-			} else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL);
-				if (adp.getSerializeLocalSuccess()) {
-					if (adp.getLocation() != null
+		
+
+	}
+	
+	/*
+	 * Save the package
+	 */
+	private void save() {
+	    boolean problem = false;
+	    AbstractDataPackage adp = mdp.getAbstractDataPackage();
+	    try {
+	        
+            // BOTH
+          //System.out.println("the location is ======================="+adp.getLocation());
+            if ((localLoc.isSelected()) && (localLoc.isEnabled())
+                    && (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
+                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.BOTH);
+                if (adp.getSerializeLocalSuccess()
+                        && adp.getSerializeMetacatSuccess()) {
+                    adp.setLocation(DataPackageInterface.BOTH);
+                } else if (adp.getSerializeLocalSuccess()) {
+                    adp.setLocation(DataPackageInterface.LOCAL);
+                } else if (adp.getSerializeMetacatSuccess()) {
+                    adp.setLocation(DataPackageInterface.NETWORK);
+                } else {
+                    adp.setLocation(adp.getLocation());
+                }
+            // LOCAL
+            } else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
+                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL);
+                if (adp.getSerializeLocalSuccess()) {
+                    if (adp.getLocation() != null
               && adp.getLocation().equals(DataPackageInterface.NETWORK)
               && !adp.getPackageIDChanged()
               && !adp.getDataIDChanged()) {
@@ -379,64 +399,90 @@ public class SaveDialog extends JDialog {
           } else {
             adp.setLocation(DataPackageInterface.LOCAL);
           }
-				} else {
-					adp.setLocation(adp.getLocation());
-				}
-			// METACAT
-			} else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-				DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.NETWORK);
-				if (adp.getSerializeMetacatSuccess()) {			  
-				  if (adp.getLocation() != null
-	            && adp.getLocation().equals(DataPackageInterface.LOCAL)
-	            && !adp.getPackageIDChanged()
-	            && !adp.getDataIDChanged()) {
-	          adp.setLocation(DataPackageInterface.BOTH);
-				  } else {
-				    adp.setLocation(DataPackageInterface.NETWORK);
-				  }
-					
-				} else {
-					adp.setLocation(adp.getLocation());
-				}
-			// NOTHING	
-			} else {
-				Log.debug(1, "No location for saving is selected!");
-				// don't refresh the screen - nothing has been done
-				problem = true;
-			}
-		} catch (Exception mue) {
-			// TODO: More informative?
-			String errormsg = mue.getMessage();
-			Log.debug(5, "Problem Saving package: \n" + errormsg);
-			mue.printStackTrace();
-			problem = true;
-		}
-		
-		this.setVisible(false);
-		this.dispose();
+                } else {
+                    adp.setLocation(adp.getLocation());
+                }
+            // METACAT
+            } else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
+                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.NETWORK);
+                if (adp.getSerializeMetacatSuccess()) {           
+                  if (adp.getLocation() != null
+                && adp.getLocation().equals(DataPackageInterface.LOCAL)
+                && !adp.getPackageIDChanged()
+                && !adp.getDataIDChanged()) {
+              adp.setLocation(DataPackageInterface.BOTH);
+                  } else {
+                    adp.setLocation(DataPackageInterface.NETWORK);
+                  }
+                    
+                } else {
+                    adp.setLocation(adp.getLocation());
+                }
+            // NOTHING  
+            } else {
+                Log.debug(1, "No location for saving is selected!");
+                // don't refresh the screen - nothing has been done
+                problem = true;
+            }
+        } catch (Exception mue) {
+            // TODO: More informative?
+            String errormsg = mue.getMessage();
+            Log.debug(5, "Problem Saving package: \n" + errormsg);
+            mue.printStackTrace();
+            problem = true;
+        }
+        
+        this.setVisible(false);
+        this.dispose();
 
-		if (!problem) {
-			UIController.getInstance().removeDocidFromIdleWizardRecorder(adp.getAutoSavedD());
-			// delete the incomplete file
-			Morpho.thisStaticInstance.getLocalDataStoreService().deleteAutoSavedFile(adp);
-			
-			// alert listeners
-			saveEvent.setFinalId(adp.getAccessionNumber());
-			saveEvent.setLocation(adp.getLocation());
-			StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
-			
-			// refresh
-			if (showPackageFlag) {
-				UIController.showNewPackageNoLocChange(mdp);
-			} else {
-				MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-				morphoFrame.setVisible(false);
-				UIController controller = UIController.getInstance();
-				controller.removeWindow(morphoFrame);
-				morphoFrame.dispose();
-			}
-		}
-
+        if (!problem) {
+            UIController.getInstance().removeDocidFromIdleWizardRecorder(adp.getAutoSavedD());
+            // delete the incomplete file
+            Morpho.thisStaticInstance.getLocalDataStoreService().deleteAutoSavedFile(adp);
+            
+            // alert listeners
+            if(saveEvent != null) {
+                saveEvent.setFinalId(adp.getAccessionNumber());
+                saveEvent.setLocation(adp.getLocation());
+                StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
+            }
+           
+            
+            // refresh
+            if (showPackageFlag) {
+                UIController.showNewPackageNoLocChange(mdp);
+            } else {
+                MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+                morphoFrame.setVisible(false);
+                UIController controller = UIController.getInstance();
+                controller.removeWindow(morphoFrame);
+                morphoFrame.dispose();
+            }
+        }
 	}
+	
+	    @Override
+	    public void wizardComplete(Node newDOM, String autoSavedID) {
+	        if(newDOM != null) {
+	            AbstractDataPackage adp = mdp.getAbstractDataPackage();
+	            adp.setMetadataNode(newDOM);
+	        }
+	       
+	        save();
+	       
+	    }
+
+	    @Override
+	    public void wizardCanceled() {
+	    // TODO Auto-generated method stub
+	    
+	    }
+
+	    @Override
+	    public void wizardSavedForLater() {
+	    // TODO Auto-generated method stub
+	    
+	    }
+	   
 
 }// ExportDialog
