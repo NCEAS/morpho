@@ -2788,7 +2788,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       NodeList physicalNodes = XMLUtilities.getNodeListWithXPath( (entityArray[
           entityIndex]).getNode(), physicalXpath);
       if (physicalNodes == null) {
-        Log.debug(1, "physicalList is null!");
+        Log.debug(10, "physicalList is null!");
         return null;
       }
       return XMLUtilities.getNodeListAsNodeArray(physicalNodes);

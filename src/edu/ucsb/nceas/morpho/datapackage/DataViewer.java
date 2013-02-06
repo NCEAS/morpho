@@ -682,7 +682,7 @@ public class DataViewer extends javax.swing.JPanel
 			return;
 		} else {
 			Node[] physicalArray = adp.getPhysicalArray(entityIndex);
-			if (physicalArray.length == 0) {
+			if (physicalArray == null || physicalArray.length == 0) {
 				Log.debug(15, "Physical information about the data is missing!");
 				missing_metadata_flag = true;
 			} else {
