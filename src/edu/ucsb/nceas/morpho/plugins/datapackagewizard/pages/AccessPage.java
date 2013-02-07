@@ -54,6 +54,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -131,7 +132,8 @@ public class AccessPage
   private JLabel accessDesc1, accessDesc2;
   private String userAccessType = " " + Language.getInstance().getMessage("Allow");
   protected String userAccess = " " + Language.getInstance().getMessage("Read");
-  protected JComboBox typeComboBox;
+  //protected JComboBox typeComboBox;
+  protected JLabel allowTypeLabel;
   protected JComboBox accessComboBox;
   private JScrollPane accessTreePane;
   protected AccessProgressThread pbt = null;
@@ -675,7 +677,7 @@ public class AccessPage
     middlePanel.revalidate();
     middlePanel.repaint();
 
-    typeComboBox.setEnabled(true);
+    //typeComboBox.setEnabled(true);
     accessComboBox.setEnabled(true);
 
   }
@@ -683,8 +685,8 @@ public class AccessPage
   private JPanel getAccessControlPanel(boolean withRefreshLink,
       String refreshString) {
 
-    accessDesc1 = WidgetFactory.makeLabel(/*" selected user(s)"*/ " " + Language.getInstance().getMessage("AccessPage.SelectedUser") , false);
-    accessDesc2 = WidgetFactory.makeLabel(/*"   access"*/ "   " + Language.getInstance().getMessage("access") , false);
+    accessDesc1 = WidgetFactory.makeLabel(/*" selected user(s)"*/ Language.getInstance().getMessage("AccessPage.SelectedUser") , false);
+    accessDesc2 = WidgetFactory.makeLabel(/*"   access"*/ " " + Language.getInstance().getMessage("access") , false);
 
     // define item listener for allow-deny list....
     ItemListener accessTypeListener = new ItemListener() {
@@ -703,9 +705,10 @@ public class AccessPage
       }
     };
 
-    typeComboBox = WidgetFactory.makePickList(accessTypeText, false,
+    /*typeComboBox = WidgetFactory.makePickList(accessTypeText, false,
         0, accessTypeListener);
-    typeComboBox.setEnabled(false);
+    typeComboBox.setEnabled(false);*/
+    allowTypeLabel =  WidgetFactory.makeLabel(/*" allow "*/ Language.getInstance().getMessage("Allow") , false, new Dimension(50,20));
     /*if (userAccessType.compareTo(accessTypeText[1]) == 0) {
       typeComboBox.setSelectedIndex(1);
     }*/
@@ -742,7 +745,7 @@ public class AccessPage
     controlPanel.setBorder(new javax.swing.border.EmptyBorder(5 *
         WizardSettings.PADDING, 0, 0, 0));
 
-    controlPanel.add(typeComboBox);
+    controlPanel.add(allowTypeLabel);
     controlPanel.add(accessDesc1);
     controlPanel.add(accessComboBox);
     controlPanel.add(accessDesc2);
@@ -761,7 +764,7 @@ public class AccessPage
           Log.debug(45, "got action performed command from Referesh button");
 
           refreshButton.setEnabled(false);
-          typeComboBox.setEnabled(false);
+          //typeComboBox.setEnabled(false);
           accessComboBox.setEnabled(false);
 
           middlePanel.removeAll();
@@ -946,7 +949,7 @@ public class AccessPage
     middlePanel.revalidate();
     middlePanel.repaint();
 
-    typeComboBox.setEnabled(true);
+    //typeComboBox.setEnabled(true);
     accessComboBox.setEnabled(true);
   }
   
@@ -1672,7 +1675,7 @@ class TreeSelectionAction
             getUserObject()).
             getSubject().getValue());
 
-        accessPage.typeComboBox.setEnabled(true);
+        //accessPage.typeComboBox.setEnabled(true);
         accessPage.accessComboBox.setEnabled(true);
       
       } else if (node != null &&
@@ -1680,7 +1683,7 @@ class TreeSelectionAction
             accessPage.dnField.setText( ( (Group) node.
                 getUserObject()).
                 getSubject().getValue());
-            accessPage.typeComboBox.setEnabled(true);
+            //accessPage.typeComboBox.setEnabled(true);
             accessPage.accessComboBox.setEnabled(true);
         
 
