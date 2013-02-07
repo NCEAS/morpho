@@ -71,7 +71,7 @@ public class Access
   public final String subtitle = " ";
 
   private JPanel radioPanel;
-  private JPanel orderPanel;
+  //private JPanel orderPanel;
   private String xPathRoot = "/eml:eml/access/";
   
   protected boolean isEntity = false;
@@ -172,35 +172,35 @@ public class Access
     ///
     JLabel orderDesc = null; 
     
-    orderDesc =
+    /*orderDesc =
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>"
-	        + /*"Process access rules in this order: "*/ Language.getInstance().getMessage("Access.orderDesc") + ":"
-	        + "</b></p>", 2);
-    vBox.add(orderDesc);
+	        + Language.getInstance().getMessage("Access.orderDesc") + ":"
+	        + "</b></p>", 2); */ /*"Process access rules in this order: "*/
+    //vBox.add(orderDesc);
 
-    ActionListener orderListener = new ActionListener() {
+    //ActionListener orderListener = new ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        Log.debug(45, "got orderradiobutton command: " + e.getActionCommand());
+      //public void actionPerformed(ActionEvent e) {
+        //Log.debug(45, "got orderradiobutton command: " + e.getActionCommand());
         /*if (e.getActionCommand().equals(orderValues[0])) {
         	orderValue = "allowFirst";
         }
         if (e.getActionCommand().equals(orderValues[1])) {
         	orderValue = "denyFirst";
         }*/
-      }
-    };
+      //}
+    //};
 
-    orderPanel = WidgetFactory.makeRadioPanel(orderValues, 0, orderListener);
+    //orderPanel = WidgetFactory.makeRadioPanel(orderValues, 0, orderListener);
     //force the enable/disable of the radio
     if (isEntity) {
     	setOrderValue(orderValue);
     }
-    orderPanel.setBorder(new javax.swing.border.EmptyBorder(0, WizardSettings.
-        PADDING, 0, 0));
+    /*orderPanel.setBorder(new javax.swing.border.EmptyBorder(0, WizardSettings.
+        PADDING, 0, 0));*/
 
-    vBox.add(orderPanel);
+    //vBox.add(orderPanel);
     vBox.add(WidgetFactory.makeDefaultSpacer());
     ///
     
@@ -848,15 +848,15 @@ public class Access
       JOptionPane.showMessageDialog(this, "The EML document has \"denyFirst\" order type for the access rules. However, current Metacat release doesn't support it.\n"+
      "Morpho changed the order type to \"allowFirst\". You have to check the access rules carefully.", "Warning", JOptionPane.WARNING_MESSAGE);
     }
-	  JPanel innerPanel = ( (JPanel) (orderPanel.getComponent(1)));
-      JRadioButton allowFirst = ( (JRadioButton) (innerPanel.
-          getComponent(0)));
+	  //JPanel innerPanel = ( (JPanel) (orderPanel.getComponent(1)));
+      /*JRadioButton allowFirst = ( (JRadioButton) (innerPanel.
+          getComponent(0)));*/
       /*JRadioButton denyFirst = ( (JRadioButton) (innerPanel.
           getComponent(1)));*/
-	  if (orderValue.equals("allowFirst")) {
+	  /*if (orderValue.equals("allowFirst")) {
 		 allowFirst.setSelected(true);
 		 //denyFirst.setSelected(false);
-	  }
+	  }*/
 	  /*if (orderValue.equals("denyFirst")) {
 		 allowFirst.setSelected(false);
 		 denyFirst.setSelected(true);
