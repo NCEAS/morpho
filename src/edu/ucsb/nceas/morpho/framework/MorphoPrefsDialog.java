@@ -47,18 +47,16 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
-import org.dataone.client.D1Client;
-import org.dataone.client.MNode;
 import org.dataone.service.types.v1.Node;
 import org.dataone.service.types.v1.NodeType;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataONEDataStoreService;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -79,7 +77,14 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		setSize(600, 400);
 		setVisible(false);
 		CenterPanel.setLayout(new GridLayout(8, 1, 0, 0));
-		getContentPane().add(BorderLayout.CENTER, CenterPanel);
+		
+		// tabbed center panel
+		JTabbedPane tabbedCenterPane = new JTabbedPane();
+		tabbedCenterPane.addTab(Language.getInstance().getMessage("General"), CenterPanel);
+		tabbedCenterPane.addTab(Language.getInstance().getMessage("Advanced"), cnPanel);
+
+		getContentPane().add(BorderLayout.CENTER, tabbedCenterPane);
+		
 		aboutLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		aboutLabel.setText(Language.getInstance().getMessage("MorphoPreferences"));
 		aboutLabel.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -94,15 +99,11 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		coordinatingNodeURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
 		cnPanel.add(coordinatingNodeURLLabel);
 		coordinatingNodeURLTextField.setColumns(35);
-		// disable until we have something to do with it
-//		coordinatingNodeURLTextField.setEnabled(false);
-//		coordinatingNodeURLTextField.setEditable(false);
 		coordinatingNodeURLTextField.addFocusListener(new FocusListener() {
 
 			@Override
 			public void focusGained(FocusEvent event) {
 				// don't do anything
-				
 			}
 
 			@Override
@@ -113,7 +114,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 			
 		});
 		cnPanel.add(coordinatingNodeURLTextField);
-		CenterPanel.add(cnPanel);
+		//CenterPanel.add(cnPanel);
 		
 		// the MN selection / edit box
 		JPanel mnSelectionPanel = new JPanel();
