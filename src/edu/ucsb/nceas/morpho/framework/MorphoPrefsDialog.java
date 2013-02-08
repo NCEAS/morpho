@@ -201,7 +201,10 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		// }}
 		config = Morpho.getConfiguration();
 		coordinatingNodeURLTextField.setText(morpho.getDataONEDataStoreService().getCNodeURL());
-		memberNodeComboBox.setSelectedItem(morpho.getDataONEDataStoreService().getMNodeURL());
+		
+		// set the selected MN
+		setSelectedMemberNode();
+		
 		if (config.get("log_file", 0).equals("true")) {
 			logYes.setSelected(true);
 			logNo.setSelected(false);
@@ -233,6 +236,29 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		}
 
 		super.setVisible(b);
+	}
+	
+	private void setSelectedMemberNode() {
+		// match the URLs if we have it
+		String configuredMnURL = morpho.getDataONEDataStoreService().getMNodeURL();
+		Object selectedItem = configuredMnURL;
+		// check the list
+		for (int i = 0; i < memberNodeComboBox.getItemCount(); i++) {
+			Object mnItemObject = memberNodeComboBox.getItemAt(i);
+			String mnURL = null;
+			if (mnItemObject instanceof NodeItem) {
+				mnURL = ((NodeItem) mnItemObject).node.getBaseURL();
+			} else {
+				mnURL = mnItemObject.toString();
+			}
+			// do the URLs match for this list item?
+			if (configuredMnURL.equals(mnURL)) {
+				selectedItem = mnItemObject;
+				break;
+			}
+		}
+		// set whatever we ended up with
+		memberNodeComboBox.setSelectedItem(selectedItem);
 	}
 	
 	private void refreshMemberNodeList() {
@@ -374,8 +400,15 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		
 		config.save();
 
-		// set the active MN
-		morpho.getDataONEDataStoreService().setMNodeURL(memberNodeComboBox.getSelectedItem().toString());
+		// set the active MN URL
+		String mnURL = null;
+		Object mnItemObject = memberNodeComboBox.getSelectedItem();
+		if (mnItemObject instanceof NodeItem) {
+			mnURL = ((NodeItem) mnItemObject).node.getBaseURL();
+		} else {
+			mnURL = mnItemObject.toString();
+		}
+		morpho.getDataONEDataStoreService().setMNodeURL(mnURL);
 
 		// set the CN URL
 		morpho.getDataONEDataStoreService().setCNodeURL(coordinatingNodeURLTextField.getText());
@@ -427,8 +460,9 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
   		public String toString() {
   			String retVal = null;
   			if (node != null) {
-  				//retVal = node.getName() + " (" + node.getBaseURL() +  ")";
-  				retVal = node.getBaseURL();
+  				retVal = node.getName();
+  				//retVal = node.getIdentifier().getValue() + " (" + node.getName() +  ")";
+  				//retVal = node.getBaseURL();
   			}
   			return retVal;
   		}
