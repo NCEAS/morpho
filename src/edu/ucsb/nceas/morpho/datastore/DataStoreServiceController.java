@@ -745,14 +745,15 @@ public class DataStoreServiceController {
             String originalId = adp.getAccessionNumber();
             String scheme = UUID;
             String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+            String newIdentifier = null;
             if(location.equals(DataPackageInterface.BOTH) || location.equals(DataPackageInterface.NETWORK) ) {
                 // make sure the package reflects the updated IDs
-                String newIdentifier = Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(scheme, fragment);
+                newIdentifier = Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(scheme, fragment);
                 adp.setAccessionNumber(newIdentifier);
                 mdp.updateIdentifier(originalId, newIdentifier);
                
             } else {
-                String newIdentifier =  Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
+                newIdentifier =  Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
                 adp.setAccessionNumber(newIdentifier);
                 mdp.updateIdentifier(originalId, newIdentifier);
             }
@@ -760,7 +761,22 @@ public class DataStoreServiceController {
             Identifier originalIdentifierObject = new Identifier();
             originalIdentifierObject.setValue(originalId);
             adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
+         // record this in revision manager (TODO: is this needed?)
+            if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
+                if(Morpho.thisStaticInstance.getDataONEDataStoreService().exists(originalId)) {
+                    Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalId);
+                }
+                
+            }
+            if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
+                if(Morpho.thisStaticInstance.getLocalDataStoreService().exists(originalId)) {
+                    Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalId);
+                }
+                
+            }
         }
+        
+        
         
 		// handle identifier conflicts
 		mdp = resolveAllIdentifierConflicts(mdp, location);
