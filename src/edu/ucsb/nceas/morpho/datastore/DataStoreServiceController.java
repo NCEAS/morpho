@@ -737,7 +737,31 @@ public class DataStoreServiceController {
 	 * @throws Exception 
 	 */
 	public void save(MorphoDataPackage mdp, String location, boolean overwrite) throws Exception {
-
+	    
+	    
+	    //assign new id to a modified data package for the saving
+        AbstractDataPackage adp = mdp.getAbstractDataPackage();
+        if(adp.getLocation().equals(DataPackageInterface.TEMPLOCATION) && !location.equals(DataPackageInterface.INCOMPLETE)) {
+            String originalId = adp.getAccessionNumber();
+            String scheme = UUID;
+            String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+            if(location.equals(DataPackageInterface.BOTH) || location.equals(DataPackageInterface.NETWORK) ) {
+                // make sure the package reflects the updated IDs
+                String newIdentifier = Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(scheme, fragment);
+                adp.setAccessionNumber(newIdentifier);
+                mdp.updateIdentifier(originalId, newIdentifier);
+               
+            } else {
+                String newIdentifier =  Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
+                adp.setAccessionNumber(newIdentifier);
+                mdp.updateIdentifier(originalId, newIdentifier);
+            }
+         // set the SM to reflect this change
+            Identifier originalIdentifierObject = new Identifier();
+            originalIdentifierObject.setValue(originalId);
+            adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
+        }
+        
 		// handle identifier conflicts
 		mdp = resolveAllIdentifierConflicts(mdp, location);
 		
