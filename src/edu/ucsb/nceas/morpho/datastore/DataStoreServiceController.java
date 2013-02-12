@@ -760,16 +760,17 @@ public class DataStoreServiceController {
          // set the SM to reflect this change
             Identifier originalIdentifierObject = new Identifier();
             originalIdentifierObject.setValue(originalId);
-            adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
          // record this in revision manager (TODO: is this needed?)
             if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
                 if(Morpho.thisStaticInstance.getDataONEDataStoreService().exists(originalId)) {
+                    adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
                     Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalId);
                 }
                 
             }
             if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
                 if(Morpho.thisStaticInstance.getLocalDataStoreService().exists(originalId)) {
+                    adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
                     Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalId);
                 }
                 
