@@ -31,10 +31,19 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.Log;
 
+import java.security.cert.X509Certificate;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import java.awt.event.ActionEvent;
+
+import org.dataone.client.auth.CertificateManager;
+import org.dataone.service.types.v1.Subject;
+import org.dataone.service.types.v1.SubjectInfo;
+import org.dataone.service.types.v1.util.AuthUtils;
 
 
 /**
@@ -153,7 +162,10 @@ public class OpenDialogBoxCommand implements Command
       searchtext.append((String)returnFieldList.elementAt(i));
       searchtext.append("</returnfield>\n");
     }
-    searchtext.append("<owner>" + morpho.getUserName() + "</owner>\n");
+    
+	// use all user identities    
+    searchtext.append(getOwnerElement());
+    
     searchtext.append("<querygroup operator=\"UNION\">\n");
     searchtext.append("<queryterm casesensitive=\"true\" ");
     searchtext.append("searchmode=\"contains\">\n");
@@ -161,6 +173,45 @@ public class OpenDialogBoxCommand implements Command
     searchtext.append("</queryterm></querygroup></pathquery>");
     return searchtext.toString();
   }
+  
+  	/**
+  	 * Construct the <owner> element[s] so that we search for owner[s]
+  	 * that are listed as equivalent identities as well
+  	 * as the primary certificate subject.
+  	 * @see http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5864
+  	 * @return a string containing one or more <owner> elements
+  	 */
+	private String getOwnerElement() {
+		StringBuffer ownerElement = new StringBuffer();
+		
+		// always include the main owner
+		Set<Subject> subjects = new TreeSet<Subject>();
+		String subjectDN = morpho.getUserName();
+		Subject subject = new Subject();
+		subject.setValue(subjectDN);
+		subjects.add(subject);
+
+		// add in the alt identities
+		try {
+			X509Certificate certificate = CertificateManager.getInstance().loadCertificate();
+			SubjectInfo subjectInfo = CertificateManager.getInstance().getSubjectInfo(certificate);
+			if (subjectInfo != null) {
+				AuthUtils.findPersonsSubjects(subjects, subjectInfo, subject);
+			}
+		} catch (Exception e) {
+			Log.debug(20, "Error calculating owner subject list: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		// add all the alt subjects
+		for (Subject s: subjects) {
+			ownerElement.append("<owner>");
+			ownerElement.append(s.getValue());
+			ownerElement.append("</owner>\n");
+		}
+		
+		return ownerElement.toString();
+	}
 
   /**
    * could also have undo functionality; disabled for now
