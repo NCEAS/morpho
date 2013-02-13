@@ -120,7 +120,9 @@ public class AddAccessCommand
 				
 				// save the access policy to the correct location
 				success = DataStoreServiceController.getInstance().setAccessPolicy(adp, adp.getLocation());
-				message = "Successfully set Access Policy for " + identifier;
+				if (success) {
+					message = "Successfully set Access Policy for " + identifier;
+				}
 			} catch (NotFound e) {
 				message = identifier + " not found on the Coordinating Node. Cannot set Access Policy until it has been synchronized. Please try again later.";
 				e.printStackTrace();

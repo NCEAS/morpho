@@ -1070,7 +1070,7 @@ public class DataStoreServiceController {
 	 * @return
 	 */
 	public boolean setAccessPolicy(D1Object d1Object, String location) throws Exception {
-		boolean success = false;
+		boolean success = true;
 		// try local first -- this should go off without a hitch
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
 			success = Morpho.thisStaticInstance.getLocalDataStoreService().setAccessPolicy(d1Object.getSystemMetadata());
