@@ -1052,7 +1052,7 @@ public class DataStoreServiceController {
 	 * @return
 	 */
 	public boolean setReplicationPolicy(D1Object d1Object, String location) throws Exception {
-		boolean success = false;
+		boolean success = true;
 		// try local first -- this should go off without a hitch
 		if ((location .equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
 			success = Morpho.thisStaticInstance.getLocalDataStoreService().setReplicationPolicy(d1Object.getSystemMetadata());
