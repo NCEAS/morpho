@@ -566,9 +566,11 @@ public class LocalDataStoreService extends DataStoreService
 						// save the SM
 						saveSystemMetadata(entity.getSystemMetadata());
 						//we need to update the identifier information in the DataPackage object
-						if (!exists ) {
-						  addEntityIdToResourceMap(mdp, docid);
-						}
+						if (entity.getPreviousId() == null) {
+	                        addEntityIdToResourceMap(mdp, docid);
+	                    } else {
+	                        mdp.updateIdentifier(entity.getPreviousId(), docid);
+	                    }
 					}
 
 					// reset the map after finishing save. There is no need for

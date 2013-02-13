@@ -579,12 +579,15 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 					// save the data if it is new or has changes
 					if (isDirty || !exists) {
 						save(entity);
+						//we need to update the identifier information in the DataPackage object
+                        if (entity.getPreviousId() == null) {
+                            mdp.addData(entity);
+                            LocalDataStoreService.addEntityIdToResourceMap(mdp, docid);
+                        } else {
+                            mdp.updateIdentifier(entity.getPreviousId(), docid);
+                        }
 					}
 
-					 if (!exists ) {
-			             mdp.addData(entity);
-			             LocalDataStoreService.addEntityIdToResourceMap(mdp, docid);
-					 }
 					
 					// newDataFile must have worked; thus update the package
 					String urlinfo = DataLocation.URN_ROOT + docid;

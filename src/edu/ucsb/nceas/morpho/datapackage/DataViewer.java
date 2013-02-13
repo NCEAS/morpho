@@ -1381,6 +1381,7 @@ public class DataViewer extends javax.swing.JPanel
 				       }
 				       
 				   }
+				   entity.setPreviousId(dataFileId);
 				   entity.getSystemMetadata().setObsoletes(originalDataIdentifier);
 				}
 				

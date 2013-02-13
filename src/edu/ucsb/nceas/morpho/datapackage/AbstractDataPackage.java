@@ -2107,6 +2107,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  else
 		  {
 			  Log.debug(20, "in replace branch in AbstractDataPackage.replaceEntity");
+			  String URLinfo = getDistributionUrl(index, 0, 0);
+			  String previousId = getUrlInfo(URLinfo);
+			  entity.setPreviousId(previousId);
 			  deleteEntity(index);
 			  insertEntity(entity, index);
 		      addDirtyEntityIndex(index);		    

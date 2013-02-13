@@ -49,8 +49,11 @@ public  class Entity extends D1Object
    *  is needed since (in eml2) entities can have various names
    */
   private Node entRoot = null;
+  private String previousId = null;
   
-  /*
+
+
+/*
    *  the AbstractDataPackage which contains this Entity
    *  if null, it has not yet been inserted an AbstractDataPackage
    */
@@ -97,6 +100,14 @@ public  class Entity extends D1Object
   
   public Node getNode() {
     return entRoot;
+  }
+  
+  public String getPreviousId() {
+      return previousId;
+  }
+
+  public void setPreviousId(String previousId) {
+      this.previousId = previousId;
   }
   
 }

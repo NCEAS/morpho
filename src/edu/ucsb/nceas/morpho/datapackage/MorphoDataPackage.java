@@ -142,7 +142,7 @@ public class MorphoDataPackage extends DataPackage {
           systeMetadata.setIdentifier(newIdentifier);
         }
         // replace in the object map
-        remove(oldIdentifier);
+        removeData(oldIdentifier);
         addData(d1Object);
       }
     }
