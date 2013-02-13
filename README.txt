@@ -12,9 +12,10 @@ Contributors:
 This is Morpho, a data management application for managing ecological data.
 Morpho allows researchers to describe their data using a comprehensive and
 flexible metadata specification, and to share their data publicly or to
-specific collaborators over the Knowledge Network for Biocomplexity system.
-Although Morpho can be used without an account on the KNB, it is free and
-simple to obtain one: just register at:
+specific collaborators via the Knowledge Network for Biocomplexity or other
+Member Nodes within the DataONE network.
+Although Morpho can be used without an account, it is free and
+simple to obtain one. Simply register at:
 
  http://knb.ecoinformatics.org
 
@@ -23,7 +24,7 @@ Morpho's main features include:
   2. Compliance with Ecological Metadata Language
   3. Powerful metadata search for data on the network or locally
   4. Comprehensive revision control for changing data and metadata
-  5. Easy-to-use collaboration features via the KNB system      
+  5. Easy-to-use collaboration features via the DataONE network      
 
 **************************************************
 
