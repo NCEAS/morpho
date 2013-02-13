@@ -2075,7 +2075,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * Add a node which contains entity information into the data package
    * @param node usually get from entity wizard.
    */
-  public void addEntity(Node node)
+  private void addEntity(Node node)
   {
 	  Log.debug(30,"Adding Entity object to AbstractDataPackage..");
 	  Entity entity = generateEntityFromNode(node);
