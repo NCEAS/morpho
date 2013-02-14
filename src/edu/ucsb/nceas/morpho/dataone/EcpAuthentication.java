@@ -26,9 +26,11 @@ import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 public class EcpAuthentication {
 		
 	// TODO: make this configurable
+	private String CILOGON_SKIN = "DataONEDev";
 	private String spURL = "https://test.cilogon.org:443/secure/getcert/";
 	//private String spURL = "https://ecp.cilogon.org:443/secure/getcert/";
 	private String IdPListURL = "https://cilogon.org/include/ecpidps.txt";
+	
 	private List<IdentityProviderSelectionItem> providers = null;
 
 	private static EcpAuthentication instance = null;
@@ -113,12 +115,13 @@ public class EcpAuthentication {
 		
 		// from the ECP library
 		CertificateFetcher certFetcher = new CertificateFetcher();
+		certFetcher.setSkin(CILOGON_SKIN);
 		String pemContent = certFetcher.authenticate(spURL, idpURL, username, password);
 		
 		// save to a temp file
 		File certificateFile = null;
 		try {
-			certificateFile = File.createTempFile("ecp", "pem");
+			certificateFile = File.createTempFile("ecp", ".pem");
 			IOUtils.write(pemContent, new FileOutputStream(certificateFile));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

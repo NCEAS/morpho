@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <d1_libclient_version>1.2.0-SNAPSHOT</d1_libclient_version>
         <d1_common_java_version>1.2.0-SNAPSHOT</d1_common_java_version>
-        <simple_ecp_client_version>0.0.2</simple_ecp_client_version>
+        <simple_ecp_client_version>0.0.3-SNAPSHOT</simple_ecp_client_version>
     </properties>
     <repositories>
         
