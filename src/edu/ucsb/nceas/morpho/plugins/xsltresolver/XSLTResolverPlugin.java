@@ -29,11 +29,7 @@ package edu.ucsb.nceas.morpho.plugins.xsltresolver;
 import java.io.Reader;
 import java.io.InputStreamReader;
 
-import java.util.Vector;
-import java.util.Hashtable;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.util.Map;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -72,9 +68,9 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
     private final String    GENERIC_STYLESHEET;
     private final ConfigXML config;
 
-    private       Hashtable xslt_mappings;
-    private       Hashtable location_mappings;
-    private       Hashtable tree_editor_mappings;
+    private       Map xslt_mappings;
+    private       Map location_mappings;
+    private       Map tree_editor_mappings;
 
     private final ClassLoader classLoader;
 
@@ -230,7 +226,7 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
 
     //trims whitespace, checks for null and empty strings, checks to see if
     //already in HashTable, and if so, returns value for this key
-    private String getFromMappings(Hashtable mappings, String key)
+    private String getFromMappings(Map mappings, String key)
     {
         Log.debug(50,"XSLTResolverPlugin.getFromMappings() got key="+key);
 

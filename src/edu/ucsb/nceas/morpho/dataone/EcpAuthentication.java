@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.dataone.security.CertificateFetcher;
@@ -25,11 +26,17 @@ import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
  */
 public class EcpAuthentication {
 		
-	// TODO: make this configurable
-	private String CILOGON_SKIN = "DataONEDev";
-	private String spURL = "https://test.cilogon.org:443/secure/getcert/";
-	//private String spURL = "https://ecp.cilogon.org:443/secure/getcert/";
-	private String IdPListURL = "https://cilogon.org/include/ecpidps.txt";
+	// configurable in the config.xml file
+	public static String ECP_SKIN_TAG = "cilogon_skin_name";
+	public static String ECP_SERVICE_PROVIDER_TAG = "ecp_service_provider_url";
+	public static String ECP_REMOTE_IDP_LIST_URL_TAG = "ecp_idp_list_url";
+	public static String ECP_IDP_LIST_TAG = "ecp_idp_list";
+	public static String ECP_IDP_NAME_TAG = "ecp_idp_name";
+	public static String ECP_IDP_URL_TAG = "ecp_idp_url";
+
+	private String skinName = null;
+	private String spURL = null;
+	private String idpListURL = null;
 	
 	private List<IdentityProviderSelectionItem> providers = null;
 
@@ -37,8 +44,11 @@ public class EcpAuthentication {
 	
 	private EcpAuthentication() {
 		// look up config values
-		
-		// use default, of course
+		skinName = Morpho.getConfiguration().get(ECP_SKIN_TAG, 0);
+		spURL = Morpho.getConfiguration().get(ECP_SERVICE_PROVIDER_TAG, 0);
+		idpListURL = Morpho.getConfiguration().get(ECP_REMOTE_IDP_LIST_URL_TAG, 0);
+
+		// use default from configuration
 		providers = getDefaultIdPList();
 		
 		// then look up the available IdPs from CILogon
@@ -67,7 +77,7 @@ public class EcpAuthentication {
 	private List<IdentityProviderSelectionItem> getRemoteIdPList() throws Exception {
 		List<IdentityProviderSelectionItem> providers = new ArrayList<IdentityProviderSelectionItem>();
 		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(IdPListURL).openStream()));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(idpListURL).openStream()));
 		String line = null;
 		while ((line = reader.readLine()) != null){
 			int delimIndex = line.indexOf(" ");
@@ -81,16 +91,17 @@ public class EcpAuthentication {
 	}
 	
 	/**
-	 * Identity providers we know about and currently have accounts with. There are more listed by CILogon
+	 * Identity providers we know about and currently have accounts with. 
+	 * There are more listed by CILogon, but these are in our configuration
 	 * @see getRemoteIdPList()
 	 * @return list of IdPs
 	 */
 	private List<IdentityProviderSelectionItem> getDefaultIdPList() {
 		List<IdentityProviderSelectionItem> providers = new ArrayList<IdentityProviderSelectionItem>();
-		providers.add(new IdentityProviderSelectionItem("https://mn-demo-5.test.dataone.org/idp/profile/SAML2/SOAP/ECP", "KNB - Ecoinformatics"));
-		providers.add(new IdentityProviderSelectionItem("https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP", "ProtectNetwork"));
-		providers.add(new IdentityProviderSelectionItem("https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP", "LTER Network"));
-		providers.add(new IdentityProviderSelectionItem("https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP", "University of Chicago"));
+		Map<String, String> idpMap = Morpho.getConfiguration().getHashtable(ECP_IDP_LIST_TAG, ECP_IDP_URL_TAG, ECP_IDP_NAME_TAG);
+		for (Map.Entry<String, String> idpEntry: idpMap.entrySet()) {
+			providers.add(new IdentityProviderSelectionItem(idpEntry.getKey(), idpEntry.getValue()));
+		}
 		return providers;
 	}
 	
@@ -115,7 +126,7 @@ public class EcpAuthentication {
 		
 		// from the ECP library
 		CertificateFetcher certFetcher = new CertificateFetcher();
-		certFetcher.setSkin(CILOGON_SKIN);
+		certFetcher.setSkin(skinName);
 		String pemContent = certFetcher.authenticate(spURL, idpURL, username, password);
 		
 		// save to a temp file

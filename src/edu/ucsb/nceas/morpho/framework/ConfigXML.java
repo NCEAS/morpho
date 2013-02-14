@@ -39,6 +39,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -62,6 +64,7 @@ import org.xml.sax.InputSource;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 
 /**
@@ -436,12 +439,12 @@ public class ConfigXML
    *
    * this method will return a Hashtable of names-values of parent
    */
-  public Hashtable<String, String> getHashtable(String parentName, String keyName,
+  public Map<String, String> getHashtable(String parentName, String keyName,
                                 String valueName)
   {
     String keyval = "";
     String valval = "";
-    Hashtable<String, String> ht = new Hashtable<String, String>();
+    Map<String, String> ht = new LinkedHashMap<String, String>();
     NodeList nl = doc.getElementsByTagName(parentName);
     if (nl.getLength() > 0)
     {
