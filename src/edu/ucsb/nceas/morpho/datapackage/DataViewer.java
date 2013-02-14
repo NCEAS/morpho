@@ -272,6 +272,7 @@ public class DataViewer extends javax.swing.JPanel
   boolean missing_metadata_flag = false;
 
   private String currentURLInfo = null;
+  private boolean fileIdChanged = false;
 
     // assorted gui components
 	JPanel DataViewerPanel = new javax.swing.JPanel();
@@ -1381,18 +1382,25 @@ public class DataViewer extends javax.swing.JPanel
 				       }
 				       
 				   }
-				   entity.setPreviousId(dataFileId);
-				   entity.getSystemMetadata().setObsoletes(originalDataIdentifier);
+				   if(!fileIdChanged) {
+				       entity.setPreviousId(dataFileId);
+	                   entity.getSystemMetadata().setObsoletes(originalDataIdentifier); 
+				   }
+				  
 				}
 				
 			}
 			// generate new identifier
-			String id = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
-			dataFileId = id;  // update to new value
-			//System.out.println("reset the dataFileId "+dataFileId);
+			if(!fileIdChanged) {
+			    String id = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
+	            dataFileId = id;  // update to new value
+	            //System.out.println("reset the dataFileId "+dataFileId);
+	            fileIdChanged = true;
+			}
+			
 			
 			// use null for the input stream since we write to the file in the next step
-			File newDataFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(id, null);
+			File newDataFile = Morpho.thisStaticInstance.getLocalDataStoreService().saveTempDataFile(dataFileId, null);
 			ptm.getPersistentVector().writeObjects(newDataFile);
 			if(entity != null) {
 			    try {
@@ -1430,7 +1438,8 @@ public class DataViewer extends javax.swing.JPanel
 			// change the entire package id?
 			if (changePackageId) {
 			  String curid = adp.getAccessionNumber();
-			  String newid = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);;
+			  String newid = DataStoreServiceController.getInstance().generateIdentifier(null, DataPackageInterface.LOCAL);
+			  mdp.updateIdentifier(curid, newid);
 			  if (!curid.equals("")) {
 				  Identifier obsoletes = new Identifier();
 				  obsoletes.setValue(curid);
