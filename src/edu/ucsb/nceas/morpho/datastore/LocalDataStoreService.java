@@ -838,6 +838,25 @@ public class LocalDataStoreService extends DataStoreService
 		Log.debug(30, "Delete success value is: " + success);
 		return success;
 	}
+	
+	
+	/**
+	 * Delete the local system metadata file associated with an identifier.
+	 * @param identifier
+	 * @return
+	 */
+	public boolean deleteSystemMetaFile(String identifier) {
+	    boolean success = false;
+	    try 
+        {
+            success = FileSystemDataStore.getInstance(getSystemMetadataDir(getDataDir())).delete(identifier);
+                         
+        } catch (Exception e) {
+            
+           Log.debug(30, "SystemMetadata file not found for identifier: " + identifier);
+        }
+	    return success;
+	}
    
    /**
     * deletes a file from incomplete dir in the local file system. returns true if the file is
@@ -902,9 +921,10 @@ public class LocalDataStoreService extends DataStoreService
 	public boolean delete(MorphoDataPackage mdp) throws FileNotFoundException {
 		
 		String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
-		
+		boolean deleteMetadata = deleteFile(identifier);
+		deleteSystemMetaFile(identifier);
 		// TODO: delete other parts of the ADP
-		return deleteFile(identifier);
+		return deleteMetadata;
 		
 		
 	}
