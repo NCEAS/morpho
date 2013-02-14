@@ -923,7 +923,13 @@ public class LocalDataStoreService extends DataStoreService
 		String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
 		boolean deleteMetadata = deleteFile(identifier);
 		deleteSystemMetaFile(identifier);
-		// TODO: delete other parts of the ADP
+
+		String oreId = DataStoreService.RESOURCE_MAP_ID_PREFIX+identifier;
+		if(exists(oreId)) {
+		    deleteFile(oreId);
+	        deleteSystemMetaFile(oreId);
+		}
+		
 		return deleteMetadata;
 		
 		
