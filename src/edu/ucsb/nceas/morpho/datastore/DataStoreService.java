@@ -27,8 +27,14 @@
 package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
+
+import org.dataone.service.types.v1.Identifier;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 
@@ -110,6 +116,33 @@ public abstract class DataStoreService implements DataStoreServiceInterface
    */
   protected String getSystemMetadataDir(String objectDir) {
     return objectDir+File.separator+ProfileDialog.SYSTEMMETADATADIRNAME;
+  }
+  
+  /**
+   * Check if the specified MorphoDataPackage has entity.
+   * @param mdp
+   * @return true if it has; otherwise false.
+   */
+  protected boolean hasEntity(MorphoDataPackage mdp) {
+      boolean hasEntity = false;
+      if(mdp != null) {
+          AbstractDataPackage adp = mdp.getAbstractDataPackage();
+          if(adp != null) {
+              String identifier = adp.getAccessionNumber();
+              Map<Identifier, List<Identifier>>map= mdp.getMetadataMap();
+              
+              if(map != null) {
+                Identifier id = new Identifier();
+                id.setValue(identifier);
+                List<Identifier> list = map.get(id);
+                if(list != null && list.size() >0) {
+                  hasEntity = true;
+                }
+              }
+          }
+          
+      }
+      return hasEntity;
   }
 
 }

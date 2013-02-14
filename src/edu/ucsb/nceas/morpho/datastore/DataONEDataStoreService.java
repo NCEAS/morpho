@@ -505,10 +505,14 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		adp.setSerializeMetacatSuccess(true);
 
 		// return now if we do not have data packages to save as ORE
-		if (identifiers == null || identifiers.size() == 1) {
+		/*if (identifiers == null || identifiers.size() == 1) {
 			return metadataId.getValue();
-		}
-		
+		}*/
+		 //return now if we do not have data packages to save as ORE
+        if (!hasEntity(mdp)) {
+            return adp.getAccessionNumber();
+        }
+		//System.out.println("dataone has resrouce map!!!!!!!!!!!!!!!!!!============================");
 		// save ore document finally
 		Identifier oreId = new Identifier();
 		oreId.setValue(RESOURCE_MAP_ID_PREFIX + metadataId.getValue());

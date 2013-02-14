@@ -376,16 +376,25 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
           //System.out.println("the location is ======================="+adp.getLocation());
             if ((localLoc.isSelected()) && (localLoc.isEnabled())
                     && (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.BOTH);
+                try {
+                    DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.BOTH);
+                } catch (Exception mue) {
+                    // TODO: More informative?
+                    String errormsg = mue.getMessage();
+                    Log.debug(5, "Problem Saving package: \n" + errormsg);
+                    mue.printStackTrace();
+                }
+                
                 if (adp.getSerializeLocalSuccess()
                         && adp.getSerializeMetacatSuccess()) {
-                    adp.setLocation(DataPackageInterface.BOTH);
+                    adp.setLocation(DataPackageInterface.BOTH);//success
                 } else if (adp.getSerializeLocalSuccess()) {
-                    adp.setLocation(DataPackageInterface.LOCAL);
+                    adp.setLocation(DataPackageInterface.LOCAL);//partial success
                 } else if (adp.getSerializeMetacatSuccess()) {
-                    adp.setLocation(DataPackageInterface.NETWORK);
+                    adp.setLocation(DataPackageInterface.NETWORK);//partial success
                 } else {
-                    adp.setLocation(adp.getLocation());
+                    adp.setLocation(adp.getLocation());//failed
+                    problem = true;
                 }
             // LOCAL
             } else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {

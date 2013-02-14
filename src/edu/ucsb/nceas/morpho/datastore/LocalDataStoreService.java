@@ -464,21 +464,12 @@ public class LocalDataStoreService extends DataStoreService
 		saveSystemMetadata(adp.getSystemMetadata());
 		
 		// check if we have a package
-	    Map<Identifier, List<Identifier>>map= mdp.getMetadataMap();
-	    boolean hasEntity = false;
-	    if(map != null) {
-	      Identifier id = new Identifier();
-	      id.setValue(identifier);
-	      List<Identifier> list = map.get(id);
-	      if(list != null && list.size() >0) {
-	        hasEntity = true;
-	      }
-	    }
+	    
 	    //return now if we do not have data packages to save as ORE
-	    if (!hasEntity) {
+	    if (!hasEntity(mdp)) {
 			return adp.getAccessionNumber();
 	    }
-	    
+	    //System.out.println("local has resrouce map!!!!!!!!!!!!!!!!!!============================");
 		// save ore document finally
 		Identifier oreId = new Identifier();
 	    oreId.setValue(RESOURCE_MAP_ID_PREFIX + adp.getIdentifier().getValue());
