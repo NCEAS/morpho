@@ -75,6 +75,7 @@ import org.dataone.service.types.v1.SubjectInfo;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.types.v1.util.ChecksumUtil;
 import org.dataone.service.types.v1_1.QueryEngineList;
+import org.dataone.service.util.Constants;
 import org.dataone.service.util.EncodingUtilities;
 import org.dspace.foresite.OREException;
 import org.dspace.foresite.OREParserException;
@@ -870,6 +871,9 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	public boolean isConnected() {
 		boolean isValidCert = false;
 		String clientCertificateLocation = Morpho.thisStaticInstance.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+//		if (clientCertificateLocation != null && clientCertificateLocation.length() == 0) {
+//			clientCertificateLocation = null;
+//		}
         CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
 		X509Certificate clientCertificate = CertificateManager.getInstance().loadCertificate();
 		if (clientCertificate != null) {
@@ -888,6 +892,33 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		return isValidCert;
 		
 	}
+	
+	/**
+     * Get the username associated with this framework
+     *
+     * @return    The UserName value
+     * @returns   String the username
+     */
+    public String getUserName()
+    {
+        String subjectDN = null;
+        // if we have a valid certificate, use it to find the username
+        if (this.isConnected()) {
+	        String clientCertificateLocation = Morpho.thisStaticInstance.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+//	        if (clientCertificateLocation != null && clientCertificateLocation.length() == 0) {
+//				clientCertificateLocation = null;
+//			}
+	        CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
+	        X509Certificate clientCert = CertificateManager.getInstance().loadCertificate();
+			if (clientCert != null) {
+				subjectDN = CertificateManager.getInstance().getSubjectDN(clientCert);
+			}
+        } else {
+        	this.logOut();
+        }
+        String userName = (subjectDN != null) ? subjectDN : Constants.SUBJECT_PUBLIC;
+		return userName;
+    }
 	
 	/**
 	 * Determines if the framework is using an ssl connection
@@ -940,7 +971,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		}
 		
 		// clear out the certificate config
-		Morpho.thisStaticInstance.getProfile().set(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0, null, true);
+		Morpho.thisStaticInstance.getProfile().set(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0, "", true);
 		Morpho.thisStaticInstance.getProfile().save();
 
 		return true;

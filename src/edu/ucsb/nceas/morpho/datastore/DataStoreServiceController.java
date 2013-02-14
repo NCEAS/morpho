@@ -42,7 +42,6 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
-import edu.ucsb.nceas.morpho.datastore.idmanagement.IdentifierFileMap;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -52,7 +51,6 @@ import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * This singleton class allows callers to interact with data store services for
@@ -870,7 +868,7 @@ public class DataStoreServiceController {
 		sysmeta.setFormatId(formatId);
 		// set owner as the current user
 		Subject rightsHolder = new Subject();
-		rightsHolder.setValue(Morpho.thisStaticInstance.getUserName());
+		rightsHolder.setValue(Morpho.thisStaticInstance.getDataONEDataStoreService().getUserName());
 		sysmeta.setRightsHolder(rightsHolder);
 				
 		// try to set authoritative MN

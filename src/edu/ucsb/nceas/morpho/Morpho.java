@@ -40,7 +40,6 @@ import java.io.Writer;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -56,9 +55,6 @@ import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.dataone.client.auth.CertificateManager;
-import org.dataone.service.util.Constants;
 
 import com.apple.eawt.AboutHandler;
 import com.apple.eawt.AppEvent.AboutEvent;
@@ -361,31 +357,6 @@ public class Morpho
         }
         f.delete();
       }
-    }
-
-
-    /**
-     * Get the username associated with this framework
-     *
-     * @return    The UserName value
-     * @returns   String the username
-     */
-    public String getUserName()
-    {
-        String subjectDN = null;
-        // if we have a valid certificate, use it to find the username
-        if (dds.isConnected()) {
-	        String clientCertificateLocation = profile.get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
-	        CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
-	        X509Certificate clientCert = CertificateManager.getInstance().loadCertificate();
-			if (clientCert != null) {
-				subjectDN = CertificateManager.getInstance().getSubjectDN(clientCert);
-			}
-        } else {
-        	dds.logOut();
-        }
-        String userName = (subjectDN != null) ? subjectDN : Constants.SUBJECT_PUBLIC;
-		return userName;
     }    
 
     /**
@@ -1110,7 +1081,7 @@ public class Morpho
             ConnectionListener listener =
                     (ConnectionListener)connectionRegistry.elementAt(i);
             if (listener != null) {
-                listener.usernameChanged(getUserName());
+                listener.usernameChanged(dds.getUserName());
             }
         }
     }

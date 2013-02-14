@@ -307,7 +307,7 @@ public class InitialScreen extends JPanel
 
         currentProfileLDAPLabel.setText(  
                          UISettings.INIT_SCR_PANEL_LITE_FONT_OPEN
-                        +"("+morpho.getUserName()+")"
+                        +"("+Morpho.thisStaticInstance.getDataONEDataStoreService().getUserName()+")"
                         +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
                         
         currentProfileLDAPLabel.invalidate();

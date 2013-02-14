@@ -186,7 +186,7 @@ public class OpenDialogBoxCommand implements Command
 		
 		// always include the main owner
 		Set<Subject> subjects = new TreeSet<Subject>();
-		String subjectDN = morpho.getUserName();
+		String subjectDN = Morpho.thisStaticInstance.getDataONEDataStoreService().getUserName();
 		Subject subject = new Subject();
 		subject.setValue(subjectDN);
 		subjects.add(subject);
