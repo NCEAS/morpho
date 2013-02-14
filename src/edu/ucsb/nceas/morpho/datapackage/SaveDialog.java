@@ -98,6 +98,10 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	MorphoDataPackage mdp = null;
 	
 	SaveEvent saveEvent = null;
+	
+	private static final String BOTHFAILMESSAGEINSAVINGBOTH = "Both saving the data package locally and to network failed.";
+	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = "Saving the data package locally succeeded." +" "+"However, saving it to network failed.";
+	private static final String LOCALFAILMESSAGEINSAVINGBOTH = "Saving the data package to network succeeded."+" " +"However, saving it locally failed.";
 
 	/**
 	 * Construct a new instance of the dialog where parent is morphoframe
@@ -389,10 +393,13 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
                         && adp.getSerializeMetacatSuccess()) {
                     adp.setLocation(DataPackageInterface.BOTH);//success
                 } else if (adp.getSerializeLocalSuccess()) {
+                    Log.debug(8, NETWORKFAILMESSAGEINSAVINGBOTH);
                     adp.setLocation(DataPackageInterface.LOCAL);//partial success
                 } else if (adp.getSerializeMetacatSuccess()) {
+                    Log.debug(8, LOCALFAILMESSAGEINSAVINGBOTH);
                     adp.setLocation(DataPackageInterface.NETWORK);//partial success
                 } else {
+                    Log.debug(8, BOTHFAILMESSAGEINSAVINGBOTH);
                     adp.setLocation(adp.getLocation());//failed
                     problem = true;
                 }

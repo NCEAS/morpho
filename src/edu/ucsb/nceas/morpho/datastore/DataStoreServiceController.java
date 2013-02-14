@@ -795,10 +795,26 @@ public class DataStoreServiceController {
 		}
 		
 		if (location.equals(DataPackageInterface.BOTH)) {
-			// save locally
-			Morpho.thisStaticInstance.getLocalDataStoreService().save(mdp);
-			// save to network
-			Morpho.thisStaticInstance.getDataONEDataStoreService().save(mdp);
+			
+		    try {
+		       // save locally
+		        Morpho.thisStaticInstance.getLocalDataStoreService().save(mdp);
+		    } catch (Exception e) {
+		        String errormsg = e.getMessage();
+                Log.debug(5, "Problem Saving package locally: \n" + errormsg);
+                e.printStackTrace(); 
+		    }
+		    
+		    try {
+		        // save to network
+	            Morpho.thisStaticInstance.getDataONEDataStoreService().save(mdp);
+            } catch (Exception e) {
+                String errormsg = e.getMessage();
+                Log.debug(5, "Problem Saving package to network: \n" + errormsg);
+                e.printStackTrace();
+            }
+			
+			
 		}
 		
 		// special case
