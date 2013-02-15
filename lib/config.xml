@@ -41,7 +41,9 @@
   <ecp_idp_list_url>https://cilogon.org/include/ecpidps.txt</ecp_idp_list_url>
   <ecp_idp_list>
   	<ecp_idp_url>https://mn-demo-5.test.dataone.org/idp/profile/SAML2/SOAP/ECP</ecp_idp_url>
-  	<ecp_idp_name>NCEAS - Ecoinformatics</ecp_idp_name>
+  	<ecp_idp_name>Ecoinformatics (NCEAS)</ecp_idp_name>
+  	<ecp_idp_url>https://mn-demo-5.test.dataone.org/idp-unaffiliated/profile/SAML2/SOAP/ECP</ecp_idp_url>
+  	<ecp_idp_name>Ecoinformatics (Unaffiliated)</ecp_idp_name>
   	<ecp_idp_url>https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP</ecp_idp_url>
   	<ecp_idp_name>ProtectNetwork</ecp_idp_name>
   	<ecp_idp_url>https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP</ecp_idp_url>
