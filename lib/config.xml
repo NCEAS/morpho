@@ -35,6 +35,20 @@
   <taxonRankSearchPath>taxonomicClassification/taxonRankName</taxonRankSearchPath>
   <taxonValueSearchPath>taxonomicClassification/taxonRankValue</taxonValueSearchPath>
   <updateIdFileMap>true</updateIdFileMap>
+  <cilogon_skin_name>DataONE</cilogon_skin_name>
+  <ecp_service_provider_url>https://test.cilogon.org:443/secure/getcert/</ecp_service_provider_url>
+  <!-- <ecp_service_provider_url>https://ecp.cilogon.org:443/secure/getcert/</ecp_service_provider_url> -->
+  <ecp_idp_list_url>https://cilogon.org/include/ecpidps.txt</ecp_idp_list_url>
+  <ecp_idp_list>
+  	<ecp_idp_url>https://mn-demo-5.test.dataone.org/idp/profile/SAML2/SOAP/ECP</ecp_idp_url>
+  	<ecp_idp_name>NCEAS - Ecoinformatics</ecp_idp_name>
+  	<ecp_idp_url>https://idp.protectnetwork.org/protectnetwork-idp/profile/SAML2/SOAP/ECP</ecp_idp_url>
+  	<ecp_idp_name>ProtectNetwork</ecp_idp_name>
+  	<ecp_idp_url>https://shib.lternet.edu/idp/profile/SAML2/SOAP/ECP</ecp_idp_url>
+  	<ecp_idp_name>LTER Network</ecp_idp_name>
+  	<ecp_idp_url>https://shibboleth2.uchicago.edu/idp/profile/SAML2/SOAP/ECP</ecp_idp_url>
+  	<ecp_idp_name>University of Chicago</ecp_idp_name>
+  </ecp_idp_list>
   <vocabularies>
   	<vocabulary>KNBRegistry</vocabulary>
   	<className>edu.ucsb.nceas.morpho.plugins.vocabulary.GenericTreeVocabularyPage</className>
