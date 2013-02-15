@@ -924,11 +924,12 @@ public class LocalDataStoreService extends DataStoreService
 	    if (oreId != null) {
 	        deleteFile(oreId.getValue());
             deleteSystemMetaFile(oreId.getValue());
+            getRevisionManager().delete(oreId.getValue());
 	    }
 		String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
 		boolean deleteMetadata = deleteFile(identifier);
 		deleteSystemMetaFile(identifier);
-
+		getRevisionManager().delete(identifier);
 		
 		return deleteMetadata;
 		
