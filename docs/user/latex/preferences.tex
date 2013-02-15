@@ -1,9 +1,10 @@
 \section{Setting Preferences} \label{sec:preferences}
 
-Use Morpho preferences to set a DataONE Coordinating Node, select a 
+Use Morpho preferences to select a DataONE
 Member Node, customize the look and feel
 of the application, and adjust settings that affect logging and
-debugging. Select ``Set preferences...'' under the File menu to open the
+debugging. The advanced tab allows you set a DataONE Coordinating Node. 
+Select ``Set preferences...'' under the File menu to open the
 Morpho Preferences screen (\autoref{fig:dialog-preferences}).
 
 \begin{figure}
@@ -13,18 +14,13 @@ Morpho Preferences screen (\autoref{fig:dialog-preferences}).
   \label{fig:dialog-preferences}
 \end{figure}
 
-\paragraph{Coordinating Node URL} The Coordinating Node URL contains the URL 
-of the DataONE Coordinating Node that is instrumental in managing data replication, 
-user accounts, and other essential DataONE infrastructure requirements.
-where data are stored. By default, the Coordinating Node URL points to the
-production DataONE environment. Change the default only if you are testing a new feature or 
-are an advanced user.
-
 \paragraph{Member Node URL} The Member Node URL contains the URL of the specific
 DataONE Member Node to which data and metadata will be uploaded. By default, the 
 Member Node URL points to the KNB Member Node which accepts user-submitted 
 data packages from a wide variety of disciplines. Select a different Member Node 
 if your content should primarily be housed on that specific node.
+Advanced users can enter a Member Node URL directly if their node is not yet 
+registered and available in the list.
 
 \paragraph{Log Messages} The Log Messages preference, when set to ``yes'' (the
 default), specifies that error messages be written to a log file. The
@@ -51,3 +47,10 @@ if you have downloaded many large data sets and are running low on hard
 drive space, you may wish to use this option. Note that when you clear
 the cache, Morpho must re-download each data set the next time you
 require it.
+
+\paragraph{Coordinating Node URL} The Coordinating Node URL contains the URL 
+of the DataONE Coordinating Node that is instrumental in managing data replication, 
+user accounts, and other essential DataONE infrastructure requirements.
+where data are stored. By default, the Coordinating Node URL points to the
+production DataONE environment. Change the default only if you are testing a new feature or 
+are an advanced user.
