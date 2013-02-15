@@ -790,13 +790,14 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     Set<Identifier> identifiers = mdp.identifiers();
     if(identifiers != null && identifiers.size() > 0 ) {
       for(Identifier identifier : identifiers) {
-        if(!identifier.equals(oreId) && !identifier.equals(metadataId)) {
+        if((oreId != null &&!identifier.equals(oreId)) && !identifier.equals(metadataId)) {
           activeMNode.archive(identifier);
         }
 
       }
-      success = true;
+      
     }
+    success = true;
     return success;
   }
   

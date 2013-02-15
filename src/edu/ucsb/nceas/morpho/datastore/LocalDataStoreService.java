@@ -920,15 +920,15 @@ public class LocalDataStoreService extends DataStoreService
 	@Override
 	public boolean delete(MorphoDataPackage mdp) throws FileNotFoundException {
 		
+	    Identifier oreId = mdp.getPackageId();
+	    if (oreId != null) {
+	        deleteFile(oreId.getValue());
+            deleteSystemMetaFile(oreId.getValue());
+	    }
 		String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
 		boolean deleteMetadata = deleteFile(identifier);
 		deleteSystemMetaFile(identifier);
 
-		String oreId = DataStoreService.RESOURCE_MAP_ID_PREFIX+identifier;
-		if(exists(oreId)) {
-		    deleteFile(oreId);
-	        deleteSystemMetaFile(oreId);
-		}
 		
 		return deleteMetadata;
 		
