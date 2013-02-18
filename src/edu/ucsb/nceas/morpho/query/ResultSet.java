@@ -536,6 +536,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
          //merge a complete documents vector to a incomplete documents vector
           DocInfo info = incompleteDocidMap.get(currentDocid);
           String existIdentifier = info.getDocid();
+          // check the local revision history for the latest version of it
           String latestIdentifier = null;
 			try {
 				latestIdentifier = Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().getLatestRevision(existIdentifier);
@@ -574,8 +575,20 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
         }          
         else 
         {
-          //a totally new record, just add it.
-          resultsVector.addElement(row);
+        	// check revisions
+        	String latestRevision = null;
+        	try {
+				latestRevision = morpho.getDataONEDataStoreService().getRevisionManager().getLatestRevision(currentDocid);
+			} catch (Exception e) {
+				// this is expected much of the time
+				Log.debug(30, "could not find revision history for: " + currentDocid);
+			}
+        	if (latestRevision == null || latestRevision.equals(currentDocid)) {
+        		// this is the latest version or a totally new record
+        		// just add it.
+                resultsVector.addElement(row);
+        	}
+          
         }
       }
    
