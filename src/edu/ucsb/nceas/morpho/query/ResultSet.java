@@ -528,7 +528,9 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     while (ee.hasMoreElements()) 
     {
       Vector row = (Vector)ee.nextElement();
-      String currentDocid = (String)row.elementAt(DOCIDINDEX);   
+      String currentDocid = (String)row.elementAt(DOCIDINDEX);
+      String localStatus = (String)row.elementAt(ISLOCALINDEX);   
+
       if (currentDocid != null)
       {
         if (incompleteDocidMap.containsKey(currentDocid)) 
@@ -575,17 +577,19 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
         }          
         else 
         {
-        	// check revisions
+        	// check network revision history for local results to see if they have been obsoleted
         	String latestRevision = null;
-        	try {
-				latestRevision = morpho.getDataONEDataStoreService().getRevisionManager().getLatestRevision(currentDocid);
-			} catch (Exception e) {
-				// this is expected much of the time
-				Log.debug(30, "could not find revision history for: " + currentDocid);
-			}
+        	if (localStatus.equals(QueryRefreshInterface.LOCAL) || localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE)) {
+	        	try {
+					latestRevision = morpho.getDataONEDataStoreService().getRevisionManager().getLatestRevision(currentDocid);
+				} catch (Exception e) {
+					// this is expected much of the time
+					Log.debug(30, "could not find revision history for: " + currentDocid);
+				}	
+        	}
+        	
+        	// if this is the latest version or a totally new record just add it
         	if (latestRevision == null || latestRevision.equals(currentDocid)) {
-        		// this is the latest version or a totally new record
-        		// just add it.
                 resultsVector.addElement(row);
         	}
           
