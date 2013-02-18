@@ -59,7 +59,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SaveEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * A dialog box for user choice of export options
@@ -99,9 +98,9 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	
 	SaveEvent saveEvent = null;
 	
-	private static final String BOTHFAILMESSAGEINSAVINGBOTH = "Both saving the data package locally and to network failed.";
-	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = "Saving the data package locally succeeded." +" "+"However, saving it to network failed.";
-	private static final String LOCALFAILMESSAGEINSAVINGBOTH = "Saving the data package to network succeeded."+" " +"However, saving it locally failed.";
+	private static final String BOTHFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("FailureSavingTo") + " " +  DataPackageInterface.BOTH;
+	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " " + DataPackageInterface.LOCAL + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.NETWORK;
+	private static final String LOCALFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " "  + DataPackageInterface.NETWORK + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.LOCAL;
 
 	/**
 	 * Construct a new instance of the dialog where parent is morphoframe
