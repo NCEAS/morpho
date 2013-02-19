@@ -617,11 +617,14 @@ public class Morpho
             // Correct the invalid eml 201 documents
             CorrectEML201DocsFrame correctFrame = new CorrectEML201DocsFrame(morpho);
             correctFrame.doCorrection();
+            //we may change the profile content in the previous step, so morpho needs to reload it.
+            morpho.loadProfile(morpho);
             
             // Create id-filename map for the morpho 1.x object directories
             IdentifierUpdaterFrame updateFrame = new IdentifierUpdaterFrame();
             updateFrame.run();
-            
+            //we may change the profile content in the previous step, so morpho needs to reload it.
+            morpho.loadProfile(morpho);
             // Set up the Service Controller
             ServiceController services = ServiceController.getInstance();
 
