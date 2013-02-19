@@ -631,6 +631,9 @@ public class ProfileDialog extends JDialog implements StateChangeListener
           if (! profile.set(CORRECTIONEMLPROFILEPATH, 0, "true")) {
               success = profile.insert(CORRECTIONEMLPROFILEPATH, "true");
           }
+          if (! profile.set(IDFILEMAPUPDATEDPATH, 0, "true")) {
+              success = profile.insert(IDFILEMAPUPDATEDPATH, "true");
+          }
           profile.save();
 
           // Create our directories for user data
