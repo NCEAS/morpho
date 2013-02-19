@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.datastore.DataStoreService;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.LocalIdentifierGenerator;
 import edu.ucsb.nceas.morpho.datastore.idmanagement.RevisionManager;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.util.Log;
 
 
@@ -75,7 +76,7 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
                 for(int i=0; i<scopeDirs.length; i++) {
                   File scopeDir = scopeDirs[i];
                   //only look up the files under the scope dir
-                  if(scopeDir.isDirectory()) {
+                  if(scopeDir.isDirectory() && !scopeDir.getName().equals(ProfileDialog.SYSTEMMETADATADIRNAME)) {
                       File[] fileList = scopeDir.listFiles();
                       if(fileList != null) {
                         for(int j=0; j<fileList.length; j++) {

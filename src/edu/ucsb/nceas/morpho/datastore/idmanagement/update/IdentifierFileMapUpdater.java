@@ -135,7 +135,7 @@ public class IdentifierFileMapUpdater {
                 for(int i=0; i<scopeDirs.length; i++) {
                   File scopeDir = scopeDirs[i];
                   //only look up the files under the scope dir
-                  if(scopeDir.isDirectory()) {
+                  if(scopeDir.isDirectory() && !scopeDir.getName().equals(ProfileDialog.SYSTEMMETADATADIRNAME)) {
                       File[] fileList = scopeDir.listFiles();
                       if(fileList != null) {
                         for(int j=0; j<fileList.length; j++) {
