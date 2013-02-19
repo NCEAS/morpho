@@ -99,6 +99,8 @@ public class RevisionUpdater extends IdentifierFileMapUpdater {
         }
       }
       buildRevisionsProperties(manager);
+      //reset the the Hashtable after upgrading a profile.
+      revisionsKeeper = new Hashtable<String, Vector<Integer>>();
     }
   }
   
