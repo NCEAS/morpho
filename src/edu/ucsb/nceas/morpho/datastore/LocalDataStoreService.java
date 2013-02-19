@@ -462,7 +462,10 @@ public class LocalDataStoreService extends DataStoreService
 		
 		// save the SM for the science metadata
 		saveSystemMetadata(adp.getSystemMetadata());
-		
+		//modify the system metadata of the previous version by setting the obsoletedBy
+		if(adp.getSystemMetadata().getObsoletes() != null) {
+		    setObsoletedByInSysMeta(adp.getSystemMetadata().getObsoletes().getValue(), adp.getAccessionNumber());
+		}
 		// check if we have a package
 	    
 	    //return now if we do not have data packages to save as ORE
@@ -500,6 +503,8 @@ public class LocalDataStoreService extends DataStoreService
 			Identifier obsoleteOreId = new Identifier();
 			obsoleteOreId.setValue(RESOURCE_MAP_ID_PREFIX + obsoleteMetadataId.getValue());
 			resourceMapSysMeta.setObsoletes(obsoleteOreId);
+			//modify the system metadata of the previous version by setting the obsoletedBy
+			setObsoletedByInSysMeta(RESOURCE_MAP_ID_PREFIX + obsoleteMetadataId.getValue(), oreId.getValue());
 		}
 
 		// this is just weird to set in two different places
@@ -556,6 +561,10 @@ public class LocalDataStoreService extends DataStoreService
 						}
 						// save the SM
 						saveSystemMetadata(entity.getSystemMetadata());
+						//modify the system metadata of the previous version by setting the obsoletedBy
+				        if(entity.getSystemMetadata().getObsoletes() != null) {
+				            setObsoletedByInSysMeta(entity.getSystemMetadata().getObsoletes().getValue(), docid);
+				        }
 						//we need to update the identifier information in the DataPackage object
 						if (entity.getPreviousId() == null) {
 	                        addEntityIdToResourceMap(mdp, docid);
@@ -579,6 +588,31 @@ public class LocalDataStoreService extends DataStoreService
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Add the obsoletedBy element in the system metadata of the previous version.
+	 * @param previousId
+	 * @param newId
+	 */
+	private void setObsoletedByInSysMeta(String previousId, String newId) {
+	    if(previousId != null && newId != null) {
+	        if(exists(previousId)) {
+	            try {
+	                SystemMetadata obsoletedORESysmeta = getSystemMetadata(previousId);
+	                if(obsoletedORESysmeta != null) {
+	                    Identifier newIdentifier = new Identifier();
+	                    newIdentifier.setValue(newId);
+	                    obsoletedORESysmeta.setObsoletedBy(newIdentifier);
+	                    saveSystemMetadata(obsoletedORESysmeta);
+	                }
+	            } catch (Exception e) {
+	                Log.debug(15, "LocalDataStoreService.setObsoletedByInPreviousSysMeta - couldn't set the obsoletedBy element in the  system metadata for the document "+previousId+" : " +e.getMessage());
+	            }
+	            
+	        }
+	    }
+	    
 	}
 	
 	/**
@@ -923,17 +957,63 @@ public class LocalDataStoreService extends DataStoreService
 	    Identifier oreId = mdp.getPackageId();
 	    if (oreId != null) {
 	        deleteFile(oreId.getValue());
+	        adjustSysMetaInDelete(oreId.getValue());
             deleteSystemMetaFile(oreId.getValue());
             getRevisionManager().delete(oreId.getValue());
 	    }
 		String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
 		boolean deleteMetadata = deleteFile(identifier);
+		adjustSysMetaInDelete(identifier);
 		deleteSystemMetaFile(identifier);
 		getRevisionManager().delete(identifier);
 		
 		return deleteMetadata;
 		
 		
+	}
+	
+	/*
+	 * Adjust the Obsoletes and ObsoletedBy element after deleting.
+	 */
+	private void adjustSysMetaInDelete(String deletedId) {
+	    if(deletedId != null) {
+	        try {
+	            SystemMetadata sysMeta = getSystemMetadata(deletedId);
+	            if(sysMeta != null) {
+	                Identifier obsoletes = sysMeta.getObsoletes();
+	                Identifier obsoletedBy = sysMeta.getObsoletedBy();
+	                if(obsoletes != null && obsoletedBy == null) {
+	                    //delete the newest version;remove the obsoletes in the previous system metadata.
+	                    if(exists(obsoletes.getValue())) {
+	                        SystemMetadata obsoletesSysMeta = getSystemMetadata(obsoletes.getValue());
+	                        obsoletesSysMeta.setObsoletedBy(null);
+	                        saveSystemMetadata(obsoletesSysMeta);
+	                    }
+	                } else if (obsoletes == null && obsoletedBy != null) {
+	                    //deleted the oldest version; remove the oboletes in the newer system metadata
+	                    if(exists(obsoletedBy.getValue())) {
+                            SystemMetadata obsoletedBySysMeta = getSystemMetadata(obsoletedBy.getValue());
+                            obsoletedBySysMeta.setObsoletes(null);
+                            saveSystemMetadata(obsoletedBySysMeta);
+                        }
+	                } else if (obsoletes != null && obsoletedBy != null) {
+	                    //deleted the middle version; we need modify the both previous and next version system metadata 
+	                    if(exists(obsoletedBy.getValue()) && exists(obsoletedBy.getValue())) {
+                            SystemMetadata obsoletedBySysMeta = getSystemMetadata(obsoletedBy.getValue());
+                            obsoletedBySysMeta.setObsoletes(obsoletes);
+                            saveSystemMetadata(obsoletedBySysMeta);
+                            SystemMetadata obsoletesSysMeta = getSystemMetadata(obsoletes.getValue());
+                            obsoletesSysMeta.setObsoletedBy(obsoletedBy);
+                            saveSystemMetadata(obsoletesSysMeta);
+                            
+                        }
+	                }
+	            }
+	        } catch (Exception e) {
+	            Log.debug(15, "LocalDataStoreService.adjustSysMetaInDelete - Can't adjust Obsoletes and ObsoletedBy element in the deleting :"+e.getMessage());
+	        }
+	        
+	    }
 	}
 	
   
