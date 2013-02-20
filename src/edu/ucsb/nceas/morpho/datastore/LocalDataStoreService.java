@@ -955,13 +955,24 @@ public class LocalDataStoreService extends DataStoreService
 	public boolean delete(MorphoDataPackage mdp) throws FileNotFoundException {
 		
 	    Identifier oreId = mdp.getPackageId();
+	    String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
+	    String oreIdStr = null;
 	    if (oreId != null) {
-	        deleteFile(oreId.getValue());
-	        adjustSysMetaInDelete(oreId.getValue());
-            deleteSystemMetaFile(oreId.getValue());
-            getRevisionManager().delete(oreId.getValue());
+	       oreIdStr = oreId.getValue();
+	    } else {
+	       // assume naming convention for ORE maps to obsolete the old one
+	        // see: http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5798
+	        oreIdStr = RESOURCE_MAP_ID_PREFIX+identifier;
 	    }
-		String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
+		
+	    if(oreIdStr != null && exists(oreIdStr)) {
+	        deleteFile(oreIdStr);
+	        adjustSysMetaInDelete(oreIdStr);
+	        deleteSystemMetaFile(oreIdStr);
+	        getRevisionManager().delete(oreIdStr);
+	    }
+	    
+        
 		boolean deleteMetadata = deleteFile(identifier);
 		adjustSysMetaInDelete(identifier);
 		deleteSystemMetaFile(identifier);
