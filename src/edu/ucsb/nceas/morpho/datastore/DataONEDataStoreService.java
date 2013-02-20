@@ -782,17 +782,33 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     boolean success = false;
     // check if there is an ORE package
     Identifier oreId = mdp.getPackageId();
+    Identifier metadataId = mdp.getAbstractDataPackage().getIdentifier();
     if (oreId != null) {
     	activeMNode.archive(oreId);
+    } else {
+        String oreIdStr = RESOURCE_MAP_ID_PREFIX + metadataId.getValue();
+        if(exists(oreIdStr)) {
+            oreId = new Identifier();
+            oreId.setValue(oreIdStr);
+            activeMNode.archive(oreId);
+        }
     }
-    Identifier metadataId = mdp.getAbstractDataPackage().getIdentifier();
+    
     activeMNode.archive(metadataId);
     Set<Identifier> identifiers = mdp.identifiers();
     if(identifiers != null && identifiers.size() > 0 ) {
       for(Identifier identifier : identifiers) {
-        if((oreId != null &&!identifier.equals(oreId)) && !identifier.equals(metadataId)) {
-          activeMNode.archive(identifier);
+        if(identifier != null) {
+            if((oreId != null &&!identifier.equals(oreId)) && !identifier.equals(metadataId)) {
+                try {
+                    activeMNode.archive(identifier);
+                } catch (Exception e) {
+                    Log.debug(8, "Morpho couldn't delete the data object "+identifier.getValue()+" in the data package because\n"+e.getMessage());
+                }
+              
+            }
         }
+        
 
       }
       
