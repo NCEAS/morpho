@@ -79,7 +79,7 @@ public class LoginCommand implements Command
 		try {
 			File certificateLocation = EcpAuthentication.getInstance().authenticate(idp, username, password);
 			connected = morpho.getDataONEDataStoreService().logIn(certificateLocation.getAbsolutePath());
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			// something didn't work...
 			Log.debug(10, "Could not authenticate: " + e.getMessage());
 			e.printStackTrace();
