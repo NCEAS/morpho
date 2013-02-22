@@ -383,7 +383,7 @@ public class InitialScreen extends JPanel
             null,
             connectCommand);
         loginButton.setAction(loginAction);
-        loginButton.setContentAreaFilled(false); 
+        loginButton.setContentAreaFilled(true); 
         loginButton.setRolloverEnabled(true);
         loginButton.setHorizontalAlignment(SwingConstants.CENTER);
         loginButton.setMargin(new Insets(0,0,0,0));
