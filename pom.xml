@@ -10,8 +10,8 @@
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <d1_libclient_version>1.2.0-SNAPSHOT</d1_libclient_version>
-        <d1_common_java_version>1.2.0-SNAPSHOT</d1_common_java_version>
+        <d1_libclient_version>1.2.1</d1_libclient_version>
+        <d1_common_java_version>1.1.1</d1_common_java_version>
         <simple_ecp_client_version>0.0.3-SNAPSHOT</simple_ecp_client_version>
     </properties>
     <repositories>
