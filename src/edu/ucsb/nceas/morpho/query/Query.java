@@ -641,14 +641,14 @@ public class Query extends DefaultHandler {
          else if (!searchNetwork)
          {
            Log.debug(30, "(2) Executing local query...");
-           doLocalSearchDisplay(resultDisplayPanel, morpho);
+           doLocalSearchDisplay(resultDisplayPanel, morpho, false);
 
          }//else if
          else
          {
            Log.debug(30, "(2) Executing both local and metacat query...");
            // search local first
-            HeadResultSet localResult = doLocalSearchDisplay(resultDisplayPanel, morpho);
+            HeadResultSet localResult = doLocalSearchDisplay(resultDisplayPanel, morpho, true);
             doMetacatSearchDisplay(resultDisplayPanel, morpho, localResult);
 
          }//else
@@ -731,8 +731,7 @@ public class Query extends DefaultHandler {
  /*
   * Method to display local search result. This include incomplete documents list too.
   */
- private HeadResultSet doLocalSearchDisplay(final ResultPanel resultDisplayPanel,
-                                   final Morpho morpho)
+ private HeadResultSet doLocalSearchDisplay(final ResultPanel resultDisplayPanel, final Morpho morpho, boolean checkRevisionHistory)
  {
     HeadResultSet incompleteLocalResults = doLocalSearchIncompleteDocDisplay(resultDisplayPanel, morpho);
     final Query query = this;
@@ -740,7 +739,7 @@ public class Query extends DefaultHandler {
     HeadResultSet localResults = (HeadResultSet)lq.execute();
     if(incompleteLocalResults != null)
     {
-      incompleteLocalResults.mergeWithLocalResults(localResults);
+      incompleteLocalResults.mergeWithLocalResults(localResults, checkRevisionHistory);
     }
     else
     {

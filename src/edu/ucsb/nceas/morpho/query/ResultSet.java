@@ -464,7 +464,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   {
     if (metacatResults != null)
     {
-      mergeWithCompleteDocResultset(metacatResults);  
+      mergeWithCompleteDocResultset(metacatResults, true);  
     }
   }
 
@@ -473,21 +473,21 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
    * Merge a ResultSet onto this one using the docid as the join column.
    * Merging also consolidate results.
    */
-   public void mergeWithLocalResults(ResultSet localResults)
+   public void mergeWithLocalResults(ResultSet localResults, boolean checkRevisionHistory)
    {
-     mergeWithCompleteDocResultset(localResults);  
+     mergeWithCompleteDocResultset(localResults, checkRevisionHistory);  
    }
    
    /*
     * Merge a complete-document search result set onto this one.
     * Merging also consolidate the reuslt.
     */
-   private void mergeWithCompleteDocResultset(ResultSet anotherResultSet)
+   private void mergeWithCompleteDocResultset(ResultSet anotherResultSet, boolean checkRevisionHistory)
    {
      if(anotherResultSet != null)
      {
        Vector r2Rows = anotherResultSet.getResultsVector();
-       mergeWithCompleteDocResultVectors(r2Rows);
+       mergeWithCompleteDocResultVectors(r2Rows, checkRevisionHistory);
      }
    }
  
@@ -499,7 +499,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
    * This merge also consolidate the results.
    * Note: if order changed, the result may be wrong
    */
-  protected void mergeWithCompleteDocResultVectors(Vector completeDocResult)
+  protected void mergeWithCompleteDocResultVectors(Vector completeDocResult, boolean checkRevisionHistory)
   {
     // Create a hash of  docids for easy comparison, key is docidWithoutRev, value is DocInfo object
     Hashtable<String, DocInfo> completeDocidMap = new Hashtable<String, DocInfo>();
@@ -580,12 +580,14 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
         	// check network revision history for local results to see if they have been obsoleted
         	String latestRevision = null;
         	if (localStatus.equals(QueryRefreshInterface.LOCAL) || localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE)) {
-	        	try {
-					latestRevision = morpho.getDataONEDataStoreService().getRevisionManager().getLatestRevision(currentDocid);
-				} catch (Exception e) {
-					// this is expected much of the time
-					Log.debug(30, "could not find revision history for: " + currentDocid);
-				}	
+            	if (checkRevisionHistory) {
+	        		try {
+						latestRevision = morpho.getDataONEDataStoreService().getRevisionManager().getLatestRevision(currentDocid);
+					} catch (Exception e) {
+						// this is expected much of the time
+						Log.debug(30, "could not find revision history for: " + currentDocid);
+					}
+            	}
         	}
         	
         	// if this is the latest version or a totally new record just add it

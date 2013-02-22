@@ -175,7 +175,7 @@ public class HeadResultSet extends ResultSet
   */
   public void mergeWithMetacatResults(Vector metacatVector)
   {
-    mergeWithCompleteDocResultVectors(metacatVector);
+    mergeWithCompleteDocResultVectors(metacatVector, true);
   }
 
    /**
