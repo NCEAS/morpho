@@ -80,7 +80,7 @@ public class OpenDialogBoxCommand implements Command
     // create ownerQuery depend on the suiation when it executed
     ownerQuery = new Query(getOwnerQuery(), morpho);
     ownerQuery.setSearchLocal(true);
-    if (Morpho.thisStaticInstance.getDataONEDataStoreService().isQueryEngineSupported()) {
+    if (Morpho.thisStaticInstance.getDataONEDataStoreService().isQueryEngineSupported() && Morpho.thisStaticInstance.getDataONEDataStoreService().isConnected()) {
     	ownerQuery.setSearchNetwork(true);
     }
     // Get the current morphoFrame. Maybe change get open dialog parent
