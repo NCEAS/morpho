@@ -48,12 +48,13 @@ public class EcpAuthentication {
 		spURL = Morpho.getConfiguration().get(ECP_SERVICE_PROVIDER_TAG, 0);
 		idpListURL = Morpho.getConfiguration().get(ECP_REMOTE_IDP_LIST_URL_TAG, 0);
 
-		// use default from configuration
+		// use default from configuration, always
 		providers = getDefaultIdPList();
 		
-		// then look up the available IdPs from CILogon
+		// then look up the available IdPs from CILogon and merge the two
 		try {
-			//providers = getRemoteIdPList();
+			List<IdentityProviderSelectionItem> remoteProviders = getRemoteIdPList();
+			providers = mergeProviders(remoteProviders, providers);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -102,6 +103,19 @@ public class EcpAuthentication {
 		for (Map.Entry<String, String> idpEntry: idpMap.entrySet()) {
 			providers.add(new IdentityProviderSelectionItem(idpEntry.getKey(), idpEntry.getValue()));
 		}
+		return providers;
+	}
+	
+	private List<IdentityProviderSelectionItem> mergeProviders(List<IdentityProviderSelectionItem> remote, List<IdentityProviderSelectionItem> local) throws Exception {
+		List<IdentityProviderSelectionItem> providers = new ArrayList<IdentityProviderSelectionItem>();
+		providers.addAll(remote);
+		// only add local entries that are not represented
+		for (IdentityProviderSelectionItem p: local) {
+			if (!providers.contains(p)) {
+				providers.add(0, p);
+			}
+		}
+		
 		return providers;
 	}
 	

@@ -35,6 +35,13 @@ public class IdentityProviderSelectionItem {
 		this.name = name;
 	}
 	
+	/**
+	 * equal if URLs match
+	 */
+	public boolean equals(Object p) {
+		return this.url.equals(((IdentityProviderSelectionItem)p).url);
+	}
+	
 	public String toString() {
 		return name;
 	}
