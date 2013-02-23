@@ -19,6 +19,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -34,8 +35,6 @@ import org.dataone.service.types.v1.ObjectFormatIdentifier;
 import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.dataone.service.types.v1.util.ChecksumUtil;
-
-import com.ibm.icu.util.Calendar;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -1083,14 +1082,14 @@ public class DataStoreServiceController {
 	 * @param location
 	 * @return
 	 */
-	public boolean setAccessPolicy(D1Object d1Object, String location) throws Exception {
+	public boolean setAccessPolicy(SystemMetadata sysMeta, String location) throws Exception {
 		boolean success = true;
 		// try local first -- this should go off without a hitch
 		if ((location.equals(DataPackageInterface.LOCAL)) || (location.equals(DataPackageInterface.BOTH))) {
-			success = Morpho.thisStaticInstance.getLocalDataStoreService().setAccessPolicy(d1Object.getSystemMetadata());
+			success = Morpho.thisStaticInstance.getLocalDataStoreService().setAccessPolicy(sysMeta);
 		}
 		if ((location.equals(DataPackageInterface.NETWORK)) || (location.equals(DataPackageInterface.BOTH))) {
-			success = success && Morpho.thisStaticInstance.getDataONEDataStoreService().setAccessPolicy(d1Object.getSystemMetadata());		
+			success = success && Morpho.thisStaticInstance.getDataONEDataStoreService().setAccessPolicy(sysMeta);			
 		}
 		// TODO: allow this? save change locally so they are not lost?
 		if (location.equals(DataPackageInterface.TEMPLOCATION)) {

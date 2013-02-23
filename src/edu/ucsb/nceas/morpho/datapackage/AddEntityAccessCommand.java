@@ -135,7 +135,7 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 					entity.getSystemMetadata().setAccessPolicy(accessPolicy);
 					
 					// save the access policy to the correct location
-					success = DataStoreServiceController.getInstance().setAccessPolicy(entity, adp.getLocation());
+					success = DataStoreServiceController.getInstance().setAccessPolicy(entity.getSystemMetadata(), adp.getLocation());
 					if (success) {
 						message = "Successfully set Access Policy for " + identifier;
 					}

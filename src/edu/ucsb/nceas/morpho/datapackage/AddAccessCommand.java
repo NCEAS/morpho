@@ -26,15 +26,16 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import javax.swing.JOptionPane;
-
 import java.awt.event.ActionEvent;
+
+import javax.swing.JOptionPane;
 
 import org.dataone.service.exceptions.NotFound;
 import org.dataone.service.exceptions.VersionMismatch;
 import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.SystemMetadata;
 import org.w3c.dom.Node;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
@@ -108,6 +109,7 @@ public class AddAccessCommand
 		if (showAccessDialog()) {
 			
 			AbstractDataPackage adp = mdp.getAbstractDataPackage();
+			String location = adp.getLocation();
 			String identifier = adp.getAccessionNumber();
 			String message = "Could not set Access Policy for " + identifier;
 			boolean success = false;
@@ -119,10 +121,11 @@ public class AddAccessCommand
 				adp.getSystemMetadata().setAccessPolicy(accessPolicy);
 				
 				// save the access policy to the correct location
-				success = DataStoreServiceController.getInstance().setAccessPolicy(adp, adp.getLocation());
+				success = DataStoreServiceController.getInstance().setAccessPolicy(adp.getSystemMetadata(), location);
 				if (success) {
 					message = "Successfully set Access Policy for " + identifier;
 				}
+				
 			} catch (NotFound e) {
 				message = identifier + " not found on the Coordinating Node. Cannot set Access Policy until it has been synchronized. Please try again later.";
 				e.printStackTrace();

@@ -44,7 +44,6 @@ public interface DataStoreServiceInterface
    static final String CONFLICT    = "conflict"; //docid exist, but revision is less than the one in metacat
    static final String UPDATE       = "update";//docid exist, but revision is greater than the on in metacat
    static final String NONEXIST    =  "nonexist";//docid not exist all no all.
-   public static final String RESOURCEMAPPREFIX = "resourceMap_";
    
   /**
    * open a file from a datastore with the id of name and return a File

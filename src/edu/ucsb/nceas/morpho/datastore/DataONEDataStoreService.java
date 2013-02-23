@@ -1052,12 +1052,22 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	 */
 	public boolean setReplicationPolicy(SystemMetadata sysMeta) throws NotImplemented, NotFound, NotAuthorized, ServiceFailure, InvalidRequest, InvalidToken, VersionMismatch {
 		boolean result = false;
+		
+		// check if we are connected first
+		if (!isConnected()) {
+			EcpAuthentication.getInstance().establishConnection();
+		}
+		if (!isConnected()) {
+			return false;
+		}
+		
 		String cnURL = getCNodeURL();
 		CNode cNode = new CNode(cnURL);
 		
 		// TODO: have a better refresh/merge solution
 		long serialVersion = 0;
-		if (sysMeta.getSerialVersion() != null) {
+		//if (sysMeta.getSerialVersion() != null) {
+		if (false) {	
 			serialVersion = sysMeta.getSerialVersion().longValue();
 		} else {
 			// get the latest serialVersion from CN
@@ -1088,20 +1098,49 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	 */
 	public boolean setAccessPolicy(SystemMetadata sysMeta) throws InvalidToken, ServiceFailure, NotAuthorized, NotFound, NotImplemented, InvalidRequest, VersionMismatch {
 		boolean result = false;
+		
+		// check if we are logged in first
+		if (!isConnected()) {
+			EcpAuthentication.getInstance().establishConnection();
+		}
+		if (!isConnected()) {
+			return false;
+		}
+				
 		String cnURL = getCNodeURL();
 		CNode cNode = new CNode(cnURL);
 		
+		String identifier = sysMeta.getIdentifier().getValue();
 		// TODO: have a better refresh/merge solution
 		long serialVersion = 0;
-		if (sysMeta.getSerialVersion() != null) {
+		//if (sysMeta.getSerialVersion() != null) {
+		if (false) {
 			serialVersion = sysMeta.getSerialVersion().longValue();
 		} else {
 			// get the latest serialVersion from CN
-			Log.debug(20, "Looking up SystemMetadata.serialVersion from CN before setting ReplicationPolicy for: " + sysMeta.getIdentifier().getValue());
+			Log.debug(20, "Looking up SystemMetadata.serialVersion from CN before setting ReplicationPolicy for: " + identifier);
 			SystemMetadata cnSysMeta = cNode.getSystemMetadata(sysMeta.getIdentifier());
 			serialVersion = cnSysMeta.getSerialVersion().longValue();
 		}
 		result = cNode.setAccessPolicy(sysMeta.getIdentifier(), sysMeta.getAccessPolicy(), serialVersion);
+		
+		// try ORE if we can find it
+		String objectFormatType = cNode.getFormat(sysMeta.getFormatId()).getFormatType();
+		if (objectFormatType.equalsIgnoreCase("METADATA")) {
+			String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier;
+			SystemMetadata oreSystemMetadata = null;
+			try {
+				oreSystemMetadata = this.getSystemMetadataFromDataONE(oreIdentifier);
+			} catch (Exception e) {
+				Log.debug(20, "Could not find related ORE object: " + oreIdentifier);
+				e.printStackTrace();
+			}
+			// set the access policy and save it
+			if (oreSystemMetadata != null) {
+				oreSystemMetadata.setAccessPolicy(sysMeta.getAccessPolicy());
+				result = result &&  this.setAccessPolicy(oreSystemMetadata);
+			}
+		}
 		
 		return result;
 	}
