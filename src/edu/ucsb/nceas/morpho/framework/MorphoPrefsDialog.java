@@ -57,6 +57,7 @@ import org.dataone.service.types.v1.NodeType;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -81,7 +82,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		// tabbed center panel
 		JTabbedPane tabbedCenterPane = new JTabbedPane();
 		tabbedCenterPane.addTab(Language.getInstance().getMessage("General"), CenterPanel);
-		tabbedCenterPane.addTab(Language.getInstance().getMessage("Advanced"), cnPanel);
+		tabbedCenterPane.addTab(Language.getInstance().getMessage("Advanced"), advancedPanel);
 
 		getContentPane().add(BorderLayout.CENTER, tabbedCenterPane);
 		
@@ -90,13 +91,10 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		aboutLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 		CenterPanel.add(aboutLabel);
 		
-		// the CN
+		// the CN URL
+		JPanel cnPanel = WidgetFactory.makePanel();
 		cnPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		coordinatingNodeURLLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
-		coordinatingNodeURLLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		coordinatingNodeURLLabel.setText(Language.getInstance().getMessage("CoordinatingNodeURL"));
-		coordinatingNodeURLLabel.setForeground(java.awt.Color.black);
-		coordinatingNodeURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		JLabel coordinatingNodeURLLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("CoordinatingNodeURL"), false, null);
 		cnPanel.add(coordinatingNodeURLLabel);
 		coordinatingNodeURLTextField.setColumns(35);
 		coordinatingNodeURLTextField.addFocusListener(new FocusListener() {
@@ -114,7 +112,17 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 			
 		});
 		cnPanel.add(coordinatingNodeURLTextField);
-		//CenterPanel.add(cnPanel);
+		advancedPanel.add(cnPanel);
+		
+		JPanel certificatePanel = WidgetFactory.makePanel();
+		certificatePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		JLabel certificateLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("ClientCertificate"), false, null);
+		certificatePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		certificatePanel.add(certificateLabel);
+		clientCertificateTextField.setColumns(35);
+		certificatePanel.add(clientCertificateTextField);
+		advancedPanel.add(certificatePanel);
 		
 		// the MN selection / edit box
 		JPanel mnSelectionPanel = new JPanel();
@@ -202,6 +210,9 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		config = Morpho.getConfiguration();
 		coordinatingNodeURLTextField.setText(morpho.getDataONEDataStoreService().getCNodeURL());
 		
+		// set the current cert location
+		clientCertificateTextField.setText(morpho.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0));
+
 		// set the selected MN
 		setSelectedMemberNode();
 		
@@ -293,11 +304,11 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	JLabel aboutLabel = new JLabel();
 	JPanel JPanel1 = new JPanel();
 	JPanel JPanel2 = new JPanel();
-	JPanel cnPanel = new JPanel();
-	JLabel coordinatingNodeURLLabel = new JLabel();
+	JPanel advancedPanel = new JPanel();
 	JTextField coordinatingNodeURLTextField = new JTextField();
 	JLabel memberNodeURLLabel = new JLabel();
 	JComboBox memberNodeComboBox = new JComboBox();
+	JTextField clientCertificateTextField = new JTextField();
 	JPanel JPanel3 = new JPanel();
 	JLabel loggingLabel = new JLabel();
 	JRadioButton logYes = new JRadioButton();
@@ -412,6 +423,15 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 
 		// set the CN URL
 		morpho.getDataONEDataStoreService().setCNodeURL(coordinatingNodeURLTextField.getText());
+		
+		// set the client certificate
+		String existingLocation = morpho.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+		String newLocation = clientCertificateTextField.getText();
+		morpho.getProfile().set(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0, newLocation, true);
+		if (!existingLocation.equals(newLocation)) {
+			morpho.fireConnectionChangedEvent();
+			morpho.fireUsernameChangedEvent();
+		}
 
 		Morpho.initializeLogging(config);
 		// need to add Look and Feel support
