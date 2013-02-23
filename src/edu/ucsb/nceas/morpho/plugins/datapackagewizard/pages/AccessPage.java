@@ -55,6 +55,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -63,8 +64,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -119,6 +122,8 @@ public class AccessPage
   private final static String SUBJECTINFO = "subjectInfo";
   private final static String ACCESSLIST = "accesslist";
 
+  private final static String MANUALLYINPUTDNLABEL = "Enter Distinguished Name Manually";
+  private JCheckBox manuallyInputDNCheckBox;
 
   private JTextField treeFilterField;
   protected JTree accessTree;
@@ -128,7 +133,7 @@ public class AccessPage
   protected JTextField dnField;
   private JButton refreshButton;
   private JLabel warnLabel;
-  private JLabel introLabel;
+  //private JLabel introLabel;
   private JLabel accessDesc1, accessDesc2;
   private String userAccessType = " " + Language.getInstance().getMessage("Allow");
   protected String userAccess = " " + Language.getInstance().getMessage("Read");
@@ -191,11 +196,26 @@ public class AccessPage
     		, 1);
     topPanel.add(desc);
     topPanel.add(WidgetFactory.makeHalfSpacer());
-    introLabel = WidgetFactory.makeHTMLLabel(
-        /*"<b>Select a user or group from the list below:</b>"*/
-    	"<b>" + Language.getInstance().getMessage("AccessPage.SelectUser") + " :</b>"	
-    		, 1);
-    topPanel.add(introLabel);
+    topPanel.add(WidgetFactory.makeHalfSpacer());
+    manuallyInputDNCheckBox = WidgetFactory.makeCheckBox(MANUALLYINPUTDNLABEL, false);
+    manuallyInputDNCheckBox.addItemListener(new ItemListener() {
+        public void itemStateChanged (ItemEvent e) {
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                displayDNPanel();
+            } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                if (Access.accessTreeNode != null &&
+                                Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
+
+                   displayTree(Access.accessTreeNode);
+               } else {
+                   displayDNPanel();
+               }
+            }
+        }
+    });
+    JPanel cbPanel = new JPanel(new GridLayout(0, 1));
+    cbPanel.add(manuallyInputDNCheckBox);
+    topPanel.add(cbPanel);
     this.add(topPanel, BorderLayout.NORTH);
     ///////////////////////////////////////////////////////
 
@@ -254,7 +274,7 @@ public class AccessPage
 
     if (Access.accessTreeNode != null &&
         Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL()) == 0) {
-
+      //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ init to display tree");
       displayTree(Access.accessTreeNode);
     }
 
@@ -651,8 +671,19 @@ public class AccessPage
 
 
   protected void displayDNPanel() {
+    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ display dn panel");
+    manuallyInputDNCheckBox.setSelected(true);
+    middlePanel.removeAll();
+    JLabel introLabel = WidgetFactory.makeHTMLLabel(
+                    /*"<b>/*"Specify a Distinguished Name in text field below:"</b>"*/
+                    "<b>" + Language.getInstance().getMessage("AccessPage.SpecifyDistinguishedName") + " :</b>"   
+                        , 1);
+    JPanel introPane = WidgetFactory.makePanel(1);
+    introPane.add(introLabel);
+    middlePanel.add(introPane, BorderLayout.NORTH);
+    
     JPanel panel = null;
-
+    
     panel = WidgetFactory.makePanel(1);
     JLabel dnLabel = WidgetFactory.makeLabel(/*"Distinguished Name"*/ Language.getInstance().getMessage("DistinguishedName"),
      										false);
@@ -671,9 +702,8 @@ public class AccessPage
     middlePanel.add(getAccessControlPanel(true, 
     									/*"Retrieve the user list ..."*/ Language.getInstance().getMessage("AccessPage.RetrieveUserList") + " ..."),
         BorderLayout.SOUTH);
-    introLabel.setText(/*"Specify a Distinguished Name in text field below:"*/
-    					Language.getInstance().getMessage("AccessPage.SpecifyDistinguishedName") + " :"
-    					);
+    /*introLabel.setText(
+    					);*/
     middlePanel.revalidate();
     middlePanel.repaint();
 
@@ -827,12 +857,14 @@ public class AccessPage
    */
 
   protected void displayTree(DefaultMutableTreeNode treeNode) {
+    //System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ display tree");
+    manuallyInputDNCheckBox.setSelected(false);
     accessTreePane = null;
 
     // clear out any other components on the screen...
     dnField = null;
     middlePanel.removeAll();
-
+   
     if (treeNode != null) {
       treeTable = new JTreeTable(new AccessTreeModel(treeNode));
       treeTable.getTree().setCellRenderer(new AccessTreeCellRenderer());
@@ -917,6 +949,17 @@ public class AccessPage
 	    		
 	    	});
     	}
+    	
+    	JLabel introLabel = WidgetFactory.makeHTMLLabel(
+                        /*"<b>Select a user or group from the list below:</b>"*/
+                        "<b>" + Language.getInstance().getMessage("AccessPage.SelectUser") + " :</b>"   
+                            , 1);
+        JPanel topOfMiddle = new JPanel();
+        topOfMiddle.setLayout(new BoxLayout(topOfMiddle, BoxLayout.Y_AXIS));
+        topOfMiddle.add(introLabel);
+        topOfMiddle.add(Box.createVerticalStrut(10));
+    
+        
     	//disable the default button
     	if (this.getRootPane() != null) {
     		this.getRootPane().setDefaultButton(null);
@@ -932,10 +975,11 @@ public class AccessPage
     	filterPanel.add(filterButton);
     	filterPanel.add(resetButton);
     	
-    	// add the tree filter
-    	middlePanel.add(filterPanel, BorderLayout.NORTH);
+  
     	
-    	
+      topOfMiddle.add(filterPanel);
+      middlePanel.add(topOfMiddle, BorderLayout.NORTH);
+
       middlePanel.add(accessTreePane, BorderLayout.CENTER);
       middlePanel.add(getAccessControlPanel(true, 
     		  								/*"Refresh the user list..."*/ Language.getInstance().getMessage("AccessPage.RefreshUserList") + " ..."
@@ -1172,21 +1216,21 @@ public class AccessPage
         if (o instanceof Person) {
           Person nodeOb = (Person) o;
           warnLabel.setText(EMPTY_STRING);
-          if (userDN != null) {
+          if (nodeOb != null && nodeOb.getSubject() != null) {
             userDN = nodeOb.getSubject().getValue();
           }
           return true;
         } else if (o instanceof Group) {
           Group nodeOb = (Group) o;
           warnLabel.setText(EMPTY_STRING);
-          if (userDN != null) {
+          if (nodeOb != null && nodeOb.getSubject() != null) {
             userDN = nodeOb.getSubject().getValue();
           }
           return true;
         } else if (o instanceof Subject) {
           Subject nodeOb = (Subject) o;
           warnLabel.setText(EMPTY_STRING);
-          if (userDN != null) {
+          if (nodeOb != null) {
             userDN = nodeOb.getValue();
           }
           return true;
@@ -1203,9 +1247,9 @@ public class AccessPage
     } else {
       if (dnField.getText().trim().compareTo(EMPTY_STRING) != 0) {
         warnLabel.setText(EMPTY_STRING);
-        if (userDN != null) {
+        //if (userDN != null) {
           userDN = dnField.getText().trim();
-        }
+        //}
         return true;
       } else {
         warnLabel.setText(
