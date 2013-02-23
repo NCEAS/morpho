@@ -122,7 +122,6 @@ public class AccessPage
   private final static String SUBJECTINFO = "subjectInfo";
   private final static String ACCESSLIST = "accesslist";
 
-  private final static String MANUALLYINPUTDNLABEL = "Enter Distinguished Name Manually";
   private JCheckBox manuallyInputDNCheckBox;
 
   private JTextField treeFilterField;
@@ -192,12 +191,12 @@ public class AccessPage
     topPanel.setBorder(new javax.swing.border.EmptyBorder(
         0, 4 * WizardSettings.PADDING, 0, 0));
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<font size=\"4\"><b>" + /*Define Access*/ Language.getInstance().getMessage("DefineAccess") + " :</b></font>"
+        "<font size=\"4\"><b>" + /*Define Access*/ Language.getInstance().getMessage("DefineAccess") + ":</b></font>"
     		, 1);
     topPanel.add(desc);
     topPanel.add(WidgetFactory.makeHalfSpacer());
     topPanel.add(WidgetFactory.makeHalfSpacer());
-    manuallyInputDNCheckBox = WidgetFactory.makeCheckBox(MANUALLYINPUTDNLABEL, false);
+    manuallyInputDNCheckBox = WidgetFactory.makeCheckBox(Language.getInstance().getMessage("EnterDistinguishedName"), false);
     manuallyInputDNCheckBox.addItemListener(new ItemListener() {
         public void itemStateChanged (ItemEvent e) {
             if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -240,24 +239,24 @@ public class AccessPage
     accessDefinitionPanel.setLayout(new BorderLayout());
 
     JLabel accessDefinitionLabel = WidgetFactory.makeHTMLLabel(
-        "<b>&nbsp;" + /*Description of access levels*/ Language.getInstance().getMessage("AccessPage.AccesLevel")+ " :</b>"
+        "<b>&nbsp;" + /*Description of access levels*/ Language.getInstance().getMessage("AccessPage.AccesLevel")+ ": </b>"
         + "<ul>" 
        /*+ "<li>Read: Able to view data package.</li>"*/
         + "<li>" + /*Read*/ Language.getInstance().getMessage("Read") 
-        + " : "+ /*"Able to view data package.*/ Language.getInstance().getMessage("ReadDescription")+"</li>"
+        + ":  "+ /*"Able to view data package.*/ Language.getInstance().getMessage("ReadDescription")+"</li>"
         
        /*+ "<li>Read & Write: Able to view and modify data package.</li>"*/
         + "<li>"+ /*Read & Write*/ Language.getInstance().getMessage("Read") + " & " +Language.getInstance().getMessage("Write") 
-        + " : " + /*"Able to view and modify data package.*/ Language.getInstance().getMessage("ReadWriteDescription") + "</li>"
+        + ": " + /*"Able to view and modify data package.*/ Language.getInstance().getMessage("ReadWriteDescription") + "</li>"
         
        /*+ "<li>Read, Write & Change Permissions: Able to view and modify "
         + "datapackage, and modify access permissions.</li>"*/
         + "<li>" + Language.getInstance().getMessage("Read") + ", " + Language.getInstance().getMessage("Write") + " & " + Language.getInstance().getMessage("ChangePermissions")
-        + " : " + Language.getInstance().getMessage("ReadWriteChangePermissionsDescription") + "</li>"
+        + ": " + Language.getInstance().getMessage("ReadWriteChangePermissionsDescription") + "</li>"
         
         /*+ "<li>All: Able to do everything (this is the same as Read, Write "
         + "& Change Permissions)*/
-        + "<li>" + Language.getInstance().getMessage("All") + " : " + Language.getInstance().getMessage("AllAccessDescription") + "</li>"
+        + "<li>" + Language.getInstance().getMessage("All") + ": " + Language.getInstance().getMessage("AllAccessDescription") + "</li>"
         
         +"</li></ul>", 5);
 
@@ -676,7 +675,7 @@ public class AccessPage
     middlePanel.removeAll();
     JLabel introLabel = WidgetFactory.makeHTMLLabel(
                     /*"<b>/*"Specify a Distinguished Name in text field below:"</b>"*/
-                    "<b>" + Language.getInstance().getMessage("AccessPage.SpecifyDistinguishedName") + " :</b>"   
+                    "<b>" + Language.getInstance().getMessage("AccessPage.SpecifyDistinguishedName") + ":</b>"   
                         , 1);
     JPanel introPane = WidgetFactory.makePanel(1);
     introPane.add(introLabel);
@@ -953,7 +952,7 @@ public class AccessPage
     	
     	JLabel introLabel = WidgetFactory.makeHTMLLabel(
                         /*"<b>Select a user or group from the list below:</b>"*/
-                        "<b>" + Language.getInstance().getMessage("AccessPage.SelectUser") + " :</b>"   
+                        "<b>" + Language.getInstance().getMessage("AccessPage.SelectUser") + ":</b>"   
                             , 1);
         JPanel topOfMiddle = new JPanel();
         topOfMiddle.setLayout(new BoxLayout(topOfMiddle, BoxLayout.Y_AXIS));
@@ -1206,7 +1205,7 @@ public class AccessPage
       int[] i = treeTable.getSelectedRows();
       if (i.length == 0) {
         warnLabel.setText(/*"Warning: Invalid input. Please make a selection."*/
-                  Language.getInstance().getMessage("Warning") + " : "
+                  Language.getInstance().getMessage("Warning") + ": "
                   + Language.getInstance().getMessage("AccessPage.InvalidInput_1") + "! "
                   + Language.getInstance().getMessage("AccessPage.InvalidInput_2")
                   );
@@ -1238,7 +1237,7 @@ public class AccessPage
         } else {
           warnLabel.setText(
               /*"Warning: Invalid input. Please select a user or a group."*/
-            Language.getInstance().getMessage("Warning") + " : "
+            Language.getInstance().getMessage("Warning") + ": "
             + Language.getInstance().getMessage("AccessPage.InvalidInput_1") + " "
             + Language.getInstance().getMessage("AccessPage.InvalidInput_3")
             );
@@ -1255,7 +1254,7 @@ public class AccessPage
       } else {
         warnLabel.setText(
             /*"Warning: Distinguished Name field can not be empty."*/
-          Language.getInstance().getMessage("Warning") + " : "
+          Language.getInstance().getMessage("Warning") + ": "
           + Language.getInstance().getMessage("DistinguishedName") + " "
           + Language.getInstance().getMessage("AccessPage.DistinguishedNameEmpty") 
           );
