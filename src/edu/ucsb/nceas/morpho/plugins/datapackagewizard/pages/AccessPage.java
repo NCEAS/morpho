@@ -685,8 +685,9 @@ public class AccessPage
     JPanel panel = null;
     
     panel = WidgetFactory.makePanel(1);
+    Dimension dim = null;
     JLabel dnLabel = WidgetFactory.makeLabel(/*"Distinguished Name"*/ Language.getInstance().getMessage("DistinguishedName"),
-     										false);
+     										false, dim);
     panel.add(dnLabel);
     dnField = WidgetFactory.makeOneLineTextField();
     dnField.setBackground(java.awt.Color.white);
