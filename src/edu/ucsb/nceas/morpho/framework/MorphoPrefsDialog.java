@@ -42,6 +42,7 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -63,7 +64,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 /**
  * A simple Morpho Preferences Dialog
  */
-public class MorphoPrefsDialog extends javax.swing.JDialog
+public class MorphoPrefsDialog extends JDialog
 {
 
   Morpho morpho;
@@ -77,11 +78,11 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		setSize(600, 400);
 		setVisible(false);
-		CenterPanel.setLayout(new GridLayout(8, 1, 0, 0));
+		centerPanel.setLayout(new GridLayout(8, 1, 0, 0));
 		
 		// tabbed center panel
 		JTabbedPane tabbedCenterPane = new JTabbedPane();
-		tabbedCenterPane.addTab(Language.getInstance().getMessage("General"), CenterPanel);
+		tabbedCenterPane.addTab(Language.getInstance().getMessage("General"), centerPanel);
 		tabbedCenterPane.addTab(Language.getInstance().getMessage("Advanced"), advancedPanel);
 
 		getContentPane().add(BorderLayout.CENTER, tabbedCenterPane);
@@ -89,7 +90,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		aboutLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		aboutLabel.setText(Language.getInstance().getMessage("MorphoPreferences"));
 		aboutLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-		CenterPanel.add(aboutLabel);
+		centerPanel.add(aboutLabel);
 		
 		// the CN URL
 		JPanel cnPanel = WidgetFactory.makePanel();
@@ -114,9 +115,9 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		cnPanel.add(coordinatingNodeURLTextField);
 		advancedPanel.add(cnPanel);
 		
+		// the client certificate location
 		JPanel certificatePanel = WidgetFactory.makePanel();
 		certificatePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
 		JLabel certificateLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("ClientCertificate"), false, null);
 		certificatePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		certificatePanel.add(certificateLabel);
@@ -133,66 +134,56 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		
 		memberNodeComboBox.setEditable(true);
 		//memberNodeComboBox.setRenderer(new NodeListCellRenderer());
-		memberNodeURLLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
-		memberNodeURLLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		memberNodeURLLabel.setText(Language.getInstance().getMessage("MemberNodeURL"));
-		memberNodeURLLabel.setForeground(java.awt.Color.black);
-		memberNodeURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		JLabel memberNodeURLLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("MemberNodeURL"), false, null);
 		mnSelectionPanel.add(memberNodeURLLabel);
 		mnSelectionPanel.add(memberNodeComboBox);
-		CenterPanel.add(mnSelectionPanel);
+		centerPanel.add(mnSelectionPanel);
 
-		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		CenterPanel.add(JPanel3);
-		loggingLabel.setText(Language.getInstance().getMessage("LogMessages"));
-		JPanel3.add(loggingLabel);
-		loggingLabel.setForeground(java.awt.Color.black);
-		loggingLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		jPanel3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		centerPanel.add(jPanel3);
+		JLabel loggingLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("LogMessages"), false, null);
+		jPanel3.add(loggingLabel);
 		logYes.setText("yes");
-		JPanel3.add(logYes);
+		jPanel3.add(logYes);
 		logNo.setText("no");
 		logNo.setSelected(true);
-		JPanel3.add(logNo);
-		JPanel4.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		CenterPanel.add(JPanel4);
-		debugLevelLabel.setText(Language.getInstance().getMessage("DebugLevel") + " (1-100)");
-		JPanel4.add(debugLevelLabel);
-		debugLevelLabel.setForeground(java.awt.Color.black);
-		debugLevelLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		jPanel3.add(logNo);
+		jPanel4.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		centerPanel.add(jPanel4);
+		JLabel debugLevelLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("DebugLevel") + " (1-100)", false, null);
+		jPanel4.add(debugLevelLabel);
 		debugLevelTextField.setColumns(5);
-		JPanel4.add(debugLevelTextField);
+		jPanel4.add(debugLevelTextField);
 
-		JPanel5.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		CenterPanel.add(JPanel5);
-		LFLabel.setText(Language.getInstance().getMessage("LookandFeel"));
-		JPanel5.add(LFLabel);
-		LFLabel.setForeground(java.awt.Color.black);
-		LFLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JPanel5.add(LFCombo);
-		LFCombo.addItem("system L&F");
-		LFCombo.addItem("kunststoff L&F");
-		LFCombo.addItem("metal L&F");
-		LFCombo.addItem("windows L&F");
-		LFCombo.addItem("motif L&F");
-		LFCombo.setSelectedIndex(0);
+		jPanel5.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		centerPanel.add(jPanel5);
+		JLabel lookAndFeelLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("LookandFeel"), false, null);
+		jPanel5.add(lookAndFeelLabel);
+		jPanel5.add(lookAndFeelCombo);
+		lookAndFeelCombo.addItem("system L&F");
+		lookAndFeelCombo.addItem("kunststoff L&F");
+		lookAndFeelCombo.addItem("metal L&F");
+		lookAndFeelCombo.addItem("windows L&F");
+		lookAndFeelCombo.addItem("motif L&F");
+		lookAndFeelCombo.setSelectedIndex(0);
 
 		clearButton.setText(Language.getInstance().getMessage("ClearTemporaryStorage"));
-		JPanel6.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		JPanel6.add(clearButton);
-		CenterPanel.add(JPanel6);
+		jPanel6.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		jPanel6.add(clearButton);
+		centerPanel.add(jPanel6);
 
-		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		CenterPanel.add(JPanel1);
+		jPanel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		centerPanel.add(jPanel1);
 
-		ControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
+		controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		getContentPane().add(BorderLayout.SOUTH, controlPanel);
 		setButton.setText(/* "Set" */Language.getInstance().getMessage("Set"));
 		setButton.setActionCommand("OK");
 		setButton.setOpaque(false);
 		setButton.setMnemonic((int) 'O');
-		ControlPanel.add(setButton);
+		controlPanel.add(setButton);
 		cancelButton.setText(/* "Cancel" */Language.getInstance().getMessage("Cancel"));
-		ControlPanel.add(cancelButton);
+		controlPanel.add(cancelButton);
 		// }}
 
 		// {{REGISTER_LISTENERS
@@ -227,15 +218,15 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 
 		String lnf = config.get("lookAndFeel", 0);
 		if (lnf == null)
-			LFCombo.setSelectedIndex(0);
+			lookAndFeelCombo.setSelectedIndex(0);
 		else if (lnf.equalsIgnoreCase("kunststoff"))
-			LFCombo.setSelectedIndex(1);
+			lookAndFeelCombo.setSelectedIndex(1);
 		else if (lnf.equalsIgnoreCase("metal"))
-			LFCombo.setSelectedIndex(2);
+			lookAndFeelCombo.setSelectedIndex(2);
 		else if (lnf.equalsIgnoreCase("windows"))
-			LFCombo.setSelectedIndex(3);
+			lookAndFeelCombo.setSelectedIndex(3);
 		else if (lnf.equalsIgnoreCase("motif"))
-			LFCombo.setSelectedIndex(4);
+			lookAndFeelCombo.setSelectedIndex(4);
 	}
 
 	public void setVisible(boolean b) {
@@ -300,28 +291,24 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	}
 
 	// {{DECLARE_CONTROLS
-	JPanel CenterPanel = new JPanel();
+	JPanel centerPanel = new JPanel();
 	JLabel aboutLabel = new JLabel();
-	JPanel JPanel1 = new JPanel();
-	JPanel JPanel2 = new JPanel();
+	JPanel jPanel1 = new JPanel();
+	JPanel jPanel2 = new JPanel();
 	JPanel advancedPanel = new JPanel();
 	JTextField coordinatingNodeURLTextField = new JTextField();
-	JLabel memberNodeURLLabel = new JLabel();
 	JComboBox memberNodeComboBox = new JComboBox();
 	JTextField clientCertificateTextField = new JTextField();
-	JPanel JPanel3 = new JPanel();
-	JLabel loggingLabel = new JLabel();
+	JPanel jPanel3 = new JPanel();
 	JRadioButton logYes = new JRadioButton();
 	JRadioButton logNo = new JRadioButton();
-	JPanel JPanel4 = new JPanel();
-	JLabel debugLevelLabel = new JLabel();
+	JPanel jPanel4 = new JPanel();
 	JTextField debugLevelTextField = new JTextField();
-	JPanel JPanel5 = new JPanel();
-	JPanel JPanel6 = new JPanel();
-	JLabel LFLabel = new JLabel();
-	JComboBox LFCombo = new JComboBox();
+	JPanel jPanel5 = new JPanel();
+	JPanel jPanel6 = new JPanel();
+	JComboBox lookAndFeelCombo = new JComboBox();
 
-	JPanel ControlPanel = new JPanel();
+	JPanel controlPanel = new JPanel();
 	JButton setButton = new JButton();
 	JButton cancelButton = new JButton();
 	JButton clearButton = new JButton();
@@ -396,15 +383,15 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		}
 
 		String lnf = "";
-		if (LFCombo.getSelectedIndex() == 0) {
+		if (lookAndFeelCombo.getSelectedIndex() == 0) {
 			lnf = "";
-		} else if (LFCombo.getSelectedIndex() == 1) {
+		} else if (lookAndFeelCombo.getSelectedIndex() == 1) {
 			lnf = "kunststoff";
-		} else if (LFCombo.getSelectedIndex() == 2) {
+		} else if (lookAndFeelCombo.getSelectedIndex() == 2) {
 			lnf = "metal";
-		} else if (LFCombo.getSelectedIndex() == 3) {
+		} else if (lookAndFeelCombo.getSelectedIndex() == 3) {
 			lnf = "windows";
-		} else if (LFCombo.getSelectedIndex() == 4) {
+		} else if (lookAndFeelCombo.getSelectedIndex() == 4) {
 			lnf = "motif";
 		}
 		config.set("lookAndFeel", 0, lnf);
