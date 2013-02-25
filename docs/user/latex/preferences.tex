@@ -3,7 +3,9 @@
 Use Morpho preferences to select a DataONE
 Member Node, customize the look and feel
 of the application, and adjust settings that affect logging and
-debugging. The advanced tab allows you set a DataONE Coordinating Node. 
+debugging. The advanced tab allows you set a DataONE Coordinating Node 
+and import a client certificate for identity providers who do not 
+yet support authentication within Morpho. 
 Select ``Set preferences...'' under the File menu to open the
 Morpho Preferences screen (\autoref{fig:dialog-preferences}).
 
@@ -48,9 +50,23 @@ drive space, you may wish to use this option. Note that when you clear
 the cache, Morpho must re-download each data set the next time you
 require it.
 
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/dialog-preferences-advanced.png}
+  \caption{Advanced Morpho Preferences}
+  \label{fig:dialog-preferences-advanced}
+\end{figure}
+
 \paragraph{Coordinating Node URL} The Coordinating Node URL contains the URL 
 of the DataONE Coordinating Node that is instrumental in managing data replication, 
 user accounts, and other essential DataONE infrastructure requirements.
 where data are stored. By default, the Coordinating Node URL points to the
 production DataONE environment. Change the default only if you are testing a new feature or 
 are an advanced user.
+
+\paragraph{Client Certificate File} If your identity provider is not listed in 
+the authentication interface, you can import a client certificate to be used 
+for all communication with the Member Node and the Coordinating Node. Typically, users 
+will authenticate with their IdP from within Morpho, but not all CILogon identity providers 
+support this extended protocol (notably, Google). This value applies only to the profile in 
+use when it is set so that multiple profiles can use different client certificates as needed.
