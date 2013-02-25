@@ -49,6 +49,7 @@ import javax.activation.FileDataSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.dataone.client.D1Object;
+import org.dataone.client.ObjectFormatCache;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
@@ -70,7 +71,6 @@ import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
 import edu.ucsb.nceas.morpho.query.Query;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * implements and the DataStoreInterface for accessing files on the local
@@ -1365,6 +1365,26 @@ public class LocalDataStoreService extends DataStoreService
 			e.printStackTrace();
 			result = false;
 		}
+		
+		// try ORE if we can find it
+		String identifier = sysMeta.getIdentifier().getValue();
+		try {
+			String objectFormatType = ObjectFormatCache.getInstance().getFormat(sysMeta.getFormatId()).getFormatType();
+			if (objectFormatType.equalsIgnoreCase("METADATA")) {
+				String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier ;
+				SystemMetadata oreSystemMetadata = null;
+				oreSystemMetadata = this.getSystemMetadata(oreIdentifier);
+				
+				// set the access policy and save it
+				if (oreSystemMetadata != null) {
+					oreSystemMetadata.setReplicationPolicy(sysMeta.getReplicationPolicy());
+					result = result &&  this.setReplicationPolicy(oreSystemMetadata);
+				}
+			}
+		} catch (Exception e) {
+			Log.debug(20, "Could not find related ORE object for: " + identifier);
+			e.printStackTrace();
+		}
 		return result;
 	}
 
@@ -1381,6 +1401,26 @@ public class LocalDataStoreService extends DataStoreService
 			Log.debug(10, "Could not set Access Policy: " + e.getMessage());
 			e.printStackTrace();
 			result = false;
+		}
+		
+		// try ORE if we can find it
+		String identifier = sysMeta.getIdentifier().getValue();
+		try {
+			String objectFormatType = ObjectFormatCache.getInstance().getFormat(sysMeta.getFormatId()).getFormatType();
+			if (objectFormatType.equalsIgnoreCase("METADATA")) {
+				String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier ;
+				SystemMetadata oreSystemMetadata = null;
+				oreSystemMetadata = this.getSystemMetadata(oreIdentifier);
+				
+				// set the access policy and save it
+				if (oreSystemMetadata != null) {
+					oreSystemMetadata.setAccessPolicy(sysMeta.getAccessPolicy());
+					result = result &&  this.setAccessPolicy(oreSystemMetadata);
+				}
+			}
+		} catch (Exception e) {
+			Log.debug(20, "Could not find related ORE object for: " + identifier);
+			e.printStackTrace();
 		}
 		return result;
 	}
