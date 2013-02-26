@@ -21,6 +21,6 @@ java -version
 
 echo ----------------------------------
 
-java -Xmx512m -Xss1m -cp %CPATH% edu.ucsb.nceas.morpho.Morpho
+java -Xmx512m -Xss1m -cp %CPATH% edu.ucsb.nceas.morpho.Morpho .morpho2
 
 EndLocal

@@ -104,7 +104,7 @@
       <property name="morpho.docs.dev.api" value="${morpho.docs.dev}/api"/>
    	
 	<!-- override the morpho property for other builds -->
-   	<property name="morpho.args" value=""/>
+   	<property name="morpho.args" value=".morpho2"/>
    	   	
       <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine! This
 		   property will be used in buildwininstaller target. -->

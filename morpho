@@ -65,4 +65,4 @@ if [ -z "$CPATH" ]; then
 fi
 echo "Using dynamic classpath: $CPATH"
 
-"$JAVA_BIN" -Xmx512m -Xss1m -cp "$CPATH" edu.ucsb.nceas.morpho.Morpho
+"$JAVA_BIN" -Xmx512m -Xss1m -cp "$CPATH" edu.ucsb.nceas.morpho.Morpho .morpho2
