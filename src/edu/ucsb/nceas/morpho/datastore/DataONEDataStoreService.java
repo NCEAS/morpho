@@ -39,6 +39,7 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -112,6 +113,16 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
    */
   private MNode activeMNode = null;
   
+  /**
+   * ping interval for network status
+   * UI checks this very frequently, but it usually is not changing so rapidly
+   * Cache it to avoid unnecessary repeated calls
+   * @see getNetworkStatus() 
+   */
+  private boolean networkStatus = false;
+  private long pingInterval = 1000 * 30 ; // half minute
+  private Date lastPing = null;
+  
   
   /**
    * Constructor. It will create a member node from the configuration file.
@@ -175,6 +186,9 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	  
 	  // make sure the MNode reflects this change
 	  activeMNode = new MNode(nodeBaseServiceUrl);
+	  
+	  // reset ping status
+	  lastPing = null;
   }
   
   /**
@@ -996,18 +1010,25 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	
 	  /**
 	 * Determine whether a network connection is available
+	 * Calls to the MN are limited by the ping interval
+	 * to avoid superfluous calls to ping().
 	 * 
 	 * @return boolean true if the network is reachable
 	 */
 	public boolean getNetworkStatus() {
-		boolean networkStatus = false;
-		Date pingDate = null;
-		try {
-			pingDate = activeMNode.ping();
-		} catch (Exception e) {
-			Log.debug(30, "Could not ping MN + " + e.getMessage());
+		// only do this periodically
+		if (lastPing == null || lastPing.getTime() - System.currentTimeMillis() > pingInterval) {
+			Date pingDate = null;
+			try {
+			    String clientCertificateLocation = Morpho.thisStaticInstance.getProfile().get(ProfileDialog.D1_CLIENT_CERTIFICATE_LOCATION, 0);
+			    CertificateManager.getInstance().setCertificateLocation(clientCertificateLocation);
+				pingDate = activeMNode.ping();
+			} catch (Exception e) {
+				Log.debug(30, "Could not ping MN: " + e.getMessage());
+			}
+			networkStatus = (pingDate != null);
+			lastPing = Calendar.getInstance().getTime();
 		}
-		networkStatus = (pingDate != null);
 		return networkStatus;
 	}
  
