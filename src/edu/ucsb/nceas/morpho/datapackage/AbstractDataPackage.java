@@ -2870,7 +2870,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
       boolean val = xobj.bool();
       if (val) {
-        return "text";
+        return "text/plain";
       }
       // not text, try another xpath
       physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
