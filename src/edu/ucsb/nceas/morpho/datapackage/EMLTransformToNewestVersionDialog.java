@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import org.dataone.service.types.v1.Identifier;
+import org.dataone.service.types.v1.SystemMetadata;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -134,6 +135,7 @@ public class EMLTransformToNewestVersionDialog
 				//TODO transform the datapakcage to the newest version
 				String newString = null;
 				boolean hasError = false;
+				SystemMetadata sysMeta = eml200Package.getSystemMetadata();
 				try
 				{
 				    newString = eml200Package.transformToLastestEML();
@@ -150,7 +152,8 @@ public class EMLTransformToNewestVersionDialog
 		            {
 						Vector errorPathList = null;
 						eml200Package= (EML200DataPackage)DataPackageFactory.getDataPackage(new java.io.StringReader(newString));
-		                eml200Package.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+						eml200Package.setSystemMetadata(sysMeta);
+						eml200Package.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
 		                Morpho morpho = Morpho.thisStaticInstance;
 		                //AccessionNumber an = new AccessionNumber(morpho);
 		                //String newid = an.incRev(id);
@@ -160,7 +163,6 @@ public class EMLTransformToNewestVersionDialog
 		                String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 		                String newId = Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
 		                eml200Package.setAccessionNumber(newId);
-		                
 		                MorphoDataPackage mdp = new MorphoDataPackage();
 	                    mdp.setAbstractDataPackage(eml200Package);
 		                 if(hasError)
