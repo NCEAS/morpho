@@ -11,8 +11,8 @@
   <plugin>edu.ucsb.nceas.morpho.plugins.printer.PrinterPlugin</plugin>
   <plugin>edu.tesc.scidb.morpho.plugins.ImportMSAccessPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.vocabulary.VocabularyPlugin</plugin>
-  <dataone_cnode_baseurl>https://cn.dataone.org/cn</dataone_cnode_baseurl>  
-  <dataone_mnode_baseurl>https://mn-demo-5.test.dataone.org/knb/d1/mn</dataone_mnode_baseurl>
+  <dataone_cnode_baseurl>https://cn-stage-2.test.dataone.org/cn</dataone_cnode_baseurl>  
+  <dataone_mnode_baseurl>https://mn-demo-9.test.dataone.org/knb/d1/mn</dataone_mnode_baseurl>
   <profile_directory>profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>
   <userguide>docs/user/latex/MorphoUserGuide.pdf</userguide>
