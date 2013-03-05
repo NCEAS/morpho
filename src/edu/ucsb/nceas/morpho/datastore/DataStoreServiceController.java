@@ -769,6 +769,12 @@ public class DataStoreServiceController {
                 if(Morpho.thisStaticInstance.getLocalDataStoreService().exists(originalId)) {
                     adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
                     Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalId);
+                } else {
+                    if (location.equals(DataPackageInterface.LOCAL) && Morpho.thisStaticInstance.getDataONEDataStoreService().exists(originalId)) {
+                        //this is the case that we save a network copy to local. Even though the original document doesn't exist, we still
+                        //set the system metadata. But we don't set the value to the revision manager.
+                        adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
+                    }
                 }
                 
             }
