@@ -34,8 +34,10 @@ import java.io.StringReader;
 import java.util.Vector;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -55,6 +57,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SaveEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
@@ -97,11 +100,12 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	MorphoDataPackage mdp = null;
 	
 	SaveEvent saveEvent = null;
+	JComboBox identifierScheme = null;
 	
 	private static final String BOTHFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("FailureSavingTo") + " " +  DataPackageInterface.BOTH;
 	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " " + DataPackageInterface.LOCAL + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.NETWORK;
 	private static final String LOCALFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " "  + DataPackageInterface.NETWORK + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.LOCAL;
-
+    private static final String IDENTIFIERSCHEME = "Identifier Scheme:";
 	/**
 	 * Construct a new instance of the dialog where parent is morphoframe
 	 * 
@@ -150,24 +154,24 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 				Box.createHorizontalStrut(PADDINGWIDTH));
 		getContentPane().add(BorderLayout.WEST,
 				Box.createHorizontalStrut(PADDINGWIDTH));
+		
+		// Create note box and add it to the north of mainPanel
+        Box noteBox = Box.createVerticalBox();
+        noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
+        JLabel note = WidgetFactory.makeHTMLLabel(WARNING, 2);
+        /*
+         * JTextArea note = new JTextArea(WARNING); note.setEditable(false);
+         * note.setLineWrap(true); note.setWrapStyleWord(true);
+         * note.setOpaque(false);
+         */
+        noteBox.add(note);
+        noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
+        getContentPane().add(BorderLayout.NORTH, noteBox);
 
 		// Create JPanel and set it border layout
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout(0, 0));
-
-		// Create note box and add it to the north of mainPanel
-		Box noteBox = Box.createVerticalBox();
-		noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
-		JLabel note = WidgetFactory.makeHTMLLabel(WARNING, 2);
-		/*
-		 * JTextArea note = new JTextArea(WARNING); note.setEditable(false);
-		 * note.setLineWrap(true); note.setWrapStyleWord(true);
-		 * note.setOpaque(false);
-		 */
-		noteBox.add(note);
-		noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
-		mainPanel.add(BorderLayout.NORTH, noteBox);
-
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.add(Box.createVerticalStrut(25));
 		// Create a radio box
 		Box radioBox = Box.createVerticalBox();
 		radioBox.add(localLoc);
@@ -180,10 +184,23 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		centerBox.add(Box.createHorizontalGlue());
 		centerBox.add(radioBox);
 		centerBox.add(Box.createHorizontalGlue());
-		mainPanel.add(BorderLayout.CENTER, centerBox);
+		mainPanel.add(centerBox);
+		Box schemeBox = Box.createHorizontalBox();
+        identifierScheme = new JComboBox(DataStoreServiceController.IDENTIFIER_SCHEMES);
+        identifierScheme.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+        //schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
+        JLabel schemes = new JLabel(IDENTIFIERSCHEME);
+        schemes.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+        schemeBox.add(schemes);
+        schemeBox.add(identifierScheme);
+        //schemeBox.add(Box.createHorizontalGlue());
+        mainPanel.add(schemeBox);
 
 		// Finish mainPanel and add it the certer of contentpanel
 		getContentPane().add(BorderLayout.CENTER, mainPanel);
+		
+		
+		
 
 		// Create bottom box
 		Box bottomBox = Box.createVerticalBox();
