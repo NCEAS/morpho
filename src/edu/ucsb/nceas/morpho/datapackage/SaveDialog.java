@@ -103,8 +103,9 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	MorphoDataPackage mdp = null;
 	
 	SaveEvent saveEvent = null;
-	private JComboBox identifierScheme = null;
+	private JComboBox identifierSchemeComboBox = null;
 	private Box schemeBox = null;
+	private String identifierScheme = null;
 	
 	private static final String BOTHFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("FailureSavingTo") + " " +  DataPackageInterface.BOTH;
 	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " " + DataPackageInterface.LOCAL + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.NETWORK;
@@ -137,11 +138,11 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	    networkLoc.addItemListener( new ItemListener() {
 	            public void itemStateChanged (ItemEvent e) {
 	                if(e.getStateChange() == ItemEvent.SELECTED) {
-	                    identifierScheme.addItem(DataStoreServiceController.DOI);
+	                    identifierSchemeComboBox.addItem(DataStoreServiceController.DOI);
 	                    schemeBox.revalidate();
 	                    schemeBox.repaint();
 	                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-	                    identifierScheme.removeItem(DataStoreServiceController.DOI);
+	                    identifierSchemeComboBox.removeItem(DataStoreServiceController.DOI);
 	                    schemeBox.revalidate();
                         schemeBox.repaint();
 	                }
@@ -207,13 +208,13 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		centerBox.add(Box.createHorizontalGlue());
 		mainPanel.add(centerBox);
 		schemeBox = Box.createHorizontalBox();
-        identifierScheme = new JComboBox(DataStoreServiceController.INITIAL_IDENTIFIER_SCHEMES);
-        identifierScheme.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+        identifierSchemeComboBox = new JComboBox(DataStoreServiceController.INITIAL_IDENTIFIER_SCHEMES);
+        identifierSchemeComboBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
         //schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
         JLabel schemes = new JLabel(IDENTIFIERSCHEME);
         schemes.setFont(WizardSettings.WIZARD_CONTENT_FONT);
         schemeBox.add(schemes);
-        schemeBox.add(identifierScheme);
+        schemeBox.add(identifierSchemeComboBox);
         //schemeBox.add(Box.createHorizontalGlue());
         mainPanel.add(schemeBox);
 
@@ -310,6 +311,11 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	}
 
 	void executeButton_actionPerformed(java.awt.event.ActionEvent event) {
+	    identifierScheme = (String)identifierSchemeComboBox.getSelectedItem();
+	    if(identifierScheme == null || identifierScheme.trim().equals("")) {
+	        identifierScheme = DataStoreServiceController.UUID;
+	    }
+	    //System.out.println("the selected scheme is ====== "+identifierScheme);
 		Component comp = morphoFrame.getContentComponent();
 		if (comp instanceof DataViewContainerPanel) {
 			((DataViewContainerPanel) comp).saveDataChanges();
