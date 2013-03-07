@@ -67,6 +67,7 @@ public class DataStoreServiceController {
 	public static final String DOI = "DOI";
 	public static final String UUID = "UUID";
 	public static final String[] IDENTIFIER_SCHEMES = {UUID, DOI};
+	public static final String[] INITIAL_IDENTIFIER_SCHEMES = {UUID};
 
 	private static DataStoreServiceController instance;
 	

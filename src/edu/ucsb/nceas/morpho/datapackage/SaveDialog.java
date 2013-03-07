@@ -29,6 +29,8 @@ package edu.ucsb.nceas.morpho.datapackage;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Window;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Vector;
@@ -58,6 +60,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SaveEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
@@ -100,7 +103,8 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	MorphoDataPackage mdp = null;
 	
 	SaveEvent saveEvent = null;
-	JComboBox identifierScheme = null;
+	private JComboBox identifierScheme = null;
+	private Box schemeBox = null;
 	
 	private static final String BOTHFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("FailureSavingTo") + " " +  DataPackageInterface.BOTH;
 	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " " + DataPackageInterface.LOCAL + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.NETWORK;
@@ -126,6 +130,23 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 
 	/** Method to initialize save dialog */
 	private void initialize(Window parent) {
+	    
+	    // add an item listener to the the network check box.
+	    //if the network check box is selected, the DOI will be added to the scheme selection list.
+	    //if the network check box is unselected, the DOI will be removed from the scheme selection list.
+	    networkLoc.addItemListener( new ItemListener() {
+	            public void itemStateChanged (ItemEvent e) {
+	                if(e.getStateChange() == ItemEvent.SELECTED) {
+	                    identifierScheme.addItem(DataStoreServiceController.DOI);
+	                    schemeBox.revalidate();
+	                    schemeBox.repaint();
+	                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+	                    identifierScheme.removeItem(DataStoreServiceController.DOI);
+	                    schemeBox.revalidate();
+                        schemeBox.repaint();
+	                }
+	        }
+	    });
 		// Set OpenDialog size depent on parent size
 		int parentWidth = parent.getWidth();
 		int parentHeight = parent.getHeight();
@@ -185,8 +206,8 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		centerBox.add(radioBox);
 		centerBox.add(Box.createHorizontalGlue());
 		mainPanel.add(centerBox);
-		Box schemeBox = Box.createHorizontalBox();
-        identifierScheme = new JComboBox(DataStoreServiceController.IDENTIFIER_SCHEMES);
+		schemeBox = Box.createHorizontalBox();
+        identifierScheme = new JComboBox(DataStoreServiceController.INITIAL_IDENTIFIER_SCHEMES);
         identifierScheme.setFont(WizardSettings.WIZARD_CONTENT_FONT);
         //schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
         JLabel schemes = new JLabel(IDENTIFIERSCHEME);
