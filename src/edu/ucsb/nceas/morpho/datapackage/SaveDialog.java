@@ -424,7 +424,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
             if ((localLoc.isSelected()) && (localLoc.isEnabled())
                     && (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
                 try {
-                    DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.BOTH);
+                    DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.BOTH, identifierScheme);
                 } catch (Exception mue) {
                     // TODO: More informative?
                     String errormsg = mue.getMessage();
@@ -448,7 +448,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
                 }
             // LOCAL
             } else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
-                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL);
+                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL, identifierScheme);
                 if (adp.getSerializeLocalSuccess()) {
                     if (adp.getLocation() != null
               && adp.getLocation().equals(DataPackageInterface.NETWORK)
@@ -463,7 +463,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
                 }
             // METACAT
             } else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.NETWORK);
+                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.NETWORK, identifierScheme);
                 if (adp.getSerializeMetacatSuccess()) {           
                   if (adp.getLocation() != null
                 && adp.getLocation().equals(DataPackageInterface.LOCAL)

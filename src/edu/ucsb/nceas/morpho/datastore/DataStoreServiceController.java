@@ -720,11 +720,22 @@ public class DataStoreServiceController {
 	 * serialize the package to the indicated location
 	 * @param mdp
 	 * @param location
+	 * @param scheme
 	 * @throws Exception 
 	 */
-	public void save(MorphoDataPackage mdp, String location) throws Exception {
-		save(mdp, location, false);
+	public void save(MorphoDataPackage mdp, String location, String scheme) throws Exception {
+		save(mdp, location, false, scheme);
 	}
+	
+	/**
+     * serialize the package to the indicated location
+     * @param mdp
+     * @param location
+     * @throws Exception 
+     */
+    public void save(MorphoDataPackage mdp, String location) throws Exception {
+        save(mdp, location, false, UUID);
+    }
 	
 	/**
 	 * serialize the package to the indicated location
@@ -732,16 +743,17 @@ public class DataStoreServiceController {
 	 * @param adp
 	 * @param location
 	 * @param overwrite -- can bypass the id conflict for local saves - consider removing!!
+	 * @param scheme  the scheme of the new generated identifiers
 	 * @throws Exception 
 	 */
-	public void save(MorphoDataPackage mdp, String location, boolean overwrite) throws Exception {
+	public void save(MorphoDataPackage mdp, String location, boolean overwrite, String scheme) throws Exception {
 	    
 	    
 	    //assign new id to a modified data package for the saving
         AbstractDataPackage adp = mdp.getAbstractDataPackage();
         if(adp.getLocation().equals(DataPackageInterface.TEMPLOCATION) && !location.equals(DataPackageInterface.INCOMPLETE)) {
             String originalId = adp.getAccessionNumber();
-            String scheme = UUID;
+            //String scheme = UUID;
             String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
             String newIdentifier = null;
             if(location.equals(DataPackageInterface.BOTH) || location.equals(DataPackageInterface.NETWORK) ) {
@@ -785,7 +797,7 @@ public class DataStoreServiceController {
         
         
 		// handle identifier conflicts
-		mdp = resolveAllIdentifierConflicts(mdp, location);
+		mdp = resolveAllIdentifierConflicts(mdp, location, scheme);
 		
 		// make sure the size and checksum are correct
 		calculateStats(mdp, location);
@@ -888,11 +900,11 @@ public class DataStoreServiceController {
 
 	}
 	
-	private String resolveIdentifierConflict(String originalIdentifier, String location) throws Exception {
+	private String resolveIdentifierConflict(String originalIdentifier, String location, String scheme) throws Exception {
 
 		String newIdentifier = originalIdentifier;
 		// TODO provide these from input?
-		String scheme = UUID;
+		//String scheme = UUID;
 		String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
 		boolean local = false;
 		boolean network = false;
@@ -926,11 +938,11 @@ public class DataStoreServiceController {
 	 * @param mdp
 	 * @param location
 	 */
-	private MorphoDataPackage resolveAllIdentifierConflicts(MorphoDataPackage mdp, String location) throws Exception {
+	private MorphoDataPackage resolveAllIdentifierConflicts(MorphoDataPackage mdp, String location, String scheme) throws Exception {
 
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		String originalIdentifier = adp.getAccessionNumber();
-		String newIdentifier = resolveIdentifierConflict(originalIdentifier, location);
+		String newIdentifier = resolveIdentifierConflict(originalIdentifier, location, scheme);
 		
 		// update the package to use new id if we need to
 		if (!newIdentifier.equals(originalIdentifier)) {
@@ -976,7 +988,7 @@ public class DataStoreServiceController {
 						// TODO: what about new packages?
 						if (isDirty) {
 							// see what the next identifier should be
-							String newDataIdentifier = resolveIdentifierConflict(originalDataIdentifier, location);
+							String newDataIdentifier = resolveIdentifierConflict(originalDataIdentifier, location, scheme);
 							
 							// update the docid if a change is needed
 							if (!originalDataIdentifier.equals(newDataIdentifier)) {
