@@ -910,7 +910,13 @@ public class DataStoreServiceController {
 		boolean network = false;
 		if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
 			network = Morpho.thisStaticInstance.getDataONEDataStoreService().exists(originalIdentifier);
+			//here has a special scenario - even though the id doesn't exist, but it is not a DOI and the user
+			//require the format should be DOI, we will generate a new DOI for it.
+			if(!network && !isDOI(originalIdentifier) && scheme != null && scheme.equals(DOI)) {
+			    network = true;
+			}
 		}
+		
 		if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
 			local = Morpho.thisStaticInstance.getLocalDataStoreService().exists(originalIdentifier);
 		}
@@ -931,6 +937,17 @@ public class DataStoreServiceController {
 		}
 		
 		return newIdentifier;
+	}
+	
+	/*
+	 * Is the format of the specified id DOI?
+	 */
+	private boolean isDOI(String identifier) {
+	    boolean isDOI = false;
+	    if(identifier != null && identifier.startsWith(DOI)) {
+	        isDOI= true;
+	    }
+	    return isDOI;
 	}
 	
 	/**
@@ -970,6 +987,7 @@ public class DataStoreServiceController {
 		}
 		
 		// handle the data files
+		
 		if (adp.getEntityArray() != null) {
 
 			for (int i = 0; i < adp.getEntityArray().length; i++) {
@@ -980,6 +998,18 @@ public class DataStoreServiceController {
 
 					String originalDataIdentifier = AbstractDataPackage.getUrlInfo(URLinfo);
 					Log.debug(30, "handle data file  with index " + i + "" + originalDataIdentifier);
+					
+					if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
+			            //here has a special scenario - even though the entity is not dirty, but its id is not a DOI and the user
+			            //require the format of the id should be DOI, we set the entity dirty
+			            if(!isDOI(originalIdentifier) && scheme != null && scheme.equals(DOI)) {
+			               boolean dirty = adp.containsDirtyEntityIndex(i);
+			               if(!dirty) {
+			                   adp.addDirtyEntityIndex(i);
+			               }
+			            }
+			        }
+					//if 
 					if (originalDataIdentifier != null) {
 						boolean isDirty = adp.containsDirtyEntityIndex(i);
 						Log.debug(30, "url " + originalDataIdentifier + " with index " + i + " is dirty " + isDirty);
