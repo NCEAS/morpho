@@ -28,7 +28,7 @@ Morpho's main features include:
 
 **************************************************
 
-Further documentation is available under the help menu in Morpho (after it has been installed), or in the "docs"subdirectory of the Morpho installation (after it has been installed), or on the KNB website  (http://knb.ecoinformatics.org/software/morpho/).
+Further documentation is available under the help menu in Morpho (after it has been installed), or in the "docs" subdirectory of the Morpho installation (after it has been installed), or on the KNB website  (http://knb.ecoinformatics.org/software/morpho/).
 
 INSTALLATION
 ------------
@@ -37,7 +37,7 @@ Windows may get confused when there are multiple versions of Morpho installed, s
 Note, however, that previously created data packages will NOT be deleted because they are stored in a separate directory. Older packages will contnue to be available when new versions of Morpho are installed.
 
 2. Download a JVM if necessary. 
-Morpho and the installers are Java applications. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine that will install and run Morpho, preferably  version 1.5 or later.  If you don't have JVM on the machine, the installers will help you to get one from the Internet.
+Morpho and the installers are Java applications. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine that will install and run Morpho, version 1.6 or later.
 
 3. Run the installer.
 Download and run the installation executable. This process will be different depending on your operating system. For windows and mac, simply double-click on the executable file that you downloaded. For Linux, run the following command from a terminal window: java -jar morpho-1.8.0-linux.jar
@@ -54,7 +54,7 @@ Once Morpho has been installed, it can be launched using a shortcut, as follows:
 
 If this is the first time you have launched Morpho, you will see a "New Profile" dialog box.  Profiles are Morpho's way of keeping your data separate from other people's data on your computer in case more than one person uses Morpho on your computer.  Simply fill in the forms and the profile will be created for you.
 
-When asked for information about your KNB Metacat account, simply fill in your username and organization from your KNB account.  If you do not have a  KNB account you can get one at the KNB website (http://knb.ecoinformatics.org) by filling out a simple registration form.  This account allows you to  collaborate with other researchers and share and exchange data securely.
+If you do not have a KNB account you can get one at the KNB website (http://knb.ecoinformatics.org).  This account allows you to collaborate with other researchers and share and exchange data securely.
 
 Further help information, including a tutorial, can be found in the Morpho "Help..." menu once you can see the main screen. [You can also use a browser to open the file "index.html" which is in the "docs/user/" subdirectory.]
 
