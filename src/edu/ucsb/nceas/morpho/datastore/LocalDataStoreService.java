@@ -81,7 +81,7 @@ public class LocalDataStoreService extends DataStoreService
 {
 	public final static String INCOMPLETEDIR = "incomplete";
 	
-	private static final String UUID_PREFIX = "urn:uuid:";
+	public static final String UUID_PREFIX = "urn:uuid:";
 
 	
 	// store the map between new data id and old data id

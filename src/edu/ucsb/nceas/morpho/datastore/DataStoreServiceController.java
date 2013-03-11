@@ -912,7 +912,7 @@ public class DataStoreServiceController {
 			network = Morpho.thisStaticInstance.getDataONEDataStoreService().exists(originalIdentifier);
 			//here has a special scenario - even though the id doesn't exist, but it is not a DOI and the user
 			//require the format should be DOI, we will generate a new DOI for it.
-			if(!network && !isDOI(originalIdentifier) && scheme != null && scheme.equals(DOI)) {
+			if(!network && !isIdentifierMatchScheme(originalIdentifier, scheme)) {
 			    network = true;
 			}
 		}
@@ -942,13 +942,47 @@ public class DataStoreServiceController {
 	/*
 	 * Is the format of the specified id DOI?
 	 */
-	private boolean isDOI(String identifier) {
+	/*private boolean isDOI(String identifier) {
 	    boolean isDOI = false;
 	    if(identifier != null && identifier.startsWith(DOI)) {
 	        isDOI= true;
 	    }
 	    return isDOI;
-	}
+	}*/
+	
+	/**
+	* Is the specified id in the format of the given scheme.
+	* ToDo: we need to figure out the rules. Now we only compare the uuid format.
+	* @param identifier  the specified id
+	* @param scheme  the specified identifier scheme
+	* @return true if the specified is in the format of the given scheme.
+	*/
+	private boolean isIdentifierMatchScheme(String identifier, String scheme) {
+	    boolean match = false;
+	    if(scheme != null && identifier != null) {
+	        if (scheme.equals(UUID) && identifier.startsWith(LocalDataStoreService.UUID_PREFIX)) {
+	            match = true;
+	        }
+	    }
+	    //System.out.println("the match is ===================== "+match);
+	    return match;
+	}	
+	
+	
+	/**
+	 * If the specified scheme a published scheme. Now we only consider DOI is the 
+	 * published scheme. We may need to add more.
+	 * @param scheme
+	 * @return
+	 */
+	/*private boolean isPublishedScheme(String scheme) {
+	    if(scheme != null && scheme.equals(DOI)) {
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}*/
+
 	
 	/**
 	 * 
@@ -1002,7 +1036,7 @@ public class DataStoreServiceController {
 					if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
 			            //here has a special scenario - even though the entity is not dirty, but its id is not a DOI and the user
 			            //require the format of the id should be DOI, we set the entity dirty
-			            if(!isDOI(originalIdentifier) && scheme != null && scheme.equals(DOI)) {
+			            if(!isIdentifierMatchScheme(originalIdentifier, scheme)) {
 			               boolean dirty = adp.containsDirtyEntityIndex(i);
 			               if(!dirty) {
 			                   adp.addDirtyEntityIndex(i);
