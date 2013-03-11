@@ -110,7 +110,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	private static final String BOTHFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("FailureSavingTo") + " " +  DataPackageInterface.BOTH;
 	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " " + DataPackageInterface.LOCAL + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.NETWORK;
 	private static final String LOCALFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " "  + DataPackageInterface.NETWORK + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.LOCAL;
-    private static final String IDENTIFIERSCHEME = "Identifier Scheme:";
+    private static final String IDENTIFIERSCHEME = Language.getInstance().getMessage("SaveDialog.IdentifierScheme")+":";
 	/**
 	 * Construct a new instance of the dialog where parent is morphoframe
 	 * 
