@@ -483,6 +483,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
                 // don't refresh the screen - nothing has been done
                 problem = true;
             }
+            adp.setPackageIDChanged(false);//reset the value.
         } catch (Exception mue) {
             // TODO: More informative?
             String errormsg = mue.getMessage();
