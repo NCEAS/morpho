@@ -269,11 +269,13 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 			networkLoc.setEnabled(false);
 			localLoc.setSelected(true);
 			networkLoc.setSelected(false);
+			schemeBox.setVisible(false);
 		} else if (location.equals(DataPackageInterface.BOTH)) {
 			localLoc.setEnabled(false);
 			networkLoc.setEnabled(false);
 			localLoc.setSelected(false);
 			networkLoc.setSelected(false);
+			schemeBox.setVisible(false);
 		}
 
 		try {
