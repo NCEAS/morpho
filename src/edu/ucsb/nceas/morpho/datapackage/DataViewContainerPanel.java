@@ -848,35 +848,23 @@ public void setTopPanel(JPanel jp) {
           }
         } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
           // this is the case where there is a url link to the data
-          String urlinfo = adp.getDistributionUrl(index, 0,0);
-          // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
-          // protocol is probably 'ecogrid'; system name is 'knb'
-          // we just want the local id here
-          int indx2 = urlinfo.indexOf("//");
-          String protocol = urlinfo.substring(0,indx2);
+          String urlInfo = adp.getDistributionUrl(index, 0,0);
+          String protocol = AbstractDataPackage.getUrlProtocol(urlInfo);
           if (protocol.startsWith(AbstractDataPackage.ECOGRID)) {
-            if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
-            // now start should be just past the '//'
-            indx2 = urlinfo.indexOf("/");
-            if (indx2>-1) urlinfo = urlinfo.substring(indx2+1);
-            //now should be past the system name
-            indx2 = urlinfo.indexOf("/");
-            if (indx2>-1) urlinfo = urlinfo.substring(0,indx2);
-            // should have trimmed 'other'
-            if (urlinfo.length()==0) return;
-            // if we reach here, urlinfo should be the id in a string
-            dataId = urlinfo;
+              dataId = AbstractDataPackage.getUrlInfo(urlInfo);
+            if (dataId == null || dataId.trim().equals("")) return;
+            
             try{
               String loc = adp.getLocation();
               if (loc.equals(DataPackageInterface.LOCAL) || loc.equals(DataPackageInterface.BOTH) || loc.equals(DataPackageInterface.NETWORK)) {
-                displayFile = DataStoreServiceController.getInstance().openFile(urlinfo, loc);
+                displayFile = DataStoreServiceController.getInstance().openFile(dataId, loc);
               }
               else if (loc.equals("")) {
             	  // try getting local sources first, then network
             	  try {
-            		  displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(urlinfo);
+            		  displayFile = Morpho.thisStaticInstance.getLocalDataStoreService().getDataFileFromAllLocalSources(dataId);
             	  } catch (Exception e) {
-                      displayFile = DataStoreServiceController.getInstance().openFile(urlinfo, DataPackageInterface.NETWORK);
+                      displayFile = DataStoreServiceController.getInstance().openFile(dataId, DataPackageInterface.NETWORK);
 				} 
               }
             }
@@ -886,7 +874,7 @@ public void setTopPanel(JPanel jp) {
             }
           }
           else if (protocol.equals("http:")) {
-            Log.debug(20, "urlinfo: "+urlinfo);
+            Log.debug(20, "urlinfo: "+urlInfo);
           }
           else {
             Log.debug(20, "protocol: "+protocol);

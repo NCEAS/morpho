@@ -3646,7 +3646,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 
   public static String getUrlInfo(String urlinfo) {
     //String urlinfo = getDistributionUrl(entityIndex, 0, 0);
-    // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
+    // assumed that urlinfo is of the form 'protocol://systemname/localid'
     // protocol is probably 'ecogrid'; system name is 'knb'
     // we just want the local id here
     int indx2 = urlinfo.indexOf("//");
@@ -3659,11 +3659,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     urlinfo = urlinfo.substring(indx2 + 1);
     //now should be past the system name
     }
-    indx2 = urlinfo.indexOf("/");
+    /*indx2 = urlinfo.indexOf("/");
     if (indx2 > -1) {
       urlinfo = urlinfo.substring(0, indx2);
       // should have trimmed 'other'
-    }
+    }*/
     if (urlinfo.length() == 0) {
       return "";
     }
