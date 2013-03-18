@@ -209,4 +209,59 @@ public class AccessPolicyConverter {
     	
 		return permissions;
     }
+    
+    /**
+     * Compare one access policy to a list of other policies
+     * @param mainPolicy
+     * @param otherPolicies
+     * @return true if and only if the main policy matches all the other policies
+     */
+    public static boolean policyMatch(AccessPolicy mainPolicy, List<AccessPolicy> otherPolicies) {
+    	try {
+	    	// loop through all the other policy blocks
+	    	for (AccessPolicy policy: otherPolicies) {
+	    		// compare to main policy allow rules
+	    		if (mainPolicy.getAllowList() != null) {
+	    			// check basics - size of list
+	    			if (mainPolicy.getAllowList().size() != policy.getAllowList().size()) {
+	    				return false;
+	    			}
+	    			int allowIndex = 0;
+	    			for (AccessRule mainAllow: mainPolicy.getAllowList()) {
+	    				// compare permission[s]
+	    				if (mainAllow.getPermissionList().size() != policy.getAllow(allowIndex).getPermissionList().size()) {
+	    					return false;
+	    				}
+						int permissionIndex = 0;
+	    				for (Permission mainPermission: mainAllow.getPermissionList()) {
+							if (!mainPermission.equals(policy.getAllow(allowIndex).getPermission(permissionIndex))) {
+	    						return false;
+	    					}
+							permissionIndex++;
+	    				}
+	    				// compare subject[s]
+	    				if (mainAllow.getSubjectList().size() != policy.getAllow(allowIndex).getSubjectList().size()) {
+	    					return false;
+	    				}
+						int subjectIndex = 0;;
+	    				for (Subject mainSubject: mainAllow.getSubjectList()) {
+							if (!mainSubject.equals(policy.getAllow(allowIndex).getSubject(subjectIndex))) {
+	    						return false;
+	    					}
+							subjectIndex++;
+	    				}
+	    				allowIndex++;
+	    			}
+	    		}
+	    	}
+    	} catch	(ArrayIndexOutOfBoundsException aie) {
+    		aie.printStackTrace();
+    		return false;
+	    } catch	(NullPointerException npe) {
+			npe.printStackTrace();
+			return false;
+		}
+    	
+    	return true;
+    }
 }

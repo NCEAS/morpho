@@ -27,6 +27,8 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -47,6 +49,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
@@ -122,6 +125,17 @@ public class AddAccessCommand
 				
 				// save the access policy to the correct location
 				success = DataStoreServiceController.getInstance().setAccessPolicy(adp.getSystemMetadata(), location);
+				
+				// do it for each data entity
+				if (((Access) accessPage).isApplyToAll()) {
+				    if (adp.getEntityArray() != null) {
+						for (Entity entity: adp.getEntityArray()) {
+							entity.getSystemMetadata().setAccessPolicy(accessPolicy);
+							success = success && DataStoreServiceController.getInstance().setAccessPolicy(entity.getSystemMetadata(), location);
+						}
+				    }
+				}
+				
 				if (success) {
 					message = "Successfully set Access Policy for " + identifier;
 				}
@@ -217,6 +231,16 @@ public class AddAccessCommand
     boolean pageCanHandleAllData
         = accessPage.setPageData(existingValuesMap, ACCESS_SUBTREE_NODENAME);
 
+	// do all the access policies match?
+    List<AccessPolicy> otherPolicies = new ArrayList<AccessPolicy>();
+    if (adp.getEntityArray() != null) {
+		for (Entity entity: adp.getEntityArray()) {
+			otherPolicies.add(entity.getSystemMetadata().getAccessPolicy());
+		}
+    }
+    boolean policyMatch = AccessPolicyConverter.policyMatch(accessPolicy, otherPolicies );
+    ((Access) accessPage).setPolicyMatch(policyMatch);
+    
     ModalDialog dialog = null;
     if (pageCanHandleAllData) {
 

@@ -35,9 +35,13 @@ import java.util.Vector;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -81,6 +85,9 @@ public class Access
       /*"Yes, give read-only access to public."*/ Language.getInstance().getMessage("Access.PublicYes"),
       /*"No."*/ Language.getInstance().getMessage("No")
   };
+  
+  private JCheckBox applyToAll = null;
+  private boolean policyMatch = true;
 
   private final String ALLOW_REL_XPATH = "allow[";
   private final String DENY_REL_XPATH = "deny[";
@@ -102,7 +109,7 @@ public class Access
 	      /*"Allow First"*/ Language.getInstance().getMessage("AllowFirst")//,
 	      /*"Deny First"*/ //Language.getInstance().getMessage("DenyFirst")
 	  };
-
+  
   public static DefaultMutableTreeNode accessTreeNode = null;
   public static String accessTreeMetacatServerName = null;
 
@@ -142,7 +149,7 @@ public class Access
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>" 
 	        /*+"Would you like to allow the public to read your data package?"*/
-    		+ Language.getInstance().getMessage("Access.dsc")		
+    		+ Language.getInstance().getMessage("Access.dscPackage")		
 	        + "</b></p>", 2);
     }
     vBox.add(desc);
@@ -169,6 +176,40 @@ public class Access
 
     vBox.add(radioPanel);
 
+    // should this apply to the entire datapackage
+	applyToAll = WidgetFactory.makeCheckBox(Language.getInstance().getMessage("Access.applyToAll"), false);
+	if (!isEntity) {
+		
+		JLabel applyDesc = WidgetFactory.makeHTMLLabel(
+		"<p><b>"
+		+ Language.getInstance().getMessage("Access.applyToAll.desc") + ":"
+		+ "</b></p>", 2);
+	    vBox.add(applyDesc);
+		        
+	    JPanel applyToAllPanel = WidgetFactory.makePanel(1);
+	    applyToAllPanel.add(applyToAll);
+		vBox.add(applyToAllPanel);
+		
+		// check only if the policies in the package match each other
+		if (policyMatch) {
+			applyToAll.setSelected(true);
+		}
+		
+		//  warning message when selecting the box
+		applyToAll.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {				
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					JOptionPane.showMessageDialog(
+							null, 
+							Language.getInstance().getMessage("Access.applyToAll.warning"), //"All data access policies will be overwritten by those specified here", 
+							Language.getInstance().getMessage("AccessInformation"), 
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+	}
+	
     ///
     JLabel orderDesc = null; 
     
@@ -871,4 +912,13 @@ public class Access
     return Integer.parseInt(
         tempXPath.substring(0, tempXPath.indexOf("]")));
   }
+
+	public boolean isApplyToAll() {
+		return applyToAll.isSelected();
+	}
+	
+	public void setPolicyMatch(boolean policyMatch) {
+		this.policyMatch = policyMatch;
+		this.applyToAll.setSelected(policyMatch);
+	}
 }
