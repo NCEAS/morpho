@@ -155,7 +155,11 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 				}	
 				
 				// show message 
-				Log.debug(5, message);
+				if (success) {
+					JOptionPane.showMessageDialog(null, message, Language.getInstance().getMessage("AccessInformation"), JOptionPane.PLAIN_MESSAGE);
+				} else {
+					Log.debug(5, message);
+				}
 				
 				// refresh if we changed the EML
 				if (success) {
