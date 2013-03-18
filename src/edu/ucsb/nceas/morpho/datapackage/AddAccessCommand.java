@@ -155,8 +155,12 @@ public class AddAccessCommand
 				success = false;
 			}
 				
-			// show message 
-			Log.debug(5, message);
+			// show message
+			if (success) {
+				JOptionPane.showMessageDialog(null, message, Language.getInstance().getMessage("AccessInformation"), JOptionPane.PLAIN_MESSAGE);
+			} else {
+				Log.debug(5, message);
+			}
 			
 			// refresh if we changed the EML
 			if (success) {
