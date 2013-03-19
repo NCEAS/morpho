@@ -133,8 +133,10 @@ public class EditDataReplicationPolicyCommand implements Command,
 			
 			if (success) {
 				message = "Successfully set Replication Policy for " + identifier;
+				JOptionPane.showMessageDialog(null, message, Language.getInstance().getMessage("ReplicationPolicy"), JOptionPane.PLAIN_MESSAGE);
+			} else {
+				Log.debug(5, message);
 			}
-			Log.debug(5, message);
 		}
 	}
 
@@ -156,7 +158,7 @@ public class EditDataReplicationPolicyCommand implements Command,
 
 	private boolean showDialog() {
 
-		replicationPolicyPage = new ReplicationPolicyPage();
+		replicationPolicyPage = new ReplicationPolicyPage(true);
 
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		

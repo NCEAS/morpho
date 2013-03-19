@@ -27,6 +27,8 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -36,6 +38,7 @@ import org.dataone.service.types.v1.ReplicationPolicy;
 import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.dataone.ReplicationPolicyComparator;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -98,15 +101,27 @@ public class EditReplicationPolicyCommand implements Command,
 		if (showDialog()) {
 
 			boolean success = false;
-			String identifier = mdp.getAbstractDataPackage().getAccessionNumber();
+			AbstractDataPackage adp = mdp.getAbstractDataPackage();
+			String identifier = adp.getAccessionNumber();
 			String message = "Unable to edit Replication Policy for " + identifier;
 			try {
 				// set the replication policy in the SM
 				ReplicationPolicy replicationPolicy = replicationPolicyPage.getReplicationPolicy();
-				mdp.getAbstractDataPackage().getSystemMetadata().setReplicationPolicy(replicationPolicy);
+				adp.getSystemMetadata().setReplicationPolicy(replicationPolicy);
 
 				// save SM independently from EML file
-				success = DataStoreServiceController.getInstance().setReplicationPolicy(mdp.getAbstractDataPackage(), mdp.getAbstractDataPackage().getLocation());
+				success = DataStoreServiceController.getInstance().setReplicationPolicy(adp, adp.getLocation());
+				
+				// apply to the entire package?
+				boolean applyToAll = replicationPolicyPage.isApplyToAll();
+				if (applyToAll ) {
+					if (adp.getEntityArray() != null) {
+						for (Entity entity: adp.getEntityArray()) {
+							entity.getSystemMetadata().setReplicationPolicy(replicationPolicy);
+							success = success && DataStoreServiceController.getInstance().setReplicationPolicy(entity, adp.getLocation());
+						}
+					}
+				}
 				
 			} catch (NotFound e) {
 				message = identifier + " not found on the Coordinating Node. Cannot set Replication Policy until it has been synchronized. Please try again later.";
@@ -123,10 +138,13 @@ public class EditReplicationPolicyCommand implements Command,
 				success = false;
 			}
 			
+			// show results
 			if (success) {
 				message = "Successfully set Replication Policy for " + identifier;
+				JOptionPane.showMessageDialog(null, message, Language.getInstance().getMessage("ReplicationPolicy"), JOptionPane.PLAIN_MESSAGE);
+			} else {
+				Log.debug(5, message);
 			}
-			Log.debug(5, message);
 			
 			//indicate that this is a change to the package so it can be saved
 			//mdp.getAbstractDataPackage().setLocation("");
@@ -153,12 +171,23 @@ public class EditReplicationPolicyCommand implements Command,
 
 	private boolean showDialog() {
 
-		replicationPolicyPage = new ReplicationPolicyPage();
+		replicationPolicyPage = new ReplicationPolicyPage(false);
 
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 
-		replicationPolicyPage.setReplicationPolicy(adp.getSystemMetadata().getReplicationPolicy());
+		ReplicationPolicy replicationPolicy = adp.getSystemMetadata().getReplicationPolicy();
+		replicationPolicyPage.setReplicationPolicy(replicationPolicy );
 		boolean pageCanHandleAllData = true;
+		
+		// check package for same policy
+		List<ReplicationPolicy> otherPolicies = new ArrayList<ReplicationPolicy>();
+		if (adp.getEntityArray() != null) {
+			for (Entity entity: adp.getEntityArray()) {
+				otherPolicies.add(entity.getSystemMetadata().getReplicationPolicy());
+			}
+		}
+		boolean policyMatch = ReplicationPolicyComparator.policyMatch(replicationPolicy, otherPolicies);
+		replicationPolicyPage.setPolicyMatch(policyMatch );
 
 		ModalDialog dialog = null;
 		if (pageCanHandleAllData) {

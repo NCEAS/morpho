@@ -28,6 +28,8 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -71,12 +74,18 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   
   private JLabel blockedMemberNodeLabel;
   private CustomList blockedMemberNodeList;
+  
+  private JCheckBox applyToAll = null;
+  private boolean policyMatch = true;
+  
+  private boolean isEntity = false;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public ReplicationPolicyPage() 
+  public ReplicationPolicyPage(boolean isEntity) 
   {
 	  nextPageID = DataPackageWizardInterface.SUMMARY;
+	  this.isEntity = isEntity;
 	  init(); 
   }
 
@@ -91,7 +100,7 @@ public class ReplicationPolicyPage extends AbstractUIPage{
 
     vbox.add(WidgetFactory.makeHalfSpacer());
 
-    JLabel title = WidgetFactory.makeHTMLLabel(Language.getInstance().getMessage("ReplicationPolicy"), 1);
+    JLabel title = WidgetFactory.makeHTMLLabel("<p><b>" + Language.getInstance().getMessage("ReplicationPolicy") + "</b></p>", 1);
     vbox.add(title);
     
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
@@ -107,9 +116,43 @@ public class ReplicationPolicyPage extends AbstractUIPage{
     		Language.getInstance().getMessage("ReplicationPolicy.Desc3") +
     		"</p>"
     		*/
-    		, 8);
+    		, 4);
     vbox.add(titleDesc);
 
+    // should this apply to the entire datapackage
+ 	applyToAll = WidgetFactory.makeCheckBox(Language.getInstance().getMessage("Access.applyToAll"), false);
+ 	if (!isEntity) {
+ 		
+ 		JLabel applyDesc = WidgetFactory.makeHTMLLabel("<p><b>" + Language.getInstance().getMessage("Access.applyToAll.desc") + "</b></p>", 2);
+ 	    vbox.add(applyDesc);
+ 		        
+ 	    JPanel applyToAllPanel = WidgetFactory.makePanel(2);
+ 	    applyToAllPanel.add(applyToAll);
+ 	    vbox.add(applyToAllPanel);
+ 		
+ 		// check only if the policies in the package match each other
+ 		if (policyMatch) {
+ 			applyToAll.setSelected(true);
+ 		}
+ 		
+ 		//  warning message when selecting the box
+ 		applyToAll.addItemListener(new ItemListener() {
+ 			@Override
+ 			public void itemStateChanged(ItemEvent e) {				
+ 				if (e.getStateChange() == ItemEvent.SELECTED) {
+ 					JOptionPane.showMessageDialog(
+ 							null, 
+ 							Language.getInstance().getMessage("ReplicationPolicy.applyToAll.warning"), //"All data replication policies will be overwritten by those specified here", 
+ 							Language.getInstance().getMessage("ReplicationPolicy"), 
+ 							JOptionPane.INFORMATION_MESSAGE);
+ 				}
+ 			}
+ 		});
+ 	}
+    
+ 	JLabel details = WidgetFactory.makeHTMLLabel("<p><b>" + Language.getInstance().getMessage("Details") + "</b></p>", 2);
+	vbox.add(details);
+ 	
     JPanel replicationPanel = WidgetFactory.makePanel();
 
     replicationAllowedLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("ReplicationAllowed"), true, null);
@@ -333,4 +376,13 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   public boolean setPageData(OrderedMap map, String _xPathRoot) {
     return true;
   }
+
+	public boolean isApplyToAll() {
+		return applyToAll.isSelected();
+	}
+	
+	public void setPolicyMatch(boolean policyMatch) {
+		this.policyMatch = policyMatch;
+		this.applyToAll.setSelected(policyMatch);
+	}
 }
