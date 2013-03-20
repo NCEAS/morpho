@@ -743,7 +743,7 @@ public class Morpho
             new GUIAction(/*"Login/Logout"*/ Language.getInstance().getMessage("Login/Logout"),
             		null, connectCommand);
         connectItemAction.setToolTipText("Login/Logout...");
-        connectItemAction.setMenuItemPosition(9);
+        connectItemAction.setMenuItemPosition(11);
         connectItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
         connectItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(connectItemAction);
@@ -755,7 +755,7 @@ public class Morpho
             new GUIAction(/*"New profile..."*/ Language.getInstance().getMessage("NewProfile"),
             		null, profileCommand);
         profileItemAction.setToolTipText("New Profile...");
-        profileItemAction.setMenuItemPosition(10);
+        profileItemAction.setMenuItemPosition(12);
         profileItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(profileItemAction);
 
@@ -768,7 +768,7 @@ public class Morpho
             new GUIAction(/*"Switch profile..."*/ Language.getInstance().getMessage("SwitchProfile"),
             		null, switchCommand);
         switchItemAction.setToolTipText("Switch Profile...");
-        switchItemAction.setMenuItemPosition(11);
+        switchItemAction.setMenuItemPosition(13);
         switchItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(switchItemAction);
         
@@ -781,7 +781,7 @@ public class Morpho
             new GUIAction(/*"Remove profile..."*/ Language.getInstance().getMessage("RemoveProfile"),
             		null, removeCommand);
         removeProfileAction.setToolTipText("Remove Profile...");
-        removeProfileAction.setMenuItemPosition(12);
+        removeProfileAction.setMenuItemPosition(14);
         removeProfileAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         removeProfileAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(removeProfileAction);
@@ -795,7 +795,7 @@ public class Morpho
             new GUIAction(/*"Set preferences..."*/ Language.getInstance().getMessage("SetPreferences"),
             		null, prefsCommand);
         prefsItemAction.setToolTipText("Set Preferences...");
-        prefsItemAction.setMenuItemPosition(13);
+        prefsItemAction.setMenuItemPosition(15);
         prefsItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         prefsItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(prefsItemAction);

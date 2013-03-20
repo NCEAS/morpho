@@ -516,13 +516,15 @@ public class DataPackagePlugin
         true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addMethodAction);
 
-    i++;
+    // add these to the FILE menu
+    //see: http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5886
     GUIAction addAccessAction = new GUIAction(
         /*"Access Information..."*/ Language.getInstance().getMessage("AccessInformation") + Language.getInstance().getMessage("..."),
         null, new AddAccessCommand());
     addAccessAction.setToolTipText("Add, edit or delete Access Permissions...");
-    addAccessAction.setMenuItemPosition(i);
-    addAccessAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    addAccessAction.setMenuItemPosition(9);
+    addAccessAction.setSeparatorPosition(Morpho.SEPARATOR_PRECEDING);
+    addAccessAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     addAccessAction.setEnabledOnStateChange(
         StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
         true, GUIAction.EVENT_LOCAL);
@@ -531,13 +533,12 @@ public class DataPackagePlugin
         true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addAccessAction);
 
-    i++;
     GUIAction editReplicationPolicyAction = new GUIAction(
         Language.getInstance().getMessage("ReplicationPolicy") + Language.getInstance().getMessage("..."),
         null, new EditReplicationPolicyCommand());
     editReplicationPolicyAction.setToolTipText("Edit Replication Policy...");
-    editReplicationPolicyAction.setMenuItemPosition(i);
-    editReplicationPolicyAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    editReplicationPolicyAction.setMenuItemPosition(10);
+    editReplicationPolicyAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     editReplicationPolicyAction.setEnabledOnStateChange(
         StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
         true, GUIAction.EVENT_LOCAL);
