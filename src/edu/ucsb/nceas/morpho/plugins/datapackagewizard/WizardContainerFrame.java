@@ -1029,6 +1029,8 @@ public class WizardContainerFrame
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TAXONOMIC);
     AbstractUIPage ACCESS
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.ACCESS);
+    AbstractUIPage REPLICATION_POLICY
+    	= (AbstractUIPage)pageMap.get(DataPackageWizardInterface.REPLICATION_POLICY);
     AbstractUIPage DATA_LOCATION
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.DATA_LOCATION);
     /*AbstractUIPage TEXT_IMPORT_WIZARD
@@ -1049,6 +1051,11 @@ public class WizardContainerFrame
     if (ACCESS != null) {
       accessData = ACCESS.getPageData();
       addPageDataToResultsMap( ACCESS, wizData);
+    }
+    
+    // REPLICATION:
+    if (REPLICATION_POLICY != null) {
+      addPageDataToResultsMap(REPLICATION_POLICY, wizData);
     }
     
     if (GENERAL != null) {

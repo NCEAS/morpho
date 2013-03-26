@@ -115,7 +115,7 @@ public class Access
 
   public Access(Boolean isEntity) {
 	this.isEntity = isEntity;
-	nextPageID = DataPackageWizardInterface.SUMMARY;
+	nextPageID = DataPackageWizardInterface.REPLICATION_POLICY;
     init();
   }
 

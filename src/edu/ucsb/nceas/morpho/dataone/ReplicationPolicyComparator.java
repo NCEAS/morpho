@@ -1,10 +1,15 @@
 package edu.ucsb.nceas.morpho.dataone;
 
+import java.io.ByteArrayInputStream;
 import java.util.Comparator;
 import java.util.List;
 
 import org.dataone.service.types.v1.NodeReference;
 import org.dataone.service.types.v1.ReplicationPolicy;
+import org.dataone.service.util.TypeMarshaller;
+import org.w3c.dom.Node;
+
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 
 public class ReplicationPolicyComparator implements Comparator<ReplicationPolicy> {
 
@@ -77,6 +82,16 @@ public class ReplicationPolicyComparator implements Comparator<ReplicationPolicy
 			}
 		}
 		return true;
+	}
+
+	public static ReplicationPolicy getReplicationPolicy(AbstractDataPackage adp) throws Exception {
+		ReplicationPolicy policy = null;
+		
+		Node replicationPolicyNode = adp.getSubtree("additionalMetadataMetadata", 0);
+		String replicationPolicyString = replicationPolicyNode.getTextContent();
+		policy = TypeMarshaller.unmarshalTypeFromStream(ReplicationPolicy.class, new ByteArrayInputStream(replicationPolicyString.getBytes("UTF-8")));
+		
+		return policy;
 	}
 
 }

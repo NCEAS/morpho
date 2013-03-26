@@ -247,7 +247,7 @@ public class WizardSettings {
 
   protected static final String OK_BUTTON_TEXT      = /*"OK"*/ Language.getInstance().getMessage("OK");
 
-  public static String NUMBER_OF_STEPS              = "15";
+  public static String NUMBER_OF_STEPS              = "16";
 
   /* Three variables defined below are used by AccessPage Screen
    */

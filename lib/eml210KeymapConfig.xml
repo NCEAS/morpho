@@ -26,6 +26,8 @@
     <geographicCoverage>/eml:eml/dataset/coverage/geographicCoverage</geographicCoverage>
     <temporalCoverage>/eml:eml/dataset/coverage/temporalCoverage</temporalCoverage>
     <taxonomicCoverage>/eml:eml/dataset/coverage/taxonomicCoverage</taxonomicCoverage>
+    <additionalMetadataMetadata>/eml:eml/additionalMetadata/metadata</additionalMetadataMetadata>
+    <additionalMetadata>/eml:eml/additionalMetadata</additionalMetadata>
   </contextNode>
   <!-- Xpaths for entity values are defined as relative to top node of entity -->
   <contextNode name="entity">

@@ -138,6 +138,8 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
         return new Access(new Boolean(true));
     if(pageID.equals(DataPackageWizardInterface.ACCESS_PAGE))
       return new AccessPage();
+    if(pageID.equals(DataPackageWizardInterface.REPLICATION_POLICY))
+        return new ReplicationPolicyPage(false);
     if(pageID.equals(DataPackageWizardInterface.SUMMARY))
       return new Summary(container);
     if(pageID.equals(DataPackageWizardInterface.CODE_IMPORT_SUMMARY))

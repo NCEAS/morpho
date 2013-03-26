@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,7 @@ import javax.swing.JTextField;
 
 import org.dataone.service.types.v1.NodeReference;
 import org.dataone.service.types.v1.ReplicationPolicy;
+import org.dataone.service.util.TypeMarshaller;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
@@ -50,6 +52,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class ReplicationPolicyPage extends AbstractUIPage{
@@ -59,7 +62,7 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   private final String pageID     = DataPackageWizardInterface.REPLICATION_POLICY;
   private final String title      = Language.getInstance().getMessage("ReplicationPolicy");
   private final String subtitle   = "";
-  public  final String pageNumber = "0";
+  public  final String pageNumber = "15";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
@@ -313,10 +316,7 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   private OrderedMap returnMap = new OrderedMap();
 
   public OrderedMap getPageData() {
-
-    returnMap.clear();
-
-    return returnMap;
+    return getPageData("/eml:eml/additionalMetadata/metadata");
   }
 
   /**
@@ -331,7 +331,20 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   public OrderedMap getPageData(String rootXPath) {
 
     returnMap.clear();
-
+    
+    // use additional metadata to stash the policy for later
+    ReplicationPolicy policy = getReplicationPolicy();
+    
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try {
+		TypeMarshaller.marshalTypeToOutputStream(policy, baos);
+		String policyString = baos.toString("UTF-8");
+	    returnMap.put(rootXPath, policyString);
+	} catch (Exception e) {
+		Log.debug(5, e.getMessage());
+		e.printStackTrace();
+	}
+    
     return returnMap;
 
   }

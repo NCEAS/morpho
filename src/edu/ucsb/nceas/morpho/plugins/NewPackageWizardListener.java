@@ -29,9 +29,11 @@
 package edu.ucsb.nceas.morpho.plugins;
 
 import org.dataone.service.types.v1.AccessPolicy;
+import org.dataone.service.types.v1.ReplicationPolicy;
 import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.dataone.AccessPolicyConverter;
+import edu.ucsb.nceas.morpho.dataone.ReplicationPolicyComparator;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AddAccessCommand;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
@@ -85,6 +87,16 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
 		adp.deleteSubtree(AddAccessCommand.DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
 	} catch (Exception e) {
 		Log.debug(10, "Could not transfer access block to AccessPolicy: " + e.getMessage());
+		e.printStackTrace();
+	}
+	
+	try {
+		// make sure to take out the access policy section from EML
+		ReplicationPolicy replicationPolicy = ReplicationPolicyComparator.getReplicationPolicy(adp);
+		adp.getSystemMetadata().setReplicationPolicy(replicationPolicy);
+		adp.deleteSubtree("additionalMetadata", 0);
+	} catch (Exception e) {
+		Log.debug(10, "Could not transfer replication additional metadata block to ReplicationPolicy: " + e.getMessage());
 		e.printStackTrace();
 	}
 
