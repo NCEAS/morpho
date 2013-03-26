@@ -1075,6 +1075,7 @@ public class DataStoreServiceController {
 								
 								// update the package with new id information
 								mdp.updateIdentifier(originalDataIdentifier, newDataIdentifier);
+								entity.setPreviousId(originalDataIdentifier);
 								// we changed the identifier
 								Log.debug(30,
 										"The identifier "

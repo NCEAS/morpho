@@ -320,6 +320,7 @@ public class LocalDataStoreService extends DataStoreService
     saveFile(name, new FileInputStream(file), getDataDir());
   }
   
+  
   public File saveTempDataFile(String name, InputStream file)
   {
     return saveFile(name, file, getTempDir());
@@ -553,7 +554,7 @@ public class LocalDataStoreService extends DataStoreService
 						if (dataDestination.equals(DataPackageInterface.INCOMPLETE)) {
 							handleIncompleteDir(docid);
 						} else {
-							status = handleLocal(docid);
+							status = handleLocal(docid, entity.getDataSource().getInputStream());
 							// this was a failure, return now
 							if (!status) {
 								return false;
@@ -707,6 +708,18 @@ public class LocalDataStoreService extends DataStoreService
 		
 		// if we get here it was successful
 		return true;
+	}
+	
+	
+	private boolean handleLocal(String docid, InputStream data) {
+	 
+       File file = newDataFile(docid, data);
+       if(file != null) {
+           return true;
+       } else {
+           return false;
+       }
+        
 	}
 	
 	/**
