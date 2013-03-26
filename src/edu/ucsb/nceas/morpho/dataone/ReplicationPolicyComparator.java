@@ -11,6 +11,15 @@ public class ReplicationPolicyComparator implements Comparator<ReplicationPolicy
 	@Override
 	public int compare(ReplicationPolicy policy1, ReplicationPolicy policy2) {
 		int check = 0;
+		
+		// check for null policies
+		if (policy1 == null) {
+			return -1;
+		}
+		if (policy2 == null) {
+			return 1;
+		}
+		
 		int nodeIndex = 0;
 		// replication allowed
 		if (policy1.getReplicationAllowed() != null && policy2.getReplicationAllowed() != null) {
