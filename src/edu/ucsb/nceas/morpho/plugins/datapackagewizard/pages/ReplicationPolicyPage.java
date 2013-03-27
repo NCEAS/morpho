@@ -299,18 +299,34 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   public void onRewindAction() {
   }
 
-  /**
-   *  The action to be executed when the "Next" button (pages 1 to last-but-one)
-   *  or "Finish" button(last page) is pressed. May be empty, but if so, must
-   *  return true
-   *
-   *  @return boolean true if wizard should advance, false if not
-   *          (e.g. if a required field hasn't been filled in)
-   */
-  public boolean onAdvanceAction() {
+	/**
+	 * The action to be executed when the "Next" button (pages 1 to
+	 * last-but-one) or "Finish" button(last page) is pressed. May be empty, but
+	 * if so, must return true
+	 * 
+	 * @return boolean true if wizard should advance, false if not (e.g. if a
+	 *         required field hasn't been filled in)
+	 */
+	public boolean onAdvanceAction() {
 
-    return true;
-  }
+		if (replicationAllowed.isSelected()) {
+			// check that it is greater than 0
+			Integer n = 0;
+			try {
+				n = Integer.valueOf(numberReplicas.getText());
+			} catch (NumberFormatException nfe) {
+				// ignore
+			}
+			if (n <= 0) {
+				WidgetFactory.hiliteComponent(numberReplicasLabel);
+				return false;
+			} else {
+				WidgetFactory.unhiliteComponent(numberReplicasLabel);
+			}
+		}
+
+		return true;
+	}
 
   /**
    *  gets the OrderedMap object that contains all the key/value paired
