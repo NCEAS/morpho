@@ -162,12 +162,14 @@ public class ReplicationPolicyPage extends AbstractUIPage{
     replicationPanel.add(replicationAllowedLabel);
     
     replicationAllowed = WidgetFactory.makeCheckBox(null, false);
+    replicationAllowed.setSelected(true);
     replicationPanel.add(replicationAllowed);
     
     numberReplicasLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("NumberOfReplicas"), true, null);
     replicationPanel.add(numberReplicasLabel);
 
     numberReplicas = WidgetFactory.makeOneLineShortTextField();
+    numberReplicas.setText(String.valueOf(2));
     replicationPanel.add(numberReplicas);
         
     replicationPanel.add(Box.createHorizontalGlue());
