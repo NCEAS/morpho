@@ -94,7 +94,7 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
 		// make sure to take out the access policy section from EML
 		ReplicationPolicy replicationPolicy = ReplicationPolicyComparator.getReplicationPolicy(adp);
 		adp.getSystemMetadata().setReplicationPolicy(replicationPolicy);
-		adp.deleteSubtree("additionalMetadata", 0);
+		adp.deleteSubtree("additionalMetadataReplicationPolicyParent", 0);
 	} catch (Exception e) {
 		Log.debug(10, "Could not transfer replication additional metadata block to ReplicationPolicy: " + e.getMessage());
 		e.printStackTrace();

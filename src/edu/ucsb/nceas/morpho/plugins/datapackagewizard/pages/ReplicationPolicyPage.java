@@ -322,7 +322,7 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   private OrderedMap returnMap = new OrderedMap();
 
   public OrderedMap getPageData() {
-    return getPageData("/eml:eml/additionalMetadata/metadata");
+    return getPageData("/eml:eml/additionalMetadata/metadata/replicationPolicy");
   }
 
   /**

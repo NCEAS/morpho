@@ -87,7 +87,7 @@ public class ReplicationPolicyComparator implements Comparator<ReplicationPolicy
 	public static ReplicationPolicy getReplicationPolicy(AbstractDataPackage adp) throws Exception {
 		ReplicationPolicy policy = null;
 		
-		Node replicationPolicyNode = adp.getSubtree("additionalMetadataMetadata", 0);
+		Node replicationPolicyNode = adp.getSubtree("additionalMetadataReplicationPolicy", 0);
 		String replicationPolicyString = replicationPolicyNode.getTextContent();
 		policy = TypeMarshaller.unmarshalTypeFromStream(ReplicationPolicy.class, new ByteArrayInputStream(replicationPolicyString.getBytes("UTF-8")));
 		

@@ -26,8 +26,9 @@
     <geographicCoverage>/eml:eml/dataset/coverage/geographicCoverage</geographicCoverage>
     <temporalCoverage>/eml:eml/dataset/coverage/temporalCoverage</temporalCoverage>
     <taxonomicCoverage>/eml:eml/dataset/coverage/taxonomicCoverage</taxonomicCoverage>
-    <additionalMetadataMetadata>/eml:eml/additionalMetadata/metadata</additionalMetadataMetadata>
-    <additionalMetadata>/eml:eml/additionalMetadata</additionalMetadata>
+    <!-- for replicationPolicy -->
+    <additionalMetadataReplicationPolicy>/eml:eml/additionalMetadata/metadata/replicationPolicy</additionalMetadataReplicationPolicy>
+    <additionalMetadataReplicationPolicyParent>/eml:eml/additionalMetadata[count(metadata/replicationPolicy) > 0]</additionalMetadataReplicationPolicyParent>
   </contextNode>
   <!-- Xpaths for entity values are defined as relative to top node of entity -->
   <contextNode name="entity">
