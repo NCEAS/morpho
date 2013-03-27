@@ -1003,20 +1003,28 @@ public class DataStoreServiceController {
 			adp.setPackageIDChanged(true);
 
 			// set the SM to reflect this change
-			Identifier originalIdentifierObject = new Identifier();
-			originalIdentifierObject.setValue(originalIdentifier);
-			adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
+			//Identifier originalIdentifierObject = new Identifier();
+			//originalIdentifierObject.setValue(originalIdentifier);
+			//adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
 			
 			// make sure the package reflects the updated IDs
 			mdp.updateIdentifier(originalIdentifier, newIdentifier);
+			
+			Identifier obsoletesId = adp.getSystemMetadata().getObsoletes();
+			if(obsoletesId != null) {
+			    String obsoletesIdStr = obsoletesId.getValue();
+			    if(obsoletesIdStr != null && !obsoletesIdStr.trim().equals("")) {
+			        if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
+	                    Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newIdentifier, obsoletesIdStr);
+	                }
+	                if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
+	                    Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newIdentifier, obsoletesIdStr);
+	                }
+			    }
+	            
+			}
 
-			// record this in revision manager (TODO: is this needed?)
-			if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
-				Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalIdentifier);
-			}
-			if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
-				Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalIdentifier);
-			}
+			
 			
 		}
 		
@@ -1061,21 +1069,27 @@ public class DataStoreServiceController {
 								newId.setValue(newDataIdentifier);
 								entity.getSystemMetadata().setIdentifier(newId);
 								// obsoletes chain
-								Identifier obsoletes = new Identifier();
-								obsoletes.setValue(originalDataIdentifier);
-								entity.getSystemMetadata().setObsoletes(obsoletes);
-								
-								// save the revision history
-								if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
-									Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newDataIdentifier, originalDataIdentifier);
+								//Identifier obsoletes = new Identifier();
+								//obsoletes.setValue(originalDataIdentifier);
+								//entity.getSystemMetadata().setObsoletes(obsoletes);
+								Identifier obsoletes = entity.getSystemMetadata().getObsoletes();
+								if(obsoletes != null) {
+								    String obsoletesStr = obsoletes.getValue();
+								    if(obsoletesStr != null && !obsoletesStr.trim().equals("")) {
+								        // save the revision history
+		                                if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
+		                                    Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newDataIdentifier, originalDataIdentifier);
+		                                }
+		                                if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
+		                                    Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newDataIdentifier, originalDataIdentifier);
+		                                }
+								    }
 								}
-								if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
-									Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newDataIdentifier, originalDataIdentifier);
-								}
+							
 								
 								// update the package with new id information
 								mdp.updateIdentifier(originalDataIdentifier, newDataIdentifier);
-								entity.setPreviousId(originalDataIdentifier);
+								//entity.setPreviousId(originalDataIdentifier);
 								// we changed the identifier
 								Log.debug(30,
 										"The identifier "
