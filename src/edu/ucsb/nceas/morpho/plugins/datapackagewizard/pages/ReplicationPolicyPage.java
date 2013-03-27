@@ -91,6 +91,11 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   
   private boolean isEntity = false;
   
+  /**
+   * Tracks the registered nodes for quick look-up
+   * NOTE: populated each time the page is constructed 
+   * in case the configured CN has changed since the Morpho start-up
+   */
   private Map<NodeReference, NodeItem> nodeReferences = null;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -255,6 +260,10 @@ public class ReplicationPolicyPage extends AbstractUIPage{
 		
 	}
 	
+	/**
+	 * fetches the list of Member Nodes from the configured CN
+	 * and populates the NodeRef->NodeItem map for quick look up in the UI
+	 */
 	private void initNodes() {
 		try {
 			String cnURL = Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL();
@@ -274,6 +283,10 @@ public class ReplicationPolicyPage extends AbstractUIPage{
 		}
 	}
 	
+	/**
+	 * Shows the node selection dialog when adding to the given list
+	 * @param list the CustomList to add to
+	 */
 	private void showNodeDialog(CustomList list) {
 		Object[] options = null;
 		
