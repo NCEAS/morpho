@@ -226,7 +226,13 @@ public class ReplicationPolicyPage extends AbstractUIPage{
 		// construct the policy from the GUI
 		ReplicationPolicy replicationPolicy = new ReplicationPolicy();
 		replicationPolicy.setReplicationAllowed(replicationAllowed.isSelected());
-		replicationPolicy.setNumberReplicas(Integer.valueOf(numberReplicas.getText()));
+		Integer n = 0;
+		try {
+			n = Integer.valueOf(numberReplicas.getText());
+		} catch (NumberFormatException nfe) {
+			//ignore
+		}
+		replicationPolicy.setNumberReplicas(n);
 		List<List<String>> rows = preferredMemberNodeList.getListOfRowLists();
 		if (rows != null) {
 			for (List<String> row: rows) {
