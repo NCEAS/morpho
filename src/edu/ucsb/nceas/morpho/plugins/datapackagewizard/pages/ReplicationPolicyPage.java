@@ -28,12 +28,16 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -42,11 +46,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.dataone.service.types.v1.Node;
 import org.dataone.service.types.v1.NodeReference;
+import org.dataone.service.types.v1.NodeType;
 import org.dataone.service.types.v1.ReplicationPolicy;
 import org.dataone.service.util.TypeMarshaller;
 
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.dataone.ui.NodeItem;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
@@ -82,6 +90,8 @@ public class ReplicationPolicyPage extends AbstractUIPage{
   private boolean policyMatch = true;
   
   private boolean isEntity = false;
+  
+  private Map<NodeReference, NodeItem> nodeReferences = null;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -90,6 +100,8 @@ public class ReplicationPolicyPage extends AbstractUIPage{
 	  nextPageID = DataPackageWizardInterface.SUMMARY;
 	  this.isEntity = isEntity;
 	  init(); 
+	  initNodes();
+	  initListActions();
   }
 
   /**
@@ -190,7 +202,7 @@ public class ReplicationPolicyPage extends AbstractUIPage{
     String[] colNames = {Language.getInstance().getMessage("NodeId")};
 	preferredMemberNodeList = WidgetFactory.makeList(
     		colNames , //colNames 
-    		new Object[]{ new JTextField()}, //colTemplates, 
+    		null, //new Object[]{ new JTextField()}, //colTemplates, 
     		3, //displayRows, 
     		true, //showAddButton, 
     		false, //showEditButton, 
@@ -204,7 +216,7 @@ public class ReplicationPolicyPage extends AbstractUIPage{
     nodesPanel.add(blockedMemberNodeLabel);
     blockedMemberNodeList = WidgetFactory.makeList(
     		colNames , //colNames 
-    		new Object[]{ new JTextField()}, //colTemplates, 
+    		null, //new Object[]{ new JTextField()}, //colTemplates, 
     		3, //displayRows, 
     		true, //showAddButton, 
     		false, //showEditButton, 
@@ -213,7 +225,7 @@ public class ReplicationPolicyPage extends AbstractUIPage{
     		true, //showMoveUpButton, 
     		true); //showMoveDownButton);
     nodesPanel.add(blockedMemberNodeList);
-
+    
     nodesPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(nodesPanel);
 
@@ -221,6 +233,68 @@ public class ReplicationPolicyPage extends AbstractUIPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
   }
+  
+	/**
+	 * Custom actions to be initialized for list buttons
+	 */
+	private void initListActions() {
+
+		preferredMemberNodeList.setCustomAddAction(new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showNodeDialog(preferredMemberNodeList);
+			}
+		});
+		
+		blockedMemberNodeList.setCustomAddAction(new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showNodeDialog(blockedMemberNodeList);
+			}
+		});
+		
+	}
+	
+	private void initNodes() {
+		try {
+			String cnURL = Morpho.thisStaticInstance.getDataONEDataStoreService().getCNodeURL();
+			List<Node> nodes = Morpho.thisStaticInstance.getDataONEDataStoreService().getNodes(cnURL);
+			if (nodes != null) {
+				nodeReferences = new TreeMap<NodeReference, NodeItem>();
+				for (Node node: nodes) {
+					if (node.getType().equals(NodeType.MN)) {
+						NodeItem item = new NodeItem(node);
+						nodeReferences.put(node.getIdentifier(), item);
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.debug(10, "Could not look up available Member Nodes from the CN: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	private void showNodeDialog(CustomList list) {
+		Object[] options = null;
+		
+		if (nodeReferences != null) {
+			options = nodeReferences.values().toArray();
+		}
+		
+		Object retValue = JOptionPane.showInputDialog( 
+				null, //parent
+				null, //message
+				Language.getInstance().getMessage("NodeId"), //title 
+				JOptionPane.QUESTION_MESSAGE, //messagetype
+				null,  //icon
+				options, 
+				null);
+		if (retValue != null) {
+			List rowList = new ArrayList();
+			rowList.add(retValue);
+			list.addRow(rowList);
+		}
+	}
 
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -237,22 +311,34 @@ public class ReplicationPolicyPage extends AbstractUIPage{
 			//ignore
 		}
 		replicationPolicy.setNumberReplicas(n);
-		List<List<String>> rows = preferredMemberNodeList.getListOfRowLists();
+		List<List<Object>> rows = preferredMemberNodeList.getListOfRowLists();
 		if (rows != null) {
-			for (List<String> row: rows) {
-				String nodeId = row.get(0);
-				NodeReference nodeRef = new NodeReference();
-				nodeRef.setValue(nodeId);
-				replicationPolicy.addPreferredMemberNode(nodeRef );
+			for (List<Object> row: rows) {
+				NodeReference nodeRef = null;
+				Object nodeRow = row.get(0);
+				if (nodeRow instanceof NodeItem) {
+					nodeRef = ((NodeItem)nodeRow).getNode().getIdentifier();
+				} else {
+					String nodeId = (String) nodeRow;
+					nodeRef = new NodeReference();
+					nodeRef.setValue(nodeId);
+				}
+				replicationPolicy.addPreferredMemberNode(nodeRef);
 			}
 		}
 		rows = blockedMemberNodeList.getListOfRowLists();
 		if (rows != null) {
-			for (List<String> row: rows) {
-				String nodeId = row.get(0);
-				NodeReference nodeRef = new NodeReference();
-				nodeRef.setValue(nodeId);
-				replicationPolicy.addBlockedMemberNode(nodeRef );
+			for (List<Object> row: rows) {
+				NodeReference nodeRef = null;
+				Object nodeRow = row.get(0);
+				if (nodeRow instanceof NodeItem) {
+					nodeRef = ((NodeItem)nodeRow).getNode().getIdentifier();
+				} else {
+					String nodeId = (String) nodeRow;
+					nodeRef = new NodeReference();
+					nodeRef.setValue(nodeId);
+				}
+				replicationPolicy.addBlockedMemberNode(nodeRef);
 			}
 		}
 		
@@ -272,16 +358,24 @@ public class ReplicationPolicyPage extends AbstractUIPage{
 			preferredMemberNodeList.removeAllRows();
 			if (replicationPolicy.getPreferredMemberNodeList() != null) {
 				for (NodeReference nodeRef: replicationPolicy.getPreferredMemberNodeList()) {
-					List<String> rowList = new ArrayList<String>();
-					rowList.add(nodeRef.getValue());
+					List<Object> rowList = new ArrayList<Object>();
+					Object rowValue = nodeRef.getValue();
+					if (nodeReferences.containsKey(nodeRef)) {
+						rowValue = nodeReferences.get(nodeRef);
+					}
+					rowList.add(rowValue);
 					preferredMemberNodeList.addRow(rowList);
 				}
 			}
 			blockedMemberNodeList.removeAllRows();
 			if (replicationPolicy.getBlockedMemberNodeList() != null) {
 				for (NodeReference nodeRef: replicationPolicy.getBlockedMemberNodeList()) {
-					List<String> rowList = new ArrayList<String>();
-					rowList.add(nodeRef.getValue());
+					List<Object> rowList = new ArrayList<Object>();
+					Object rowValue = nodeRef.getValue();
+					if (nodeReferences.containsKey(nodeRef)) {
+						rowValue = nodeReferences.get(nodeRef);
+					}
+					rowList.add(rowValue);
 					blockedMemberNodeList.addRow(rowList);
 				}
 			}
