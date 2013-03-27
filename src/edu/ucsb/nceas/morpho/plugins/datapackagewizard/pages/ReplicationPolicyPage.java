@@ -119,17 +119,17 @@ public class ReplicationPolicyPage extends AbstractUIPage{
     		Language.getInstance().getMessage("ReplicationPolicy.Desc3") +
     		"</p>"
     		*/
-    		, 4);
+    		, 3);
     vbox.add(titleDesc);
 
     // should this apply to the entire datapackage
  	applyToAll = WidgetFactory.makeCheckBox(Language.getInstance().getMessage("Access.applyToAll"), false);
  	if (!isEntity) {
  		
- 		JLabel applyDesc = WidgetFactory.makeHTMLLabel("<p><b>" + Language.getInstance().getMessage("Access.applyToAll.desc") + "</b></p>", 2);
+ 		JLabel applyDesc = WidgetFactory.makeHTMLLabel("<p><b>" + Language.getInstance().getMessage("Access.applyToAll.desc") + ":" + "</b></p>", 1);
  	    vbox.add(applyDesc);
  		        
- 	    JPanel applyToAllPanel = WidgetFactory.makePanel(2);
+ 	    JPanel applyToAllPanel = WidgetFactory.makePanel(1);
  	    applyToAllPanel.add(applyToAll);
  	    vbox.add(applyToAllPanel);
  		
@@ -153,7 +153,9 @@ public class ReplicationPolicyPage extends AbstractUIPage{
  		});
  	}
     
- 	JLabel details = WidgetFactory.makeHTMLLabel("<p><b>" + Language.getInstance().getMessage("Details") + "</b></p>", 2);
+    vbox.add(WidgetFactory.makeDefaultSpacer());
+ 	
+ 	JLabel details = WidgetFactory.makeHTMLLabel("<p><b>" + Language.getInstance().getMessage("Details")  + ":" + "</b></p>", 1);
 	vbox.add(details);
  	
     JPanel replicationPanel = WidgetFactory.makePanel();
