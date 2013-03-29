@@ -103,15 +103,20 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	MorphoDataPackage mdp = null;
 	
 	SaveEvent saveEvent = null;
-	private JComboBox identifierSchemeComboBox = null;
+	//private JComboBox identifierSchemeComboBox = null;
+	private JCheckBox DOICheckBox = null;
 	private Box schemeBox = null;
 	private String identifierScheme = null;
 	
 	private static final String BOTHFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("FailureSavingTo") + " " +  DataPackageInterface.BOTH;
 	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " " + DataPackageInterface.LOCAL + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.NETWORK;
 	private static final String LOCALFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " "  + DataPackageInterface.NETWORK + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.LOCAL;
-    private static final String IDENTIFIERSCHEME = Language.getInstance().getMessage("SaveDialog.IdentifierScheme")+":";
-	/**
+    //private static final String IDENTIFIERSCHEME = Language.getInstance().getMessage("SaveDialog.IdentifierScheme")+":";
+	private static final String DOICHECKBOXLABEL = "Publish with a DOI and make all metadata and data publicly readable";
+	private static final String DOITOOLTIP1 = "A DOI (Digital Object Identifier) is a unique, permanent identifier that can be assigned to journal articles and data sets ";
+	private static final String DOITOOLTIP2 = "and is widely recognized as a means of citing these published products. An example DOI is doi:10.5072/AW21Z4BKR.";
+	private static final String DOITOOLTIP =  "<html>"+DOITOOLTIP1+"<br>"+DOITOOLTIP2+"</html>";
+    /**
 	 * Construct a new instance of the dialog where parent is morphoframe
 	 * 
 	 */
@@ -138,11 +143,14 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	    networkLoc.addItemListener( new ItemListener() {
 	            public void itemStateChanged (ItemEvent e) {
 	                if(e.getStateChange() == ItemEvent.SELECTED) {
-	                    identifierSchemeComboBox.addItem(DataStoreServiceController.DOI);
+	                    //identifierSchemeComboBox.addItem(DataStoreServiceController.DOI);
+	                    DOICheckBox.setEnabled(true);
 	                    schemeBox.revalidate();
 	                    schemeBox.repaint();
 	                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-	                    identifierSchemeComboBox.removeItem(DataStoreServiceController.DOI);
+	                    //identifierSchemeComboBox.removeItem(DataStoreServiceController.DOI);
+	                    DOICheckBox.setSelected(false);
+	                    DOICheckBox.setEnabled(false);
 	                    schemeBox.revalidate();
                         schemeBox.repaint();
 	                }
@@ -151,7 +159,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		// Set OpenDialog size depent on parent size
 		int parentWidth = parent.getWidth();
 		int parentHeight = parent.getHeight();
-		int dialogWidth = 400;
+		int dialogWidth = 500;
 		int dialogHeight = 270;
 		setSize(dialogWidth, dialogHeight);
 		setResizable(false);
@@ -207,14 +215,22 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		centerBox.add(radioBox);
 		centerBox.add(Box.createHorizontalGlue());
 		mainPanel.add(centerBox);
+		mainPanel.add(WidgetFactory.makeDefaultSpacer());
 		schemeBox = Box.createHorizontalBox();
-        identifierSchemeComboBox = new JComboBox(DataStoreServiceController.INITIAL_IDENTIFIER_SCHEMES);
-        identifierSchemeComboBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+        //identifierSchemeComboBox = new JComboBox(DataStoreServiceController.INITIAL_IDENTIFIER_SCHEMES);
+        //identifierSchemeComboBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		DOICheckBox = new JCheckBox(DOICHECKBOXLABEL);
+		DOICheckBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		DOICheckBox.setToolTipText(DOITOOLTIP);
+		if(!networkLoc.isSelected()) {
+		    DOICheckBox.setEnabled(false);
+		}
         //schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
-        JLabel schemes = new JLabel(IDENTIFIERSCHEME);
-        schemes.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-        schemeBox.add(schemes);
-        schemeBox.add(identifierSchemeComboBox);
+        //JLabel schemes = new JLabel(IDENTIFIERSCHEME);
+        //schemes.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+        //schemeBox.add(schemes);
+        //schemeBox.add(identifierSchemeComboBox);
+        schemeBox.add(DOICheckBox);
         //schemeBox.add(Box.createHorizontalGlue());
         mainPanel.add(schemeBox);
 
@@ -269,13 +285,13 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 			networkLoc.setEnabled(false);
 			localLoc.setSelected(true);
 			networkLoc.setSelected(false);
-			schemeBox.setVisible(false);
+			//schemeBox.setVisible(false);
 		} else if (location.equals(DataPackageInterface.BOTH)) {
 			localLoc.setEnabled(false);
 			networkLoc.setEnabled(false);
 			localLoc.setSelected(false);
 			networkLoc.setSelected(false);
-			schemeBox.setVisible(false);
+			//schemeBox.setVisible(false);
 		}
 
 		try {
@@ -313,7 +329,13 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	}
 
 	void executeButton_actionPerformed(java.awt.event.ActionEvent event) {
-	    identifierScheme = (String)identifierSchemeComboBox.getSelectedItem();
+	    //identifierScheme = (String)identifierSchemeComboBox.getSelectedItem();
+	    if(DOICheckBox.isSelected()) {
+	        identifierScheme = DataStoreServiceController.DOI;
+	    } else {
+	        identifierScheme = DataStoreServiceController.UUID;
+	    }
+	    
 	    if(identifierScheme == null || identifierScheme.trim().equals("")) {
 	        identifierScheme = DataStoreServiceController.UUID;
 	    }
