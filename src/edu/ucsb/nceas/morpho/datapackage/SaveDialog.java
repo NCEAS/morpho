@@ -112,9 +112,9 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	private static final String NETWORKFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " " + DataPackageInterface.LOCAL + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.NETWORK;
 	private static final String LOCALFAILMESSAGEINSAVINGBOTH = Language.getInstance().getMessage("SuccessSavingTo") + " "  + DataPackageInterface.NETWORK + ". " + Language.getInstance().getMessage("FailureSavingTo") + " " + DataPackageInterface.LOCAL;
     //private static final String IDENTIFIERSCHEME = Language.getInstance().getMessage("SaveDialog.IdentifierScheme")+":";
-	private static final String DOICHECKBOXLABEL = "Publish with a DOI and make all metadata and data publicly readable";
-	private static final String DOITOOLTIP1 = "A DOI (Digital Object Identifier) is a unique, permanent identifier that can be assigned to journal articles and data sets ";
-	private static final String DOITOOLTIP2 = "and is widely recognized as a means of citing these published products. An example DOI is doi:10.5072/AW21Z4BKR.";
+	private static final String DOICHECKBOXLABEL = Language.getInstance().getMessage("SaveDialog.DOICheckBox");
+	private static final String DOITOOLTIP1 = Language.getInstance().getMessage("SaveDialog.DOIToolTip1");
+	private static final String DOITOOLTIP2 = Language.getInstance().getMessage("SaveDialog.DOIToolTip2");
 	private static final String DOITOOLTIP =  "<html>"+DOITOOLTIP1+"<br>"+DOITOOLTIP2+"</html>";
     /**
 	 * Construct a new instance of the dialog where parent is morphoframe
