@@ -50,6 +50,7 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.CancelSavingException;
 import edu.ucsb.nceas.morpho.datastore.DataStoreServiceController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -449,6 +450,9 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
                     && (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
                 try {
                     DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.BOTH, identifierScheme);
+                } catch (CancelSavingException mue) {
+                    //do nothing when the CancelSavingException happens.
+                   return;
                 } catch (Exception mue) {
                     // TODO: More informative?
                     String errormsg = mue.getMessage();
@@ -472,7 +476,13 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
                 }
             // LOCAL
             } else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
-                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL, identifierScheme);
+                try {
+                    DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.LOCAL, identifierScheme);
+                }  catch (CancelSavingException mue) {
+                    //do nothing when the CancelSavingException happens.
+                   return;
+                } 
+                
                 if (adp.getSerializeLocalSuccess()) {
                     if (adp.getLocation() != null
               && adp.getLocation().equals(DataPackageInterface.NETWORK)
@@ -487,7 +497,12 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
                 }
             // METACAT
             } else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
-                DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.NETWORK, identifierScheme);
+                try {
+                    DataStoreServiceController.getInstance().save(mdp, DataPackageInterface.NETWORK, identifierScheme);
+                } catch (CancelSavingException e) {
+                    return;
+                }
+                
                 if (adp.getSerializeMetacatSuccess()) {           
                   if (adp.getLocation() != null
                 && adp.getLocation().equals(DataPackageInterface.LOCAL)

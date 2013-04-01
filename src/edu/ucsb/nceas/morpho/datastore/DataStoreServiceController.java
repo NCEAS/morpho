@@ -20,7 +20,11 @@ import java.io.Writer;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -28,13 +32,17 @@ import javax.activation.FileDataSource;
 import javax.swing.JOptionPane;
 
 import org.dataone.client.D1Object;
+import org.dataone.service.types.v1.AccessPolicy;
 import org.dataone.service.types.v1.Checksum;
 import org.dataone.service.types.v1.Identifier;
 import org.dataone.service.types.v1.NodeReference;
 import org.dataone.service.types.v1.ObjectFormatIdentifier;
+import org.dataone.service.types.v1.Permission;
 import org.dataone.service.types.v1.Subject;
 import org.dataone.service.types.v1.SystemMetadata;
+import org.dataone.service.types.v1.util.AccessUtil;
 import org.dataone.service.types.v1.util.ChecksumUtil;
+import org.dataone.service.util.Constants;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -68,6 +76,9 @@ public class DataStoreServiceController {
 	public static final String UUID = "UUID";
 	public static final String[] IDENTIFIER_SCHEMES = {UUID, DOI};
 	public static final String[] INITIAL_IDENTIFIER_SCHEMES = {UUID};
+	
+	private static final String PRIVATE_TO_PUBLIC_WARN1 ="The following private objects will be changed to public readable:";
+	private static final String PRIVATE_TO_PUBLIC_WARN2 ="Are you sure to continue?";
 
 	private static DataStoreServiceController instance;
 	
@@ -746,8 +757,13 @@ public class DataStoreServiceController {
 	 * @param scheme  the scheme of the new generated identifiers
 	 * @throws Exception 
 	 */
-	public void save(MorphoDataPackage mdp, String location, boolean overwrite, String scheme) throws Exception {
+	public void save(MorphoDataPackage mdp, String location, boolean overwrite, String scheme) throws CancelSavingException, Exception {
 	    
+	    //If a user choose to use DOI, the entire data package should be public readable. 
+	    boolean continueSaving = makePackagePublic(mdp, scheme);
+	    if(!continueSaving) {
+	        throw new CancelSavingException("The user canceled the saving process");
+	    }
 	    
 	    //assign new id to a modified data package for the saving
         AbstractDataPackage adp = mdp.getAbstractDataPackage();
@@ -838,6 +854,119 @@ public class DataStoreServiceController {
 		if (location.equals(DataPackageInterface.INCOMPLETE)) {
 			Morpho.thisStaticInstance.getLocalDataStoreService().saveIncomplete(mdp);
 		}
+	}
+	
+	/*
+	 * When a user choose to publish the data package using DOI identifiers, all the D1Objects in this
+	 * data package should be public readable. This method will give user a warning if there at least one d1Object 
+	 * should be change the permission. If the user choose "no", nothing will happen; otherwise the data package 
+	 * will be saved as public readable one.
+	 */
+	private boolean makePackagePublic(MorphoDataPackage mdp, String scheme) {
+	    boolean continueSave = true;
+	    if(mdp != null && scheme != null && scheme.equals(DOI)) {
+	        HashMap<String, D1Object> neededChange = new HashMap<String, D1Object>(); 
+	        AbstractDataPackage adp = mdp.getAbstractDataPackage();
+	        if (!isPublicReadable(adp)) {
+	            neededChange.put(adp.getAccessionNumber(), adp);
+	        }
+	        if (adp.getEntityArray() != null) {
+	            for (int i = 0; i < adp.getEntityArray().length; i++) {
+	                Entity entity = adp.getEntity(i);
+	                if(!isPublicReadable(entity)) {
+	                    String URLinfo = adp.getDistributionUrl(i, 0, 0);
+	                    String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
+	                    if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
+	                        String docid = AbstractDataPackage.getUrlInfo(URLinfo);
+	                        neededChange.put(docid, entity);
+	                    }
+	                }
+	            }
+	          
+	        }
+	        
+	        if(!neededChange.isEmpty()) {
+	            //if this map is not empty, that means we need to change the permission in some d1object.
+	            Set<String> idSet = neededChange.keySet();
+	            String idList = "";
+	            boolean first = true;
+	            for(String id : idSet) {
+	                if(id != null) {
+	                    if(first) {
+	                        idList = id;
+	                        first = false;
+	                    } else {
+	                        idList = idList+"\n"+id;
+	                    }
+	                    
+	                }
+	            }
+	            idList = idList;
+	            int choice = JOptionPane.showConfirmDialog(null, PRIVATE_TO_PUBLIC_WARN1+"\n\n"+idList+"\n\n"+PRIVATE_TO_PUBLIC_WARN2, Language.getInstance().getMessage("Warning"), 
+	                         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+	            if(choice == JOptionPane.YES_OPTION) {
+	                Collection<D1Object> d1ObjectSet = neededChange.values();
+	                for (D1Object d1Object : d1ObjectSet) {
+	                    makePublic(d1Object);
+	                }
+	            } else {
+	                continueSave = false;
+	            }
+	        }
+	       
+	    }
+	    return continueSave;
+	}
+	
+	/*
+	 * If the specified d1Object is public readable or not
+	 */
+	private boolean isPublicReadable(D1Object d1Object) {
+	    boolean publicReadable = true;
+	    if (d1Object != null) {
+	        SystemMetadata sysmeta = d1Object.getSystemMetadata();
+	        if(sysmeta != null) {
+	            AccessPolicy policy = sysmeta.getAccessPolicy();
+	            if(policy != null) {
+	                Subject publick = new Subject();
+	                publick.setValue(Constants.SUBJECT_PUBLIC);
+	                
+	                // check that a public READ access is not already there
+	                Map<Subject,Set<Permission>> perms = AccessUtil.getPermissionMap(policy);
+	                if (perms.containsKey(publick) && !perms.get(publick).isEmpty()) {
+	                    // already READ, WRITE, or CHANGE, so do nothing
+	                    publicReadable =true;
+	                } else {
+	                    publicReadable =false;
+	                }
+	            } else {
+	                publicReadable = false;
+	            }
+	           
+	        } else {
+	            publicReadable = false;
+	        }
+	    }
+	    return publicReadable;
+	}
+	
+	/*
+	 * Make a D1Object public readable
+	 */
+	private void makePublic(D1Object d1Object) {
+	    if(d1Object != null) {
+	        SystemMetadata sysmeta = d1Object.getSystemMetadata();
+	        if(sysmeta != null) {
+	            AccessPolicy originalPolicy = sysmeta.getAccessPolicy();
+	            AccessPolicy newPolicy = AccessUtil.addPublicAccess(originalPolicy);
+	            sysmeta.setAccessPolicy(newPolicy);
+	        } else {
+	            sysmeta = new SystemMetadata();
+	            AccessPolicy originalPolicy = null;
+                AccessPolicy newPolicy = AccessUtil.addPublicAccess(originalPolicy);
+                sysmeta.setAccessPolicy(newPolicy);
+	        }
+	    }
 	}
 	
 	/**
