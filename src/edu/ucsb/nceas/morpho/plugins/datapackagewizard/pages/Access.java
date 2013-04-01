@@ -61,6 +61,10 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import javax.swing.JRadioButton;
 
+import org.dataone.service.util.Constants;
+
+
+
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class Access
@@ -462,7 +466,7 @@ public class Access
       returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
       returnMap.put(rootXPath + ORDER_REL_XPATH, orderValue);
       returnMap.put(rootXPath + "allow[" + (allowIndex) + "]/principal",
-          "public");
+          Constants.SUBJECT_PUBLIC);
       returnMap.put(rootXPath + "allow[" + (allowIndex++) + "]/permission",
           "read");
        addedAuthSystem = true;
