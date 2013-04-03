@@ -77,8 +77,8 @@ public class DataStoreServiceController {
 	public static final String[] IDENTIFIER_SCHEMES = {UUID, DOI};
 	public static final String[] INITIAL_IDENTIFIER_SCHEMES = {UUID};
 	
-	private static final String PRIVATE_TO_PUBLIC_WARN1 ="The following private objects will be changed to public readable:";
-	private static final String PRIVATE_TO_PUBLIC_WARN2 ="Are you sure to continue?";
+	private static final String PRIVATE_TO_PUBLIC_WARN1 ="The following private objects will become publicly readable:";
+	private static final String PRIVATE_TO_PUBLIC_WARN2 ="Are you sure that you want to continue?";
 
 	private static DataStoreServiceController instance;
 	
