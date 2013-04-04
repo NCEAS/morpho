@@ -44,6 +44,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.ToolTipManager;
 
 import org.dataone.service.types.v1.SystemMetadata;
 import org.w3c.dom.Node;
@@ -117,6 +118,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	private static final String DOITOOLTIP1 = Language.getInstance().getMessage("SaveDialog.DOIToolTip1");
 	private static final String DOITOOLTIP2 = Language.getInstance().getMessage("SaveDialog.DOIToolTip2");
 	private static final String DOITOOLTIP =  "<html>"+DOITOOLTIP1+"<br>"+DOITOOLTIP2+"</html>";
+	private static final int TOOLTIPDISMISSDELAY = 30000;
     /**
 	 * Construct a new instance of the dialog where parent is morphoframe
 	 * 
@@ -160,8 +162,8 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		// Set OpenDialog size depent on parent size
 		int parentWidth = parent.getWidth();
 		int parentHeight = parent.getHeight();
-		int dialogWidth = 500;
-		int dialogHeight = 270;
+		int dialogWidth = 550;
+		int dialogHeight = 300;
 		setSize(dialogWidth, dialogHeight);
 		setResizable(false);
 
@@ -189,14 +191,15 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		// Create note box and add it to the north of mainPanel
         Box noteBox = Box.createVerticalBox();
         noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
-        JLabel note = WidgetFactory.makeHTMLLabel(WARNING, 2);
+        JLabel note = new JLabel("      "+WARNING);
         /*
          * JTextArea note = new JTextArea(WARNING); note.setEditable(false);
          * note.setLineWrap(true); note.setWrapStyleWord(true);
          * note.setOpaque(false);
          */
+        noteBox.add(Box.createVerticalStrut(20));
         noteBox.add(note);
-        noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
+        noteBox.add(Box.createVerticalStrut(15));
         getContentPane().add(BorderLayout.NORTH, noteBox);
 
 		// Create JPanel and set it border layout
@@ -205,6 +208,9 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		mainPanel.add(Box.createVerticalStrut(25));
 		// Create a radio box
 		Box radioBox = Box.createVerticalBox();
+		//localLoc.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		//networkLoc.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		//upgradeEml.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 		radioBox.add(localLoc);
 		radioBox.add(networkLoc);
 		radioBox.add(upgradeEml);
@@ -221,11 +227,14 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
         //identifierSchemeComboBox = new JComboBox(DataStoreServiceController.INITIAL_IDENTIFIER_SCHEMES);
         //identifierSchemeComboBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 		DOICheckBox = new JCheckBox(DOICHECKBOXLABEL);
-		DOICheckBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		//DOICheckBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 		DOICheckBox.setToolTipText(DOITOOLTIP);
 		if(!networkLoc.isSelected()) {
 		    DOICheckBox.setEnabled(false);
 		}
+		ToolTipManager.sharedInstance().setDismissDelay(TOOLTIPDISMISSDELAY);
+		
+
         //schemeBox.add(Box.createHorizontalStrut(LEFTSPACE));
         //JLabel schemes = new JLabel(IDENTIFIERSCHEME);
         //schemes.setFont(WizardSettings.WIZARD_CONTENT_FONT);
