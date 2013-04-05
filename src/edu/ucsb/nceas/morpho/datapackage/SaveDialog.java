@@ -118,6 +118,8 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	private static final String DOITOOLTIP1 = Language.getInstance().getMessage("SaveDialog.DOIToolTip1");
 	private static final String DOITOOLTIP2 = Language.getInstance().getMessage("SaveDialog.DOIToolTip2");
 	private static final String DOITOOLTIP =  "<html>"+DOITOOLTIP1+"<br>"+DOITOOLTIP2+"</html>";
+	private static final String LOCALDOIWARNING = "You can't publish the package with a DOI locally.";
+	private static final String LOCALDOIWARNING2 = "You should choose the network destination as well.";
 	private static final int TOOLTIPDISMISSDELAY = 30000;
     /**
 	 * Construct a new instance of the dialog where parent is morphoframe
@@ -145,7 +147,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	    //if the network check box is unselected, the DOI will be removed from the scheme selection list.
 	    networkLoc.addItemListener( new ItemListener() {
 	            public void itemStateChanged (ItemEvent e) {
-	                if(e.getStateChange() == ItemEvent.SELECTED) {
+	                /*if(e.getStateChange() == ItemEvent.SELECTED) {
 	                    //identifierSchemeComboBox.addItem(DataStoreServiceController.DOI);
 	                    DOICheckBox.setEnabled(true);
 	                    schemeBox.revalidate();
@@ -156,7 +158,7 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	                    DOICheckBox.setEnabled(false);
 	                    schemeBox.revalidate();
                         schemeBox.repaint();
-	                }
+	                }*/
 	        }
 	    });
 		// Set OpenDialog size depent on parent size
@@ -229,9 +231,28 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		DOICheckBox = new JCheckBox(DOICHECKBOXLABEL);
 		//DOICheckBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 		DOICheckBox.setToolTipText(DOITOOLTIP);
-		if(!networkLoc.isSelected()) {
+		DOICheckBox.addItemListener( new ItemListener() {
+             public void itemStateChanged (ItemEvent e) {
+                 if(e.getStateChange() == ItemEvent.SELECTED) {
+                     if(!localLoc.isEnabled()) {
+                         localLoc.setEnabled(true);
+                     }
+                     if(!networkLoc.isEnabled()) {
+                         networkLoc.setEnabled(true);
+                     }
+                     //schemeBox.revalidate();
+                     //schemeBox.repaint();
+                 } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                     //identifierSchemeComboBox.removeItem(DataStoreServiceController.DOI);
+                     initialLocationCheckBox();
+                     //schemeBox.revalidate();
+                     //schemeBox.repaint();
+                 }
+         }
+     });
+		/*if(!networkLoc.isSelected()) {
 		    DOICheckBox.setEnabled(false);
-		}
+		}*/
 		ToolTipManager.sharedInstance().setDismissDelay(TOOLTIPDISMISSDELAY);
 		
 
@@ -278,31 +299,11 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		executeButton.addActionListener(lSymAction);
 		cancelButton.addActionListener(lSymAction);
 
+		
+		initialLocationCheckBox();
+		
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
-		String location = adp.getLocation();
-		if (location.equals("")) { // never been saved
-			localLoc.setEnabled(true);
-			networkLoc.setEnabled(true);
-			localLoc.setSelected(true);
-			networkLoc.setSelected(false);
-		} else if (location.equals(DataPackageInterface.LOCAL)) {
-			localLoc.setEnabled(false);
-			networkLoc.setEnabled(true);
-			localLoc.setSelected(false);
-			networkLoc.setSelected(true);
-		} else if (location.equals(DataPackageInterface.NETWORK)) {
-			localLoc.setEnabled(true);
-			networkLoc.setEnabled(false);
-			localLoc.setSelected(true);
-			networkLoc.setSelected(false);
-			//schemeBox.setVisible(false);
-		} else if (location.equals(DataPackageInterface.BOTH)) {
-			localLoc.setEnabled(false);
-			networkLoc.setEnabled(false);
-			localLoc.setSelected(false);
-			networkLoc.setSelected(false);
-			//schemeBox.setVisible(false);
-		}
+        
 
 		try {
 
@@ -321,6 +322,34 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 		setVisible(true);
 
 	}
+	
+    private void initialLocationCheckBox() {
+        AbstractDataPackage adp = mdp.getAbstractDataPackage();
+        String location = adp.getLocation();
+        if (location.equals("")) { // never been saved
+            localLoc.setEnabled(true);
+            networkLoc.setEnabled(true);
+            localLoc.setSelected(true);
+            networkLoc.setSelected(false);
+        } else if (location.equals(DataPackageInterface.LOCAL)) {
+            localLoc.setEnabled(false);
+            networkLoc.setEnabled(true);
+            localLoc.setSelected(false);
+            networkLoc.setSelected(true);
+        } else if (location.equals(DataPackageInterface.NETWORK)) {
+            localLoc.setEnabled(true);
+            networkLoc.setEnabled(false);
+            localLoc.setSelected(true);
+            networkLoc.setSelected(false);
+            //schemeBox.setVisible(false);
+        } else if (location.equals(DataPackageInterface.BOTH)) {
+            localLoc.setEnabled(false);
+            networkLoc.setEnabled(false);
+            localLoc.setSelected(false);
+            networkLoc.setSelected(false);
+            //schemeBox.setVisible(false);
+        }
+    }
 
 	class SymAction implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -345,9 +374,15 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	    } else {
 	        identifierScheme = DataStoreServiceController.UUID;
 	    }
-	    
+	   
 	    if(identifierScheme == null || identifierScheme.trim().equals("")) {
 	        identifierScheme = DataStoreServiceController.UUID;
+	    }
+	    
+	    if(identifierScheme.equals(DataStoreServiceController.DOI) && localLoc.isSelected() && !networkLoc.isSelected()) {
+	        //publish the doc with a DOI to the local
+	        Log.debug(5, LOCALDOIWARNING+"\n"+LOCALDOIWARNING2);
+	        return;
 	    }
 	    //System.out.println("the selected scheme is ====== "+identifierScheme);
 		Component comp = morphoFrame.getContentComponent();
