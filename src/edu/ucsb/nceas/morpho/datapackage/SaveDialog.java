@@ -159,6 +159,10 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
 	                    schemeBox.revalidate();
                         schemeBox.repaint();
 	                }*/
+	                //System.out.println("The DOICHeckBox is selected   ===== "+DOICheckBox.isSelected());
+                    if (DOICheckBox.isSelected()) {
+                        networkLoc.setSelected(true);
+                    }
 	        }
 	    });
 		// Set OpenDialog size depent on parent size
@@ -239,6 +243,10 @@ public class SaveDialog extends JDialog implements DataPackageWizardListener {
                      }
                      if(!networkLoc.isEnabled()) {
                          networkLoc.setEnabled(true);
+                     }
+                     
+                     if(!networkLoc.isSelected()) {
+                         networkLoc.setSelected(true);
                      }
                      //schemeBox.revalidate();
                      //schemeBox.repaint();
