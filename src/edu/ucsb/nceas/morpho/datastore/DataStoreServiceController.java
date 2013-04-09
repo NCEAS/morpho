@@ -987,7 +987,7 @@ public class DataStoreServiceController {
 
 	}
 	
-	private String resolveIdentifierConflict(String originalIdentifier, String location, String scheme) throws Exception {
+	/*private String resolveIdentifierConflict(String originalIdentifier, String location, String scheme) throws Exception {
 
 		String newIdentifier = originalIdentifier;
 		// TODO provide these from input?
@@ -1024,7 +1024,7 @@ public class DataStoreServiceController {
 		}
 		
 		return newIdentifier;
-	}
+	}*/
 	
 	/*
 	 * Is the format of the specified id DOI?
@@ -1044,7 +1044,7 @@ public class DataStoreServiceController {
 	* @param scheme  the specified identifier scheme
 	* @return true if the specified is in the format of the given scheme.
 	*/
-	private boolean isIdentifierMatchScheme(String identifier, String scheme) {
+	/*private boolean isIdentifierMatchScheme(String identifier, String scheme) {
 	    boolean match = false;
 	    if(scheme != null && identifier != null) {
 	        if (scheme.equals(UUID) && identifier.startsWith(LocalDataStoreService.UUID_PREFIX)) {
@@ -1053,7 +1053,7 @@ public class DataStoreServiceController {
 	    }
 	    //System.out.println("the match is ===================== "+match);
 	    return match;
-	}	
+	}*/	
 	
 	
 	/**
@@ -1089,7 +1089,7 @@ public class DataStoreServiceController {
                newMetadataId = assignUnconflictId(adp, scheme, location, true, originMetadataId);
            }
            mdp.updateIdentifier(originMetadataId, newMetadataId);
-        } else if(adp.getLocation().equals(DataPackageInterface.TEMPLOCATION) && location.equals(DataPackageInterface.INCOMPLETE)) {
+        } else if(location.equals(DataPackageInterface.INCOMPLETE)) {
          //do nothing
         } else if (scheme != null && scheme.equals(DOI)) {
             // for DOI, we force to generate id for the data package
@@ -1102,11 +1102,13 @@ public class DataStoreServiceController {
         } else if (adp.getLocation().equals(DataPackageInterface.NETWORK) && location.equals(DataPackageInterface.LOCAL)) {
             if(exists(adp.getAccessionNumber(), DataPackageInterface.LOCAL)) {
                 newMetadataId = assignUnconflictId(adp, scheme, location, true, originMetadataId);
+                adp.setPackageIDChanged(true);
                 mdp.updateIdentifier(originMetadataId, newMetadataId);
             }
         } else if (adp.getLocation().equals(DataPackageInterface.LOCAL) && location.equals(DataPackageInterface.NETWORK)) {
             if(exists(adp.getAccessionNumber(), DataPackageInterface.NETWORK)) {
                 newMetadataId = assignUnconflictId(adp, scheme, location, true, originMetadataId);
+                adp.setPackageIDChanged(true);
                 mdp.updateIdentifier(originMetadataId, newMetadataId);
             }
         } else {
@@ -1262,7 +1264,7 @@ public class DataStoreServiceController {
 	 * @param mdp
 	 * @param location
 	 */
-	private MorphoDataPackage resolveAllIdentifierConflicts(MorphoDataPackage mdp, String location, String scheme) throws Exception {
+	/*private MorphoDataPackage resolveAllIdentifierConflicts(MorphoDataPackage mdp, String location, String scheme) throws Exception {
 
 		AbstractDataPackage adp = mdp.getAbstractDataPackage();
 		String originalIdentifier = adp.getAccessionNumber();
@@ -1382,7 +1384,7 @@ public class DataStoreServiceController {
 
 		return mdp;
 
-	}
+	}*/
 
 	/**
 	 * serialize the package to the indicated location
