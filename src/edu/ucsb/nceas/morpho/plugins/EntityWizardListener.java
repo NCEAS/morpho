@@ -37,7 +37,7 @@ public class EntityWizardListener implements  DataPackageWizardListener
     	AbstractDataPackage adp = mdp.getAbstractDataPackage();
       Log.debug(30,"Entity Wizard complete - creating Entity object..");
       Log.debug(35, "Add/replace entity in incompleteDocumentloader.TableWizardListener with entity index "+nextEntityIndex);
-      adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
+      adp.replaceEntity(newDOM, nextEntityIndex, true);//we use replace method here because the auto-save file already adding the entity into datapackage.
       adp.setLocation("");  // we've changed it and not yet saved
       try {
     	  String URLinfo = adp.getDistributionUrl(nextEntityIndex, 0, 0);

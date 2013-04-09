@@ -50,6 +50,7 @@ public  class Entity extends D1Object
    */
   private Node entRoot = null;
   private String previousId = null;
+  private boolean isNewGenerated = false;
   
 
 
@@ -108,6 +109,22 @@ public  class Entity extends D1Object
 
   public void setPreviousId(String previousId) {
       this.previousId = previousId;
+  }
+  
+  /**
+   * If the package just generated from the new data package wizard
+   * @return true if it is just generated fromt he new data package wizard
+   */
+  public boolean isNewGenerated() {
+      return this.isNewGenerated;
+  }
+  
+  /**
+   * Set the package to be a new generated one or not
+   * @param isNewGenerated
+   */
+  public void setIsNewGernated(boolean isNewGenerated) {
+      this.isNewGenerated = isNewGenerated;
   }
   
 }

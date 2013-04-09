@@ -79,6 +79,7 @@ public class DataStoreServiceController {
 	
 	private static final String PRIVATE_TO_PUBLIC_WARN1 ="The following private objects will become publicly readable:";
 	private static final String PRIVATE_TO_PUBLIC_WARN2 ="Are you sure that you want to continue?";
+	private static final int MAXMUM_TIME_TO_GENERATE_IDS = 5;
 
 	private static DataStoreServiceController instance;
 	
@@ -765,56 +766,13 @@ public class DataStoreServiceController {
 	        throw new CancelSavingException("The user canceled the saving process");
 	    }
 	    
-	    //assign new id to a modified data package for the saving
-        AbstractDataPackage adp = mdp.getAbstractDataPackage();
-        if(adp.getLocation().equals(DataPackageInterface.TEMPLOCATION) && !location.equals(DataPackageInterface.INCOMPLETE)) {
-            String originalId = adp.getAccessionNumber();
-            //String scheme = UUID;
-            String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
-            String newIdentifier = null;
-            if(location.equals(DataPackageInterface.BOTH) || location.equals(DataPackageInterface.NETWORK) ) {
-                // make sure the package reflects the updated IDs
-                newIdentifier = Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(scheme, fragment);
-                adp.setAccessionNumber(newIdentifier);
-                mdp.updateIdentifier(originalId, newIdentifier);
-               
-            } else {
-                newIdentifier =  Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
-                adp.setAccessionNumber(newIdentifier);
-                mdp.updateIdentifier(originalId, newIdentifier);
-            }
-         // set the SM to reflect this change
-            Identifier originalIdentifierObject = new Identifier();
-            originalIdentifierObject.setValue(originalId);
-         // record this in revision manager (TODO: is this needed?)
-            if (location.equals(DataPackageInterface.NETWORK) || location.equals(DataPackageInterface.BOTH)) {
-                if(Morpho.thisStaticInstance.getDataONEDataStoreService().exists(originalId)) {
-                    adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
-                    Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalId);
-                }
-                
-            }
-            if (location.equals(DataPackageInterface.LOCAL) || location.equals(DataPackageInterface.BOTH)) {
-                if(Morpho.thisStaticInstance.getLocalDataStoreService().exists(originalId)) {
-                    adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
-                    Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalId);
-                } else {
-                    if (location.equals(DataPackageInterface.LOCAL) && Morpho.thisStaticInstance.getDataONEDataStoreService().exists(originalId)) {
-                        //this is the case that we save a network copy to local. Even though the original document doesn't exist, we still
-                        //set the system metadata and the revision chain.
-                        adp.getSystemMetadata().setObsoletes(originalIdentifierObject);
-                        Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newIdentifier, originalId);
-                    }
-                }
-                
-            }
-        }
+	   
         
         
         
-		// handle identifier conflicts
-		mdp = resolveAllIdentifierConflicts(mdp, location, scheme);
-		
+		// handle identifier assignment and conflicts
+		//mdp = resolveAllIdentifierConflicts(mdp, location, scheme);
+		mdp = assignIdentifiers(mdp,location, scheme);
 		// make sure the size and checksum are correct
 		calculateStats(mdp, location);
 
@@ -1112,6 +1070,192 @@ public class DataStoreServiceController {
 	    }
 	}*/
 
+	
+	/**
+     * This method will assign a new unique identifier for the modified objects. It also re-assigns a new identifier for 
+     * conflict ids.
+     * @param mdp
+     * @param location
+     */
+    private MorphoDataPackage assignIdentifiers(MorphoDataPackage mdp, String location, String scheme) throws Exception {
+        AbstractDataPackage adp = mdp.getAbstractDataPackage();
+        String originMetadataId = adp.getAccessionNumber();
+        String newMetadataId = null;
+        if(adp.getLocation().equals(DataPackageInterface.TEMPLOCATION) && !location.equals(DataPackageInterface.INCOMPLETE)) {
+            // modified or newly generated data package need to be assigned a id
+           if(adp.isNewGenerated()) {
+               newMetadataId = assignUnconflictId(adp, scheme, location, false, originMetadataId);
+           } else {
+               newMetadataId = assignUnconflictId(adp, scheme, location, true, originMetadataId);
+           }
+           mdp.updateIdentifier(originMetadataId, newMetadataId);
+        } else if(adp.getLocation().equals(DataPackageInterface.TEMPLOCATION) && location.equals(DataPackageInterface.INCOMPLETE)) {
+         //do nothing
+        } else if (scheme != null && scheme.equals(DOI)) {
+            // for DOI, we force to generate id for the data package
+            if(adp.isNewGenerated()) {
+                newMetadataId = assignUnconflictId(adp, scheme, location, false, originMetadataId);
+            } else {
+                newMetadataId = assignUnconflictId(adp, scheme, location, true, originMetadataId);
+            }
+            mdp.updateIdentifier(originMetadataId, newMetadataId);
+        } else if (adp.getLocation().equals(DataPackageInterface.NETWORK) && location.equals(DataPackageInterface.LOCAL)) {
+            if(exists(adp.getAccessionNumber(), DataPackageInterface.LOCAL)) {
+                newMetadataId = assignUnconflictId(adp, scheme, location, true, originMetadataId);
+                mdp.updateIdentifier(originMetadataId, newMetadataId);
+            }
+        } else if (adp.getLocation().equals(DataPackageInterface.LOCAL) && location.equals(DataPackageInterface.NETWORK)) {
+            if(exists(adp.getAccessionNumber(), DataPackageInterface.NETWORK)) {
+                newMetadataId = assignUnconflictId(adp, scheme, location, true, originMetadataId);
+                mdp.updateIdentifier(originMetadataId, newMetadataId);
+            }
+        } else {
+            throw new Exception("Morpho can't save a data package from the location - "+
+                                adp.getLocation()+" to the destionation - "+location);
+        }
+
+    // handle the data files
+        
+        if (adp.getEntityArray() != null) {
+
+            for (int i = 0; i < adp.getEntityArray().length; i++) {
+                Entity entity = adp.getEntity(i);
+                String URLinfo = adp.getDistributionUrl(i, 0, 0);
+                String protocol = AbstractDataPackage.getUrlProtocol(URLinfo);
+                if (protocol != null && protocol.equals(AbstractDataPackage.ECOGRID)) {
+
+                    String originalDataIdentifier = AbstractDataPackage.getUrlInfo(URLinfo);
+                    Log.debug(30, "handle data file  with index " + i + "" + originalDataIdentifier);
+                    //if 
+                    if (originalDataIdentifier != null) {
+                        boolean isNew = entity.isNewGenerated();
+                        boolean isDirty = adp.containsDirtyEntityIndex(i);
+                        Log.debug(30, "url " + originalDataIdentifier + " with index " + i + " is dirty " + isDirty);
+                        String newDataIdentifier = null;
+                        if(scheme != null && scheme.equals(DOI)) {
+                            //force to create new ids for the all entities
+                            if(isNew) {
+                                newDataIdentifier = assignUnconflictId(entity,  scheme, location, false, originalDataIdentifier);
+                            } else {
+                                newDataIdentifier = assignUnconflictId(entity,  scheme, location, true, originalDataIdentifier);
+                            }
+                            mdp.updateIdentifier(originalDataIdentifier, newDataIdentifier);
+                            // update the EML with new id information
+                            String urlinfo = DataLocation.URN_ROOT + newDataIdentifier;
+                            adp.setDistributionUrl(i, 0, 0, urlinfo);
+                        } else if (isNew && exists(originalDataIdentifier, location)) {
+                            // see what the next identifier should be
+                            newDataIdentifier = assignUnconflictId(entity,  scheme, location, false, originalDataIdentifier);
+                         // update the package with new id information
+                            mdp.updateIdentifier(originalDataIdentifier, newDataIdentifier);
+                            // update the EML with new id information
+                            String urlinfo = DataLocation.URN_ROOT + newDataIdentifier;
+                            adp.setDistributionUrl(i, 0, 0, urlinfo);
+                        } else if (isDirty && exists(originalDataIdentifier, location)) {
+                            // see what the next identifier should be
+                            newDataIdentifier = assignUnconflictId(entity,  scheme, location, true, originalDataIdentifier);
+                            // update the package with new id information
+                            mdp.updateIdentifier(originalDataIdentifier, newDataIdentifier);
+                            //entity.setPreviousId(originalDataIdentifier);
+                            // we changed the identifier
+                            Log.debug(30,
+                                    "The identifier "
+                                            + originalDataIdentifier
+                                            + " exists and has unsaved data. The identifier for next revision is "
+                                            + newDataIdentifier);
+
+                            // update the EML with new id information
+                            String urlinfo = DataLocation.URN_ROOT + newDataIdentifier;
+                            adp.setDistributionUrl(i, 0, 0, urlinfo);
+                        }
+                    }
+                }
+            }
+        }
+
+        return mdp;
+
+    }
+    
+    
+    /**
+     * Assign a unconflicted id to a D1Object. If the parameter - setRevisionChain equals true, the method
+     * will modify the system metadata as well.
+     * @param d1
+     * @param scheme
+     * @param setRevisionChain
+     * @param destLocation
+     * @throws Exception
+     */
+    private String assignUnconflictId(D1Object d1, String scheme, String destLocation, boolean setRevisionChain, String originId) throws Exception {
+        //String originalId = null;
+        String newId  = generateUnconflictId(scheme, destLocation);
+        if(d1 instanceof AbstractDataPackage) {
+            AbstractDataPackage adp = (AbstractDataPackage) d1;
+            //originalId = adp.getAccessionNumber();
+            adp.setAccessionNumber(newId);
+        } else {
+            //originalId = d1.getSystemMetadata().getIdentifier().getValue();
+            Identifier newIdentifier = new Identifier();
+            newIdentifier.setValue(newId);
+            d1.getSystemMetadata().setIdentifier(newIdentifier);
+        }
+        if(setRevisionChain && originId != null) {
+            if (destLocation.equals(DataPackageInterface.NETWORK) || destLocation.equals(DataPackageInterface.BOTH)) {
+                Morpho.thisStaticInstance.getDataONEDataStoreService().getRevisionManager().setObsoletes(newId, originId);
+            }
+            if (destLocation.equals(DataPackageInterface.LOCAL) || destLocation.equals(DataPackageInterface.BOTH)) {
+                Morpho.thisStaticInstance.getLocalDataStoreService().getRevisionManager().setObsoletes(newId, originId);
+            }
+            Identifier obsoletes = new Identifier();
+            obsoletes.setValue(originId);
+            d1.getSystemMetadata().setObsoletes(obsoletes);
+            
+        }
+        return newId;
+    }
+    
+    /**
+     * Morpho will try couple times to generate a unconflicted id. It will check if the id exists in the destination.
+     * If morpho fails to generate one, it will throw an exception.
+     * @param scheme
+     * @param location
+     * @return
+     * @throws Exception
+     */
+    private String generateUnconflictId(String scheme, String location) throws Exception{
+        String newIdentifier = null;
+        String fragment = Morpho.thisStaticInstance.getProfile().get("scope", 0);
+        boolean generated = false;
+        for(int i=0; i<MAXMUM_TIME_TO_GENERATE_IDS; i++) {
+            if(location.equals(DataPackageInterface.BOTH) || location.equals(DataPackageInterface.NETWORK) ) {
+                // make sure the package reflects the updated IDs
+                newIdentifier = Morpho.thisStaticInstance.getDataONEDataStoreService().generateIdentifier(scheme, fragment);
+                if(location.equals(DataPackageInterface.NETWORK) && !exists(newIdentifier, DataPackageInterface.NETWORK)) {
+                    //find a unconflicted id
+                    generated = true;
+                    break;
+                } else if (location.equals(DataPackageInterface.BOTH) && !exists(newIdentifier, DataPackageInterface.NETWORK) 
+                                && !exists(newIdentifier, DataPackageInterface.LOCAL)) {
+                    generated = true;
+                    break;
+                }
+               
+            } else {
+                newIdentifier =  Morpho.thisStaticInstance.getLocalDataStoreService().generateIdentifier(scheme, fragment);
+                if(!(exists(newIdentifier, DataPackageInterface.LOCAL))) {
+                    generated = true;
+                    break;
+                }
+            }
+        }
+        
+        //tried couple times, it still can't generate the id, throws an exception
+        if(!generated) {
+            throw new Exception("Morpho can't generate a id successfully and the saving failed");
+        }
+        return newIdentifier;
+    }
 	
 	/**
 	 * 

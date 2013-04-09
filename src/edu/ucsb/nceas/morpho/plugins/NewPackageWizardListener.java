@@ -78,6 +78,7 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
       Log.debug(30, "AbstractDataPackage complete");
       adp.setAutoSavedID(autoSavedID);
       adp.setLocation(DataPackageInterface.TEMPLOCATION);
+      adp.setIsNewGernated(true);
       
 	try {
 		// make sure to take out the access section from EML

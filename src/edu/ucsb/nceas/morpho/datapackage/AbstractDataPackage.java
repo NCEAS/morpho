@@ -284,6 +284,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   //private boolean identifierChangedInLocalSerialization = false;
   private boolean dataIDChanged = false;
   private boolean packageIDChanged = false;
+  private boolean isNewGenerated = false;
   protected static final String INSERTMETACAT = "insert";
   protected static final String UPDATEMETACAT = "update";
   protected static final String DONOTHMETACAT = "donothing";
@@ -2091,11 +2092,21 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @param node
    * @param index
    */
-  public void replaceEntity(Node node, int index)
+  public void replaceEntity(Node node, int index){
+      replaceEntity(node, index, false);
+  }
+  
+  /**
+   * Replace an entity by another one in node format at given position.
+   * If we couldn't find existed entity in the given position, the new entity will be added to. 
+   * @param node
+   * @param index
+   */
+  public void replaceEntity(Node node, int index, boolean isNew)
   {
 	  
 	  Entity entity = generateEntityFromNode(node);
-	
+	  entity.setIsNewGernated(isNew);
 	  if(entity != null)
 	  {
 		  
@@ -2180,6 +2191,20 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  }
       return entity;
      
+  }
+  
+  /**
+   * Reset the all newly-generated entities to be not.
+   */
+  public void resetNewGeratedEntities() {
+      if(entityArray != null) {
+          for(int i=0; i<entityArray.length; i++) {
+              Entity entity = entityArray[i];
+              if(entity != null && entity.isNewGenerated()) {
+                  entity.setIsNewGernated(false);
+              }
+          }
+      }
   }
 
 
@@ -4114,6 +4139,22 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  public boolean getDataIDChanged()
 	  {
 		  return this.dataIDChanged;
+	  }
+	  
+	  /**
+	   * If the package just generated from the new data package wizard
+	   * @return true if it is just generated fromt he new data package wizard
+	   */
+	  public boolean isNewGenerated() {
+	      return this.isNewGenerated;
+	  }
+	  
+	  /**
+	   * Set the package to be a new generated one or not
+	   * @param isNewGenerated
+	   */
+	  public void setIsNewGernated(boolean isNewGenerated) {
+	      this.isNewGenerated = isNewGenerated;
 	  }
 	  
 	  /**
