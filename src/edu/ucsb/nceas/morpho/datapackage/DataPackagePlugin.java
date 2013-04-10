@@ -386,9 +386,9 @@ public class DataPackagePlugin
     controller.addGuiAction(addKeywordAction);
 
     i++;
-    GUIAction addCreatorAction = new GUIAction(/*"Owners..."*/ Language.getInstance().getMessage("Owner") + Language.getInstance().getMessage("..."),
+    GUIAction addCreatorAction = new GUIAction(/*"Creators..."*/ Language.getInstance().getMessage("Creators") + Language.getInstance().getMessage("..."),
         null, new AddCreatorCommand());
-    addCreatorAction.setToolTipText("Add, edit or delete Owners...");
+    addCreatorAction.setToolTipText("Add, edit or delete Creators...");
     addCreatorAction.setMenuItemPosition(i);
     addCreatorAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addCreatorAction.setEnabledOnStateChange(

@@ -63,7 +63,7 @@ public class PartyIntro extends AbstractUIPage{
         + "data.</b> "
         + "In the next few screens you will need to provide the following "
         + "information:</p><br></br>"
-        + "<li><b>Owner:</b> The person or organization who is credited with "
+        + "<li><b>Creator:</b> The person or organization who is credited with "
         + "creating the data. <br></br></li>"
         + "<li><b>Contact:</b> The primary person or organization to contact "
         + "with questions regarding the use or interpretation of the data "
@@ -76,7 +76,7 @@ public class PartyIntro extends AbstractUIPage{
         */
     	"<p><b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc_1") +"</b>"	
     	+ Language.getInstance().getMessage("PeopleAndOrganizations.desc_2") + ":</p><br></br>"
-    	+ "<li><b>" + Language.getInstance().getMessage("Owner")+ " : </b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc.Owner") +"<br></br></li>"
+    	+ "<li><b>" + Language.getInstance().getMessage("Creator")+ " : </b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc.Creator") +"<br></br></li>"
     	+ "<li><b>" + Language.getInstance().getMessage("Contact")+ " : </b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc.Contact") +"<br></br></li>"
     	+ "<li><b>" + Language.getInstance().getMessage("AssociatedParties")+ " : </b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc.AssociatedParties") +"<br></br></li>"
     	,13);

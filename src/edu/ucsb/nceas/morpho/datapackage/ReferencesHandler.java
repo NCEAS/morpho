@@ -81,7 +81,7 @@ public class ReferencesHandler {
    * used to construct the surrogate strings returned by this class. XPaths must
    * start with a "/" and be relative to the subtree root-node, but must *NOT*
    * include the subtree root node itself (because, for example, if the subtree
-   * is "Party", its root node could be "Creator" or "Owner" or any number of
+   * is "Party", its root node could be "Creator" or "Creator" or any number of
    * other things</p>
    *
    * <p>(b) strings that will be inserted between the values returned from the

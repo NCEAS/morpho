@@ -112,13 +112,13 @@ public class PartyMainPage
       pageID = DataPackageWizardInterface.PARTY_CREATOR_PAGE;
       nextPageID = DataPackageWizardInterface.PARTY_CONTACT_PAGE;
       pageNumber = "5";
-      subtitle = /*"Owners"*/ Language.getInstance().getMessage("Owner");
+      subtitle = /*"Creator"*/ Language.getInstance().getMessage("Creator");
       xPathRoot = "/eml:eml/dataset/creator[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "creator";
       DATAPACKAGE_PARTY_REL_XPATH = "/creator[";
       description =
     	  /*
-          "<p><b>Enter information about the Owners</b>: This is information "
+          "<p><b>Enter information about the Creators</b>: This is information "
           + "about the persons or organizations certified as data owners "
           + "(e.g. the principal investigator(s) of the project). "
           + "The list of data owners should include all people and "
@@ -126,8 +126,8 @@ public class PartyMainPage
           + "for the data. Select Add to add an owner."
           + "<br></br></p>"
           */
-    	  "<p><b>" + Language.getInstance().getMessage("PatryMainPage.Owner.description_1") +"</b> "
-    	  + Language.getInstance().getMessage("PatryMainPage.Owner.description_2")
+    	  "<p><b>" + Language.getInstance().getMessage("PatryMainPage.Creator.description_1") +"</b> "
+    	  + Language.getInstance().getMessage("PatryMainPage.Creator.description_2")
     	  +"<br></br></p>"
           ;
 

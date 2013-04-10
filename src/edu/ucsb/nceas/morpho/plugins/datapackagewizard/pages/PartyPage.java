@@ -227,7 +227,7 @@ public class PartyPage extends AbstractUIPage {
 
     pageDescriptionLabel
         = WidgetFactory.makeHTMLLabel("<font size=\"4\"><b>&nbsp;&nbsp;"
-                                       + /*roleString*/ Language.getInstance().getMessage("Owner") + " "
+                                       + /*roleString*/ Language.getInstance().getMessage("Creator") + " "
                                        + /*" Details"*/ Language.getInstance().getMessage("Details")
                                        +"</b></font>"
                                        , 1);
@@ -700,7 +700,7 @@ public class PartyPage extends AbstractUIPage {
 
     if (role.equals(DataPackageWizardInterface.PARTY_CREATOR)) {
 
-      roleString = /*"Owner"*/ Language.getInstance().getMessage("Owner");
+      roleString = /*"Creator"*/ Language.getInstance().getMessage("Creator");
       backupXPath = "/creator";
       rolePicklistShouldBeHidden = true;
 
