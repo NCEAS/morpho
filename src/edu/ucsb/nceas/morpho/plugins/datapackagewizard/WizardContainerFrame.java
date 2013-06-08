@@ -2039,16 +2039,15 @@ public class WizardContainerFrame
   public void cancelAction() {
 
 	  int opt = JOptionPane.showConfirmDialog(this,
-	            /*"If you cancel, *all* work done in this wizard "+
-	            "will be lost.\nIf you want to resume the wizard later, choose \"No\", then click on the \"Save for Later\" button.\nAre you sure you want to cancel? ",*/
 			  	Language.getInstance().getMessage("CancelWarning_1")
 			  	+"\n"
 			  	+Language.getInstance().getMessage("CancelWarning_2")
 			  	+"\n"
 			  	+ Language.getInstance().getMessage("CancelWarning_3"),
 	            "DO YOU WANT TO CONTINUE?",
-	            JOptionPane.YES_NO_OPTION);
-	   if (opt == JOptionPane.NO_OPTION) 
+	            JOptionPane.OK_CANCEL_OPTION,
+	            JOptionPane.WARNING_MESSAGE);
+	   if (opt == JOptionPane.CANCEL_OPTION) 
 	   {
 	        return;
 	    }
