@@ -555,7 +555,7 @@ public class Morpho
         // Now contact metacat and send the request
         try {
             InputStreamReader returnStream =
-                    new InputStreamReader(getMetacatInputStream(prop));
+                    new InputStreamReader(getMetacatInputStream(prop), "UTF-8");
             StringWriter sw = new StringWriter();
             int len;
             char[] characters = new char[512];
@@ -567,6 +567,7 @@ public class Morpho
             sw.close();
         } catch (Exception e) {
             Log.debug(1, "Fatal error sending data to Metacat.");
+            e.printStackTrace();
         }
         return response;
     }

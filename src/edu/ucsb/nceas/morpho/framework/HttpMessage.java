@@ -188,37 +188,31 @@ public class HttpMessage
   public InputStream sendPostData(Properties args) throws IOException
   {
     openPostConnection();
-    out = new DataOutputStream(con.getOutputStream());
+    
+    StringBuffer params = new StringBuffer();
     Enumeration names = args.propertyNames();
     while (names.hasMoreElements()) {
       String name = (String)names.nextElement();
       String value = args.getProperty(name);
-      sendNameValuePair(name, value);
+      
+      params.append(URLEncoder.encode(name, "UTF-8"));
+      params.append("=");
+      params.append(URLEncoder.encode(value, "UTF-8"));
+
       if (names.hasMoreElements()) {
-        ((DataOutputStream)out).writeBytes("&");
-        out.flush();
+          params.append("&");
       }
     }
+    byte[] data = params.toString().getBytes("UTF-8");
+    
+    con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+    con.setRequestProperty("Content-Length", data.length + "" );
+    
+    out = new DataOutputStream(con.getOutputStream());
+    ((DataOutputStream)out).write(data);
+    out.flush();
     InputStream res = closePostConnection();
     return res;
-  }
-
-  /**
-   * Utility method to URL encode and send a single name-value pair
-   */
-  private void sendNameValuePair(String name, String data) throws IOException
-  {
-	  // do not log passwords
-	  // http://bugzilla.ecoinformatics.org/show_bug.cgi?id=4687
-	  if (name.indexOf("password") > -1) {
-		  Log.debug(15, "Name: " + name + " => " + "*****");
-	  } else {
-		  Log.debug(15, "Name: " + name + " => " + data);
-	  }
-    ((DataOutputStream)out).writeBytes(URLEncoder.encode(name, "UTF-8"));
-    ((DataOutputStream)out).writeBytes("=");
-    ((DataOutputStream)out).writeBytes(URLEncoder.encode(data, "UTF-8"));
-    out.flush();
   }
 
   /**
