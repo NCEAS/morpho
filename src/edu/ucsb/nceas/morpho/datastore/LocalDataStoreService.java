@@ -470,9 +470,9 @@ public class LocalDataStoreService extends DataStoreService
 		// check if we have a package
 	    
 	    //return now if we do not have data packages to save as ORE
-	    if (!hasEntity(mdp)) {
+	    /*if (!hasEntity(mdp)) {
 			return adp.getAccessionNumber();
-	    }
+	    }*/
 	    //System.out.println("local has resrouce map!!!!!!!!!!!!!!!!!!============================");
 		// save ore document finally
 		Identifier oreId = new Identifier();
