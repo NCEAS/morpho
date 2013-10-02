@@ -106,7 +106,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 
   public static final String MNODE_URL_ELEMENT_NAME = "dataone_mnode_baseurl";
   public static final String CNODE_URL_ELEMENT_NAME = "dataone_cnode_baseurl";
-  private static final String PATHQUERY = "pathquery";
+  public static final String PATHQUERY = "pathquery";
+  public static final String SOLRQUERYENGINE = "solr";
   
   /**
    * The currently configured Member Node
@@ -845,24 +846,34 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   
 	/**
 	 * Send the given query to the Dataone member node, get back the InputStream.
-	 * Note that Morpho only supports "pathquery" as the engine.
-	 * We plan to include support for SOLR syntax in subsequent releases.
+	 * This use the default query engine "pathquery".
 	 * @param the query
 	 * @return the result of the query
 	 */
 	@Override
 	public InputStream query(String query) throws InvalidToken, ServiceFailure,
 			NotAuthorized, InvalidRequest, NotImplemented, NotFound {
-
-		boolean engineSupported = isQueryEngineSupported( ); 
-		if (!engineSupported) {
-			Log.debug(5, "The '" + PATHQUERY + "' syntax is not supported on this MN");
-			return null;
-		}
-		// made it here so we submit the query
-		String encodedQuery = EncodingUtilities.encodeUrlPathSegment(query);
-		return activeMNode.query(PATHQUERY, encodedQuery);
+		return query(PATHQUERY, query);
 	}
+	
+	/**
+     * Send the given query to the Dataone member node as the specified query engine, get back the InputStream.
+     * @param the query
+     * @param engine the name of the query engine
+     * @return the result of the query
+     */
+    public InputStream query(String query, String engine) throws InvalidToken, ServiceFailure,
+            NotAuthorized, InvalidRequest, NotImplemented, NotFound {
+
+        boolean engineSupported = isQueryEngineSupported(engine); 
+        if (!engineSupported) {
+            Log.debug(5, "The '" + engine + "' syntax is not supported on this MN");
+            return null;
+        }
+        // made it here so we submit the query
+        String encodedQuery = EncodingUtilities.encodeUrlPathSegment(query);
+        return activeMNode.query(engine, encodedQuery);
+    }
 
 	/**
 	 * Check if the MN supports the default queryEngine
@@ -871,22 +882,33 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	 */
 	public boolean isQueryEngineSupported() {
 		// check if this MN supports our query syntax
-		String engineToUse = PATHQUERY;
-		boolean engineSupported = false;
-		try {
-			QueryEngineList queryEngines = activeMNode.listQueryEngines();
-			if (queryEngines != null && queryEngines.getQueryEngineList() != null) {
-				for (String qe: queryEngines.getQueryEngineList()) {
-					if (qe.equalsIgnoreCase(engineToUse)) {
-						engineSupported = true;
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			engineSupported = false;
-		}
-		return engineSupported;
+		return isQueryEngineSupported(PATHQUERY);
+		
+	}
+	
+	/**
+	 * If the MN supports the specified engine
+	 * @param engineToUse the name of query engine
+	 * @return true if it supports; else false.
+	 */
+	public boolean isQueryEngineSupported(String engineToUse) {
+	    boolean engineSupported = false;
+	    if(engineToUse != null && !engineToUse.trim().equals("")) {
+	        try {
+	            QueryEngineList queryEngines = activeMNode.listQueryEngines();
+	            if (queryEngines != null && queryEngines.getQueryEngineList() != null) {
+	                for (String qe: queryEngines.getQueryEngineList()) {
+	                    if (qe.equalsIgnoreCase(engineToUse)) {
+	                        engineSupported = true;
+	                        break;
+	                    }
+	                }
+	            }
+	        } catch (Exception e) {
+	            engineSupported = false;
+	        }
+	    }
+        return engineSupported;
 	}
 
 	@Override
@@ -1191,4 +1213,6 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		info = cNode.listSubjects(query, status, start, count);
 		return info;
 	}
+	
+	
 }

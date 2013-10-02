@@ -27,10 +27,20 @@
 package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
+
 import org.dataone.service.types.v1.Identifier;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
@@ -44,10 +54,12 @@ import edu.ucsb.nceas.morpho.framework.ProfileDialog;
  */
 public abstract class DataStoreService implements DataStoreServiceInterface
 {
-  
+   
+    protected static final String RESOURCEMAPSOLRFIELD = "resourceMap";
 	protected static final String RESOURCE_MAP_ID_PREFIX = "resourceMap_";
 	protected Morpho morpho;
 	protected ConfigXML config;
+	
   
   /**
    * create a new FileSystemDataStore for a Morpho
@@ -143,6 +155,42 @@ public abstract class DataStoreService implements DataStoreServiceInterface
           
       }
       return hasEntity;
+  }
+  
+  /**
+   * Find an identifier of a resource map which contains the specified identifier.
+   * This method will query the solr index and solr index will return a list of resource map id which contains the metadata id.
+   * However, we assume the relationship between the resource map id and the metadata is 1 to 1. So we just choose the first one as the resource map id.
+   * The default value is to add a resource map prefix.
+   * @param identifier
+   * @return
+   */
+   protected String lookupResourceMapId(String identifier) {
+          try {
+             //The mn supports solr engine. Let's query it to find the resource map.
+              String query = "q=id:"+"\""+identifier +"\""+"&"+"fl="+RESOURCEMAPSOLRFIELD;
+              InputStream response = Morpho.thisStaticInstance.getDataONEDataStoreService().query(query, DataONEDataStoreService.SOLRQUERYENGINE);
+              XPathFactory factory = XPathFactory.newInstance();
+              XPath xPath = factory.newXPath();
+              NodeList list = (NodeList) xPath.evaluate("//doc/arr[@name='resourceMap']/str/text()", new InputSource(response), XPathConstants.NODESET);
+              if(list != null && list.getLength() >0) {
+                  Node node = list.item(0);
+                  if(node != null) {
+                      String resourceMapId = node.getNodeValue();
+                      if(resourceMapId != null && !resourceMapId.trim().equals("")) {
+                          System.out.println("we got the resource map id from query !!!!");
+                          return resourceMapId;
+                      }
+                  }
+                  
+              }
+              return RESOURCE_MAP_ID_PREFIX + identifier;
+          } catch (Exception e) {
+              e.printStackTrace();
+              return RESOURCE_MAP_ID_PREFIX + identifier;
+          }
+      
+      
   }
 
 }
