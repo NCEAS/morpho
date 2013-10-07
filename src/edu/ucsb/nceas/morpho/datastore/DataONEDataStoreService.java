@@ -854,7 +854,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 	@Override
 	public InputStream query(String query) throws InvalidToken, ServiceFailure,
 			NotAuthorized, InvalidRequest, NotImplemented, NotFound {
-		return query(PATHQUERY, query);
+		return query(query, PATHQUERY);
 	}
 	
 	/**
