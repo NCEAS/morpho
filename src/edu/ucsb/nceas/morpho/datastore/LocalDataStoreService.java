@@ -502,10 +502,11 @@ public class LocalDataStoreService extends DataStoreService
 		Identifier obsoleteMetadataId = adp.getSystemMetadata().getObsoletes();
 		if (obsoleteMetadataId != null) {
 			Identifier obsoleteOreId = new Identifier();
-			obsoleteOreId.setValue(RESOURCE_MAP_ID_PREFIX + obsoleteMetadataId.getValue());
+			String obsoleteOreIdStr = lookupResourceMapId(obsoleteMetadataId.getValue());
+			obsoleteOreId.setValue(obsoleteOreIdStr);
 			resourceMapSysMeta.setObsoletes(obsoleteOreId);
 			//modify the system metadata of the previous version by setting the obsoletedBy
-			setObsoletedByInSysMeta(RESOURCE_MAP_ID_PREFIX + obsoleteMetadataId.getValue(), oreId.getValue());
+			setObsoletedByInSysMeta(obsoleteOreIdStr, oreId.getValue());
 		}
 
 		// this is just weird to set in two different places
@@ -975,7 +976,8 @@ public class LocalDataStoreService extends DataStoreService
 	    } else {
 	       // assume naming convention for ORE maps to obsolete the old one
 	        // see: http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5798
-	        oreIdStr = RESOURCE_MAP_ID_PREFIX+identifier;
+	        //oreIdStr = RESOURCE_MAP_ID_PREFIX+identifier;
+	        oreIdStr = lookupResourceMapId(identifier);
 	    }
 		
 	    if(oreIdStr != null && exists(oreIdStr)) {
@@ -1384,7 +1386,8 @@ public class LocalDataStoreService extends DataStoreService
 		try {
 			String objectFormatType = ObjectFormatCache.getInstance().getFormat(sysMeta.getFormatId()).getFormatType();
 			if (objectFormatType.equalsIgnoreCase("METADATA")) {
-				String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier ;
+				//String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier ;
+			    String oreIdentifier = lookupResourceMapId(identifier);
 				SystemMetadata oreSystemMetadata = null;
 				oreSystemMetadata = this.getSystemMetadata(oreIdentifier);
 				
@@ -1421,7 +1424,8 @@ public class LocalDataStoreService extends DataStoreService
 		try {
 			String objectFormatType = ObjectFormatCache.getInstance().getFormat(sysMeta.getFormatId()).getFormatType();
 			if (objectFormatType.equalsIgnoreCase("METADATA")) {
-				String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier ;
+				//String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier ;
+			    String oreIdentifier = lookupResourceMapId(identifier) ;
 				SystemMetadata oreSystemMetadata = null;
 				oreSystemMetadata = this.getSystemMetadata(oreIdentifier);
 				

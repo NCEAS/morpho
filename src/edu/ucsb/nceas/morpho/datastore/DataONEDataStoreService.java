@@ -561,7 +561,7 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		Identifier obsoleteMetadataId = adp.getSystemMetadata().getObsoletes();
 		if (obsoleteMetadataId != null) {
 			Identifier obsoleteOreId = new Identifier();
-			obsoleteOreId.setValue(RESOURCE_MAP_ID_PREFIX + obsoleteMetadataId.getValue());
+			obsoleteOreId.setValue(lookupResourceMapId(obsoleteMetadataId.getValue()));
 			resourceMapSysMeta.setObsoletes(obsoleteOreId);
 		}
 
@@ -801,7 +801,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
     if (oreId != null) {
     	activeMNode.archive(oreId);
     } else {
-        String oreIdStr = RESOURCE_MAP_ID_PREFIX + metadataId.getValue();
+        //String oreIdStr = RESOURCE_MAP_ID_PREFIX + metadataId.getValue();
+        String oreIdStr = lookupResourceMapId(metadataId.getValue());
         if(exists(oreIdStr)) {
             oreId = new Identifier();
             oreId.setValue(oreIdStr);
@@ -1170,7 +1171,8 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
 		// try ORE if we can find it
 		String objectFormatType = cNode.getFormat(sysMeta.getFormatId()).getFormatType();
 		if (objectFormatType.equalsIgnoreCase("METADATA")) {
-			String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier;
+			//String oreIdentifier = DataStoreService.RESOURCE_MAP_ID_PREFIX + identifier;
+		    String oreIdentifier = lookupResourceMapId(identifier);
 			SystemMetadata oreSystemMetadata = null;
 			try {
 				oreSystemMetadata = this.getSystemMetadataFromDataONE(oreIdentifier);
