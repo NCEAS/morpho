@@ -46,6 +46,7 @@ import org.dataone.service.util.Constants;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.dataone.EcpAuthentication;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.datapackage.MorphoDataPackage;
@@ -760,6 +761,14 @@ public class DataStoreServiceController {
 	 */
 	public void save(MorphoDataPackage mdp, String location, boolean overwrite, String scheme) throws CancelSavingException, Exception {
 	    
+	    if(location.equals(DataPackageInterface.NETWORK) ||location.endsWith(DataPackageInterface.BOTH)) {
+	        if (!Morpho.thisStaticInstance.getDataONEDataStoreService().isConnected()) {
+	            EcpAuthentication.getInstance().establishConnection();
+	        }
+	        if (!Morpho.thisStaticInstance.getDataONEDataStoreService().isConnected()) {
+	            return;
+	        }
+	    }
 	    //If a user choose to use DOI, the entire data package should be public readable. 
 	    boolean continueSaving = makePackagePublic(mdp, scheme);
 	    if(!continueSaving) {
