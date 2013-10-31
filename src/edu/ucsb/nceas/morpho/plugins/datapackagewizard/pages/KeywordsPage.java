@@ -139,8 +139,8 @@ public class KeywordsPage extends AbstractUIPage {
    */
   private void init() {
 
-    middlePanel = new JPanel();
-    this.setLayout( new BorderLayout());
+    middlePanel = WidgetFactory.makePanel();
+    this.setLayout(new BorderLayout());
 
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
