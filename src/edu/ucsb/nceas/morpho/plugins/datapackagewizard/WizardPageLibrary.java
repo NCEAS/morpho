@@ -28,20 +28,45 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
-import java.util.Map;
-import java.util.HashMap;
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.*;
-import edu.ucsb.nceas.morpho.plugins.vocabulary.GenericVocabularyPage;
-import edu.ucsb.nceas.morpho.plugins.vocabulary.ThesaurusLookupPage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AccessPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CitationPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeDefinition;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportSummary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CustomUnitPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataFormat;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Geographic;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.GeographicPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Introduction;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Keywords;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.KeywordsPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Methods;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.MethodsPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.OtherEntityPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyIntro;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Project;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ReplaceDataPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ReplicationPolicyPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Summary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Temporal;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TemporalPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportDelimiters;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportEntity;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.UsageRights;
+import edu.ucsb.nceas.morpho.plugins.vocabulary.GenericTreeVocabularyPage;
+import edu.ucsb.nceas.morpho.plugins.vocabulary.ThesaurusLookupPage;
 import edu.ucsb.nceas.morpho.util.Log;
-
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.framework.UIController;
-
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
 /**
  *  Class       WizardPageLibrary
@@ -151,7 +176,7 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
     if(pageID.equals(DataPackageWizardInterface.CUSTOM_UNIT_PAGE))
       return new CustomUnitPage(container);
 	if(pageID.equals(DataPackageWizardInterface.GENERIC_VOCABULARY))
-	  return new GenericVocabularyPage();	
+	  return new GenericTreeVocabularyPage();	
 	if(pageID.equals(DataPackageWizardInterface.NBII_THESAURUS_LOOKUP))
 		  return new ThesaurusLookupPage();
 	if(pageID.equals(DataPackageWizardInterface.TEXT_IMPORT_ENTITY))

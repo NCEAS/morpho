@@ -1,18 +1,7 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 import java.util.Hashtable;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Vector;
-
-
-import edu.ucsb.nceas.morpho.plugins.vocabulary.GenericVocabularyPage;
-import edu.ucsb.nceas.morpho.plugins.vocabulary.ThesaurusLookupPage;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-
 import edu.ucsb.nceas.morpho.util.Log;
 /**
  * This class represents a customized wizard page library. User can add any 

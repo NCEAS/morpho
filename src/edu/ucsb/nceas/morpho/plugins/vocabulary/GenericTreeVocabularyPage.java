@@ -32,7 +32,8 @@ import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,9 +113,21 @@ public class GenericTreeVocabularyPage extends AbstractUIVocabularyPage {
 
 	private void initVocab(String vocab) {
 		try {
-			String vocabFilePath = 
-				SLASH + vocab + ".xml";
-			ConfigXML vocabConfig = new ConfigXML(this.getClass().getResourceAsStream(vocabFilePath));
+			
+			// try a few things
+			InputStream vocabStream = null;
+			try {
+				// try the vocab as a URI
+				URI vocabURI = new URI(vocab);
+				vocabStream = vocabURI.toURL().openStream();
+			} catch (Exception urie) {
+				// try loading from the classpath
+				String vocabFilePath = 
+						SLASH + vocab + ".xml";
+				vocabStream = this.getClass().getResourceAsStream(vocabFilePath);
+			}
+			
+			ConfigXML vocabConfig = new ConfigXML(vocabStream);
 			
 			Node xmlRoot = vocabConfig.getRoot();
 			DefaultMutableTreeNode rootNode = DOM2TreeNode(xmlRoot, true);
@@ -158,7 +171,7 @@ public class GenericTreeVocabularyPage extends AbstractUIVocabularyPage {
 		selectedPanel.add(selectedTermLabel);
 
 		selectedTerms = 
-			WidgetFactory.makeLabel("", false);
+			WidgetFactory.makeLabel("", false, null);
 		
 		selectedPanel.add(selectedTerms);
 

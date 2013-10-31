@@ -5,7 +5,7 @@
 	language="EN" 
 	orderSignificant="false"
 	profileType="hierarchicalTokenTerms"
-	xmlns:vdex="http://www.imsglobal.org/xsd/imsvdex_v1p0"
+	xmlns="http://www.imsglobal.org/xsd/imsvdex_v1p0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.imsglobal.org/xsd/imsvdex_v1p0 imsvdex_v1p0.xsd ">
 		
@@ -18,6 +18,23 @@
 	<term orderSignificant="false" validIndex="true">
 		<termIdentifier>National Center for Ecological Analysis and Synthesis</termIdentifier>
 	</term>
+	
+	<!-- SNAP top level -->
+	<term orderSignificant="false" validIndex="true">
+		<termIdentifier>Science and Nature for People (SNAP)</termIdentifier>
+		<caption>
+			<langstring language="EN">SNAP</langstring>
+		</caption>
+		<description>
+			<langstring language="EN">All SNAP working groups</langstring>
+		</description>
+		<metadata />
+
+		<!-- working groups under SNAP -->
+		<term><termIdentifier>Coastal Defenses</termIdentifier></term>
+		<term><termIdentifier>Western Amazonia</termIdentifier></term>
+		
+	</term>	
 		
 	<!-- SANParks top level -->
 	<term orderSignificant="false" validIndex="true">
