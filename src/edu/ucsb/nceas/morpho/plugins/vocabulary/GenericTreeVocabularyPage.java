@@ -91,15 +91,15 @@ public class GenericTreeVocabularyPage extends AbstractUIVocabularyPage {
 		NodeList children = null;
 		
 		if (isRoot) {
-			valueNode = XMLUtilities.getNodeWithXPath(xmlNode, "./vocabIdentifier");
+			valueNode = XMLUtilities.getNodeWithXPath(xmlNode, "./*[local-name()='vocabIdentifier']");
 		}
 		else {
-			valueNode = XMLUtilities.getNodeWithXPath(xmlNode, "./termIdentifier") ;
+			valueNode = XMLUtilities.getNodeWithXPath(xmlNode, "./*[local-name()='termIdentifier']") ;
 		}
 		
 		DefaultMutableTreeNode thisNode = new DefaultMutableTreeNode(valueNode.getFirstChild().getTextContent());		
 
-		children = XMLUtilities.getNodeListWithXPath(xmlNode, "./term");
+		children = XMLUtilities.getNodeListWithXPath(xmlNode, "./*[local-name()='term']");
 		if (children != null) {
 			for (int i = 0; i < children.getLength(); i++) {
 				Node child = children.item(i);
