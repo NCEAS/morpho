@@ -122,26 +122,31 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
              character references ('&#xxxx;'). This is only appropriate for XML streams.
              Binary data should be called using the 'openDataFile' method.
           */
-          if (c>127) {
-            bfos.write('&');
-            bfos.write('#');
-            int h = c/100;
-            int t = (c-h*100)/10;
-            int o = c-h*100-t*10;
-            bfos.write(Character.forDigit(h,10));
-            bfos.write(Character.forDigit(t,10));
-            bfos.write(Character.forDigit(o,10));
-            bfos.write(';');   
-            Log.debug(40, "char > 127!");
-          }
-          else if (c<32) {
-            if ((c==9)||(c==10)||(c==13)) {
-              bfos.write(c);
-            }
-          }
-          else {
-            bfos.write(c);
-          }
+        	// BRL 11/06/2013 -- we are now using UTF-8 encoding and do not need to create entity
+        	// references for all of these characters -- just let the encoding work for us
+        	
+//          if (c>127) {
+//            bfos.write('&');
+//            bfos.write('#');
+//            int h = c/100;
+//            int t = (c-h*100)/10;
+//            int o = c-h*100-t*10;
+//            bfos.write(Character.forDigit(h,10));
+//            bfos.write(Character.forDigit(t,10));
+//            bfos.write(Character.forDigit(o,10));
+//            bfos.write(';');   
+//            Log.debug(40, "char > 127!");
+//          }
+//          else if (c<32) {
+//            if ((c==9)||(c==10)||(c==13)) {
+//              bfos.write(c);
+//            }
+//          }
+//          else {
+//            bfos.write(c);
+//          }
+        	
+          bfos.write(c);
           c = bmetacatInputStream.read();
         }
         bfos.flush();
