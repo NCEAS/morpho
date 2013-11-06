@@ -809,7 +809,7 @@
             mainclass="edu.ucsb.nceas.morpho.Morpho"
             jvmversion="1.6"
             icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
-            vmoptions="-Xmx512m -Xss5m" 
+            vmoptions="-Xmx1024m -Xss5m" 
       		arguments="${morpho.args}">
       		<jarfileset dir="${build.lib}">
       			<include name="*.jar" />
