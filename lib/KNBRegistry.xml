@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="vdex.xsl"?>
 
-<vdex
+<vdex:vdex
 	language="EN" 
 	orderSignificant="false"
 	profileType="hierarchicalTokenTerms"
@@ -9,64 +8,81 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.imsglobal.org/xsd/imsvdex_v1p0 imsvdex_v1p0.xsd ">
 		
-	<vocabName>
-		<langstring language="EN">KNBRegistryList</langstring>
-	</vocabName>
-	<vocabIdentifier isRegistered="false">http://knb.ecoinformatics.org/KNBRegistryList</vocabIdentifier>
+	<vdex:vocabName>
+		<vdex:langstring language="EN">KNBRegistryList</vdex:langstring>
+	</vdex:vocabName>
+	<vdex:vocabIdentifier isRegistered="false">http://knb.ecoinformatics.org/KNBRegistryList</vdex:vocabIdentifier>
 	
 	<!-- NCEAS -->
-	<term orderSignificant="false" validIndex="true">
-		<termIdentifier>National Center for Ecological Analysis and Synthesis</termIdentifier>
-	</term>
+	<vdex:term orderSignificant="false" validIndex="true">
+		<vdex:termIdentifier>National Center for Ecological Analysis and Synthesis</vdex:termIdentifier>
+	</vdex:term>
+	
+	<!-- SNAP top level -->
+	<vdex:term orderSignificant="false" validIndex="true">
+		<vdex:termIdentifier>Science and Nature for People (SNAP)</vdex:termIdentifier>
+		<vdex:caption>
+			<vdex:langstring language="EN">SNAP</vdex:langstring>
+		</vdex:caption>
+		<vdex:description>
+			<vdex:langstring language="EN">All SNAP working groups</vdex:langstring>
+		</vdex:description>
+		<vdex:metadata />
+
+		<!-- working groups under SNAP -->
+		<vdex:term><vdex:termIdentifier>Coastal Defenses</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Western Amazonia</vdex:termIdentifier></vdex:term>
+		
+	</vdex:term>	
 		
 	<!-- SANParks top level -->
-	<term orderSignificant="false" validIndex="true">
-		<termIdentifier>SANParks, South Africa</termIdentifier>
-		<caption>
-			<langstring language="EN">SANParks</langstring>
-		</caption>
-		<description>
-			<langstring language="EN">Encompasses all SANParks</langstring>
-		</description>
-		<metadata />
+	<vdex:term orderSignificant="false" validIndex="true">
+		<vdex:termIdentifier>SANParks, South Africa</vdex:termIdentifier>
+		<vdex:caption>
+			<vdex:langstring language="EN">SANParks</vdex:langstring>
+		</vdex:caption>
+		<vdex:description>
+			<vdex:langstring language="EN">Encompasses all SANParks</vdex:langstring>
+		</vdex:description>
+		<vdex:metadata />
 
 		<!-- parks under SANParks container -->
-		<term><termIdentifier>Addo Elephant National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Agulhas National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Augrabies Falls National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Bontebok National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Camdeboo National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Golden Gate Highlands National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Karoo National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Kgalagadi Transfrontier Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Knysna National Lake Area, South Africa</termIdentifier></term>
-		<term><termIdentifier>Kruger National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Mapungubwe National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Marakele National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Mokala National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Mountain Zebra National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Namaqua National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Table Mountain National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Tankwa Karoo National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Tsitsikamma National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>West Coast National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Wilderness National Park, South Africa</termIdentifier></term>
-		<term><termIdentifier>Ai-|Ais/Richtersveld Transfrontier National Park, South Africa</termIdentifier></term>
+		<vdex:term><vdex:termIdentifier>Addo Elephant National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Agulhas National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Augrabies Falls National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Bontebok National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Camdeboo National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Golden Gate Highlands National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Karoo National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Kgalagadi Transfrontier Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Knysna National Lake Area, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Kruger National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Mapungubwe National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Marakele National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Mokala National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Mountain Zebra National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Namaqua National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Table Mountain National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Tankwa Karoo National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Tsitsikamma National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>West Coast National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Wilderness National Park, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Ai-|Ais/Richtersveld Transfrontier National Park, South Africa</vdex:termIdentifier></vdex:term>
 		
-	</term>
+	</vdex:term>
 
 	<!-- SAEON container -->
-	<term orderSignificant="false" validIndex="true">
-		<termIdentifier>SAEON, South Africa</termIdentifier>
-		<caption>
-			<langstring language="EN">SAEON</langstring>
-		</caption>
-		<description>
-			<langstring language="EN">SAEON, South Africa</langstring>
-		</description>
-		<metadata />
-		<term><termIdentifier>Elwandle SAEON Node, South Africa</termIdentifier></term>
-		<term><termIdentifier>Ndlovu SAEON Node, South Africa</termIdentifier></term>
-	</term>
+	<vdex:term orderSignificant="false" validIndex="true">
+		<vdex:termIdentifier>SAEON, South Africa</vdex:termIdentifier>
+		<vdex:caption>
+			<vdex:langstring language="EN">SAEON</vdex:langstring>
+		</vdex:caption>
+		<vdex:description>
+			<vdex:langstring language="EN">SAEON, South Africa</vdex:langstring>
+		</vdex:description>
+		<vdex:metadata />
+		<vdex:term><vdex:termIdentifier>Elwandle SAEON Node, South Africa</vdex:termIdentifier></vdex:term>
+		<vdex:term><vdex:termIdentifier>Ndlovu SAEON Node, South Africa</vdex:termIdentifier></vdex:term>
+	</vdex:term>
 	
-</vdex>
+</vdex:vdex>
