@@ -988,7 +988,7 @@ public class DataStoreServiceController {
 				
 		// try to set authoritative MN
 		String authMnString = Morpho.thisStaticInstance.getDataONEDataStoreService().getActiveMNode().getNodeId();
-		if (authMnString != null) {
+		if (authMnString != null && !authMnString.trim().equals("")) {
 			NodeReference authMn = new NodeReference();
 			authMn.setValue(authMnString);
 			sysmeta.setAuthoritativeMemberNode(authMn);

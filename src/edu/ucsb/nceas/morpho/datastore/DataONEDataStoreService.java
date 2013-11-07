@@ -193,6 +193,17 @@ public class DataONEDataStoreService extends DataStoreService implements DataSto
   }
   
   /**
+   * Set the specified id as the mn node id.
+   * Do we need to save the id to the configuration file.
+   * @param mnId
+   */
+  public void setMNodeId(String mnId) {
+      if(activeMNode != null) {
+          activeMNode.setNodeId(mnId);
+      }
+  }
+  
+  /**
    * open a file from a datastore with the id of name and return a File
    * object that represents it.  Throws FileNotFoundException if a file
    * with the id name does not exist in the datastore.  Throws IOException
