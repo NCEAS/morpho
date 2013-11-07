@@ -401,14 +401,17 @@ public class MorphoPrefsDialog extends JDialog
 
 		// set the active MN URL
 		String mnURL = null;
+		String mnId = null;
 		Object mnItemObject = memberNodeComboBox.getSelectedItem();
 		if (mnItemObject instanceof NodeItem) {
 			mnURL = ((NodeItem) mnItemObject).getNode().getBaseURL();
+			mnId = ((NodeItem) mnItemObject).getNode().getIdentifier().getValue();
 		} else {
 			mnURL = mnItemObject.toString();
 		}
 		morpho.getDataONEDataStoreService().setMNodeURL(mnURL);
-
+		//note: we need to call setMNOdeURL first.
+		morpho.getDataONEDataStoreService().setMNodeId(mnId);
 		// set the CN URL
 		morpho.getDataONEDataStoreService().setCNodeURL(coordinatingNodeURLTextField.getText());
 		
