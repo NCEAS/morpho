@@ -205,7 +205,7 @@
        classpathref="base.classpath" />
 
    	<!-- Resolve maven dependencies -->
-	<artifact:pom id="morphoPom" file="pom.xml" />
+	<artifact:pom id="morphoPom" file="${morpho.basedir}/pom.xml" />
 	<artifact:dependencies filesetId="dependency.fileset" pomrefid="morphoPom" usescope="runtime"/>
 	<artifact:dependencies pathId="dependency.classpath" pomrefid="morphoPom"/>
    	
