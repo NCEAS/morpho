@@ -494,30 +494,9 @@ public class Morpho
            connectionBusy = false;
            return returnStream;
         } catch (Exception e) {
-            try {
-                Log.debug(20, "Sending data (again) to : " + metacatURL);
-                URL url = new URL(metacatURL);
-                HttpMessage msg = new HttpMessage(url);
-                returnStream = msg.sendPostData(prop);
-                sessionCookie = HttpMessage.getCookie();
-                connectionBusy = false;
-                return returnStream;
-            } catch (Exception e2) {
-                try {
-                    Log.debug(20, "Sending data (again)(again) to: " +
-                        metacatURL);
-                    URL url = new URL(metacatURL);
-                    HttpMessage msg = new HttpMessage(url);
-                    returnStream = msg.sendPostData(prop);
-                    sessionCookie = HttpMessage.getCookie();
-                    connectionBusy = false;
-                    return returnStream;
-                } catch (Exception e3) {
-                    Log.debug(1, "Fatal error sending data to Metacat: " +
-                        e3.getMessage());
-                    e.printStackTrace(System.err);
-                }
-            }
+            Log.debug(1, "Fatal error sending data to Metacat: " +
+                            e.getMessage());
+            e.printStackTrace(System.err);
         }
         connectionBusy = false;
         return returnStream;
@@ -554,17 +533,24 @@ public class Morpho
 
         // Now contact metacat and send the request
         try {
-            InputStreamReader returnStream =
-                    new InputStreamReader(getMetacatInputStream(prop), "UTF-8");
-            StringWriter sw = new StringWriter();
-            int len;
-            char[] characters = new char[512];
-            while ((len = returnStream.read(characters, 0, 512)) != -1) {
-                sw.write(characters, 0, len);
+            InputStream input = getMetacatInputStream(prop);
+            if(input != null) {
+                InputStreamReader returnStream =
+                                new InputStreamReader(input, "UTF-8");
+                if(returnStream != null) {
+                            StringWriter sw = new StringWriter();
+                            int len;
+                            char[] characters = new char[512];
+                            while ((len = returnStream.read(characters, 0, 512)) != -1) {
+                                sw.write(characters, 0, len);
+                            }
+                            returnStream.close();
+                            response = sw.toString();
+                            sw.close();
+                }   
             }
-            returnStream.close();
-            response = sw.toString();
-            sw.close();
+            
+            
         } catch (Exception e) {
             Log.debug(1, "Fatal error sending data to Metacat.");
             e.printStackTrace();
@@ -859,7 +845,7 @@ public class Morpho
         // Now contact metacat
         String response = getMetacatString(prop);
         boolean wasConnected = connected;
-        if (response.indexOf("<login>") != -1) {
+        if (response != null &&response.indexOf("<login>") != -1) {
             connected = true;
         } else {
             HttpMessage.setCookie(null);

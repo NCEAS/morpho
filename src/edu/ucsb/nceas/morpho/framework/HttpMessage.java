@@ -155,24 +155,31 @@ public class HttpMessage
       String value = fileNames.getProperty(name);
       data[i] = new NVPair(name, value);
     }
+    InputStream res = null;
+    try {
+        // Create the multipart/form-data form object
+        MultipartForm myform = new MultipartForm(opts, data);
 
-    // Create the multipart/form-data form object
-    MultipartForm myform = new MultipartForm(opts, data);
+        // Set some addition request headers
+        ((HttpURLConnection)con).setRequestMethod("POST");
+        String ctype = myform.getContentType();
+        ((HttpURLConnection)con).setRequestProperty("Content-Type", ctype);
+        long contentLength = myform.getLength();
+        ((HttpURLConnection)con).setRequestProperty("Content-Length",
+                 new Long(contentLength).toString());
 
-    // Set some addition request headers
-    ((HttpURLConnection)con).setRequestMethod("POST");
-    String ctype = myform.getContentType();
-    ((HttpURLConnection)con).setRequestProperty("Content-Type", ctype);
-    long contentLength = myform.getLength();
-    ((HttpURLConnection)con).setRequestProperty("Content-Length",
-             new Long(contentLength).toString());
+        // Open the output stream and write the encoded data to it
+        out = con.getOutputStream();
+        myform.writeEncodedMultipartForm(out);
 
-    // Open the output stream and write the encoded data to it
-    out = con.getOutputStream();
-    myform.writeEncodedMultipartForm(out);
-
-    // close the connection and return the response stream
-    InputStream res = closePostConnection();
+        // close the connection and return the response stream
+         res = closePostConnection();
+    } finally {
+        if(out != null) {
+            out.close();
+        }
+    }
+   
     return res;
   }
 
@@ -204,14 +211,21 @@ public class HttpMessage
       }
     }
     byte[] data = params.toString().getBytes("UTF-8");
+    InputStream res = null;
+    try {
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        con.setRequestProperty("Content-Length", data.length + "" );
+        
+        out = new DataOutputStream(con.getOutputStream());
+        ((DataOutputStream)out).write(data);
+        out.flush();
+        res = closePostConnection();
+    } finally {
+        if(out != null) {
+            out.close();
+        }
+    }
     
-    con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    con.setRequestProperty("Content-Length", data.length + "" );
-    
-    out = new DataOutputStream(con.getOutputStream());
-    ((DataOutputStream)out).write(data);
-    out.flush();
-    InputStream res = closePostConnection();
     return res;
   }
 
