@@ -494,9 +494,20 @@ public class Morpho
            connectionBusy = false;
            return returnStream;
         } catch (Exception e) {
-            Log.debug(1, "Fatal error sending data to Metacat: " +
-                            e.getMessage());
-            e.printStackTrace(System.err);
+            e.printStackTrace();
+            try {
+                Log.debug(20, "Sending data to:(again) " + metacatURL);
+                URL url = new URL(metacatURL);
+                HttpMessage msg = new HttpMessage(url);
+                returnStream = msg.sendPostData(prop);
+                sessionCookie = HttpMessage.getCookie();
+               connectionBusy = false;
+               return returnStream;
+            } catch (Exception ee) {
+                Log.debug(1, "Fatal error sending data to Metacat: " +
+                                ee.getMessage());
+                ee.printStackTrace(System.err);
+            }
         }
         connectionBusy = false;
         return returnStream;
