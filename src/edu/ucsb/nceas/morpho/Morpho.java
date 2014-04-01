@@ -494,7 +494,7 @@ public class Morpho
            connectionBusy = false;
            return returnStream;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             try {
                 Log.debug(20, "Sending data to:(again) " + metacatURL);
                 URL url = new URL(metacatURL);
