@@ -193,9 +193,9 @@ public class Morpho
     private static boolean debug = true;
     private static int debug_level = 9;
     private final static String LIBDIR = "lib/";
-    private final static String TRUSTKEYSTORE = "truststore";
-    private static String keystorePass = "changeit";
-    private static String userKeystore = "";
+    //private final static String TRUSTKEYSTORE = "truststore";
+    //private static String keystorePass = "changeit";
+    //private static String userKeystore = "";
     public static Morpho thisStaticInstance;
     /** flag set to indicate that connection to metacat is busy
      *  used by doPing to avoid thread problem
@@ -1038,10 +1038,10 @@ public class Morpho
             initializeAccessList();
             
              // setup keystore
-            initializeKeyStore();
+            //initializeKeyStore();
              //set up properties of 
-   		    System.setProperty("javax.net.ssl.trustStore", userKeystore);
-   	        System.setProperty("javax.net.ssl.trustStorePassword", keystorePass);
+   		    //System.setProperty("javax.net.ssl.trustStore", userKeystore);
+   	        //System.setProperty("javax.net.ssl.trustStorePassword", keystorePass);
    	        System.setProperty("security.provider.3", "com.sun.net.ssl.internal.ssl.Provider");
    	        //System.setProperty("javax.net.debug","all");
    	        //System.setProperty("java.security.policy","/home/rzheva/test/java.policy"); 
@@ -2097,7 +2097,7 @@ public class Morpho
      * doesn't exist in the ~/.morpho dir. If the file is there, nothing will be done currently.
      * In the next step, we should merge the two keystore if the ~/.morpho already has the keystore
      */
-    private static void initializeKeyStore()
+    /*private static void initializeKeyStore()
     {
     	//this method will be called after initializeConfiguration(), 
     	// so we wouldn't worry about creating configDir (~/.morpho)
@@ -2124,7 +2124,7 @@ public class Morpho
     		Log.debug(5, "You have to run morpho without secure connection to metacat since "+e.getMessage()
     				           +".\n You may use file|setup preference menu to change the metacat url from \"https\" to \"http\"");
     	}
-    }
+    }*/
     
     private static void fileCopy(File src, File dest) throws Exception {
     	FileInputStream input = new FileInputStream(src);
