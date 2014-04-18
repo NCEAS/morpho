@@ -1,10 +1,10 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.10.1
+Version: 1.10.2
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
-                      http://bugzilla.ecoinformatics.org
+                      https://projects.ecoinformatics.org/ecoinfo/projects/morpho-7
 
 Contributors: 
     Please see the CONTRIBUTORS.txt file in this directory.
@@ -16,7 +16,7 @@ specific collaborators over the Knowledge Network for Biocomplexity system.
 Although Morpho can be used without an account on the KNB, it is free and
 simple to obtain one: just register at:
 
- http://knb.ecoinformatics.org
+ https://knb.ecoinformatics.org
 
 Morpho's main features include:
   1. Flexible metadata creation and editing
@@ -61,16 +61,19 @@ The Knowledge Network for Biocomplexity (KNB)
 ---------------------------------------------
 Morpho is one of a series of tools that are being built for the KNB in order to make ecological data and metadata more accessible and useful to scientists. In particular, the KNB has a distributed metadata catalog called Metacat. Morpho can be used to contribute data and metadata to the KNB and make it accessible in the Metacat system.  To do so, one must have an account on the KNB, which can be obtained for testing purposes by writing to "knb-software@nceas.ucsb.edu".
 
-See the KNB website (http://knb.ecoinformatics.org/software) for more information and other software tools.
+See the KNB website (https://knb.ecoinformatics.org/) for more information and other software tools.
 
 Known Bugs and Feature Requests
 -------------------------------
-See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of the know issues with Morpho, and a list of the new features that have been requested.  Submit reports of new bugs to this address as well.
-
+See https://projects.ecoinformatics.org/ecoinfo/projects/morpho-7 where we maintain a comprehensive list of the know issues with Morpho, and a list of the new features that have been requested.  Submit reports of new bugs to this address as well.
 
 
 Version History
 -------------------------------
+***
+Version 1.10.2 includes the following bug fixes:
+	Uses default Java truststore when establishing SSL connections.
+	Improved client-server connection handling when saving and searching the network. 
 ***
 Version 1.10.1 includes bug fixes.
 	Taxonomic import handles attributes with code/definition enumerations.
