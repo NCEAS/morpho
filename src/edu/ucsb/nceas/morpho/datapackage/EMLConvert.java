@@ -58,7 +58,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -131,7 +131,7 @@ public class EMLConvert
       tr1.setParameter("metacatURL", metacatURL);
 
       Transformer lastTransformer = tHandler2.getTransformer();
-      lastTransformer.setOutputProperty(OutputProperties.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
+      lastTransformer.setOutputProperty(OutputPropertiesFactory.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
 
 
       // Create an XMLReader.

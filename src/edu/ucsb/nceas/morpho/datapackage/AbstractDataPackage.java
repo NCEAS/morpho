@@ -89,6 +89,7 @@ import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+import edu.ucsb.nceas.utilities.export.HtmlToPdf;
 
 /**
  * <p>class that represents a data package. This class is abstract. Specific datapackages
@@ -254,6 +255,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected Entity[] entityArray;
 
   private final String HTMLEXTENSION = ".html";
+  private final String PDFEXTENSION = ".pdf";
   private final String METADATAHTML = "metadata";
   private final String EXPORTSYLE = "export";
   private static final int ORIGINAL_REVISION = 1;
@@ -4531,6 +4533,13 @@ public abstract class AbstractDataPackage extends MetadataObject
       tempPathBuff.append(METADATAHTML);
       tempPathBuff.append(HTMLEXTENSION);
       saveToFile(htmldoc[0], new File(tempPathBuff.toString()));
+      
+      // export a pdf file as well
+      String pdfFile = tempPathBuff.toString();
+      pdfFile = pdfFile.substring(0, pdfFile.lastIndexOf(HTMLEXTENSION));
+      pdfFile = pdfFile + PDFEXTENSION;
+      HtmlToPdf.export(tempPathBuff.toString(), pdfFile);
+
 
     }
     catch (Exception w) {
