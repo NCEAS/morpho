@@ -105,6 +105,7 @@ public class AttributePage extends AbstractUIPage {
   private JLabel attribDefinitionLabel;
   private JLabel attribStorageLabel;
   private JLabel attribStorageSystemLabel;
+  private JLabel attribMissingValueLabel;
   // storage type is not presented, so no label here
   private JLabel measScaleLabel;
   private JPanel currentPanel;
@@ -410,8 +411,9 @@ public class AttributePage extends AbstractUIPage {
     ////////////////////////////////////////////
         
     // multiple missing value codes
+    attribMissingValueLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("AttributePage.MissingValues") + ":", false);
     JPanel missingValueCodesPanel = WidgetFactory.makePanel(4);
-    missingValueCodesPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("AttributePage.MissingValues") + ":", false));
+    missingValueCodesPanel.add(attribMissingValueLabel);
     String[] colNames = 
     	new String[] {
     		Language.getInstance().getMessage("AttributePage.MissingValueCode"),
@@ -756,7 +758,7 @@ public class AttributePage extends AbstractUIPage {
   *  @return boolean true if dialog should close and return to wizard, false
   *          if not (e.g. if a required field hasn't been filled in)
   */
-  public boolean onAdvanceAction() {
+  public boolean onAdvanceAction() {	  	 
 
     //if (attribNameField.getText().trim().equals("")) {
     if (Util.isBlank(attribNameField.getText())) {
@@ -782,6 +784,28 @@ public class AttributePage extends AbstractUIPage {
       return false;
     }
     WidgetFactory.unhiliteComponent(measScaleLabel);
+    
+    List<List<String>> missingCodes = missingValueCodes.getListOfRowLists();
+	for (List<String> row: missingCodes) {
+		    //System.out.println("in the for loop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		    boolean hasCode = false;
+		    boolean hasCodeExpln = false;
+	    	String missingValueCode = row.get(0);
+	    	if (!Util.isBlank(missingValueCode)) {
+			  hasCode = true;
+			}
+	    	String missingValueExpln = row.get(1);
+	    	if(!Util.isBlank(missingValueExpln)) {
+		      hasCodeExpln = true;
+		    }
+	    	
+	    	if(hasCode != true || hasCodeExpln !=true) {
+	    		WidgetFactory.hiliteComponent(attribMissingValueLabel);
+	    	    return false;
+	    	}
+	  
+	}
+	WidgetFactory.unhiliteUnRequiredComponent(attribMissingValueLabel);
 
     boolean valid = ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
     if(!valid) return false;

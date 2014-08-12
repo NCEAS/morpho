@@ -287,8 +287,10 @@ public class WidgetFactory {
   public static void unhiliteComponent(JComponent component) {
     Util.unhiliteComponent(component, null, WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
   }
-
-
+  
+  public static void unhiliteUnRequiredComponent(JComponent component) {
+	  Util.unhiliteComponent(component, null, WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+  }
 
   public static JPanel makeRadioPanel(String[] buttonsText,
                                   int selectedIndex, ActionListener listener) {
