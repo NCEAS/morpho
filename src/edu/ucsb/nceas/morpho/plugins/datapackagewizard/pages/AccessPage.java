@@ -963,14 +963,21 @@ public class AccessPage
 
       while (!done) {
         if (tempNode.getNodeName().compareTo("authSystem") == 0) {
+        	String authSystemUri = tempNode.getAttributes().getNamedItem("URI").getNodeValue();
+        	        	
           nodeObject = new AccessTreeNodeObject(
-              tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
+              authSystemUri,
               WizardSettings.ACCESS_PAGE_AUTHSYS);
 
           if (tempNode.getAttributes().getNamedItem("organization") != null) {
             org = tempNode.getAttributes().getNamedItem("organization").getNodeValue();
             nodeObject.setOrganization(org);
 
+        	// use the ldap base from authSystem
+            // see: https://projects.ecoinformatics.org/ecoinfo/issues/6591
+            String ldapBase = authSystemUri.substring(authSystemUri.lastIndexOf(org) + org.length() + 1);
+            config.set("ldapbase", 0, ldapBase);
+            
             // check if the organization name exsists in the list of orgs in
             // the config.xml....
             if(!orgList.contains(org)){
