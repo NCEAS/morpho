@@ -975,8 +975,10 @@ public class AccessPage
 
         	// use the ldap base from authSystem
             // see: https://projects.ecoinformatics.org/ecoinfo/issues/6591
-            String ldapBase = authSystemUri.substring(authSystemUri.lastIndexOf(org) + org.length() + 1);
-            config.set("ldapbase", 0, ldapBase);
+            if (authSystemUri.lastIndexOf(org) > -1) {
+	            String ldapBase = authSystemUri.substring(authSystemUri.lastIndexOf(org) + org.length() + 1);
+	            config.set("ldapbase", 0, ldapBase);
+            }
             
             // check if the organization name exsists in the list of orgs in
             // the config.xml....
