@@ -25,7 +25,7 @@
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
       <!--<property name="utilities-tag" value="trunk" />-->
-	<property name="utilities-tag" value="tags/UTILITIES_1_4_0_RC1" />  
+	<property name="utilities-tag" value="tags/UTILITIES_1_4_0" />  
    	<property name="svn-utilitiesUrl"
             value="https://code.ecoinformatics.org/code/utilities/${utilities-tag}" />
       <property name="eml-module" value="eml" />
@@ -44,7 +44,7 @@
    	
    	<!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
 	  <!--<property name="eml-style-tag" value="trunk" />-->
-	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_1_0_RC1" />
+	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_1_0" />
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
