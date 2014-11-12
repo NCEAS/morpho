@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.10.2
+Version: 1.10.3
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       https://projects.ecoinformatics.org/ecoinfo/projects/morpho-7
@@ -70,6 +70,10 @@ See https://projects.ecoinformatics.org/ecoinfo/projects/morpho-7 where we maint
 
 Version History
 -------------------------------
+***
+Version 1.10.3 includes the following bug fixes:
+	Support account profiles outside of dc=ecoinformatics,dc=org domain.
+	Include PDF rendering of metadata with data package exports.
 ***
 Version 1.10.2 includes the following bug fixes:
 	Uses default Java truststore when establishing SSL connections.
