@@ -767,7 +767,7 @@
       		chdir="." 
       		priority="normal" 
       		downloadurl="http://java.com/download" 
-      		customprocname="false" 
+      		
       		stayalive="false" 
       		icon="${libdir}/DesktopIcon32x32.ico">
       	  <classPath mainClass="edu.ucsb.nceas.morpho.Morpho">
@@ -801,22 +801,50 @@
 -->          
   <target name="macjarbundler" depends="install">
       <taskdef name="jarbundler" 
-         classpath="${morpho.basedir}/lib/jarbundler-2.2.0.jar"
-         classname="net.sourceforge.jarbundler.JarBundler" 
+         classpath="${morpho.basedir}/lib/appbundler-1.0.jar"
+         classname="com.oracle.appbundler.AppBundlerTask" 
          onerror="ignore" />
   	<echo message="Using morpho args: ${morpho.args}"></echo>
-      <jarbundler dir="${morpho.basedir}/"
+      <!--<jarbundler dir="${morpho.basedir}/"
             name="morpho"
 		    stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
             mainclass="edu.ucsb.nceas.morpho.Morpho"
-            jvmversion="1.6+"
             icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
             vmoptions="-Xmx1024m -Xss5m" 
       		arguments="${morpho.args}">
       		<jarfileset dir="${build.lib}">
       			<include name="*.jar" />
       		</jarfileset>
-        </jarbundler>
+        </jarbundler> -->
+  	    <jarbundler outputdirectory="${morpho.basedir}/"
+  	             name="morpho"
+  	    	     displayname="Morpho"
+  	    	     identifier="edu.ucsb.nceas.morpho.Morpho"
+  	    	     icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
+  	    	     applicationCategory="public.app-category.developer-tools"
+  	    	     mainclassname="edu/ucsb/nceas/morpho/Morpho">
+  	    	     <!--<runtime dir="/Library/Java/JavaVirtualMachines/jdk1.7.0_17.jdk/Contents/Home"/>-->
+  	    	     <classpath dir="${build.lib}">
+  	    	                <include name="*.jar" />
+  	    	     	</classpath>
+  	    	     <option value="-Dapple.laf.useScreenMenuBar=true"/>
+  	    	     <option value="-Duser.dir=$APP_ROOT/Contents/Resources"/>
+  	    	     <option value="-Xmx1024M"/>
+  	      </jarbundler>
+  	      <mkdir dir="morpho.app/Contents/Resources/xsl"/>
+  	      <copy todir="morpho.app/Contents/Resources/xsl" filtering="yes">
+  	        <fileset dir="xsl">
+  	          <exclude name="**/CVS*"/>
+  	          <exclude name="**/.#*"/>
+  	        </fileset>
+  	      </copy>
+  	      <mkdir dir="morpho.app/Contents/Resources/xsd"/>
+  	      <copy todir="morpho.app/Contents/Resources/xsd" filtering="yes">
+  	            <fileset dir="xsd">
+  	              <exclude name="**/CVS*"/>
+  	              <exclude name="**/.#*"/>
+  	            </fileset>
+  	      </copy>
   </target>
 
 	

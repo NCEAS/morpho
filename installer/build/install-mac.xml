@@ -145,7 +145,7 @@
 			  <include name="docs/README.txt"/>
 			  <include name="lib/morpho-config.jar"/>
 			</fileset>
-			<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.app/Contents/MacOS/JavaApplicationStub"/>
+			<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.app/Contents/MacOS/JavaAppLauncher"/>
 		
     	</pack>
     
