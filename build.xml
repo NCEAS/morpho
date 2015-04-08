@@ -800,7 +800,7 @@
      Mac. (Dan Higgins 11/2007)
 -->          
   <target name="macjarbundler" depends="install">
-      <taskdef name="jarbundler" 
+      <taskdef name="appbundler" 
          classpath="${morpho.basedir}/lib/appbundler-1.0.jar"
          classname="com.oracle.appbundler.AppBundlerTask" 
          onerror="ignore" />
@@ -816,8 +816,8 @@
       			<include name="*.jar" />
       		</jarfileset>
         </jarbundler> -->
-  	    <jarbundler outputdirectory="${morpho.basedir}/"
-  	             name="morpho"
+  	    <appbundler outputdirectory="${morpho.basedir}/"
+  	             name="Morpho"
   	    	     displayname="Morpho"
   	    	     identifier="edu.ucsb.nceas.morpho.Morpho"
   	    	     icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
@@ -830,20 +830,11 @@
   	    	     <option value="-Dapple.laf.useScreenMenuBar=true"/>
   	    	     <option value="-Duser.dir=$APP_ROOT/Contents/Resources"/>
   	    	     <option value="-Xmx1024M"/>
-  	      </jarbundler>
-  	      <mkdir dir="morpho.app/Contents/Resources/xsl"/>
-  	      <copy todir="morpho.app/Contents/Resources/xsl" filtering="yes">
-  	        <fileset dir="xsl">
-  	          <exclude name="**/CVS*"/>
-  	          <exclude name="**/.#*"/>
+  	      </appbundler>
+  	      <copy todir="Morpho.app/Contents/MacOS" overwrite="yes">
+  	        <fileset dir="lib">
+  	          <include name="JavaAppLauncher"/>
   	        </fileset>
-  	      </copy>
-  	      <mkdir dir="morpho.app/Contents/Resources/xsd"/>
-  	      <copy todir="morpho.app/Contents/Resources/xsd" filtering="yes">
-  	            <fileset dir="xsd">
-  	              <exclude name="**/CVS*"/>
-  	              <exclude name="**/.#*"/>
-  	            </fileset>
   	      </copy>
   </target>
 
