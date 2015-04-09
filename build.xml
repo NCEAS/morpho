@@ -773,7 +773,7 @@
       	  <classPath mainClass="edu.ucsb.nceas.morpho.Morpho">
       	    <cp>%EXEDIR%/lib/*.jar</cp>    
       	  </classPath>
-      	  <jre minVersion="1.6.0" jdkPreference="preferJre">
+      	  <jre minVersion="1.7.0" jdkPreference="preferJre">
       	    <opt>-Xmx512m</opt>
       	    <opt>-Xss5m</opt>
       	    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%/lib/jar/apache&quot;</opt>
