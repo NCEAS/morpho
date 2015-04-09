@@ -827,8 +827,8 @@
   	    	     <classpath dir="${build.lib}">
   	    	                <include name="*.jar" />
   	    	     	</classpath>
-  	    	     <option value="-Dapple.laf.useScreenMenuBar=true"/>
-  	    	     <option value="-Duser.dir=$APP_ROOT/Contents/Resources"/>
+  	    	     <!--<option value="-Dapple.laf.useScreenMenuBar=true"/>
+  	    	     <option value="-Duser.dir=$APP_ROOT/Contents/Resources"/>-->
   	    	     <option value="-Xmx1024M"/>
   	      </appbundler>
   	      <copy todir="Morpho.app/Contents/MacOS" overwrite="yes">
