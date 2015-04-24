@@ -113,7 +113,7 @@
       <property name="launch4j.dir" location="/Applications/launch4j" />
     <!-- NOTE: location is machine specific - insert LaTex bin path on your machine! This
 		   property will be used in 'helppdf' target. -->
-		<property name="latex.path" value="/usr/local/texlive/2009/bin/universal-darwin"/>   	
+		<property name="latex.path" value="/usr/local/texlive/2014/bin/universal-darwin"/>   	
 
       <property name="izpackjar" 
 		            value="${libdir}/standalone-compiler.jar"/>
@@ -775,7 +775,7 @@
       	  </classPath>
       	  <jre minVersion="1.7.0" jdkPreference="preferJre">
       	    <opt>-Xmx1024m</opt>
-      	    <opt>-Xss100m</opt>
+      	    <opt>-Xss20m</opt>
       	    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%/lib/jar/apache&quot;</opt>
       	    <opt>-Djava.library.path=&quot;%EXEDIR%/lib&quot;</opt>
       	  </jre>
