@@ -266,7 +266,7 @@ if [ -z ${JVMMainClass} ]; then
 elif [ -f "$JAVACMD" ] && [ -x "$JAVACMD" ] ; then
 
 	# enable drag&drop to the dock icon
-	export CFProcessPath="$0"
+	#export CFProcessPath="$0"
 
 	# change to Working Directory based upon Apple/Oracle Plist info
 	cd "${WorkingDirectory}"
