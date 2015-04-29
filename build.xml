@@ -24,7 +24,7 @@
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="certificateLocation" value="/tmp/yourcert.pem"/>
       <!--<property name="utilities-tag" value="trunk" />-->
-   	<property name="utilities-tag" value="tags/UTILITIES_1_3_0" />
+   	<property name="utilities-tag" value="tags/UTILITIES_1_4_0" />
 
 	  <property name="svn-utilitiesUrl"
             value="https://code.ecoinformatics.org/code/utilities/${utilities-tag}" />
@@ -43,7 +43,7 @@
 	<property name="eml-211-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-211-schema-tag}"/>
    	
    	<!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
-	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_0_7" />
+	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_1_1" />
 	  <!--<property name="eml-style-tag" value="trunk" />-->
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
@@ -111,7 +111,7 @@
       <property name="launch4j.dir" location="/Applications/launch4j" />
     <!-- NOTE: location is machine specific - insert LaTex bin path on your machine! This
 		   property will be used in 'helppdf' target. -->
-		<property name="latex.path" value="/usr/local/texlive/2009/bin/universal-darwin"/>   	
+		<property name="latex.path" value="/usr/local/texlive/2014/bin/universal-darwin"/>   	
 
       <property name="izpackjar" 
 		            value="${libdir}/standalone-compiler.jar"/>
@@ -708,16 +708,15 @@
       		cmdline="${morpho.args}" 
       		chdir="." 
       		priority="normal" 
-      		downloadurl="http://java.com/download" 
-      		customprocname="false" 
+      		downloadurl="http://java.com/download"  
       		stayalive="false" 
       		icon="${libdir}/DesktopIcon32x32.ico">
       	  <classPath mainClass="edu.ucsb.nceas.morpho.Morpho">
       	    <cp>%EXEDIR%/lib/*.jar</cp>    
       	  </classPath>
-      	  <jre minVersion="1.6.0" jdkPreference="preferJre">
-      	    <opt>-Xmx512m</opt>
-      	    <opt>-Xss5m</opt>
+      	  <jre minVersion="1.7.0" jdkPreference="preferJre">
+      	    <opt>-Xmx1024m</opt>
+      	    <opt>-Xss20m</opt>
       	    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%/lib/jar/apache&quot;</opt>
       	    <opt>-Djava.library.path=&quot;%EXEDIR%/lib&quot;</opt>
       	  </jre>
@@ -742,23 +741,47 @@
      Mac. (Dan Higgins 11/2007)
 -->          
   <target name="macjarbundler" depends="install">
-      <taskdef name="jarbundler" 
-         classpath="${morpho.basedir}/lib/jarbundler-2.2.0.jar"
-         classname="net.sourceforge.jarbundler.JarBundler" 
-         onerror="ignore" />
-  	<echo message="Using morpho args: ${morpho.args}"></echo>
-      <jarbundler dir="${morpho.basedir}/"
-            name="morpho"
-		    stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
-            mainclass="edu.ucsb.nceas.morpho.Morpho"
-            jvmversion="1.6+"
-            icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
-            vmoptions="-Xmx512m -Xss5m" 
-      		arguments="${morpho.args}">
-      		<jarfileset dir="${build.lib}">
-      			<include name="*.jar" />
-      		</jarfileset>
-        </jarbundler>
+  	 <taskdef name="appbundler" 
+  	         classpath="${morpho.basedir}/lib/appbundler-1.0.jar"
+  	         classname="com.oracle.appbundler.AppBundlerTask" 
+  	         onerror="ignore" />
+  	    <echo message="Using morpho args: ${morpho.args}"></echo>
+  	      <!--<jarbundler dir="${morpho.basedir}/"
+  	            name="morpho"
+  	            stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
+  	            mainclass="edu.ucsb.nceas.morpho.Morpho"
+  	            icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
+  	            vmoptions="-Xmx1024m -Xss5m" 
+  	            arguments="${morpho.args}">
+  	            <jarfileset dir="${build.lib}">
+  	                <include name="*.jar" />
+  	            </jarfileset>
+  	        </jarbundler> -->
+  	        <appbundler outputdirectory="${morpho.basedir}/"
+  	                 name="Morpho"
+  	                 displayname="Morpho"
+  	                 identifier="edu.ucsb.nceas.morpho.Morpho"
+  	                 icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
+  	                 applicationCategory="public.app-category.developer-tools"
+  	                 mainclassname="edu/ucsb/nceas/morpho/Morpho">
+  	                 <!--<runtime dir="/Library/Java/JavaVirtualMachines/jdk1.7.0_17.jdk/Contents/Home"/>-->
+  	                 <classpath dir="${build.lib}">
+  	                            <include name="*.jar" />
+  	                    </classpath>
+  	                 <!--<option value="-Dapple.laf.useScreenMenuBar=true"/>
+  	                 <option value="-Duser.dir=$APP_ROOT/Contents/Resources"/>-->
+  	                 <option value="-Xmx1024M"/>
+  	                 <option value="-Xss100M"/>
+  	          </appbundler>
+  	          <!--the executable file JavaAppLaunch generated by appbundler will lauch morpho with the working directory - user-home.
+  	              However, we want the working directory to be app-package-root. So we use the universalJavaApplicationStub from
+  	              https://github.com/tofi86/universalJavaApplicationStub to replace the JavaAppLaunch generated by appbundler.
+  	          -->
+  	          <copy todir="Morpho.app/Contents/MacOS" overwrite="yes">
+  	            <fileset dir="lib">
+  	              <include name="JavaAppLauncher"/>
+  	            </fileset>
+  	          </copy>
   </target>
 
 	
