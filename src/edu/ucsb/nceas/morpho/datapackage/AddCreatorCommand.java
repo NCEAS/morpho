@@ -55,7 +55,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
-import java.util.TreeMap;
 
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
@@ -239,7 +238,7 @@ implements Command, DataPackageWizardListener {
     Object nextXPathObj = null;
     String nextXPath = null;
     // use a Map that maintains order
-    TreeMap<String, OrderedMap> creatorSetMap = new TreeMap<String, OrderedMap>();
+    OrderedMap creatorSetMap = new OrderedMap();
 
     while (creatorIt.hasNext()) {
       nextXPathObj = creatorIt.next();
@@ -264,9 +263,9 @@ implements Command, DataPackageWizardListener {
     }
     
     // reverse them to add them to the XML in order
-    List<String> keys = Arrays.asList(creatorSetMap.keySet().toArray(new String[0]));
+    List<Object> keys = Arrays.asList(creatorSetMap.keySet().toArray(new String[0]));
     Collections.reverse((keys));
-    Iterator<String> creatorSetIt = keys.iterator();
+    Iterator<Object> creatorSetIt = keys.iterator();
     while (creatorSetIt.hasNext()) {
       nextXPathObj = creatorSetIt.next();
       OrderedMap creatorMap = (OrderedMap) creatorSetMap.get(nextXPathObj);
