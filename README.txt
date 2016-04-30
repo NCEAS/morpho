@@ -71,7 +71,10 @@ See https://projects.ecoinformatics.org/ecoinfo/projects/morpho-7 where we maint
 Version History
 -------------------------------
 ***
-Version 1.11.0 includs:
+Version 1.11.1 includes:
+ Creator, Contact, and Associated Parties maintain the order in which they were entered (fixed).
+***
+Version 1.11.0 includes:
  Only supports Java 1.7+ on Mac, Windows and Linux.
 ***
 Version 1.10.3 includes the following bug fixes:
