@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.11.0
+Version: 1.11.1
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       https://projects.ecoinformatics.org/ecoinfo/projects/morpho-7
