@@ -688,7 +688,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
         returnMap.put(  xPathRoot + "textDomain[1]/definition",
         "Free text (unrestricted)");
-        returnMap.put(xPathRoot + "textDomain[1]/pattern[1]", ".*");
+        //returnMap.put(xPathRoot + "textDomain[1]/pattern[1]", ".*");
       }
 
     } else {            //TEXT
