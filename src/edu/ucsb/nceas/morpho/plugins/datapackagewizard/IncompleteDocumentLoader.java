@@ -562,7 +562,7 @@ public class IncompleteDocumentLoader
         WizardPageLibraryInterface lib = dpWiz.getWizardPageLibrary();
         if(lib != null)
         {
-          page =(TextImportAttribute)lib.getPage(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE+index);
+          page =(TextImportAttribute)lib.getPage(DataPackageWizardInterface.LOAD_INCOMPLETED_ATTRIBUTE+DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE+index);
         }
         if(page != null)
         {

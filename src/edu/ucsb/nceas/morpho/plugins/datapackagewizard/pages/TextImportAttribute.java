@@ -101,7 +101,7 @@ public class TextImportAttribute extends AbstractUIPage
 	    * @param frame
 	    * @param index of column. It starts from 0.
 	    */
-	   public TextImportAttribute(WizardContainerFrame frame,int index)
+	   public TextImportAttribute(WizardContainerFrame frame,int index, boolean withInitialValue)
 	   {
 		   this.frame = frame;
 		   if(this.frame == null)
@@ -124,7 +124,7 @@ public class TextImportAttribute extends AbstractUIPage
 		   }
 		   this.wizardPageLib = new WizardPageLibrary(frame);
 		   this.columnIndex = index;
-		   init();
+		   init(withInitialValue);
 	   }
 	   
 	   /*
@@ -153,7 +153,7 @@ public class TextImportAttribute extends AbstractUIPage
 	   /*
 	    * Init the panels
 	    */
-	   private void init()
+	   private void init(boolean withInitialValue)
 	   {
 		    this.setLayout(new BorderLayout());
 		    JPanel vbox = this;
@@ -161,7 +161,7 @@ public class TextImportAttribute extends AbstractUIPage
 		    //updateColumnDataPanel()
 		    vbox.add(columnDataScrollPanel, BorderLayout.WEST);
 		    attributePage = (AttributePage) wizardPageLib.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
-		    initiAttributePanel();
+		    initiAttributePanel(withInitialValue);
 		    vbox.add(attributePage, BorderLayout.CENTER);
 	   }
 	   
@@ -564,11 +564,13 @@ public class TextImportAttribute extends AbstractUIPage
 	  /**
 	   * Fills some metadata into Attribute page
 	   */
-	  private void initiAttributePanel()
+	  private void initiAttributePanel(boolean withInitialValue)
 	  {
 		  Vector colTitles = textFile.getColumnTitlesVector();
 		  Vector vectorOfData = textFile.getVectorOfData();
-		  fillAttributePageData(attributePage, columnIndex, colTitles, vectorOfData);
+		  if(withInitialValue) {
+		      fillAttributePageData(attributePage, columnIndex, colTitles, vectorOfData);
+		  }
 		  attributePage.validate();
 		  attributePage.repaint();
 	  }
