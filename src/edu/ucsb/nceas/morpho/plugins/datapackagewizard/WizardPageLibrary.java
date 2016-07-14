@@ -184,7 +184,17 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	if(pageID.equals(DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS))
 		  return new TextImportDelimiters(container);
 	if(pageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE))
-		  return generateTextImportAttributePage(pageID) ;
+		  return generateTextImportAttributePage(pageID, true) ;
+	if(pageID.startsWith(DataPackageWizardInterface.LOAD_INCOMPLETED_ATTRIBUTE)) {
+        //we will create a attribute page without initial value
+        pageID = pageID.replaceFirst(DataPackageWizardInterface.LOAD_INCOMPLETED_ATTRIBUTE, "");
+        System.out.println("++++++++++++++++++++ the pageId is\n"+pageID);
+        if(!pageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)) {
+            throw new IllegalArgumentException(
+                    "WizardPageLibrary - no page registered with identifier: "+pageID);
+        }
+        return generateTextImportAttributePage(pageID, false);
+    }
     throw new IllegalArgumentException(
       "WizardPageLibrary - no page registered with identifier: "+pageID);
   }
@@ -192,7 +202,7 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
   /*
    * Generates the TextImportAttribute pages dynamically
    */
-  private TextImportAttribute generateTextImportAttributePage(String pageId)
+  private TextImportAttribute generateTextImportAttributePage(String pageId, boolean withInitialValue)
   {
 	  int index = parseTextImmportAttributePageID(pageId);
 	  if(index < 0 || index >= textImportAttributePagesSize)
@@ -201,7 +211,7 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 		      " since index "+index+" is out of range from 0 to "+textImportAttributePagesSize);
 		  return null;
 	  }
-	  TextImportAttribute page = new TextImportAttribute(container, index);
+	  TextImportAttribute page = new TextImportAttribute(container, index, withInitialValue);
 	  page.setPageID(pageId);
 	  if(index < textImportAttributePagesSize-1)
 	  {
