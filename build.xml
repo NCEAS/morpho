@@ -14,8 +14,47 @@
   * usage: ant [compile|jar|install|jdoc]
 -->
 <project name="morpho" default="install" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
-	<!-- include basedir so that this ant project can be imported by other's -->
-	<dirname property="morpho.basedir" file="${ant.file.morpho}"/>
+    <!-- include basedir so that this ant project can be imported by other's -->
+    <dirname property="morpho.basedir" file="${ant.file.morpho}"/>
+
+    <!-- Allow integration with Git projects -->
+    <macrodef name = "git">
+        <attribute name = "command" />
+        <attribute name = "dir" default = "" />
+        <element name = "args" optional = "true" />
+        <sequential>
+            <echo message = "git @{command}" />
+            <exec executable = "git" dir = "@{dir}">
+                <arg value = "@{command}" />
+                <args/>
+            </exec>
+        </sequential>
+    </macrodef>
+    <macrodef name = "git-clone-pull">
+        <attribute name = "repository" />
+        <attribute name = "dest" />
+        <attribute name = "refname" />
+        <sequential>
+            <git command = "clone">
+                <args>
+                    <arg value = "@{repository}" />
+                    <arg value = "@{dest}" />
+                </args>
+            </git>
+            <git command = "checkout" dir = "@{dest}">
+                <args>
+                    <arg value = "@{refname}" />
+                </args>
+            </git>
+            <git command = "pull" dir = "@{dest}" >
+                <args>
+                    <arg value = "@{repository}" />
+                    <arg value = "@{refname}" />
+                </args>
+            </git>
+        </sequential>
+    </macrodef>
+
    <target name="init" unless="init.called">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
@@ -24,28 +63,25 @@
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="certificateLocation" value="/tmp/yourcert.pem"/>
       <!--<property name="utilities-tag" value="trunk" />-->
-   	<property name="utilities-tag" value="tags/UTILITIES_1_4_0" />
+      <property name="utilities-tag" value="tags/UTILITIES_1_4_0" />
 
-	  <property name="svn-utilitiesUrl"
+      <property name="svn-utilitiesUrl"
             value="https://code.ecoinformatics.org/code/utilities/${utilities-tag}" />
       <property name="eml-module" value="eml" />
-	   <property name="eml-svn-base-url" value="https://code.ecoinformatics.org/code/eml"/>
+      <property name="eml-svn-base-url" value="https://code.ecoinformatics.org/code/eml"/>
+      <property name="eml.git.repository.url" value="https://github.com/NCEAS/eml.git" />
       <!-- the following two properties will be used to get newest eml doc-->
       <property name="eml-doc-tag" value="RELEASE_EML_2_1_1" />
       <property name="eml.doc.dir" value="docs/eml-2.1.1" />
-	  <property name="eml-doc-svn-url" value="${eml-svn-base-url}/tags/${eml-doc-tag}"/>
       <!-- the following property will be used to get eml210 schemas -->
       <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0" />
-	  <property name="eml-210-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-210-schema-tag}"/>
-   	
-    <!-- the following property will be used to get eml210 schemas -->
-    <property name="eml-211-schema-tag" value="RELEASE_EML_2_1_1" />
-	<property name="eml-211-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-211-schema-tag}"/>
-   	
-   	<!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
-	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_1_1" />
-	  <!--<property name="eml-style-tag" value="trunk" />-->
-	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
+       
+      <!-- the following property will be used to get eml211 schemas -->
+      <property name="eml-211-schema-tag" value="RELEASE_EML_2_1_1" />
+       
+      <!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
+      <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_1_1" />
+      <!--<property name="eml-style-tag" value="trunk" />-->
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="certificateLocation" value="${certificateLocation}"/>
@@ -63,12 +99,12 @@
       <property name="jwsdir"
                 value="/var/www/org.ecoinformatics.knb/software/dist/morpho" />
       <property name="testdir" value="${morpho.basedir}/tests" />
-		<property name="styledir" value="${libdir}/style" />
+        <property name="styledir" value="${libdir}/style" />
 
       <property name="build.dir" value="${morpho.basedir}/build"/>
       <property name="build.src" value="${build.dir}/src"/>
       <property name="build.dest" value="${build.dir}/classes"/>
-   	  <property name="build.lib" value="${build.dir}/lib"/>
+      <property name="build.lib" value="${build.dir}/lib"/>
       <property name="build.docs" value="${build.dir}/docs"/>
       <property name="build.samples" value="${build.dir}/samples"/>
       <property name="build.tests" value="${build.dir}/tests"/>
@@ -83,10 +119,10 @@
       <property name="map.file" value="Map.jhm"/>
       <property name="help.toc" value="morphoTOC.xml"/>
       <property name="help.index" value="morphoIndex.xml"/>
-   	
-   		<!-- userguide in LaTex -->
-    	<property name="userguide.basedir" value="${docuserdir}/latex"/>
-		<property name="userguide.fileprefix" value="MorphoUserGuide"/>
+       
+      <!-- userguide in LaTex -->
+      <property name="userguide.basedir" value="${docuserdir}/latex"/>
+      <property name="userguide.fileprefix" value="MorphoUserGuide"/>
 
       <property name="dist.dir" value="${morpho.basedir}/dist"/>
       <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
@@ -102,19 +138,19 @@
       <property name="morpho.docs.user" value="${morpho.docs}/user"/>
       <property name="morpho.docs.licenses" value="${morpho.docs}/licenses"/>
       <property name="morpho.docs.dev.api" value="${morpho.docs.dev}/api"/>
-   	
-	<!-- override the morpho property for other builds -->
-   	<property name="morpho.args" value=".morpho2"/>
-   	   	
+       
+      <!-- override the morpho property for other builds -->
+      <property name="morpho.args" value=".morpho2"/>
+              
       <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine! This
-		   property will be used in buildwininstaller target. -->
+           property will be used in buildwininstaller target. -->
       <property name="launch4j.dir" location="/Applications/launch4j" />
-    <!-- NOTE: location is machine specific - insert LaTex bin path on your machine! This
-		   property will be used in 'helppdf' target. -->
-		<property name="latex.path" value="/usr/local/texlive/2014/bin/universal-darwin"/>   	
+      <!-- NOTE: location is machine specific - insert LaTex bin path on your machine! This
+           property will be used in 'helppdf' target. -->
+      <property name="latex.path" value="/usr/local/texlive/2014/bin/universal-darwin"/>       
 
       <property name="izpackjar" 
-		            value="${libdir}/standalone-compiler.jar"/>
+                    value="${libdir}/standalone-compiler.jar"/>
       <property name="morpho"
                 value="${build.lib}/${name}.jar" />
       <property name="help"
@@ -124,16 +160,16 @@
       <property name="index"
                 value="${libdir}/jhindexer.jar"/>
       <property name="axis"
-   	                value="${libdir}/axis/axis.jar"/>
-   	   	
+                       value="${libdir}/axis/axis.jar"/>
+              
       <property name="package.home" value="edu/ucsb/nceas" />
-	   
+       
       <condition property="utilities.required">
         <or>
           <not><available file="${utilities}" type="file"/></not>
         </or>
       </condition>
-	   
+       
       <condition property="eml210schema.needed">
         <or>
           <not><available file="${schemadir}/eml-2.1.0/eml.xsd" type="file"/></not>
@@ -143,132 +179,127 @@
           <or>
             <not><available file="${schemadir}/eml-2.1.1/eml.xsd" type="file"/></not>
           </or>
-        </condition>
-   	
+      </condition>
+       
       <condition property="transformstylesheet.needed">
         <or>
           <not><available file="${xsldir}/eml201to210.xsl" type="file"/></not>
           <not><available file="${xsldir}/eml201to211.xsl" type="file"/></not>
           <not><available file="${xsldir}/eml210to211.xsl" type="file"/></not>
-		  <not><available file="${xsldir}/eml2tonbii.xsl" type="file"/></not>
-  		<!-- make sure the eml2 stylesheets are in place from EML project -->  
+          <not><available file="${xsldir}/eml2tonbii.xsl" type="file"/></not>
+          <!-- make sure the eml2 stylesheets are in place from EML project -->  
         <not><available file="${styledir}/eml2/eml.xsl" type="file"/></not>
-        	
+            
         </or>
       </condition>
-   	
+       
       <property name="nbii.jarname" value="nbii.jar" />
 
       <property name="wsdl.url.nbii" value="http://nbii-thesaurus.ornl.gov/ws/services/SKOSThesaurusService?wsdl" />
 
       <!-- for easier classpath management (so many axis jars!)-->
       <path id="base.classpath">
-   			<fileset dir="${libdir}">
-   				<include name="*.jar" />
-   			</fileset>
-   			<fileset dir="${libdir}/axis">
-   				<include name="*.jar" />
-   			</fileset>
+               <fileset dir="${libdir}">
+                   <include name="*.jar" />
+               </fileset>
+               <fileset dir="${libdir}/axis">
+                   <include name="*.jar" />
+               </fileset>
    
-       </path>
-   	
-   		<path id="classpath.runtime">
-   			<fileset dir="${build.lib}">
-   				<include name="*.jar" />
-   			</fileset>
-		</path>
+      </path>
+       
+      <path id="classpath.runtime">
+          <fileset dir="${build.lib}">
+              <include name="*.jar" />
+          </fileset>
+      </path>
 
-		<taskdef resource="axis-tasks.properties" classpathref="base.classpath"/>
-   		
-   		<!-- set up the latex task -->
-   		<taskdef name="latex" classname="de.dokutransdata.antlatex.LaTeX" classpathref="base.classpath" />
-	   
-		<!-- set up svn -->
-        <property name="svnant.lib" value="${morpho.basedir}/lib" />
-        <property name="svnant.jar" value="${svnant.lib}/svnant.jar" />
-        <property name="svnClientAdapter.jar"
-            value="${svnant.lib}/svnClientAdapter.jar" />
-        <property name="svnjavahl.jar"
-            value="${svnant.lib}/svnjavahl.jar" />
-	   <!-- load the svn task -->
-        <path id="svn-classpath">
+      <taskdef resource="axis-tasks.properties" classpathref="base.classpath"/>
+           
+      <!-- set up the latex task -->
+      <taskdef name="latex" classname="de.dokutransdata.antlatex.LaTeX" classpathref="base.classpath" />
+       
+      <!-- set up svn -->
+      <property name="svnant.lib" value="${morpho.basedir}/lib" />
+      <property name="svnant.jar" value="${svnant.lib}/svnant.jar" />
+      <property name="svnClientAdapter.jar" value="${svnant.lib}/svnClientAdapter.jar" />
+      <property name="svnjavahl.jar" value="${svnant.lib}/svnjavahl.jar" />
+      <!-- load the svn task -->
+      <path id="svn-classpath">
             <pathelement location="${svnjavahl.jar}" />
             <pathelement location="${svnant.jar}" />
             <pathelement location="${svnClientAdapter.jar}" />
-        </path>
-        <taskdef resource="svntask.properties"
-            classpathref="svn-classpath" />
-   	
-	<!-- If you drop the maven-ant-tasks in ~/.ant/lib, you don't need these two bits. -->
-	<taskdef uri="antlib:org.apache.maven.artifact.ant"
-       resource="org/apache/maven/artifact/ant/antlib.xml"
-       classpathref="base.classpath" />
+      </path>
+      <taskdef resource="svntask.properties" classpathref="svn-classpath" />
+       
+      <!-- If you drop the maven-ant-tasks in ~/.ant/lib, you don't need these two bits. -->
+      <taskdef uri="antlib:org.apache.maven.artifact.ant"
+         resource="org/apache/maven/artifact/ant/antlib.xml"
+         classpathref="base.classpath" />
 
-   	<!-- Resolve maven dependencies -->
-	<artifact:pom id="morphoPom" file="${morpho.basedir}/pom.xml" />
-	<artifact:dependencies filesetId="dependency.fileset" pomrefid="morphoPom" usescope="runtime"/>
-	<artifact:dependencies pathId="dependency.classpath" pomrefid="morphoPom"/>
-   	
-    <property name="libdir.mvn" value="${libdir}/maven" />
-   	
-   	<!-- combine base and dependencies for the classpath -->
-   	<path id="classpath">
-   		<path refid="base.classpath" />	
-   		<path refid="dependency.classpath" />	
-	</path>
-   	
-    <property name="init.called" value="true" />
+      <!-- Resolve maven dependencies -->
+      <artifact:pom id="morphoPom" file="${morpho.basedir}/pom.xml" />
+      <artifact:dependencies filesetId="dependency.fileset" pomrefid="morphoPom" usescope="runtime"/>
+      <artifact:dependencies pathId="dependency.classpath" pomrefid="morphoPom"/>
+       
+      <property name="libdir.mvn" value="${libdir}/maven" />
+       
+      <!-- combine base and dependencies for the classpath -->
+      <path id="classpath">
+           <path refid="base.classpath" />    
+           <path refid="dependency.classpath" />    
+      </path>
+       
+      <property name="init.called" value="true" />
 
-   </target>
-	
+    </target>
+    
 
-	<target name="generateNBIIStubs" depends="prepare">
-		<echo message=" Generating stubs for NBII from ${wsdl.url.nbii}" />
-		<axis-wsdl2java verbose="true" output="${build.src}" 
-			url="${wsdl.url.nbii}" />
-	</target>
-	
-	<target name="compileNBII" depends="generateNBIIStubs">
-		<javac destdir="${build.dir}" debug="on" classpathref="classpath" >
-			<src path="${build.src}" />
-			
-		</javac>
-	</target>
-	
-	<target name="jarNBII" depends="compileNBII">
-		<jar jarfile="${build.dir}/${nbii.jarname}" basedir="${build.dir}" >
-			<include name="org/w3/www/**/*.*"/>
-		</jar>
-		<copy file="${build.dir}/${nbii.jarname}" todir="${libdir}" overwrite="true" />
-	</target>
-	
-   <target name="prepare" depends="init">
+    <target name="generateNBIIStubs" depends="prepare">
+        <echo message=" Generating stubs for NBII from ${wsdl.url.nbii}" />
+        <axis-wsdl2java verbose="true" output="${build.src}" 
+            url="${wsdl.url.nbii}" />
+    </target>
+    
+    <target name="compileNBII" depends="generateNBIIStubs">
+        <javac destdir="${build.dir}" debug="on" classpathref="classpath" >
+            <src path="${build.src}" />
+            
+        </javac>
+    </target>
+    
+    <target name="jarNBII" depends="compileNBII">
+        <jar jarfile="${build.dir}/${nbii.jarname}" basedir="${build.dir}" >
+            <include name="org/w3/www/**/*.*"/>
+        </jar>
+        <copy file="${build.dir}/${nbii.jarname}" todir="${libdir}" overwrite="true" />
+    </target>
+    
+    <target name="prepare" depends="init">
       <mkdir dir="${build.dir}"/>
       <mkdir dir="${build.src}"/>
       <mkdir dir="${build.dest}"/>
-   	  <mkdir dir="${build.lib}"/>
+         <mkdir dir="${build.lib}"/>
       <mkdir dir="${build.javadocs}"/>
-   </target>
+    </target>
   
-	<target name="resolveD1" depends="init" description="retrieve DataONE dependencies with maven">
-		<echo>Moving Maven dependencies (${dependency.fileset}) to ${libdir.mvn} </echo>
-		<!-- Clear out mvn dir -->
-		<delete dir="${libdir.mvn}"></delete>
-		<!-- Copy all dependencies to the correct location. -->
-		<copy todir="${libdir.mvn}">
-			<fileset refid="dependency.fileset" />
-			<!-- This mapper strips off all leading directory information -->
-			<mapper type="flatten" />
-		</copy>
-	</target>
+    <target name="resolveD1" depends="init" description="retrieve DataONE dependencies with maven">
+        <echo>Moving Maven dependencies (${dependency.fileset}) to ${libdir.mvn} </echo>
+        <!-- Clear out mvn dir -->
+        <delete dir="${libdir.mvn}"></delete>
+        <!-- Copy all dependencies to the correct location. -->
+        <copy todir="${libdir.mvn}">
+            <fileset refid="dependency.fileset" />
+            <!-- This mapper strips off all leading directory information -->
+            <mapper type="flatten" />
+        </copy>
+    </target>
 
    <target name="emldoc" depends="prepare">
-     <!-- checkout eml moduel -->
-     <echo>Check out eml doc from SVN</echo>
-	  <svn>
-            <export srcUrl="${eml-doc-svn-url}"
-                destPath="${build.docs}/${eml-module}" force="true" />
-     </svn>
+     <!-- checkout eml module -->
+     <echo>Check out eml doc from ${eml-doc-tag}</echo>
+     <git-clone-pull repository="${eml.git.repository.url}" 
+                     dest="${build.docs}/${eml-module}" refname="${eml-doc-tag}" />
      <ant dir="${build.docs}/${eml-module}" target="docs" inheritAll="false"/>
      <mkdir dir="${java.help.doc.dir}" />
      <copy todir="${java.help.doc.dir}/eml" filtering="no">
@@ -290,45 +321,35 @@
       <outputproperty name="indent" value="yes"/>
     </xslt>
    </target>
-	
+    
    <target name="getstylesheets" depends="prepare" if="transformstylesheet.needed">
      <!-- checkout eml/eml201to210.xsl and eml2tonbii.xsl file -->
-     <echo>Check out eml conversion xsl files and NBII style sheet from SVN</echo>
-	 <mkdir dir="${build.xsl}/eml_${eml-style-tag}" />
-	 <svn>
-            <export srcUrl="${eml-style-svn-url}/style"
-                destPath="${build.xsl}/eml_${eml-style-tag}/style" force="true" />
-        </svn>
-	   <mkdir dir="${build.xsl}/eml_${eml-style-tag}/lib" />
-	   <svn>
-            <export srcUrl="${eml-style-svn-url}/lib/eml2tonbii"
-                destPath="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii" force="true" />
-        </svn>
-	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to210.xsl" todir="${xsldir}" />
-	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to211.xsl" todir="${xsldir}" />
-	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml210to211.xsl" todir="${xsldir}" />
-	<copy file="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii/eml2tonbii.xsl" todir="${xsldir}" />
-   	
-	<antcall target="copyemlstylesheet" />
+     <echo>Check out eml conversion xsl files and NBII style sheet from source</echo>
+     <git-clone-pull repository="${eml.git.repository.url}" 
+                     dest="${build.xsl}/eml_${eml-style-tag}" refname="${eml-style-tag}" />
+    <copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to210.xsl" todir="${xsldir}" />
+    <copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to211.xsl" todir="${xsldir}" />
+    <copy file="${build.xsl}/eml_${eml-style-tag}/style/eml210to211.xsl" todir="${xsldir}" />
+    <copy file="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii/eml2tonbii.xsl" todir="${xsldir}" />
+       
+    <antcall target="copyemlstylesheet" />
 
    </target>
-	
-	<target name="copyemlstylesheet">
-		<!-- copy eml xslt files, except the settings file -->
-		<echo>Copy eml xsl files from SVN checkout to the lib dir</echo>
-		<copy todir="${styledir}/eml2">
-			<fileset dir="${build.xsl}/eml_${eml-style-tag}/style/eml" excludes="eml-settings.xsl"/>
-		</copy>
-	</target>	
+    
+   <target name="copyemlstylesheet">
+        <!-- copy eml xslt files, except the settings file -->
+        <echo>Copy eml xsl files from source checkout to the lib dir</echo>
+        <copy todir="${styledir}/eml2">
+            <fileset dir="${build.xsl}/eml_${eml-style-tag}/style/eml" excludes="eml-settings.xsl"/>
+        </copy>
+   </target>    
 
    <target name="geteml210" depends="prepare" if="eml210schema.needed">
      <!-- checkout eml moduel -->
-     <echo>Check out EML 2.1.0 schema from SVN</echo>
-	   <mkdir dir="${build.schema}"/>
-	   <svn>
-            <export srcUrl="${eml-210-schema-svn-url}"
-                destPath="${build.schema}/eml_${eml-210-schema-tag}" />
-        </svn>
+     <echo>Check out EML 2.1.0 schema from source</echo>
+     <mkdir dir="${build.schema}"/>
+     <git-clone-pull repository="${eml.git.repository.url}" 
+                     dest="${build.schema}/eml_${eml-210-schema-tag}" refname="${eml-210-schema-tag}" />
      <mkdir dir="${schemadir}/eml-2.1.0" />
      <copy todir="${schemadir}/eml-2.1.0" filtering="yes">
        <fileset dir="${build.schema}/eml_${eml-210-schema-tag}">
@@ -336,28 +357,26 @@
        </fileset>
      </copy> 
    </target>
-	
-	<target name="geteml211" depends="prepare" if="eml211schema.needed">
-	     <!-- checkout eml moduel -->
-	     <echo>Check out EML 2.1.1 schema from SVN</echo>
-		   <mkdir dir="${build.schema}"/>
-		   <svn>
-	            <export srcUrl="${eml-211-schema-svn-url}"
-	                destPath="${build.schema}/eml_${eml-211-schema-tag}" />
-	        </svn>
-	     <mkdir dir="${schemadir}/eml-2.1.1" />
-	     <copy todir="${schemadir}/eml-2.1.1" filtering="yes">
-	       <fileset dir="${build.schema}/eml_${eml-211-schema-tag}">
-	         <include name="*.xsd"/>
-	       </fileset>
-	     </copy> 
-	   </target>
+    
+   <target name="geteml211" depends="prepare" if="eml211schema.needed">
+       <!-- checkout eml moduel -->
+       <echo>Check out EML 2.1.1 schema from source</echo>
+       <mkdir dir="${build.schema}"/>
+       <git-clone-pull repository="${eml.git.repository.url}" 
+                       dest="${build.schema}/eml_${eml-211-schema-tag}" refname="${eml-211-schema-tag}" />
+       <mkdir dir="${schemadir}/eml-2.1.1" />
+       <copy todir="${schemadir}/eml-2.1.1" filtering="yes">
+           <fileset dir="${build.schema}/eml_${eml-211-schema-tag}">
+               <include name="*.xsd"/>
+           </fileset>
+       </copy> 
+   </target>
 
 
    <target name="utilities" depends="prepare" if="utilities.required">
      <!-- checkout utilities module -->
-	  <echo message="Exporting utiities files from svn repository:" />
-	  <svn>
+      <echo message="Exporting utiities files from svn repository:" />
+      <svn>
             <export srcUrl="${svn-utilitiesUrl}"
                 destPath="${build.dir}/utilities" />
         </svn>
@@ -378,9 +397,9 @@
           <include name="**/*.jpg" />
           <include name="**/*.gif" />
           <include name="*.css" />
-		  <exclude name="*.html"/>
-		  <exclude name="*.htm"/>
-		  <exclude name="EMLHandbook.html"/>
+          <exclude name="*.html"/>
+          <exclude name="*.htm"/>
+          <exclude name="EMLHandbook.html"/>
           <exclude name="EMLHandbook.html"/>
           <exclude name="advanced/**" />
           <exclude name="EmlDocs/**" />
@@ -407,7 +426,7 @@
           <include name="**/*.css" />
         </fileset>
      </copy>
-		 -->
+         -->
       <!-- Creating search database -->
       <!--<exec dir="${java.help.dir}" executable="${java.help.dir}/jhindexer" >
         <arg line="morphohelp" />
@@ -428,14 +447,14 @@
       <delete dir="${searchDB}" />
    </target>
 
-	 <target name="userguidepdf" depends="init">
+   <target name="userguidepdf" depends="init">
         <echo message="Creating ${userguide.fileprefix}.pdf from ${userguide.fileprefix}.tex" />
         <latex 
             latexfile="${userguide.fileprefix}.tex"
             verbose="on"
             clean="on"
             pdftex="on"
-        	path="${latex.path}"
+            path="${latex.path}"
             workingDir="${userguide.basedir}">
                 <makeindex
                 run="on"
@@ -448,10 +467,10 @@
             <bibtex
                 run="on"
                 workingDir="${userguide.basedir}"
-            	path="${latex.path}"
-            	/>
+                path="${latex.path}"
+                />
         </latex>
-    </target>
+   </target>
 
    <!--
    <target name="compile" depends="clean,itis,prepare">
@@ -492,46 +511,46 @@
    </fileset>
       </copy>
       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"
-	      includes="${package.home}/${name}/** com/** edu/tesc/**" >
-		  <manifest>
+          includes="${package.home}/${name}/** com/** edu/tesc/**" >
+          <manifest>
            <attribute name="Built-By" value="${user.name}"/>
            <attribute name="Main-Class" value="edu.ucsb.nceas.morpho.Morpho"/>  
-			<attribute name="Class-Path" value="../ ../lib/"/>       
+            <attribute name="Class-Path" value="../ ../lib/"/>       
         </manifest>
-	  </jar>
+      </jar>
       <jar jarfile="${build.dir}/${name}-config.jar" basedir="${build.lib}"
            excludes="*.jar,SchemaParser/**,LiveMap/**,*.zip,*.gz,axis/**,launch4j/**">
-      		<metainf file="${build.lib}/mime.types"/>
-      	</jar>
-	   <copy file="${build.dir}/${name}-config.jar" tofile="${libdir}/${name}-config.jar"/>
-   </target>
+              <metainf file="${build.lib}/mime.types"/>
+          </jar>
+       <copy file="${build.dir}/${name}-config.jar" tofile="${libdir}/${name}-config.jar"/>
+    </target>
 
-	<!-- copy necessary resources to build lib -->
-	<target name="prepare-lib" depends="prepare">
-		<copy todir="${build.lib}" filtering="no">
-		        <fileset dir="${libdir}" 
-		        	excludes="*.jar,SchemaParser/**,LiveMap/**,*.zip,*.gz,maven/**"/>
-		</copy>
-		<copy todir="${build.lib}" filtering="no">
-		        <fileset dir="${libdir}" 
-		        	includes="*.jar" excludes="maven-ant-tasks*.jar"/>
-			<fileset dir="${libdir}/axis" 
-					 includes="*.jar"/>
-		</copy>
-		<copy todir="${build.lib}" filtering="no">
-			<fileset refid="dependency.fileset" />
-			<!-- This mapper strips off all leading directory information -->
-			<mapper type="flatten" />
-		</copy>
-		<copy file="${morpho.basedir}/CONTRIBUTORS.txt" todir="${build.lib}" filtering="no" />
-	</target>
-	
+    <!-- copy necessary resources to build lib -->
+    <target name="prepare-lib" depends="prepare">
+        <copy todir="${build.lib}" filtering="no">
+                <fileset dir="${libdir}" 
+                    excludes="*.jar,SchemaParser/**,LiveMap/**,*.zip,*.gz,maven/**"/>
+        </copy>
+        <copy todir="${build.lib}" filtering="no">
+                <fileset dir="${libdir}" 
+                    includes="*.jar" excludes="maven-ant-tasks*.jar"/>
+            <fileset dir="${libdir}/axis" 
+                     includes="*.jar"/>
+        </copy>
+        <copy todir="${build.lib}" filtering="no">
+            <fileset refid="dependency.fileset" />
+            <!-- This mapper strips off all leading directory information -->
+            <mapper type="flatten" />
+        </copy>
+        <copy file="${morpho.basedir}/CONTRIBUTORS.txt" todir="${build.lib}" filtering="no" />
+    </target>
+    
    <target name="install" depends="jar">
       <copy file="${build.dir}/${name}.jar" todir="${build.lib}" />
       <copy file="${build.dir}/${name}-config.jar" todir="${build.lib}" />
       <echo message="Install complete. Use the morpho script to run it." />
    </target>
-	
+    
    <target name="sign" depends="install">
       <signjar jar="${build.lib}/${name}.jar" alias="myself"
                storepass="${storepass}" keystore="${keystore}"/>
@@ -579,12 +598,12 @@
       <copy todir="${morpho.docs.dev.api}">
         <fileset dir="${build.docs}/api"/>
       </copy>
-   	
+       
     <copy todir="${morpho.lib}">
         <fileset dir="${build.lib}" >
-        	<include name="*.jar"/>
+            <include name="*.jar"/>
         </fileset>
-   	</copy>
+       </copy>
 
       <delete file="${morpho.basedir}/lib/morpho-${release}.zip"/>
       <zip zipfile="${morpho.basedir}/lib/morpho-${release}.zip" basedir="${dist.dir}"/>
@@ -614,20 +633,20 @@
        <delete dir="${build.dir}" />
        <delete dir="${morpho.dir}" />
        <delete dir="${dist.dir}"/>
-   		<delete file="${libdir}/${name}-config.jar" />
+           <delete file="${libdir}/${name}-config.jar" />
    </target>
-	
+    
    <!--Except clean, it also delete utilies.jar, eml-210 schema and eml201to210.xsl file.
-		Those files are checked out from another cvs.-->
+        Those files are checked out from another cvs.-->
    <target name="fullclean" depends="clean">
        <delete dir="${schemadir}/eml-2.1.0" />
-    	<delete dir="${schemadir}/eml-2.1.1" />
+        <delete dir="${schemadir}/eml-2.1.1" />
        <delete file="${utilities}" />
-		<delete file="${xsldir}/eml201to210.xsl" />
-		<delete file="${xsldir}/eml201to211.xsl" />
-		<delete file="${xsldir}/eml210to211.xsl" />
-		<delete file="${xsldir}/eml2tonbii.xsl" />
-   		<delete dir="${styledir}/eml2" excludes="eml-settings.xsl" />
+        <delete file="${xsldir}/eml201to210.xsl" />
+        <delete file="${xsldir}/eml201to211.xsl" />
+        <delete file="${xsldir}/eml210to211.xsl" />
+        <delete file="${xsldir}/eml2tonbii.xsl" />
+           <delete dir="${styledir}/eml2" excludes="eml-settings.xsl" />
    </target>
 
    <target name="docs" depends="init">
@@ -676,17 +695,17 @@
    <target name="run" depends="install">
      <java classname="edu.ucsb.nceas.morpho.Morpho"
            fork="yes" dir="${morpho.basedir}" >
-     	<classpath>
-     		<path refid="classpath.runtime" />
-     		<pathelement path="${morpho}:${help}"/>
-     	</classpath>
-     	<arg line="${morpho.args}"/>
+         <classpath>
+             <path refid="classpath.runtime" />
+             <pathelement path="${morpho}:${help}"/>
+         </classpath>
+         <arg line="${morpho.args}"/>
        <jvmarg value="-Xmx512m"/>
        <jvmarg value="-Xss1m"/>
      </java>
    </target>
-	
-	<!--
+    
+    <!--
    This target uses Launch$J (see http://launch4j.sourceforge.net/)
    It will create a file ("Kepler-launch.exe" that will launch Kepler on a Windows box
    Dan Higgins - Nov 2007
@@ -700,31 +719,31 @@
       onerror="ignore"/>
       <!--launch4j configFile="${morpho.basedir}/installer/build/launch-morpho.xml"/-->
     <launch4j>
-      	<config 
-      		dontwrapjar="true" 
-      		headertype="gui" 
-      		outfile="${morpho.basedir}/morpho.exe" 
-      		errtitle="Morpho" 
-      		cmdline="${morpho.args}" 
-      		chdir="." 
-      		priority="normal" 
-      		downloadurl="http://java.com/download"  
-      		stayalive="false" 
-      		icon="${libdir}/DesktopIcon32x32.ico">
-      	  <classPath mainClass="edu.ucsb.nceas.morpho.Morpho">
-      	    <cp>%EXEDIR%/lib/*.jar</cp>    
-      	  </classPath>
-      	  <jre minVersion="1.7.0" jdkPreference="preferJre">
-      	    <opt>-Xmx1024m</opt>
-      	    <opt>-Xss20m</opt>
-      	    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%/lib/jar/apache&quot;</opt>
-      	    <opt>-Djava.library.path=&quot;%EXEDIR%/lib&quot;</opt>
-      	  </jre>
-      	</config>
-		</launch4j>
+          <config 
+              dontwrapjar="true" 
+              headertype="gui" 
+              outfile="${morpho.basedir}/morpho.exe" 
+              errtitle="Morpho" 
+              cmdline="${morpho.args}" 
+              chdir="." 
+              priority="normal" 
+              downloadurl="http://java.com/download"  
+              stayalive="false" 
+              icon="${libdir}/DesktopIcon32x32.ico">
+            <classPath mainClass="edu.ucsb.nceas.morpho.Morpho">
+              <cp>%EXEDIR%/lib/*.jar</cp>    
+            </classPath>
+            <jre minVersion="1.7.0" jdkPreference="preferJre">
+              <opt>-Xmx1024m</opt>
+              <opt>-Xss20m</opt>
+              <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%/lib/jar/apache&quot;</opt>
+              <opt>-Djava.library.path=&quot;%EXEDIR%/lib&quot;</opt>
+            </jre>
+          </config>
+        </launch4j>
   </target> 
-	
-	<!-- The target 'macjarbundler' builds a Mac OS X application bundle.
+    
+    <!-- The target 'macjarbundler' builds a Mac OS X application bundle.
      This provides a double-clickable icon that will launch a java
      application on the Mac without the need to open the terminal and
      type a long command string. It it thus similar to creating an 
@@ -741,67 +760,67 @@
      Mac. (Dan Higgins 11/2007)
 -->          
   <target name="macjarbundler" depends="install">
-  	 <taskdef name="appbundler" 
-  	         classpath="${morpho.basedir}/lib/appbundler-1.0.jar"
-  	         classname="com.oracle.appbundler.AppBundlerTask" 
-  	         onerror="ignore" />
-  	    <echo message="Using morpho args: ${morpho.args}"></echo>
-  	      <!--<jarbundler dir="${morpho.basedir}/"
-  	            name="morpho"
-  	            stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
-  	            mainclass="edu.ucsb.nceas.morpho.Morpho"
-  	            icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
-  	            vmoptions="-Xmx1024m -Xss5m" 
-  	            arguments="${morpho.args}">
-  	            <jarfileset dir="${build.lib}">
-  	                <include name="*.jar" />
-  	            </jarfileset>
-  	        </jarbundler> -->
-  	        <appbundler outputdirectory="${morpho.basedir}/"
-  	                 name="Morpho"
-  	                 displayname="Morpho"
-  	                 identifier="edu.ucsb.nceas.morpho.Morpho"
-  	                 icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
-  	                 applicationCategory="public.app-category.developer-tools"
-  	                 mainclassname="edu/ucsb/nceas/morpho/Morpho">
-  	                 <!--<runtime dir="/Library/Java/JavaVirtualMachines/jdk1.7.0_17.jdk/Contents/Home"/>-->
-  	                 <classpath dir="${build.lib}">
-  	                            <include name="*.jar" />
-  	                    </classpath>
-  	                 <!--<option value="-Dapple.laf.useScreenMenuBar=true"/>
-  	                 <option value="-Duser.dir=$APP_ROOT/Contents/Resources"/>-->
-  	                 <option value="-Xmx1024M"/>
-  	                 <option value="-Xss100M"/>
-  	          </appbundler>
-  	          <!--the executable file JavaAppLaunch generated by appbundler will lauch morpho with the working directory - user-home.
-  	              However, we want the working directory to be app-package-root. So we use the universalJavaApplicationStub from
-  	              https://github.com/tofi86/universalJavaApplicationStub to replace the JavaAppLaunch generated by appbundler.
-  	          -->
-  	          <copy todir="Morpho.app/Contents/MacOS" overwrite="yes">
-  	            <fileset dir="lib">
-  	              <include name="JavaAppLauncher"/>
-  	            </fileset>
-  	          </copy>
+       <taskdef name="appbundler" 
+               classpath="${morpho.basedir}/lib/appbundler-1.0.jar"
+               classname="com.oracle.appbundler.AppBundlerTask" 
+               onerror="ignore" />
+          <echo message="Using morpho args: ${morpho.args}"></echo>
+            <!--<jarbundler dir="${morpho.basedir}/"
+                  name="morpho"
+                  stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
+                  mainclass="edu.ucsb.nceas.morpho.Morpho"
+                  icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
+                  vmoptions="-Xmx1024m -Xss5m" 
+                  arguments="${morpho.args}">
+                  <jarfileset dir="${build.lib}">
+                      <include name="*.jar" />
+                  </jarfileset>
+              </jarbundler> -->
+              <appbundler outputdirectory="${morpho.basedir}/"
+                       name="Morpho"
+                       displayname="Morpho"
+                       identifier="edu.ucsb.nceas.morpho.Morpho"
+                       icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
+                       applicationCategory="public.app-category.developer-tools"
+                       mainclassname="edu/ucsb/nceas/morpho/Morpho">
+                       <!--<runtime dir="/Library/Java/JavaVirtualMachines/jdk1.7.0_17.jdk/Contents/Home"/>-->
+                       <classpath dir="${build.lib}">
+                                  <include name="*.jar" />
+                          </classpath>
+                       <!--<option value="-Dapple.laf.useScreenMenuBar=true"/>
+                       <option value="-Duser.dir=$APP_ROOT/Contents/Resources"/>-->
+                       <option value="-Xmx1024M"/>
+                       <option value="-Xss100M"/>
+                </appbundler>
+                <!--the executable file JavaAppLaunch generated by appbundler will lauch morpho with the working directory - user-home.
+                    However, we want the working directory to be app-package-root. So we use the universalJavaApplicationStub from
+                    https://github.com/tofi86/universalJavaApplicationStub to replace the JavaAppLaunch generated by appbundler.
+                -->
+                <copy todir="Morpho.app/Contents/MacOS" overwrite="yes">
+                  <fileset dir="lib">
+                    <include name="JavaAppLauncher"/>
+                  </fileset>
+                </copy>
   </target>
 
-	
-	<!--Generates installer for windows, mac and linux-->
+    
+    <!--Generates installer for windows, mac and linux-->
    <target name="buildallinstallers" depends="clean, buildwininstaller, buildmacinstaller, buildlinuxinstaller" description="build all installlers for windows, mac and linux"/>
   
    <!--
    This target uses Launch4J (see http://launch4j.sourceforge.net/)
    It will create a file ("morpho-installer.exe" that will install morpho on a Windows box
    Dan Higgins - Jan 2008
-	--> 
+    --> 
   <target name="buildwininstaller" depends="init,wininstallercleanup,buildwinexe">
-	  <property name="windows" value="windows">
-		  
-	  </property>
-	  <antcall target="makeinstaller">
-		  <param name="os-name" value="${windows}"/>
+      <property name="windows" value="windows">
+          
+      </property>
+      <antcall target="makeinstaller">
+          <param name="os-name" value="${windows}"/>
           <param name="version" value="${release}"/>
-		  <param name="izpackjar" value="${izpackjar}"/>
-	  </antcall>
+          <param name="izpackjar" value="${izpackjar}"/>
+      </antcall>
       <taskdef name="launch4j"
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/xstream.jar" 
@@ -809,31 +828,31 @@
       <launch4j configFile="${morpho.basedir}/installer/build/launch-installer.xml"
                 outfile="${morpho.basedir}/morpho-${release}.exe" jar="${morpho.basedir}/morpho-${release}-${windows}.jar"/>
   </target>
-	
+    
   
   <!--Builds jar file for mac. Before run it, please edit installer/build/install.xml file  -->
   <target name="buildmacinstaller" depends="init,macinstallercleanup,macjarbundler">
-	  <antcall target="makeinstaller">
-		  <param name="os-name" value="mac"/>
+      <antcall target="makeinstaller">
+          <param name="os-name" value="mac"/>
           <param name="version" value="${release}"/>
-		  <param name="izpackjar" value="${izpackjar}"/>
-	  </antcall>
+          <param name="izpackjar" value="${izpackjar}"/>
+      </antcall>
   </target>
-	
+    
   <!--Builds jar installer file for linux.   -->
   <target name="buildlinuxinstaller" depends="init,linuxinstallercleanup,install"> 
-	  
-	  <antcall target="makeinstaller">
-		  <param name="os-name" value="linux"/>
+      
+      <antcall target="makeinstaller">
+          <param name="os-name" value="linux"/>
           <param name="version" value="${release}"/>
-		  <param name="izpackjar" value="${izpackjar}"/>
-	   </antcall>
+          <param name="izpackjar" value="${izpackjar}"/>
+       </antcall>
   </target>
 
 
 
-	
-	
+    
+    
   <!-- The target "makeinstaller" uses the IzPack installer system (see http://izpack.org/)
      to create an installer jar file. This is based on the script $KEPLER/installer/build/install.xml.
      A jar file called 'IzPack-install.jar' is created in $KEPLER dir. This jar can be executed by
@@ -852,21 +871,21 @@
         output="${morpho.basedir}/morpho-${release}-${os-name}.jar"
         installerType="standard"
         basedir="${morpho.basedir}/" 
-    	inheritAll="true"/>
+        inheritAll="true"/>
    </target>
-	
-	<!-- the following 3 targets clean up the build for system specific installers -->
-	<target name="macinstallercleanup">
-		 <delete file="${morpho.basedir}/morpho-${release}-mac.jar"/>
-		 <delete dir="${morpho.basedir}/morpho.app"/>
+    
+    <!-- the following 3 targets clean up the build for system specific installers -->
+    <target name="macinstallercleanup">
+         <delete file="${morpho.basedir}/morpho-${release}-mac.jar"/>
+         <delete dir="${morpho.basedir}/morpho.app"/>
    </target>
-	
-	<target name="wininstallercleanup">
+    
+    <target name="wininstallercleanup">
          <delete file="${morpho.basedir}/morpho-${release}-windows.jar"/>
          <delete file="${morpho.basedir}/morpho-${release}.exe"/>
    </target>
-	
-	<target name="linuxinstallercleanup">
+    
+    <target name="linuxinstallercleanup">
          <delete file="${morpho.basedir}/morpho-${release}-linux.jar"/>
    </target>
 
@@ -882,7 +901,7 @@
       </copy>
       <javac srcdir="${build.tests}"
              destdir="${build.dest}"
-      		 classpathref="classpath"
+               classpathref="classpath"
              debug="on"/>
 
       <jar jarfile="${build.dir}/${name}-test.jar" basedir="${build.dest}"
@@ -892,7 +911,7 @@
       <junit printsummary="yes" haltonfailure="no" fork="no"
              haltonerror="no">
         <classpath>
-        	<path refid="classpath" />
+            <path refid="classpath" />
           <pathelement path="${build.dir}/${name}-test.jar" />
         </classpath>
 
@@ -931,18 +950,18 @@
         <classpath>
           <fileset dir="${build.lib}">
                 <include name="*.jar" />
-			    <exclude name="standalone-compiler.jar"/>
+                <exclude name="standalone-compiler.jar"/>
             </fileset>
           <pathelement path="${build.dir}/${name}-test.jar" />
         </classpath>
 
         <formatter type="plain" />
-      	 
-      	<batchtest fork="yes" todir="${build.dir}">
-      	          <fileset dir="${build.tests}">
-      	            <include name="**/${testtorun}.java" />
-      	          </fileset>
-      	  </batchtest>
+           
+          <batchtest fork="yes" todir="${build.dir}">
+                    <fileset dir="${build.tests}">
+                      <include name="**/${testtorun}.java" />
+                    </fileset>
+            </batchtest>
      </junit>
    </target>
 
