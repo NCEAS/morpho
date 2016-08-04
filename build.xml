@@ -16,6 +16,45 @@
 <project name="morpho" default="install" basedir=".">
 	<!-- include basedir so that this ant project can be imported by other's -->
 	<dirname property="morpho.basedir" file="${ant.file.morpho}"/>
+   
+   <!-- Allow integration with Git projects -->
+   <macrodef name = "git">
+        <attribute name = "command" />
+        <attribute name = "dir" default = "" />
+        <element name = "args" optional = "true" />
+        <sequential>
+            <echo message = "git @{command}" />
+            <exec executable = "git" dir = "@{dir}">
+                <arg value = "@{command}" />
+                <args/>
+            </exec>
+        </sequential>
+    </macrodef>
+    <macrodef name = "git-clone-pull">
+        <attribute name = "repository" />
+        <attribute name = "dest" />
+        <attribute name = "refname" />
+        <sequential>
+            <git command = "clone">
+                <args>
+                    <arg value = "@{repository}" />
+                    <arg value = "@{dest}" />
+                </args>
+            </git>
+            <git command = "checkout" dir = "@{dest}">
+                <args>
+                    <arg value = "@{refname}" />
+                </args>
+            </git>
+            <git command = "pull" dir = "@{dest}" >
+                <args>
+                    <arg value = "@{repository}" />
+                    <arg value = "@{refname}" />
+                </args>
+            </git>
+        </sequential>
+   </macrodef>
+
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
@@ -29,23 +68,20 @@
    	<property name="svn-utilitiesUrl"
             value="https://code.ecoinformatics.org/code/utilities/${utilities-tag}" />
       <property name="eml-module" value="eml" />
-	   <property name="eml-svn-base-url" value="https://code.ecoinformatics.org/code/eml"/>
+	    <!--<property name="eml-svn-base-url" value="https://code.ecoinformatics.org/code/eml"/> -->
+      <property name="eml.git.repository.url" value="https://github.com/NCEAS/eml.git" />
       <!-- the following two properties will be used to get newest eml doc-->
       <property name="eml-doc-tag" value="RELEASE_EML_2_1_1" />
       <property name="eml.doc.dir" value="${morpho.basedir}/docs/eml-2.1.1" />
-	  <property name="eml-doc-svn-url" value="${eml-svn-base-url}/tags/${eml-doc-tag}"/>
       <!-- the following property will be used to get eml210 schemas -->
       <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0" />
-	  <property name="eml-210-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-210-schema-tag}"/>
    	
     <!-- the following property will be used to get eml210 schemas -->
     <property name="eml-211-schema-tag" value="RELEASE_EML_2_1_1" />
-	<property name="eml-211-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-211-schema-tag}"/>
    	
    	<!-- eml-style-tag only be used to get xsl files that are different from schema releases -->
 	  <!--<property name="eml-style-tag" value="trunk" />-->
 	  <property name="eml-style-tag" value="tags/RELEASE_EML_UTILS_1_1_1" />
-	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
@@ -286,15 +322,9 @@
 
    <target name="emldoc" depends="prepare">
      <!-- checkout eml moduel -->
-     <echo>Check out eml doc from SVN</echo>
-     <!--<cvs cvsRoot="${cvsroot}"
-          package="${eml-module}"
-          tag="${eml-tag}"
-          dest="${build.docs}" />-->
-	  <svn>
-            <export srcUrl="${eml-doc-svn-url}"
-                destPath="${build.docs}/${eml-module}" />
-     </svn>
+     <echo>Check out eml doc from ${eml-doc-tag}</echo>
+     <git-clone-pull repository="${eml.git.repository.url}" 
+                     dest="${build.docs}/${eml-module}" refname="${eml-doc-tag}" />
      <ant dir="${build.docs}/${eml-module}" target="docs" inheritAll="false"/>
      <mkdir dir="${java.help.doc.dir}" />
      <copy todir="${java.help.doc.dir}/eml" filtering="no">
@@ -319,17 +349,9 @@
 	
    <target name="getstylesheets" depends="prepare" if="transformstylesheet.needed">
      <!-- checkout eml/eml201to210.xsl and eml2tonbii.xsl file -->
-     <echo>Check out eml conversion xsl files and NBII style sheet from SVN</echo>
-	 <mkdir dir="${build.xsl}/eml_${eml-style-tag}" />
-	 <svn>
-            <export srcUrl="${eml-style-svn-url}/style"
-                destPath="${build.xsl}/eml_${eml-style-tag}/style" force="true" />
-        </svn>
-	   <mkdir dir="${build.xsl}/eml_${eml-style-tag}/lib" />
-	   <svn>
-            <export srcUrl="${eml-style-svn-url}/lib/eml2tonbii"
-                destPath="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii" force="true" />
-        </svn>
+     <echo>Check out eml conversion xsl files and NBII style sheet from source</echo>
+  <git-clone-pull repository="${eml.git.repository.url}" 
+                     dest="${build.xsl}/eml_${eml-style-tag}" refname="${eml-style-tag}" />
 	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to210.xsl" todir="${xsldir}" />
 	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to211.xsl" todir="${xsldir}" />
 	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml210to211.xsl" todir="${xsldir}" />
@@ -341,7 +363,7 @@
 	
 	<target name="copyemlstylesheet">
 		<!-- copy eml xslt files, except the settings file -->
-		<echo>Copy eml xsl files from SVN checkout to the lib dir</echo>
+		<echo>Copy eml xsl files from checkout to the lib dir</echo>
 		<copy todir="${styledir}/eml2">
 			<fileset dir="${build.xsl}/eml_${eml-style-tag}/style/eml" excludes="eml-settings.xsl"/>
 		</copy>
@@ -349,12 +371,9 @@
 
    <target name="geteml210" depends="prepare" if="eml210schema.needed">
      <!-- checkout eml moduel -->
-     <echo>Check out EML 2.1.0 schema from SVN</echo>
-	   <mkdir dir="${build.schema}"/>
-	   <svn>
-            <export srcUrl="${eml-210-schema-svn-url}"
-                destPath="${build.schema}/eml_${eml-210-schema-tag}" />
-        </svn>
+     <echo>Check out EML 2.1.0 schema from source</echo>
+     <git-clone-pull repository="${eml.git.repository.url}" 
+                     dest="${build.schema}/eml_${eml-210-schema-tag}" refname="${eml-210-schema-tag}" />
      <mkdir dir="${schemadir}/eml-2.1.0" />
      <copy todir="${schemadir}/eml-2.1.0" filtering="yes">
        <fileset dir="${build.schema}/eml_${eml-210-schema-tag}">
@@ -365,13 +384,11 @@
 	
 	<target name="geteml211" depends="prepare" if="eml211schema.needed">
 	     <!-- checkout eml moduel -->
-	     <echo>Check out EML 2.1.1 schema from SVN</echo>
+	     <echo>Check out EML 2.1.1 schema from source</echo>
 		   <mkdir dir="${build.schema}"/>
-		   <svn>
-	            <export srcUrl="${eml-211-schema-svn-url}"
-	                destPath="${build.schema}/eml_${eml-211-schema-tag}" />
-	        </svn>
-	     <mkdir dir="${schemadir}/eml-2.1.1" />
+	     <git-clone-pull repository="${eml.git.repository.url}" 
+                       dest="${build.schema}/eml_${eml-211-schema-tag}" refname="${eml-211-schema-tag}" />
+       <mkdir dir="${schemadir}/eml-2.1.1" />
 	     <copy todir="${schemadir}/eml-2.1.1" filtering="yes">
 	       <fileset dir="${build.schema}/eml_${eml-211-schema-tag}">
 	         <include name="*.xsd"/>
