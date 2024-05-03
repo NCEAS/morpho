@@ -5,6 +5,8 @@ Morpho: XML Metadata Client
 
 Morpho is now fully deprecated and the project has been archived. It is maintained here only for historical information, and no further work will be invested to develop or maintain the software. With the release of Metacat 3.0.0, the API support in data repositories that Morpho needs is also removed, so the current version of Morpho no longer will function with modern repositories. For the KNB, users can continue to edit metadata through our [online metadata editor](https://knb.ecoinformatics.org/), which can be deployed for other repositories as well (see [MetacatUI](https://nceas.github.io/metacatui)).
 
+Morpho was started in 1997 to support metadata dialects in the then nascent XML format, and is now retired in 2024, having served the community for 27 years. Thanks for all of the contributions and support over the years.
+
 [![Project Status: Unsupported – The project has reached a stable, usable state but the author(s) have ceased all work on it. A new maintainer may be desired.](https://www.repostatus.org/badges/latest/unsupported.svg)](https://www.repostatus.org/#unsupported)
 
 Last release: 1.11.0 ([Download](https://knb.ecoinformatics.org/tools))
